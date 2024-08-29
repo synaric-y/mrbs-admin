@@ -76,7 +76,8 @@ export default {
           :data="tableData"
           style="width: 100%"
           header-cell-class-name="tb-header"
-          header-align="center">
+          header-align="center"
+          max-height="600">
         <el-table-column
             fixed
             prop="date"

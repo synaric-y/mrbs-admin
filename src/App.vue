@@ -15,6 +15,9 @@ export default {
     },
     toUser() {
       router.replace("/user")
+    },
+    toProfile() {
+      router.replace("/login")
     }
   }
 }
@@ -23,12 +26,14 @@ export default {
 <template>
   <div class="container">
     <div class="nav">
-      <el-button class="nav-button" type="primary" round size="large" @click="toHome">{{ $t("base.home") }}</el-button>
-      <el-button class="nav-button" type="primary" round size="large" @click="toArea">{{ $t("base.area") }}</el-button>
-      <el-button class="nav-button" type="primary" round size="large" @click="toRoom">{{ $t("base.room") }}</el-button>
-      <el-button class="nav-button" type="primary" round size="large" @click="toUser">{{ $t("base.user") }}</el-button>
-      <div style="flex: 1"></div>
-      <img style="width: 30px; height: 30px" src="/profile.png" />
+      <div class="nav-inner">
+        <el-button class="nav-button" type="primary" round size="large" @click="toHome">{{ $t("base.home") }}</el-button>
+        <el-button class="nav-button" type="primary" round size="large" @click="toArea">{{ $t("base.area") }}</el-button>
+        <el-button class="nav-button" type="primary" round size="large" @click="toRoom">{{ $t("base.room") }}</el-button>
+        <el-button class="nav-button" type="primary" round size="large" @click="toUser">{{ $t("base.user") }}</el-button>
+        <div style="flex: 1"></div>
+        <img style="width: 30px; height: 30px" src="/profile.png" @click="toProfile" />
+      </div>
     </div>
     <router-view></router-view>
   </div>
@@ -76,6 +81,13 @@ export default {
   border-bottom: 0.06rem solid rgba(187,187,187,1);
   box-sizing: border-box;
   padding: 0 75px 0 75px ;
+}
+
+.nav-inner {
+  width: 930px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 /*顶部导航按钮*/

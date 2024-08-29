@@ -10,6 +10,11 @@ const router = createRouter({
       component: HomePage
     },
     {
+      path: '/login',
+      name: 'login',
+      component: () => import('@/pages/LoginPage.vue')
+    },
+    {
       path: '/area',
       name: 'area',
       component: () => import('@/pages/AreaPage.vue')

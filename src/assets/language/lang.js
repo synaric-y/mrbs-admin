@@ -6,10 +6,16 @@ export const messages = {
             area: '区域',
             room: '房间',
             user: '用户',
+            login: '登录',
             areaManagement: '区域管理',
             roomManagement: '房间管理',
             add: '+ 添加',
             plzSelect: '请选择',
+        },
+        login: {
+            account: '账号',
+            password: '密码',
+            accountPH: '用户名/邮箱',
         },
         area: {
             tableArea: {
@@ -41,10 +47,16 @@ export const messages = {
             area: 'Area',
             room: 'Room',
             user: 'User',
+            login: 'Login',
             areaManagement: 'Area Management',
             roomManagement: 'Room Management',
             add: '+ Add',
             plzSelect: 'Select',
+        },
+        login: {
+            account: 'Account',
+            password: 'Password',
+            accountPH: 'Username/E-Mail',
         },
         area: {
             tableArea: {
