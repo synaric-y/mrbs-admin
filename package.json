@@ -1,0 +1,27 @@
+{
+  "name": "mrbs-admin",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "element-plus": "^2.8.1",
+    "moment": "^2.30.1",
+    "moment-timezone": "^0.5.45",
+    "pinia": "^2.1.7",
+    "sass": "^1.77.8",
+    "vue": "^3.4.29",
+    "vue-i18n": "^10.0.0-beta.5",
+    "vue-router": "^4.3.3"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.5",
+    "element-theme-chalk": "^2.15.14",
+    "sass-embedded": "^1.77.8",
+    "vite": "^5.3.1"
+  }
+}
