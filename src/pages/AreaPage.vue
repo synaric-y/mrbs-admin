@@ -75,7 +75,7 @@ export default {
             :label="$t('area.tableArea.state')"
             width="120">
           <template #default="scope">
-            <div class="tb-state"></div>
+            <div :class="['tb-state', scope.row.disabled == 1 ? 'tb-state-disable' : '']"></div>
           </template>
         </el-table-column>
         <el-table-column
