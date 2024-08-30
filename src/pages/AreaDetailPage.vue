@@ -1,8 +1,9 @@
 <script>
 import moment from "moment";
 import {TIMEZONE_LIST} from "@/assets/timezone.js";
+import {PageMixin} from "@/pages/PageMixin.js";
 export default {
-
+  mixins: [PageMixin],
   data() {
     return {
       mode: 'add',

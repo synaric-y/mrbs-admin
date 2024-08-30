@@ -1,5 +1,5 @@
-<script setup>
-
+<script>
+import {PageMixin} from "@/pages/PageMixin.js";
 </script>
 
 <template>

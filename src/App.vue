@@ -1,9 +1,9 @@
 <script>
 import router from "@/router/index.js"
-import {NavigationStore} from '@/stores/navigationStore.js'
-import {mapActions, mapState, mapStores} from "pinia";
+import {PageMixin} from "@/pages/PageMixin.js";
 
 export default {
+  mixins: [PageMixin],
   data() {
     return {
       tabs: [
@@ -26,22 +26,11 @@ export default {
       ]
     }
   },
-  computed: {
-    ...mapStores(NavigationStore),
-    ...mapState(NavigationStore, ['currentTab'])
-  },
   methods: {
-    ...mapActions(NavigationStore, ['setTab']),
+    // ...mapActions(NavigationStore, ['setTab']),
     toProfile() {
       router.replace("/login")
     },
-    switchTab(path) {
-      this.setTab(path)
-      router.replace(path)
-    }
-  },
-  mounted() {
-    console.log('~~', this.currentTab)
   }
 }
 </script>
@@ -50,10 +39,6 @@ export default {
   <div class="container">
     <div class="nav">
       <div class="nav-inner">
-<!--        <el-button class="nav-button" type="primary" round size="large" @click="toHome">{{ $t("base.home") }}</el-button>-->
-<!--        <el-button class="nav-button" type="primary" round size="large" @click="toArea">{{ $t("base.area") }}</el-button>-->
-<!--        <el-button class="nav-button" type="primary" round size="large" @click="toRoom">{{ $t("base.room") }}</el-button>-->
-<!--        <el-button class="nav-button" type="primary" round size="large" @click="toUser">{{ $t("base.user") }}</el-button>-->
 
         <el-button :class="['nav-button', currentTab == item.path ? '' : 'nav-button-inactive']" type="primary" round size="large" @click="switchTab(item.path)" v-for="(item, index) in tabs" :index="index">{{ $t(item.name) }}</el-button>
         <div style="flex: 1"></div>

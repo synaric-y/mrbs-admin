@@ -1,9 +1,9 @@
 <script>
 import {Api} from "@/network/api.js";
-import router from "@/router/index.js";
+import {PageMixin} from "@/pages/PageMixin.js";
 
 export default {
-
+  mixins: [PageMixin],
   data() {
     return {
       mode: 'add',
@@ -17,7 +17,7 @@ export default {
     login() {
       Api.login(this.form).then((data) => {
         if (data.code == 0) {
-          
+          this.switchTab('/')
         }
       })
     }

@@ -1,7 +1,8 @@
 <script>
 import router from "@/router/index.js"
+import {PageMixin} from "@/pages/PageMixin.js";
 export default {
-
+  mixins: [PageMixin],
   data() {
     return {
       tableData: [{
