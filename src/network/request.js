@@ -5,16 +5,9 @@ export class Request {
 
     static async post(path, params) {
         return axios({
-            url: `${HOST}/${path}`,
+            url: `${HOST}/web/call.php?act=${path}`,
             method: 'POST',
             data: params,
-        })
-    }
-
-    static async get(path, params) {
-        return axios({
-            url: `${HOST}/${path}`,
-            params: params
         })
     }
 }
