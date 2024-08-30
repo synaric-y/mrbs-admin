@@ -11,6 +11,11 @@ export const messages = {
             roomManagement: '房间管理',
             add: '+ 添加',
             plzSelect: '请选择',
+            confirm: '确定',
+            cancel: '取消',
+            editSuccess: '编辑成功',
+            editFailed: '编辑失败',
+            noDataHint: '该设置不能为空',
         },
         login: {
             account: '账号',
@@ -38,6 +43,7 @@ export const messages = {
             },
             addArea: '添加区域',
             editArea: '编辑区域',
+            deleteAreaHint: '确定删除该区域吗',
         }
     },
 
@@ -52,6 +58,11 @@ export const messages = {
             roomManagement: 'Room Management',
             add: '+ Add',
             plzSelect: 'Select',
+            confirm: 'Confirm',
+            cancel: 'Cancel',
+            editSuccess: 'Edited successfully',
+            editFailed: 'Edit failed',
+            noDataHint: 'Cannot be empty',
         },
         login: {
             account: 'Account',
@@ -79,6 +90,7 @@ export const messages = {
             },
             addArea: 'New Area',
             editArea: 'Edit Area',
+            deleteAreaHint: 'Are you sure you want to delete this area?',
         }
     }
 }

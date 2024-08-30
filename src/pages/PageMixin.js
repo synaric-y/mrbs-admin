@@ -19,6 +19,9 @@ export const PageMixin = {
         },
         replace(path) {
             router.replace(path)
+        },
+        back() {
+            router.back()
         }
     }
 }
