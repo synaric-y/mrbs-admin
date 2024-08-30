@@ -1,5 +1,6 @@
 <script>
 import {Api} from "@/network/api.js";
+import router from "@/router/index.js";
 
 export default {
 
@@ -14,7 +15,11 @@ export default {
   },
   methods: {
     login() {
-      Api.login(this.form)
+      Api.login(this.form).then((data) => {
+        if (data.code == 0) {
+          
+        }
+      })
     }
   },
   mounted() {
