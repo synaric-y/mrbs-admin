@@ -1,28 +1,46 @@
 <script>
 import {PageMixin} from "@/pages/PageMixin.js";
 import {Api} from "@/network/api.js";
+import router from "@/router/index.js";
 export default {
   mixins: [PageMixin],
   data() {
     return {
-      tableData: [{
-        area_name: '办公室',
-        id: 1,
-        disabled: 0,
-        timezone: 'Asia/Shanghai',
-      }
-      ]
+      tableData: [
+      ],
+      showAddAreaDialog: false,
+      showDeleteAreaDialog: false,
+      form: {
+        name: ''
+      },
+      pendingDeleteId: null
     }
   },
   methods: {
-    toAreaDetail() {
-      this.push('/area_detail/add/0')
+    toAreaDetail(id) {
+      this.push(`/area_detail/${id}`)
+    },
+    pendingDeleteArea(id) {
+      this.showDeleteAreaDialog = true
+      this.pendingDeleteId = id
+    },
+    deleteArea() {
+      this.showDeleteAreaDialog = false
+      Api.deleteArea({area: this.pendingDeleteId}).then(data => {
+        this.getAreaList()
+      })
     },
     getAreaList() {
       Api.getAreaList({}).then(data => {
         if (data) {
           this.tableData = data
         }
+      })
+    },
+    addArea() {
+      this.showAddAreaDialog = false
+      Api.addArea(this.form).then(data => {
+        this.getAreaList()
       })
     }
   },
@@ -38,7 +56,7 @@ export default {
     <el-main class="container-sub-page-main">
       <div class="sub-title-wrapper">
         <div class="sub-title">{{ $t("base.areaManagement") }}</div>
-        <el-button type="primary" size="default" @click="toAreaDetail">{{ $t("base.add") }}</el-button>
+        <el-button type="primary" size="default" @click="showAddAreaDialog = true">{{ $t("base.add") }}</el-button>
       </div>
       <el-table
           :data="tableData"
@@ -57,7 +75,7 @@ export default {
             :label="$t('area.tableArea.state')"
             width="120">
           <template #default="scope">
-            <div class="tb-state"></div>
+            <div :class="['tb-state', scope.row.disabled == 1 ? 'tb-state-disable' : '']"></div>
           </template>
         </el-table-column>
         <el-table-column
@@ -76,15 +94,48 @@ export default {
 <!--            width="300">-->
 <!--        </el-table-column>-->
         <el-table-column
-            prop="area_name"
+            prop="id"
             :label="$t('area.tableArea.operate')"
             width="120">
           <template #default="scope">
-            <img class="tb-op-icon tb-op-icon-span" src="/edit.png">
-            <img class="tb-op-icon" src="/delete.png">
+            <img class="tb-op-icon tb-op-icon-span" src="/edit.png" @click="toAreaDetail(scope.row.id)">
+            <img class="tb-op-icon" src="/delete.png" @click="pendingDeleteArea(scope.row.id)">
+
           </template>
         </el-table-column>
       </el-table>
+
+
+
+      <el-dialog v-model="showAddAreaDialog" :title="$t('area.addArea')" width="500">
+        <el-form :model="form">
+          <el-form-item :label="$t('area.formArea.name')">
+            <el-input v-model="form.name" autocomplete="off" />
+          </el-form-item>
+        </el-form>
+        <template #footer>
+          <div class="dialog-footer">
+            <el-button @click="showAddAreaDialog = false">{{ $t('base.cancel') }}</el-button>
+            <el-button type="primary" @click="addArea">
+              {{ $t('base.confirm') }}
+            </el-button>
+          </div>
+        </template>
+      </el-dialog>
+      <el-dialog
+          v-model="showDeleteAreaDialog"
+          title="Tips"
+          width="500">
+        <span>{{ $t('area.deleteAreaHint') }}</span>
+        <template #footer>
+          <div class="dialog-footer">
+            <el-button @click="showDeleteAreaDialog = false">{{ $t('base.cancel') }}</el-button>
+            <el-button type="primary" @click="deleteArea">
+              {{ $t('base.confirm') }}
+            </el-button>
+          </div>
+        </template>
+      </el-dialog>
     </el-main>
   </el-container>
 </template>

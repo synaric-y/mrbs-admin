@@ -207,7 +207,7 @@ export default defineComponent({
 .home-time-icon {
   width: 30px;
   height: 30px;
-  background-image: url('@/assets/icons/home_time_icon.png');
+  background-image: url('/home_time_icon.png');
   background-size: contain;
   background-repeat: no-repeat;
   display: inline-block;
@@ -237,7 +237,7 @@ export default defineComponent({
 .home-calendar-icon {
   width: 30px;
   height: 30px;
-  background-image: url('@/assets/icons/home_calendar_icon.png');
+  background-image: url('/home_calendar_icon.png');
   background-size: contain;
   background-repeat: no-repeat;
   display: inline-block;

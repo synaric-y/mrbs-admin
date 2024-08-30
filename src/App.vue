@@ -27,7 +27,6 @@ export default {
     }
   },
   methods: {
-    // ...mapActions(NavigationStore, ['setTab']),
     toProfile() {
       router.replace("/login")
     },
