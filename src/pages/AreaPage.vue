@@ -1,66 +1,33 @@
 <script>
-import router from "@/router/index.js"
 import {PageMixin} from "@/pages/PageMixin.js";
+import {Api} from "@/network/api.js";
 export default {
   mixins: [PageMixin],
   data() {
     return {
       tableData: [{
-        date: '2016-05-03',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-02',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-08',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-06',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }, {
-        date: '2016-05-07',
-        name: '王小虎',
-        province: '上海',
-        city: '普陀区',
-        address: '上海市普陀区金沙江路 1518 弄',
-        zip: 200333
-      }]
+        area_name: '办公室',
+        id: 1,
+        disabled: 0,
+        timezone: 'Asia/Shanghai',
+      }
+      ]
     }
   },
   methods: {
     toAreaDetail() {
-      router.push('/area_detail/add/0')
+      this.push('/area_detail/add/0')
+    },
+    getAreaList() {
+      Api.getAreaList({}).then(data => {
+        if (data) {
+          this.tableData = data
+        }
+      })
     }
+  },
+  mounted() {
+    this.getAreaList()
   }
 }
 </script>
@@ -81,12 +48,12 @@ export default {
           max-height="600">
         <el-table-column
             fixed
-            prop="date"
+            prop="area_name"
             :label="$t('area.tableArea.name')"
-            width="150">
+            width="350">
         </el-table-column>
         <el-table-column
-            prop="name"
+            prop="disabled"
             :label="$t('area.tableArea.state')"
             width="120">
           <template #default="scope">
@@ -94,22 +61,22 @@ export default {
           </template>
         </el-table-column>
         <el-table-column
-            prop="province"
+            prop="id"
             :label="$t('area.tableArea.id')"
             width="120">
         </el-table-column>
         <el-table-column
-            prop="city"
-            :label="$t('area.tableArea.galleryful')"
-            width="120">
+            prop="timezone"
+            :label="$t('area.tableArea.timezone')"
+            width="220">
         </el-table-column>
+<!--        <el-table-column-->
+<!--            prop="address"-->
+<!--            :label="$t('area.tableArea.admin')"-->
+<!--            width="300">-->
+<!--        </el-table-column>-->
         <el-table-column
-            prop="address"
-            :label="$t('area.tableArea.admin')"
-            width="300">
-        </el-table-column>
-        <el-table-column
-            prop="zip"
+            prop="area_name"
             :label="$t('area.tableArea.operate')"
             width="120">
           <template #default="scope">

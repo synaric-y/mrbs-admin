@@ -13,6 +13,12 @@ export const PageMixin = {
         switchTab(path) {
             this.setTab(path)
             router.replace(path)
+        },
+        push(path) {
+            router.push(path)
+        },
+        replace(path) {
+            router.replace(path)
         }
     }
 }

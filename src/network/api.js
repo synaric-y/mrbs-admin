@@ -7,7 +7,7 @@ export class Api {
     }
 
     static async getAreaList(params) {
-        params["type"] = "type"
+        params["type"] = "area"
         return Request.post('admin', params)
     }
 }

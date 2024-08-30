@@ -4,12 +4,16 @@ import axios from "@/network/axios.js";
 export class Request {
 
     static async post(path, params) {
-        let res =  axios({
+        let res = await axios({
             url: `${HOST}/web/call.php?act=${path}`,
             method: 'POST',
             data: params,
         })
 
-        return res.data;
+        let rep = res.data;
+        if (rep.code != 0) {
+            throw Error('message')
+        }
+        return rep.data
     }
 }
