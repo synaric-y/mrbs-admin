@@ -14,6 +14,7 @@ export default {
         new_area: '',
         old_area: '',
         room_name: '',
+        old_room_name: '',
         sort_key: '',
         room_disabled: '',
         description: '',
@@ -22,6 +23,7 @@ export default {
         exchange_username: '',
         exchange_password: '',
         wxwork_mr_id: '',
+        invalid_types: []
       },
       rules: {
         area: [
@@ -75,6 +77,7 @@ export default {
       this.form["area"] = data["area_id"]
       this.form["old_area"] = Number(data["area_id"])
       this.form["room_name"] = data["room_name"]
+      this.form["old_room_name"] = data["room_name"]
       this.form["sort_key"] = data["sort_key"]
       this.form["room_disabled"] = Number(data["disabled"])
       this.form["description"] = data["description"]
