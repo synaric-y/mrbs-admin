@@ -44,7 +44,27 @@ export const messages = {
             addArea: '添加区域',
             editArea: '编辑区域',
             deleteAreaHint: '确定删除该区域吗',
-        }
+            deleteRoomHint: '确定删除该房间吗',
+            allArea: '全部区域',
+        },
+        room: {
+            tableRoom: {
+                name: '名称',
+                area: '区域',
+                state: '状态',
+                id: 'ID',
+                galleryful: '房间容量',
+                battery: '电量',
+                operate: '操作',
+            },
+            formRoom: {
+                name: '房间名称',
+                status: '是否启用',
+                description: '说明',
+                galleryful: '房间容量',
+            },
+            deleteRoomHint: '确定删除该房间吗',
+        },
     },
 
     en: {
@@ -72,7 +92,7 @@ export const messages = {
         area: {
             tableArea: {
                 name: 'Name',
-                state: 'State',
+                state: 'Enable',
                 id: 'ID',
                 timezone: 'Timezone',
                 admin: 'Admin',
@@ -82,7 +102,7 @@ export const messages = {
                 name: 'Name',
                 notificationEmails: 'Notification emails',
                 timezone: 'Timezone',
-                status: 'Status',
+                status: 'Enable',
                 startOfFirstSlot: 'Start of first slot',
                 startOfLastSlot: 'Start of last slot',
                 resolution: 'Resolution (minutes)',
@@ -91,6 +111,25 @@ export const messages = {
             addArea: 'New Area',
             editArea: 'Edit Area',
             deleteAreaHint: 'Are you sure you want to delete this area?',
-        }
+            deleteRoomHint: 'Are you sure you want to delete this room?',
+            allArea: '全部区域',
+        },
+        room: {
+            tableRoom: {
+                name: 'Name',
+                state: 'Enable',
+                id: 'ID',
+                galleryful: 'Galleryful',
+                battery: 'Battery',
+                operate: 'Operate',
+            },
+            formRoom: {
+                name: 'Name',
+                area: 'Area',
+                status: 'Enable',
+                description: 'Description',
+                galleryful: 'Galleryful',
+            }
+        },
     }
 }

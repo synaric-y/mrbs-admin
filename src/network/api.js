@@ -29,4 +29,19 @@ export class Api {
         params["type"] = "area"
         return Request.post('detail', params)
     }
+
+    static async getRoomList(params) {
+        params["type"] = "room"
+        return Request.post('admin', params)
+    }
+
+    static async addRoom(params) {
+        params["type"] = "room"
+        return Request.post('add', params)
+    }
+
+    static async deleteRoom(params) {
+        params["type"] = "room"
+        return Request.post('del', params)
+    }
 }
