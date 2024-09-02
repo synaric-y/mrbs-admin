@@ -10,12 +10,13 @@
       </el-col>
       <!-- Dropdown Room -->
       <el-col :span="3">
-        <el-select v-model="selectedRoom" placeholder="All Rooms" @change="choseRoom">
-          <el-option label="All Rooms" value="All"></el-option>
-          <el-option label="Room A" value="A"></el-option>
-          <el-option label="Room B" value="B"></el-option>
-          <el-option label="Room C" value="C"></el-option>
-          <el-option label="Room D" value="D"></el-option>
+        <el-select v-model="selectedRoom" placeholder="All Rooms" @change="choseArea">
+          <el-option label="All Areas" value="All"></el-option>
+            <el-option v-for="(area,index) in areas" :label="area.area_name" :value="area.area_id" :key="index"></el-option>
+            <!-- <el-option label="Room A" value="A"></el-option>
+            <el-option label="Room B" value="B"></el-option>
+            <el-option label="Room C" value="C"></el-option>
+            <el-option label="Room D" value="D"></el-option> -->
         </el-select>
       </el-col>
       <!-- Calendar Icon -->
@@ -36,7 +37,7 @@
       <!-- Date-picker -->
       <el-col :span="6">
         <el-date-picker v-model="baseTime" type="daterange" range-separator="To" :start-placeholder="startTime"
-          :end-placeholder="endTime" :size="size" @change="choseDate" />
+          :end-placeholder="endTime" @change="choseDate" />
       </el-col>
     </el-row>
   </div>
@@ -86,10 +87,10 @@
 <script>
 import { defineComponent } from 'vue';
 import { ElRow, ElCol, ElSelect, ElOption, ElButton, ElIcon, ElButtonGroup } from 'element-plus';
-import { Location } from '@element-plus/icons-vue';
 // picker date
 import { ref } from 'vue'
 import { Api } from '@/network/api';
+import { areaData, homeData } from './home';
 const size = ref < 'default' | 'large' | 'small' > ('default')
 const value1 = ref('')
 
@@ -102,13 +103,12 @@ export default defineComponent({
     ElButton,
     ElIcon,
     ElButtonGroup,
-    Location,
   },
   data() {
     return {
       currentDateTime: '12:00 pm August 30, 2024',
       selectedRoom: 'All',
-      currenRoom: 'all',
+      currenArea: '',
       customDate: null,
       hoursNumber: 24,
       testam: '09:00AM',
@@ -116,6 +116,7 @@ export default defineComponent({
       baseTime: '',
       startTime: 'Start date',
       endTime: 'End date',
+      areas: [],
       days: [
         { date: "Saturday, August 24, 2024", color: "#6a1b9a" },
         { date: "Sunday, August 25, 2024", color: "#0288d1" },
@@ -145,8 +146,16 @@ export default defineComponent({
   // 获取房间的信息、会议房间的信息
   mounted() {
     console.log('mounted getRooms enter')
+    // console.log('mounted areaData', areaData)
+    // setTimeout(() => {
+      
+    // },50)
+    this.areas = areaData.data.areas;
+    console.log('mounted this.areas', this.areas[0].area_name)
+    console.log('mounted this.areas', this.areas[1].area_name)
+    return;
     Api.getRooms({}).then(data => {
-      console.log('mounted getRooms data:',data)
+      console.log('mounted getRooms data:', data)
       if (!data) {
         return
       }
@@ -164,7 +173,7 @@ export default defineComponent({
       const endHour = parseInt(event.endTime.split(':')[0]);
       const startMin = parseInt(event.startTime.split(':')[1].replace('AM', '').replace('PM', ''));
       const endMin = parseInt(event.endTime.split(':')[1].replace('AM', '').replace('PM', ''));
-      const startPosition = ((startHour - 9) * 60 + startMin) / 60 * 60; // assuming the calendar starts at 9am
+      const startPosition = ((startHour - 9) * 60 + startMin) / 60 * 60;
       const endPosition = ((endHour - 9) * 60 + endMin) / 60 * 60;
       const duration = endPosition - startPosition;
       return {
@@ -189,14 +198,28 @@ export default defineComponent({
     dayRrange(day) {
       this.dayRrangeVal = day;
       // 获取接口的数据
+      this.getMeetRoom();
     },
 
     // chose day/3/week
-    choseRoom(e) {
-      // console.log('choseRoom e', e);
-      this.currenRoom = e.value;
-      console.log('choseRoom currenRoom', this.currenRoom);
-      this.getMeetRoom()
+    choseArea(e) {
+      this.currenArea = e;
+      console.log('choseArea currenArea', this.currenArea);
+      this.getAreaRooms();
+      this.getMeetRoom();
+    },
+
+    getAreaRooms() {
+      console.log('getAreaRooms this.currenArea',this.currenArea);
+      if(this.currenArea == 'All' || this.currenArea == '') {
+        const temprooms = this.areas.flatMap(area => area.rooms);
+        // this.rooms = temprooms.flatMap(room => room.room_name);
+        console.log('getAreaRooms all rooms:',temprooms);
+      } else {
+        const temprooms = this.areas.find(area => area.area_id == this.currenArea);
+        // this.rooms = temprooms.flatMap(room => room.room_name);
+        console.log('getAreaRooms currenArea rooms:',temprooms);
+      }
     },
 
     // chose start/end time
@@ -205,20 +228,36 @@ export default defineComponent({
       if (e.length > 0) {
         this.startTime = e[0];
         this.endTime = e[1];
-        this.getMeetRoom()
+        this.getMeetRoom();
       }
     },
 
-    getMeetRoom() {
-      console.log('getMeetRoom enter')
-      // 获取开始、结束时间的时间戳
-      Api.getMeetRooms({id: this.currenRoom,start_time: this.startTime,end_time: this.endTime}).then(data => {
-      if (!data) {
-        return
+    formatTime(timestr) {
+      if (!timestr) {
+        return 0;
       }
-      data = data[0]
-      // 处理会议数据
-    })
+      const date = new Date(timestr);
+      const timestamp = date.getTime();
+      return timestamp;
+    },
+
+    getMeetRoom() {
+      console.log('getMeetRoom enter');
+      const start = this.formatTime(this.startTime);
+      const end = this.formatTime(this.endTime);
+      // console.log('getMeetRoom this.startTime',start);
+      // console.log('getMeetRoom this.endTime',this.endTime);
+      // console.log('getMeetRoom this.endTime',end);
+      console.log('getMeetRoom homeData', homeData)
+      return;
+      // 获取开始、结束时间的时间戳
+      Api.getMeetRooms({ id: this.currenArea, start_time: start, end_time: end }).then(data => {
+        if (!data) {
+          return
+        }
+        data = data[0]
+        // 处理会议数据
+      })
     },
   }
 
@@ -348,6 +387,7 @@ export default defineComponent({
   text-align: center;
   width: 50%;
   padding: 5px;
+  padding-bottom: 0px;
   font-weight: bold;
   color: white;
 }
@@ -372,6 +412,7 @@ export default defineComponent({
 
 .day-header {
   padding: 5px 0px;
+  padding-bottom: 0px;
   color: #FFFFFF;
   font-size: 18px;
 }
@@ -382,6 +423,7 @@ export default defineComponent({
   font-size: 20px;
   text-align: center;
   padding: 5px 0px;
+  padding-bottom: 0px;
   font-weight: bold;
   position: relative;
 }
@@ -393,6 +435,7 @@ export default defineComponent({
   width: 218px;
   height: 800px;
   padding: 10px;
+  padding-bottom: 0px;
   border-right: 1px solid #9A9A9A;
   background-color: #e1e1e1;
 }
