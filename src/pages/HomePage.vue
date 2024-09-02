@@ -1,8 +1,7 @@
 <template>
-
   <div class="toolbar">
     <!-- Icon and Date-Time -->
-    <el-row :gutter="20" align="middle">
+    <el-row :gutter="20">
       <!-- Current Date -->
       <el-col :span="8">
         <el-icon class="home-time-icon">
@@ -13,12 +12,12 @@
 
       <!-- Dropdown Room -->
       <el-col :span="3">
-        <el-select v-model="selectedRoom" placeholder="All Rooms">
-          <el-option label="All Rooms" value="all"></el-option>
-          <el-option label="Room A" value="room1"></el-option>
-          <el-option label="Room B" value="room2"></el-option>
-          <el-option label="Room C" value="room3"></el-option>
-          <el-option label="Room D" value="room4"></el-option>
+        <el-select v-model="selectedRoom" placeholder="All Rooms" @change="choseRoom">
+          <el-option label="All Rooms" value="All"></el-option>
+          <el-option label="Room A" value="A"></el-option>
+          <el-option label="Room B" value="B"></el-option>
+          <el-option label="Room C" value="C"></el-option>
+          <el-option label="Room D" value="D"></el-option>
         </el-select>
       </el-col>
       <!-- Calendar Icon -->
@@ -28,15 +27,18 @@
       <!-- Buttons Group -->
       <el-col :span="8">
         <el-button-group>
-          <el-button type="primary">Today</el-button>
-          <el-button>3 Days</el-button>
-          <el-button>Week</el-button>
+          <el-button :class="[dayRrangeVal == 1 ? 'button-selected' : 'button-normal']"
+            @click="dayRrange(1)">Today</el-button>
+          <el-button :class="[dayRrangeVal == 3 ? 'button-selected' : 'button-normal']" @click="dayRrange(3)">3
+            Days</el-button>
+          <el-button :class="[dayRrangeVal == 7 ? 'button-selected' : 'button-normal']"
+            @click="dayRrange(7)">Week</el-button>
         </el-button-group>
       </el-col>
       <!-- Date-picker -->
       <el-col :span="6">
-        <el-date-picker v-model="value1" type="daterange" range-separator="To" start-placeholder="Start date"
-          end-placeholder="End date" :size="size" />
+        <el-date-picker v-model="baseTime" type="daterange" range-separator="To" :start-placeholder="startTime"
+          :end-placeholder="endTime" :size="size" @change="choseDate" />
       </el-col>
     </el-row>
   </div>
@@ -64,7 +66,8 @@
                 <!-- Rooms and Schedule -->
                 <!--  计算当前会议是属于day、room、time-line -->
                 <template v-if="day.date == event.date && room == event.room">
-                  <div :key="indexeve" class="room-meet-event" :style="{ top: 60*getTimeSlotIndex(event.startTime) + 60 + 'px', left: (228*roomIndex + (indexday>=1?1:0)*20) + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px'}">
+                  <div :key="indexeve" class="room-meet-event"
+                    :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: (238 * roomIndex) + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
                     <div class="event-title">{{ event.title }}</div>
                     <div class="event-time">{{ event.time }}</div>
                     <div class="event-person">{{ event.person }}</div>
@@ -83,10 +86,10 @@
 
       <template v-if="getTimeSlotIndex(testam2)">
 
-</template>
-<template v-if="getTimeSlotIndex(testam3)">
+      </template>
+      <template v-if="getTimeSlotIndex(testam3)">
 
-</template>
+      </template>
 
       <!-- <div class="room-schedules">
             <div v-for="room in rooms" :key="room" class="room-column">
@@ -127,12 +130,17 @@ export default defineComponent({
   data() {
     return {
       currentDateTime: '12:00 pm August 30, 2024',
-      selectedRoom: 'all',
+      selectedRoom: 'All',
+      currenRoom: 'all',
       customDate: null,
       hoursNumber: 24,
-      testam:'09:00AM',
-      testam2:'11:30AM',
-      testam3:'05:30PM',
+      testam: '09:00AM',
+      testam2: '11:30AM',
+      testam3: '05:30PM',
+      dayRrangeVal: 3,
+      baseTime: '',
+      startTime: 'Start date',
+      endTime: 'End date',
 
       days: [
         { date: "Saturday, August 24, 2024", color: "#6a1b9a" },
@@ -149,6 +157,13 @@ export default defineComponent({
       ],
       events: [
         { date: "Saturday, August 24, 2024", room: "Room A", title: "A 24 EN meeting", time: "09:00AM - 11:30AM", person: "Carol", startTime: "09:00AM", endTime: "11:30AM" },
+
+        { date: "Saturday, August 24, 2024", room: "Room B", title: "B 24 EN meeting", time: "10:00AM - 11:30AM", person: "Carol", startTime: "10:00AM", endTime: "11:30AM" },
+
+        { date: "Saturday, August 24, 2024", room: "Room C", title: "C 24 EN meeting", time: "12:00PM - 01:30PM", person: "Carol", startTime: "12:00PM", endTime: "01:30PM" },
+
+        { date: "Saturday, August 24, 2024", room: "Room D", title: "D 24 EN meeting", time: "03:00PM - 04:30PM", person: "Carol", startTime: "03:00PM", endTime: "04:30PM" },
+
         { date: "Sunday, August 25, 2024", room: "Room C", title: "C 25 EN meeting", time: "03:00PM - 06:00PM", person: "John Zhang", startTime: "03:00PM", endTime: "06:00PM" },
         { date: "Monday, August 26, 2024", room: "Room B", title: "B 26 Quick meeting", time: "12:30PM - 01:00PM", person: "N/A", startTime: "12:30PM", endTime: "01:00PM" },
         { date: "Tuesday, August 27, 2024", room: "Room D", title: "D 27 Research meeting", time: "01:00PM - 02:00PM", person: "Tina", startTime: "01:00PM", endTime: "02:00PM" },
@@ -181,13 +196,35 @@ export default defineComponent({
       const baseTime = `${hour.padStart(2, '0')}:00${period.toUpperCase()}`;
       const baseIndex = this.timeSlots.indexOf(baseTime);
       if (baseIndex === -1) {
-        return -1; 
+        return -1;
       }
       if (minute === "30") {
         return baseIndex + 1;
       }
       return baseIndex;
-    }
+    },
+
+
+    dayRrange(day) {
+      this.dayRrangeVal = day;
+      // 获取接口的数据
+    },
+
+    // chose day/3/week
+    choseRoom(e) {
+      console.log('choseRoom e', e);
+      this.currenRoom = e.value;
+      console.log('choseRoom currenRoom', this.currenRoom);
+    },
+
+    // chose start/end time
+    choseDate(e) {
+      console.log('choseDate', e);
+      if (e.length > 0) {
+        this.startTime = e[0];
+        this.endTime = e[1];
+      }
+    },
   }
 
 });
@@ -201,7 +238,7 @@ export default defineComponent({
   padding-bottom: 10px;
   padding-left: 150px;
   padding-right: 150px;
-  background-color: #b33e3e;
+  /* background-color: #b33e3e; */
 }
 
 .home-time-icon {
@@ -211,6 +248,30 @@ export default defineComponent({
   background-size: contain;
   background-repeat: no-repeat;
   display: inline-block;
+}
+
+.button-selected {
+  /* width: 80px; */
+  height: 30px;
+  line-height: 30px;
+  /* border-radius: 16px; */
+  background-color: rgba(89, 27, 183, 1);
+  color: rgba(255, 255, 255, 1);
+  font-size: 14px;
+  text-align: center;
+  font-family: Roboto;
+}
+
+.button-normal {
+  /* width: 80px; */
+  height: 30px;
+  line-height: 30px;
+  /* border-radius: 16px; */
+  color: rgba(89, 27, 183, 1);
+  font-size: 14px;
+  text-align: center;
+  font-family: Roboto;
+  border: 2px solid rgba(89, 27, 183, 1);
 }
 
 .el-icon {
@@ -315,18 +376,24 @@ export default defineComponent({
 .time-slot {
   height: 60px;
   color: #000;
-  background-color: #c61010;
   font-size: 16px;
+  color: #000000;
+  font-weight: normal;
+  font-family: PingFangSC-regular;
   text-align: right;
 }
 
 .day-header {
-  /* padding: 10px; */
+  padding: 5px 0px;
+  color: #FFFFFF;
+  font-size: 18px;
 }
 
 .room-header {
   display: flex;
-  background-color: #c61010;
+  /* background-color: #c61010; */
+  color: #000000;
+  font-size: 20px;
   text-align: center;
   padding: 5px 0px;
   font-weight: bold;
@@ -342,7 +409,7 @@ export default defineComponent({
   height: 800px;
   padding: 10px;
   /* border-left: 1px solid #b33e3e; */
-  border-right: 1px solid #b33e3e;
+  border-right: 1px solid #9A9A9A;
   background-color: #e1e1e1;
 }
 
@@ -352,7 +419,6 @@ export default defineComponent({
   background-color: #333333;
   height: 2px;
   width: 100%;
-
 }
 
 .calendar-body {
