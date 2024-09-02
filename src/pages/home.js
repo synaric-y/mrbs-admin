@@ -40,6 +40,9 @@ export const homeData = {
     "code": 0,
     "message": "success",
     "data": {
+        "min_time": "08:00 AM",
+        "max_time": "09:00 PM",
+        "time": "02:55 PM September 02, 2024",
         "area_room": [
             {
                 "area_id": 1,
@@ -58,9 +61,9 @@ export const homeData = {
                                 "status": 0, //0表示未开始，1表示进行中，2表示已结束
                                 "year": "2024",
                                 "month": "09",
-                                "day": "12",
+                                "day": "03",
                                 "week": "Thursday",
-                                 "duration": "12:00 PM-01:00 PM"                               
+                                "duration": "12:00 PM-01:00 PM"                               
                             },
                             {
                                 "entry_id": 2,
@@ -71,7 +74,7 @@ export const homeData = {
                                 "status": 0, //0表示未开始，1表示进行中，2表示已结束
                                 "year": "2024",
                                 "month": "09",
-                                "day": "12",
+                                "day": "03",
                                 "week": "Thursday",
                                 "duration": "18:00 PM-19:30 PM"           
                             }
@@ -92,8 +95,8 @@ export const homeData = {
                                 "year": "2024",
                                 "month": "09",
                                 "day": "12",
-                                "week": "Thursday",
-                                 "duration": "02:30 PM-03:30 PM"                               
+                                "week": "Monday",
+                                "duration": "02:30 PM-03:30 PM"                               
                             },
                             {
                                 "entry_id": 2,
@@ -104,8 +107,8 @@ export const homeData = {
                                 "status": 0, //0表示未开始，1表示进行中，2表示已结束
                                 "year": "2024",
                                 "month": "09",
-                                "day": "12",
-                                "week": "Thursday",
+                                "day": "02",
+                                "week": "Monday",
                                 "duration": "04:00 PM-04:30 PM"           
                             }
                         ]
