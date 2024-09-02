@@ -30,6 +30,12 @@ export default {
         area_reminders_enabled: "on",
         area_private_default: 0,
         area_private_override: "none",
+
+        area_use_exchange: 0,
+        area_exchange_server: "",
+        area_use_wxwork: 0,
+        area_wxwork_corpid: "",
+        area_wxwork_server: "",
       },
       rules: {
         area_name: [
@@ -43,9 +49,43 @@ export default {
         ],
         area_timezone: [
           {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
+        ],
+        exchange_server: [
+          {
+            validator(rule, value, callback, source, options) {
+              const errors = [];
+              if (source["area_use_exchange"] && !value) {
+                errors.push(new Error(this.$t('base.noDataHint')))
+              }
+              return errors;
+            },
+          },
+        ],
+        area_wxwork_corpid: [
+          {
+            validator(rule, value, callback, source, options) {
+              const errors = [];
+              if (source["area_use_wxwork"] && !value) {
+                errors.push(new Error(this.$t('base.noDataHint')))
+              }
+              return errors;
+            },
+          },
+        ],
+        area_wxwork_secret: [
+          {
+            validator(rule, value, callback, source, options) {
+              const errors = [];
+              if (source["area_use_wxwork"] && !value) {
+                errors.push(new Error(this.$t('base.noDataHint')))
+              }
+              return errors;
+            },
+          },
         ]
       },
       timezoneList: [],
+      collapse: ["1", "2"]
     }
   },
   methods: {
@@ -85,6 +125,11 @@ export default {
       this.form["area_timezone"] = data["timezone"]
       this.form["area_start_first_slot"] = this.formatTime(data["morningstarts"], data["morningstarts_minutes"])
       this.form["area_start_last_slot"] = this.formatTime(data["eveningends"], data["eveningends_minutes"])
+      this.form["area_use_exchange"] = data["use_exchange"]
+      this.form["area_exchange_server"] = data["exchange_server"]
+      this.form["area_use_wxwork"] = data["use_wxwork"]
+      this.form["area_wxwork_corpid"] = data["wxwork_corpid"]
+      this.form["area_wxwork_secret"] = data["wxwork_secret"]
     })
     this.timezoneList = TIMEZONE_LIST
   }
@@ -134,6 +179,32 @@ export default {
               :placeholder="$t('base.plzSelect')"
           />
         </el-form-item>
+
+        <el-collapse v-model="collapse">
+          <el-collapse-item :title="$t('base.exchange')" name="1">
+            <el-form-item prop="use_exchange" :label="$t('area.formArea.useExchange')">
+              <el-switch active-value="1" inactive-value="0" v-model="form.area_use_exchange" />
+            </el-form-item>
+
+            <el-form-item prop="exchange_server" :label="$t('area.formArea.exchangeServer')">
+              <el-input v-model="form.area_exchange_server"/>
+            </el-form-item>
+          </el-collapse-item>
+
+          <el-collapse-item :title="$t('base.wxwork')" name="2">
+            <el-form-item prop="use_wxwork" :label="$t('area.formArea.useWxwork')">
+              <el-switch active-value="1" inactive-value="0" v-model="form.area_use_wxwork" />
+            </el-form-item>
+
+            <el-form-item prop="wxwork_corpid" :label="$t('area.formArea.wxworkCorpId')">
+              <el-input v-model="form.area_wxwork_corpid"/>
+            </el-form-item>
+
+            <el-form-item prop="wxwork_secret" :label="$t('area.formArea.wxworkSecret')">
+              <el-input v-model="form.area_wxwork_secret"/>
+            </el-form-item>
+          </el-collapse-item>
+        </el-collapse>
 
         <el-form-item style="margin-top: 60px">
           <el-button type="info" size="default" @click="back">{{ $t("base.cancel") }}</el-button>
