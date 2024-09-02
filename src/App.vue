@@ -44,9 +44,21 @@ export default {
         <img style="width: 30px; height: 30px" src="/profile.png" @click="toProfile" />
       </div>
     </div>
-    <transition name="el-fade-in" mode="out-in">
-      <router-view></router-view>
-    </transition>
+<!--    <transition name="el-fade-in" mode="out-in">-->
+<!--      <keep-alive>-->
+<!--        <router-view></router-view>-->
+<!--      </keep-alive>-->
+<!--    </transition>-->
+
+    <router-view v-slot="{ Component, route }">
+      <transition name="el-fade-in" mode="out-in">
+        <keep-alive>
+          <div :key="route.path">
+            <component :is="Component"></component>
+          </div>
+        </keep-alive>
+      </transition>
+    </router-view>
   </div>
 </template>
 

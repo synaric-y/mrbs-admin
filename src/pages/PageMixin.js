@@ -12,16 +12,16 @@ export const PageMixin = {
         ...mapActions(NavigationStore, ['setTab']),
         switchTab(path) {
             this.setTab(path)
-            router.replace(path)
+            this.$router.replace(path)
         },
         push(path) {
-            router.push(path)
+            this.$router.push(path)
         },
         replace(path) {
-            router.replace(path)
+            this.$router.replace(path)
         },
         back() {
-            router.back()
+            this.$router.back()
         }
     }
 }
