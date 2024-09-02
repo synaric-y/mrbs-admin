@@ -51,6 +51,13 @@ export default {
     getRoomList() {
       Api.getRoomList({area: this.areaId}).then(data => {
         if (data) {
+          data.forEach(item => {
+            if (item["battery_level"]) {
+              item["battery_level"] = item["battery_level"] + "%"
+            } else {
+              item["battery_level"] = "/"
+            }
+          })
           this.tableData = data
         }
       })
