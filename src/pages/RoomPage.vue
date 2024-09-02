@@ -1,6 +1,7 @@
 <script>
 import {PageMixin} from "@/pages/PageMixin.js";
 import {Api} from "@/network/api.js";
+import router from "@/router/index.js";
 
 export default {
   mixins: [PageMixin],
@@ -81,6 +82,7 @@ export default {
   mounted() {
     this.getRoomList()
     this.getAreaList()
+
   }
 }
 </script>

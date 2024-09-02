@@ -19,9 +19,9 @@ export default {
         description: '',
         capacity: '',
         room_admin_email: '',
-        f_exchange_username: '',
-        f_exchange_password: '',
-        f_wxwork_mr_id: '',
+        exchange_username: '',
+        exchange_password: '',
+        wxwork_mr_id: '',
       },
       rules: {
         area: [
@@ -33,7 +33,6 @@ export default {
         capacity: [
           {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'},
           {type: 'number', message: this.$t('base.mustNumberHint')},
-          {min: 1, message: this.$t('room.invalidCapacity'), trigger: 'blur'},
         ],
       },
       area: {},
@@ -47,8 +46,13 @@ export default {
         if (!pass) {
           return
         }
-        this.form["sort_key"] = this.form["room_name"]
-        Api.editRoom(this.form).then(data => {
+        let req = JSON.parse(JSON.stringify(this.form))
+        req["sort_key"] = req["room_name"]
+        if (!req["new_area"]) {
+          req["new_area"] = req["area"]
+        }
+        req["area"] = Number(req["area"])
+        Api.editRoom(req).then(data => {
           ElMessage({
             message: this.$t('base.editSuccess'),
             type: 'success',
@@ -76,15 +80,15 @@ export default {
       this.form["description"] = data["description"]
       this.form["capacity"] = Number(data["capacity"])
       this.form["room_admin_email"] = data["room_admin_email"]
-      this.form["f_exchange_username"] = data["exchange_username"]
-      this.form["f_exchange_password"] = data["exchange_password"]
-      this.form["f_wxwork_mr_id"] = data["wxwork_mr_id"]
+      this.form["exchange_username"] = data["exchange_username"]
+      this.form["exchange_password"] = data["exchange_password"]
+      this.form["wxwork_mr_id"] = data["wxwork_mr_id"]
 
       let areas =  await Api.getArea({id: this.form.area})
       this.area = areas[0]
     },
     onAreaChange(e) {
-      console.log(e)
+      this.form["new_area"] = e
     }
   },
   mounted() {
@@ -140,11 +144,11 @@ export default {
             </el-form-item>
 
             <el-form-item prop="exchange_username" :label="$t('room.formRoom.exchangeUsername')">
-              <el-input v-model="form.f_exchange_username"/>
+              <el-input v-model="form.exchange_username"/>
             </el-form-item>
 
             <el-form-item prop="exchange_password" :label="$t('room.formRoom.exchangePassword')">
-              <el-input v-model="form.f_exchange_password"/>
+              <el-input v-model="form.exchange_password"/>
             </el-form-item>
           </el-collapse-item>
 
@@ -154,7 +158,7 @@ export default {
             </el-form-item>
 
             <el-form-item prop="wxwork_mr_id" :label="$t('room.formRoom.wxworkMRiD')">
-              <el-input v-model="form.f_wxwork_mr_id"/>
+              <el-input v-model="form.wxwork_mr_id"/>
             </el-form-item>
           </el-collapse-item>
         </el-collapse>
