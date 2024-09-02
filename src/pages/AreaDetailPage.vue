@@ -50,11 +50,11 @@ export default {
         area_timezone: [
           {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
         ],
-        exchange_server: [
+        area_exchange_server: [
           {
-            validator(rule, value, callback, source, options) {
+            validator: (rule, value, callback, source, options) => {
               const errors = [];
-              if (source["area_use_exchange"] && !value) {
+              if (this.form["area_use_exchange"] && !value) {
                 errors.push(new Error(this.$t('base.noDataHint')))
               }
               return errors;
@@ -63,9 +63,9 @@ export default {
         ],
         area_wxwork_corpid: [
           {
-            validator(rule, value, callback, source, options) {
+            validator: (rule, value, callback, source, options) => {
               const errors = [];
-              if (source["area_use_wxwork"] && !value) {
+              if (this.form["area_use_wxwork"] && !value) {
                 errors.push(new Error(this.$t('base.noDataHint')))
               }
               return errors;
@@ -74,9 +74,9 @@ export default {
         ],
         area_wxwork_secret: [
           {
-            validator(rule, value, callback, source, options) {
+            validator: (rule, value, callback, source, options) => {
               const errors = [];
-              if (source["area_use_wxwork"] && !value) {
+              if (this.form["area_use_wxwork"] && !value) {
                 errors.push(new Error(this.$t('base.noDataHint')))
               }
               return errors;
@@ -108,7 +108,7 @@ export default {
     },
     formatTime(hours, minutes) {
       let date = new Date(0, 0, 0, hours, minutes, 0);
-      return date.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
+      return date.toLocaleTimeString('it-IT', {hour: '2-digit', minute: '2-digit'});
     }
   },
   mounted() {
@@ -183,7 +183,7 @@ export default {
         <el-collapse v-model="collapse">
           <el-collapse-item :title="$t('base.exchange')" name="1">
             <el-form-item prop="use_exchange" :label="$t('area.formArea.useExchange')">
-              <el-switch active-value="1" inactive-value="0" v-model="form.area_use_exchange" />
+              <el-switch active-value="1" inactive-value="0" v-model="form.area_use_exchange"/>
             </el-form-item>
 
             <el-form-item prop="exchange_server" :label="$t('area.formArea.exchangeServer')">
@@ -193,7 +193,7 @@ export default {
 
           <el-collapse-item :title="$t('base.wxwork')" name="2">
             <el-form-item prop="use_wxwork" :label="$t('area.formArea.useWxwork')">
-              <el-switch active-value="1" inactive-value="0" v-model="form.area_use_wxwork" />
+              <el-switch active-value="1" inactive-value="0" v-model="form.area_use_wxwork"/>
             </el-form-item>
 
             <el-form-item prop="wxwork_corpid" :label="$t('area.formArea.wxworkCorpId')">
