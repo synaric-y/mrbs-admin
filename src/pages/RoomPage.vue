@@ -198,7 +198,7 @@ export default {
           v-model="showDeleteRoomDialog"
           title="Tips"
           width="500">
-        <span>{{ $t('area.deleteRoomHint') }}</span>
+        <span>{{ $t('room.deleteRoomHint') }}</span>
         <template #footer>
           <div class="dialog-footer">
             <el-button @click="showDeleteRoomDialog = false">{{ $t('base.cancel') }}</el-button>

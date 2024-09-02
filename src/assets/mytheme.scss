@@ -10,6 +10,12 @@
     'tr-bg-color': #EFEFEF,
     'border': '1px solid #BBBBBB',
     ),
+
+  $collapse: (
+    'header-bg-color': #EFEFEF,
+    'content-bg-color': #EFEFEF,
+    'border-color': #BBBBBB
+  )
 );
 
 @use "element-plus/theme-chalk/src/index.scss" as *;

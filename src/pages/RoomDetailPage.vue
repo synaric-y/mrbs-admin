@@ -1,10 +1,7 @@
 <script>
-import moment from "moment";
-import {TIMEZONE_LIST} from "@/assets/timezone.js";
 import {PageMixin} from "@/pages/PageMixin.js";
 import {Api} from "@/network/api.js";
 import {ElMessage} from "element-plus";
-import router from "@/router/index.js";
 
 export default {
   mixins: [PageMixin],
@@ -12,50 +9,46 @@ export default {
     return {
       mode: 'update',
       form: {
-        area: 1,
-        area_name: "",
-        sort_key: "",
-        area_disabled: 0,
-        area_timezone: "",
-        area_start_first_slot: "",
-        area_start_last_slot: "",
-        area_def_duration_mins: 60,
-        area_res_mins: 30,
-        area_admin_email: "",
-        area_default_type: "I",
-        area_enable_periods: 0,
-        area_periods: ["Period 1", "Period 2"],
-        area_confirmation_enabled: "on",
-        area_confirmed_default: 1,
-        area_reminders_enabled: "on",
-        area_private_default: 0,
-        area_private_override: "none",
+        room: '',
+        area: '',
+        new_area: '',
+        old_area: '',
+        room_name: '',
+        sort_key: '',
+        room_disabled: '',
+        description: '',
+        capacity: '',
+        room_admin_email: '',
+        f_exchange_username: '',
+        f_exchange_password: '',
+        f_wxwork_mr_id: '',
       },
       rules: {
-        area_name: [
+        area: [
+          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'},
+        ],
+        room_name: [
           {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
         ],
-        area_start_first_slot: [
-          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
+        capacity: [
+          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'},
+          {type: 'number', message: this.$t('base.mustNumberHint')},
+          {min: 1, message: this.$t('room.invalidCapacity'), trigger: 'blur'},
         ],
-        area_start_last_slot: [
-          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
-        ],
-        area_timezone: [
-          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
-        ]
       },
-      timezoneList: [],
+      area: {},
+      areaList: [],
+      collapse: ['1', '2']
     }
   },
   methods: {
     submit() {
-      this.$refs.areaForm.validate((pass) => {
+      this.$refs.roomForm.validate((pass) => {
         if (!pass) {
           return
         }
-        this.form["sort_key"] = this.form["area_name"]
-        Api.editArea(this.form).then(data => {
+        this.form["sort_key"] = this.form["room_name"]
+        Api.editRoom(this.form).then(data => {
           ElMessage({
             message: this.$t('base.editSuccess'),
             type: 'success',
@@ -66,27 +59,36 @@ export default {
         })
       })
     },
-    formatTime(hours, minutes) {
-      let date = new Date(0, 0, 0, hours, minutes, 0);
-      return date.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
-    }
-  },
-  mounted() {
-    let {id} = this.$route.params
-    Api.getArea({id: 1}).then(data => {
+    async getData() {
+      this.areaList = await Api.getAreaList({})
+      let {id} = this.$route.params
+      let data = await Api.getRoom({id: Number(id)})
       if (!data) {
         return
       }
       data = data[0]
-      this.form["area"] = data["id"]
-      this.form["area_name"] = data["area_name"]
+      this.form["room"] = Number(data["id"])
+      this.form["area"] = data["area_id"]
+      this.form["old_area"] = Number(data["area_id"])
+      this.form["room_name"] = data["room_name"]
       this.form["sort_key"] = data["sort_key"]
-      this.form["area_disabled"] = Number(data["disabled"])
-      this.form["area_timezone"] = data["timezone"]
-      this.form["area_start_first_slot"] = this.formatTime(data["morningstarts"], data["morningstarts_minutes"])
-      this.form["area_start_last_slot"] = this.formatTime(data["eveningends"], data["eveningends_minutes"])
-    })
-    this.timezoneList = TIMEZONE_LIST
+      this.form["room_disabled"] = Number(data["disabled"])
+      this.form["description"] = data["description"]
+      this.form["capacity"] = Number(data["capacity"])
+      this.form["room_admin_email"] = data["room_admin_email"]
+      this.form["f_exchange_username"] = data["exchange_username"]
+      this.form["f_exchange_password"] = data["exchange_password"]
+      this.form["f_wxwork_mr_id"] = data["wxwork_mr_id"]
+
+      let areas =  await Api.getArea({id: this.form.area})
+      this.area = areas[0]
+    },
+    onAreaChange(e) {
+      console.log(e)
+    }
+  },
+  mounted() {
+    this.getData()
   }
 }
 </script>
@@ -95,45 +97,67 @@ export default {
   <el-container class="container-sub-page">
     <el-main class="container-sub-page-main">
       <div class="sub-title-wrapper">
-        <div class="sub-title">{{ mode === "add" ? $t("area.addArea") : $t("area.editArea") }}</div>
+        <div class="sub-title">{{ mode === "add" ? $t("room.addRoom") : $t("room.editRoom") }}</div>
       </div>
 
-      <el-form :model="form" :rules="rules" label-width="auto" ref="areaForm" style="max-width: 530px">
+      <el-form :model="form" :rules="rules" label-width="auto" ref="roomForm" style="max-width: 530px">
 
-        <el-form-item prop="area_name" :label="$t('area.formArea.name')">
-          <el-input v-model="form.area_name"/>
+        <el-form-item prop="room_name" :label="$t('room.formRoom.name')">
+          <el-input v-model="form.room_name"/>
         </el-form-item>
 
-        <el-form-item prop="area_timezone" :label="$t('area.formArea.timezone')">
-          <el-select v-model="form.area_timezone" :placeholder="$t('base.plzSelect')">
-            <el-option :label="tz" :value="tz" v-for="(tz, index) in timezoneList" :key="index"/>
+        <el-form-item prop="room_disabled" :label="$t('room.formRoom.status')">
+          <el-switch :active-value="0" :inactive-value="1" v-model="form.room_disabled"/>
+        </el-form-item>
+
+        <el-form-item prop="area" :label="$t('room.formRoom.area')" label-position="right">
+          <el-select
+              v-model="form.area"
+              :empty-values="[null, undefined]"
+              @change="onAreaChange"
+          >
+            <el-option
+                v-for="item in areaList"
+                :key="item.id"
+                :label="item.area_name"
+                :value="item.id"
+            />
           </el-select>
         </el-form-item>
 
-        <el-form-item prop="area_disabled" :label="$t('area.formArea.status')">
-          <el-switch :active-value="0" :inactive-value="1" v-model="form.area_disabled"/>
+        <el-form-item prop="capacity" :label="$t('room.formRoom.galleryful')">
+          <el-input v-model="form.capacity"/>
         </el-form-item>
 
-        <el-form-item prop="area_start_first_slot" :label="$t('area.formArea.startOfFirstSlot')">
-          <el-time-select
-              v-model="form.area_start_first_slot"
-              style="width: 240px"
-              start="06:00"
-              step="00:30"
-              end="18:30"
-              :placeholder="$t('base.plzSelect')"
-          />
+        <el-form-item prop="description" :label="$t('room.formRoom.description')">
+          <el-input v-model="form.description"/>
         </el-form-item>
-        <el-form-item prop="area_start_last_slot" :label="$t('area.formArea.startOfLastSlot')">
-          <el-time-select
-              v-model="form.area_start_last_slot"
-              style="width: 240px"
-              start="06:00"
-              step="00:30"
-              end="18:30"
-              :placeholder="$t('base.plzSelect')"
-          />
-        </el-form-item>
+
+        <el-collapse v-model="collapse">
+          <el-collapse-item :title="$t('base.exchange')" name="1">
+            <el-form-item prop="use_exchange" :label="$t('room.formRoom.useExchange')">
+              <el-switch active-value="1" inactive-value="0" v-model="area.use_exchange" disabled />
+            </el-form-item>
+
+            <el-form-item prop="exchange_username" :label="$t('room.formRoom.exchangeUsername')">
+              <el-input v-model="form.f_exchange_username"/>
+            </el-form-item>
+
+            <el-form-item prop="exchange_password" :label="$t('room.formRoom.exchangePassword')">
+              <el-input v-model="form.f_exchange_password"/>
+            </el-form-item>
+          </el-collapse-item>
+
+          <el-collapse-item :title="$t('base.wxwork')" name="2">
+            <el-form-item prop="use_wxwork" :label="$t('room.formRoom.useWxwork')">
+              <el-switch active-value="1" inactive-value="0" v-model="area.use_wxwork" disabled />
+            </el-form-item>
+
+            <el-form-item prop="wxwork_mr_id" :label="$t('room.formRoom.wxworkMRiD')">
+              <el-input v-model="form.f_wxwork_mr_id"/>
+            </el-form-item>
+          </el-collapse-item>
+        </el-collapse>
 
         <el-form-item style="margin-top: 60px">
           <el-button type="info" size="default" @click="back">{{ $t("base.cancel") }}</el-button>

@@ -30,12 +30,12 @@ const router = createRouter({
       component: () => import('@/pages/UserPage.vue')
     },
     {
-      path: '/area_detail/:area_id',
+      path: '/area_detail/:id',
       name: 'area_detail',
       component: () => import('@/pages/AreaDetailPage.vue')
     },
     {
-      path: '/room_detail/:room_id',
+      path: '/room_detail/:id',
       name: 'room_detail',
       component: () => import('@/pages/RoomDetailPage.vue')
     }

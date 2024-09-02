@@ -4,18 +4,23 @@ export const messages = {
         base: {
             home: '日程',
             area: '区域',
-            room: '房间',
+            room: '会议室',
             user: '用户',
             login: '登录',
             areaManagement: '区域管理',
-            roomManagement: '房间管理',
+            roomManagement: '会议室管理',
             add: '+ 添加',
             plzSelect: '请选择',
             confirm: '确定',
             cancel: '取消',
+
+            exchange: 'Exchange',
+            wxwork: '企业微信',
+
             editSuccess: '编辑成功',
             editFailed: '编辑失败',
             noDataHint: '该设置不能为空',
+            mustNumberHint: '该设置必须为数字'
         },
         login: {
             account: '账号',
@@ -44,7 +49,6 @@ export const messages = {
             addArea: '添加区域',
             editArea: '编辑区域',
             deleteAreaHint: '确定删除该区域吗',
-            deleteRoomHint: '确定删除该房间吗',
             allArea: '全部区域',
         },
         room: {
@@ -58,12 +62,20 @@ export const messages = {
                 operate: '操作',
             },
             formRoom: {
-                name: '房间名称',
+                name: '会议室名称',
                 status: '是否启用',
                 description: '说明',
-                galleryful: '房间容量',
+                galleryful: '容纳人数',
+                useExchange: '是否启用Exchange',
+                exchangeUsername: 'Exchange账号',
+                exchangePassword: 'Exchange密码',
+                useWxwork: '是否启用企业微信',
+                wxworkMRiD: '企业微信会议室ID',
             },
-            deleteRoomHint: '确定删除该房间吗',
+            addRoom: '添加会议室',
+            editRoom: '编辑会议室',
+            deleteRoomHint: '确定删除该会议室吗',
+            invalidCapacity: '必须为大于0的整数',
         },
     },
 
@@ -80,9 +92,14 @@ export const messages = {
             plzSelect: 'Select',
             confirm: 'Confirm',
             cancel: 'Cancel',
+
+            exchange: 'Exchange',
+            wxwork: 'Wxwork',
+
             editSuccess: 'Edited successfully',
             editFailed: 'Edit failed',
             noDataHint: 'Cannot be empty',
+            mustNumberHint: 'Must be a number'
         },
         login: {
             account: 'Account',
@@ -111,7 +128,6 @@ export const messages = {
             addArea: 'New Area',
             editArea: 'Edit Area',
             deleteAreaHint: 'Are you sure you want to delete this area?',
-            deleteRoomHint: 'Are you sure you want to delete this room?',
             allArea: '全部区域',
         },
         room: {
@@ -129,7 +145,16 @@ export const messages = {
                 status: 'Enable',
                 description: 'Description',
                 galleryful: 'Galleryful',
-            }
+                useExchange: 'Enable Exchange',
+                exchangeUsername: 'Exchange Account',
+                exchangePassword: 'Exchange Password',
+                useWxwork: 'Enable Wxwork',
+                wxworkMRiD: 'Wxwork Meeting Room ID',
+            },
+            addRoom: 'New Room',
+            editRoom: 'Edit Room',
+            deleteRoomHint: 'Are you sure you want to delete this room?',
+            invalidCapacity: '必须为大于0的整数',
         },
     }
 }

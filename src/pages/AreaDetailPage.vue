@@ -73,7 +73,7 @@ export default {
   },
   mounted() {
     let {id} = this.$route.params
-    Api.getArea({id: 1}).then(data => {
+    Api.getArea({id: Number(id)}).then(data => {
       if (!data) {
         return
       }

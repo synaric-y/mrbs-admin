@@ -54,4 +54,13 @@ export class Api {
         params["type"] = "room"
         return Request.post('index',params)
     }
+
+    static async getRoom(params) {
+        params["type"] = "room"
+        return Request.post('detail', params)
+    }
+
+    static async editRoom(params) {
+        return Request.post('edit_room_handler', params)
+    }
 }
