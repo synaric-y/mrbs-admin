@@ -5,11 +5,9 @@
       <!-- Current Date -->
       <el-col :span="8">
         <el-icon class="home-time-icon">
-          <!-- <location /> -->
         </el-icon>
         <span>{{ currentDateTime }}</span>
       </el-col>
-
       <!-- Dropdown Room -->
       <el-col :span="3">
         <el-select v-model="selectedRoom" placeholder="All Rooms" @change="choseRoom">
@@ -64,7 +62,6 @@
               {{ room }}
               <template v-for="(event, indexeve) in events">
                 <!-- Rooms and Schedule -->
-                <!--  计算当前会议是属于day、room、time-line -->
                 <template v-if="day.date == event.date && room == event.room">
                   <div :key="indexeve" class="room-meet-event"
                     :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: (238 * roomIndex) + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
@@ -79,29 +76,9 @@
           </div>
         </div>
       </div>
-
+      <!-- test -->
       <template v-if="getTimeSlotIndex(testam)">
-
       </template>
-
-      <template v-if="getTimeSlotIndex(testam2)">
-
-      </template>
-      <template v-if="getTimeSlotIndex(testam3)">
-
-      </template>
-
-      <!-- <div class="room-schedules">
-            <div v-for="room in rooms" :key="room" class="room-column">
-              <div v-for="(event, index) in getEventsForRoom(room)" :key="index" class="event"
-                :style="getEventStyle(event)">
-                <div class="event-title">{{ event.title }}</div>
-                <div class="event-time">{{ event.time }}</div>
-                <div class="event-person">{{ event.person }}</div>
-              </div>
-            </div>
-          </div> -->
-
     </el-scrollbar>
   </div>
 </template>
@@ -110,7 +87,6 @@
 import { defineComponent } from 'vue';
 import { ElRow, ElCol, ElSelect, ElOption, ElButton, ElIcon, ElButtonGroup } from 'element-plus';
 import { Location } from '@element-plus/icons-vue';
-
 // picker date
 import { ref } from 'vue'
 import { Api } from '@/network/api';
@@ -136,13 +112,10 @@ export default defineComponent({
       customDate: null,
       hoursNumber: 24,
       testam: '09:00AM',
-      testam2: '11:30AM',
-      testam3: '05:30PM',
       dayRrangeVal: 3,
       baseTime: '',
       startTime: 'Start date',
       endTime: 'End date',
-
       days: [
         { date: "Saturday, August 24, 2024", color: "#6a1b9a" },
         { date: "Sunday, August 25, 2024", color: "#0288d1" },
@@ -213,7 +186,6 @@ export default defineComponent({
       return baseIndex;
     },
 
-
     dayRrange(day) {
       this.dayRrangeVal = day;
       // 获取接口的数据
@@ -221,9 +193,10 @@ export default defineComponent({
 
     // chose day/3/week
     choseRoom(e) {
-      console.log('choseRoom e', e);
+      // console.log('choseRoom e', e);
       this.currenRoom = e.value;
       console.log('choseRoom currenRoom', this.currenRoom);
+      this.getMeetRoom()
     },
 
     // chose start/end time
@@ -232,17 +205,19 @@ export default defineComponent({
       if (e.length > 0) {
         this.startTime = e[0];
         this.endTime = e[1];
+        this.getMeetRoom()
       }
     },
 
     getMeetRoom() {
-      console.log('getMeetRoom',)
-      // 获取开始、结束时间的时间戳、
+      console.log('getMeetRoom enter')
+      // 获取开始、结束时间的时间戳
       Api.getMeetRooms({id: this.currenRoom,start_time: this.startTime,end_time: this.endTime}).then(data => {
       if (!data) {
         return
       }
       data = data[0]
+      // 处理会议数据
     })
     },
   }
@@ -258,7 +233,6 @@ export default defineComponent({
   padding-bottom: 10px;
   padding-left: 150px;
   padding-right: 150px;
-  /* background-color: #b33e3e; */
 }
 
 .home-time-icon {
@@ -271,10 +245,8 @@ export default defineComponent({
 }
 
 .button-selected {
-  /* width: 80px; */
   height: 30px;
   line-height: 30px;
-  /* border-radius: 16px; */
   background-color: rgba(89, 27, 183, 1);
   color: rgba(255, 255, 255, 1);
   font-size: 14px;
@@ -283,10 +255,8 @@ export default defineComponent({
 }
 
 .button-normal {
-  /* width: 80px; */
   height: 30px;
   line-height: 30px;
-  /* border-radius: 16px; */
   color: rgba(89, 27, 183, 1);
   font-size: 14px;
   text-align: center;
@@ -328,7 +298,6 @@ export default defineComponent({
   margin-left: 100px;
 }
 
-
 .demo-date-picker {
   display: flex;
   width: 100%;
@@ -368,7 +337,6 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   width: 100%;
-  /* height: 600px; */
   height: auto;
   font-family: Arial, sans-serif;
 }
@@ -390,7 +358,6 @@ export default defineComponent({
   flex-direction: column;
   padding-right: 10px;
   font-weight: bold;
-  /* background-color: #b33e3e; */
 }
 
 .time-slot {
@@ -411,7 +378,6 @@ export default defineComponent({
 
 .room-header {
   display: flex;
-  /* background-color: #c61010; */
   color: #000000;
   font-size: 20px;
   text-align: center;
@@ -423,12 +389,10 @@ export default defineComponent({
 .room-name {
   flex-shrink: 0;
   display: flex;
-  /* align-items: center; */
   justify-content: center;
   width: 218px;
   height: 800px;
   padding: 10px;
-  /* border-left: 1px solid #b33e3e; */
   border-right: 1px solid #9A9A9A;
   background-color: #e1e1e1;
 }
@@ -445,7 +409,6 @@ export default defineComponent({
   display: flex;
   flex-direction: row;
 }
-
 
 .room-column {
   position: relative;
