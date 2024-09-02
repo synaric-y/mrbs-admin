@@ -12,8 +12,9 @@
       <el-col :span="3">
         <el-select v-model="selectedRoom" placeholder="All Rooms" @change="choseArea">
           <el-option label="All Areas" value="All"></el-option>
-            <el-option v-for="(area,index) in areas" :label="area.area_name" :value="area.area_id" :key="index"></el-option>
-            <!-- <el-option label="Room A" value="A"></el-option>
+          <el-option v-for="(area, index) in areas" :label="area.area_name" :value="area.area_id"
+            :key="index"></el-option>
+          <!-- <el-option label="Room A" value="A"></el-option>
             <el-option label="Room B" value="B"></el-option>
             <el-option label="Room C" value="C"></el-option>
             <el-option label="Room D" value="D"></el-option> -->
@@ -93,6 +94,7 @@ import { Api } from '@/network/api';
 import { areaData, homeData } from './home';
 const size = ref < 'default' | 'large' | 'small' > ('default')
 const value1 = ref('')
+import moment from "moment";
 
 export default defineComponent({
   components: {
@@ -117,7 +119,7 @@ export default defineComponent({
       startTime: 'Start date',
       endTime: 'End date',
       areas: [],
-      meetRooms:[],
+      meetRooms: [],
       days: [
         { date: "Saturday, August 24, 2024", color: "#6a1b9a" },
         { date: "Sunday, August 25, 2024", color: "#0288d1" },
@@ -149,7 +151,7 @@ export default defineComponent({
     console.log('mounted getRooms enter')
     // console.log('mounted areaData', areaData)
     // setTimeout(() => {
-      
+
     // },50)
     this.areas = areaData.data.areas;
     console.log('mounted this.areas', this.areas[0].area_name)
@@ -163,7 +165,6 @@ export default defineComponent({
       data = data[0]
     })
   },
-
 
   methods: {
     getEventsForRoom(room) {
@@ -198,8 +199,85 @@ export default defineComponent({
 
     dayRrange(day) {
       this.dayRrangeVal = day;
+      let days = [];
+      if (day == 1) {
+        console.log('One Days:', this.getCurrenDay());
+        days = this.getCurrenDay();
+      } else if (day == 3) {
+        console.log('Next Three Days:', this.getThreeDays());
+        days = this.getThreeDays();
+      } else if (day == 7) {
+        console.log('Week Days:', this.getCurrenWeek());
+        days = this.getCurrenWeek();
+      } else {
+        console.log('Next Three Days:', this.getThreeDays());
+        days = this.getThreeDays();
+      }
+      this.days = this.formatDays(days);
       // 获取接口的数据
       this.getMeetRoom();
+    },
+
+    getCurrenDay() {
+      const today = moment();
+      const oneDays = [
+        today.format('dddd, MMMM Do YYYY'),
+      ];
+      return oneDays;
+    },
+
+    getThreeDays() {
+      const today = moment();
+      const nextThreeDays = [
+        today.format('dddd, MMMM Do YYYY'),
+        today.add(1, 'days').format('dddd, MMMM Do YYYY'),
+        today.add(1, 'days').format('dddd, MMMM Do YYYY')
+      ];
+      return nextThreeDays;
+    },
+
+    getCurrenWeek() {
+      const startOfWeek = moment().startOf('week');
+      const endOfWeek = moment().endOf('week');
+      const weekDays = [];
+      let day = startOfWeek;
+      while (day <= endOfWeek) {
+        weekDays.push(day.format('dddd, MMMM Do YYYY'));
+        day = day.add(1, 'days');
+      }
+      return weekDays;
+    },
+
+    getDaysBetween(startDate, endDate) {
+      console.log('getDaysBetween startDate', startDate);
+      console.log('getDaysBetween endDate', endDate);
+      const start = moment(startDate);
+      const end = moment(endDate);
+      const days = [];
+      while (start <= end) {
+        days.push(start.format('dddd, MMMM Do YYYY'));
+        start.add(1, 'days');
+      }
+      console.log('getDaysBetween days', days);
+      return days;
+    },
+
+    getYearToDay(timestamp) {
+      const date = moment(timestamp);
+      const year = date.format('YYYY');
+      const month = date.format('MM');
+      const day = date.format('DD');
+      return `${year}-${month}-${day}`;
+    },
+
+    formatDays(days) {
+      const formattedDates = days.map((day, index) => {
+        return {
+          date: day,
+          color: (index+1) % 2 == 0?"#0288d1" : "#6a1b9a"
+        };
+      });
+      return formattedDates;
     },
 
     // chose day/3/week
@@ -211,25 +289,29 @@ export default defineComponent({
     },
 
     getAreaRooms() {
-      console.log('getAreaRooms this.currenArea',this.currenArea);
-      if(this.currenArea == 'All' || this.currenArea == '') {
+      console.log('getAreaRooms this.currenArea', this.currenArea);
+      if (this.currenArea == 'All' || this.currenArea == '') {
         const temprooms = this.areas.flatMap(area => area.rooms);
         this.rooms = temprooms.flatMap(room => room.room_name);
-        console.log('getAreaRooms all rooms:',this.rooms);
+        console.log('getAreaRooms all rooms:', this.rooms);
       } else {
         const temprooms = this.areas.find(area => area.area_id == this.currenArea);
         this.rooms = temprooms.rooms.flatMap(room => room.room_name);
-        console.log('getAreaRooms currenArea rooms:',this.rooms);
+        console.log('getAreaRooms currenArea rooms:', this.rooms);
       }
     },
 
     // chose start/end time
     choseDate(e) {
-      console.log('choseDate', e);
+      // console.log('choseDate', e[0],e[1]);
       if (e.length > 0) {
         this.startTime = e[0];
         this.endTime = e[1];
         this.getMeetRoom();
+        const days = this.getDaysBetween(moment(e[0]).format('YYYY-MM-DD'), moment(e[1]).format('YYYY-MM-DD'));
+        const tempdays = this.formatDays(days);
+        console.log('tempdays:',tempdays);
+        this.days = tempdays;
       }
     },
 
@@ -246,13 +328,8 @@ export default defineComponent({
       console.log('getMeetRoom enter');
       const start = this.formatTime(this.startTime);
       const end = this.formatTime(this.endTime);
-
-
       // const meetRooms = homeData.data.
-
-
-
-      console.log('getMeetRoom homeData', homeData)
+      // console.log('getMeetRoom homeData', homeData)
       return;
       // 获取开始、结束时间的时间戳
       Api.getMeetRooms({ id: this.currenArea, start_time: start, end_time: end }).then(data => {
