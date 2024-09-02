@@ -59,7 +59,7 @@
           {{ day.date }}
           <div class="room-header">
             <div v-for="(room, roomIndex) in rooms" :key="roomIndex" class="room-name"
-              :style="{ height: timeSlots.length * 60 + 30 + 'px' }">
+              :style="{ height: timeSlots.length * 60 + 40 + 'px' }">
               {{ room }}
               <template v-for="(event, indexeve) in events">
                 <!-- Rooms and Schedule -->
@@ -117,6 +117,7 @@ export default defineComponent({
       startTime: 'Start date',
       endTime: 'End date',
       areas: [],
+      meetRooms:[],
       days: [
         { date: "Saturday, August 24, 2024", color: "#6a1b9a" },
         { date: "Sunday, August 25, 2024", color: "#0288d1" },
@@ -213,12 +214,12 @@ export default defineComponent({
       console.log('getAreaRooms this.currenArea',this.currenArea);
       if(this.currenArea == 'All' || this.currenArea == '') {
         const temprooms = this.areas.flatMap(area => area.rooms);
-        // this.rooms = temprooms.flatMap(room => room.room_name);
-        console.log('getAreaRooms all rooms:',temprooms);
+        this.rooms = temprooms.flatMap(room => room.room_name);
+        console.log('getAreaRooms all rooms:',this.rooms);
       } else {
         const temprooms = this.areas.find(area => area.area_id == this.currenArea);
-        // this.rooms = temprooms.flatMap(room => room.room_name);
-        console.log('getAreaRooms currenArea rooms:',temprooms);
+        this.rooms = temprooms.rooms.flatMap(room => room.room_name);
+        console.log('getAreaRooms currenArea rooms:',this.rooms);
       }
     },
 
@@ -245,9 +246,12 @@ export default defineComponent({
       console.log('getMeetRoom enter');
       const start = this.formatTime(this.startTime);
       const end = this.formatTime(this.endTime);
-      // console.log('getMeetRoom this.startTime',start);
-      // console.log('getMeetRoom this.endTime',this.endTime);
-      // console.log('getMeetRoom this.endTime',end);
+
+
+      // const meetRooms = homeData.data.
+
+
+
       console.log('getMeetRoom homeData', homeData)
       return;
       // 获取开始、结束时间的时间戳
