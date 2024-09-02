@@ -113,6 +113,7 @@ import { Location } from '@element-plus/icons-vue';
 
 // picker date
 import { ref } from 'vue'
+import { Api } from '@/network/api';
 const size = ref < 'default' | 'large' | 'small' > ('default')
 const value1 = ref('')
 
@@ -157,19 +158,27 @@ export default defineComponent({
       ],
       events: [
         { date: "Saturday, August 24, 2024", room: "Room A", title: "A 24 EN meeting", time: "09:00AM - 11:30AM", person: "Carol", startTime: "09:00AM", endTime: "11:30AM" },
-
         { date: "Saturday, August 24, 2024", room: "Room B", title: "B 24 EN meeting", time: "10:00AM - 11:30AM", person: "Carol", startTime: "10:00AM", endTime: "11:30AM" },
-
         { date: "Saturday, August 24, 2024", room: "Room C", title: "C 24 EN meeting", time: "12:00PM - 01:30PM", person: "Carol", startTime: "12:00PM", endTime: "01:30PM" },
-
         { date: "Saturday, August 24, 2024", room: "Room D", title: "D 24 EN meeting", time: "03:00PM - 04:30PM", person: "Carol", startTime: "03:00PM", endTime: "04:30PM" },
-
         { date: "Sunday, August 25, 2024", room: "Room C", title: "C 25 EN meeting", time: "03:00PM - 06:00PM", person: "John Zhang", startTime: "03:00PM", endTime: "06:00PM" },
         { date: "Monday, August 26, 2024", room: "Room B", title: "B 26 Quick meeting", time: "12:30PM - 01:00PM", person: "N/A", startTime: "12:30PM", endTime: "01:00PM" },
         { date: "Tuesday, August 27, 2024", room: "Room D", title: "D 27 Research meeting", time: "01:00PM - 02:00PM", person: "Tina", startTime: "01:00PM", endTime: "02:00PM" },
         { date: "Monday, August 26, 2024", room: "Room B", title: "B 26 Research meeting", time: "01:30PM - 03:00PM", person: "Zhang", startTime: "01:30PM", endTime: "03:00PM" },
       ]
     };
+  },
+
+  // 获取房间的信息、会议房间的信息
+  mounted() {
+    console.log('mounted getRooms enter')
+    Api.getRooms({}).then(data => {
+      console.log('mounted getRooms data:',data)
+      if (!data) {
+        return
+      }
+      data = data[0]
+    })
   },
 
 
@@ -224,6 +233,17 @@ export default defineComponent({
         this.startTime = e[0];
         this.endTime = e[1];
       }
+    },
+
+    getMeetRoom() {
+      console.log('getMeetRoom',)
+      // 获取开始、结束时间的时间戳、
+      Api.getMeetRooms({id: this.currenRoom,start_time: this.startTime,end_time: this.endTime}).then(data => {
+      if (!data) {
+        return
+      }
+      data = data[0]
+    })
     },
   }
 
