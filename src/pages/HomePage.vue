@@ -56,17 +56,17 @@
           </div>
         </div>
         <!-- day room -->
-        <div v-for="(day, indexday) in days" :key="indexday" class="day-header" :style="{ backgroundColor: day.color }">
+        <div v-for="(day, indexday) in days" :key="indexday" class="day-header" :style="{ backgroundColor: day.color}">
           {{ day.date }}
           <div class="room-header">
             <div v-for="(room, roomIndex) in rooms" :key="roomIndex" class="room-name"
-              :style="{ height: timeSlots.length * 60 + 40 + 'px' }">
+              :style="{ height: timeSlots.length * 60 + 40 + 'px',width: itemWidth + 'px'}">
               {{ room }}
               <template v-for="(event, indexeve) in events">
                 <!-- Rooms and Schedule -->
                 <template v-if="day.date == event.date && room == event.room">
                   <div :key="indexeve" class="room-meet-event"
-                    :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: (238 * roomIndex) + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
+                    :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px',width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
                     <div class="event-title">{{ event.title }}</div>
                     <div class="event-time">{{ event.time }}</div>
                     <div class="event-person">{{ event.person }}</div>
@@ -120,11 +120,13 @@ export default defineComponent({
       endTime: 'End date',
       areas: [],
       meetRooms: [],
+      screenSize:{},
+      itemWidth: 228,
       days: [
-        { date: "Saturday, August 24, 2024", color: "#6a1b9a" },
-        { date: "Sunday, August 25, 2024", color: "#0288d1" },
-        { date: "Monday, August 26, 2024", color: "#6a1b9a" },
-        { date: "Tuesday, August 27, 2024", color: "#0288d1" },
+        { date: "Monday, September 2nd 2024", color: "#6a1b9a" },
+        { date: "Tuesday, September 3rd 2024", color: "#0288d1" },
+        { date: "Wednesday, September 4th 2024", color: "#6a1b9a" },
+        { date: "Thursday, September 5th 2024", color: "#0288d1" },
       ],
       rooms: ["Room A", "Room B", "Room C", "Room D"],
       // rooms: ["Room A", "Room B", "Room C", "Room D","Room E","Room F","Room G"],
@@ -134,20 +136,32 @@ export default defineComponent({
         "05:00PM", "ㆍ", "06:00PM", "ㆍ", "07:00PM", "ㆍ", "08:00PM", "ㆍ", "09:00PM"
       ],
       events: [
-        { date: "Saturday, August 24, 2024", room: "Room A", title: "A 24 EN meeting", time: "09:00AM - 11:30AM", person: "Carol", startTime: "09:00AM", endTime: "11:30AM" },
-        { date: "Saturday, August 24, 2024", room: "Room B", title: "B 24 EN meeting", time: "10:00AM - 11:30AM", person: "Carol", startTime: "10:00AM", endTime: "11:30AM" },
-        { date: "Saturday, August 24, 2024", room: "Room C", title: "C 24 EN meeting", time: "12:00PM - 01:30PM", person: "Carol", startTime: "12:00PM", endTime: "01:30PM" },
-        { date: "Saturday, August 24, 2024", room: "Room D", title: "D 24 EN meeting", time: "03:00PM - 04:30PM", person: "Carol", startTime: "03:00PM", endTime: "04:30PM" },
-        { date: "Sunday, August 25, 2024", room: "Room C", title: "C 25 EN meeting", time: "03:00PM - 06:00PM", person: "John Zhang", startTime: "03:00PM", endTime: "06:00PM" },
-        { date: "Monday, August 26, 2024", room: "Room B", title: "B 26 Quick meeting", time: "12:30PM - 01:00PM", person: "N/A", startTime: "12:30PM", endTime: "01:00PM" },
-        { date: "Tuesday, August 27, 2024", room: "Room D", title: "D 27 Research meeting", time: "01:00PM - 02:00PM", person: "Tina", startTime: "01:00PM", endTime: "02:00PM" },
-        { date: "Monday, August 26, 2024", room: "Room B", title: "B 26 Research meeting", time: "01:30PM - 03:00PM", person: "Zhang", startTime: "01:30PM", endTime: "03:00PM" },
+        { date: "Monday, September 2nd 2024", room: "Room A", title: "A 24 EN meeting", time: "09:00AM - 11:30AM", person: "Carol", startTime: "09:00AM", endTime: "11:30AM" },
+        { date: "Monday, September 2nd 2024", room: "Room B", title: "B 24 EN meeting", time: "10:00AM - 11:30AM", person: "Carol", startTime: "10:00AM", endTime: "11:30AM" },
+        { date: "Monday, September 2nd 2024", room: "Room C", title: "C 24 EN meeting", time: "12:00PM - 01:30PM", person: "Carol", startTime: "12:00PM", endTime: "01:30PM" },
+        { date: "Monday, September 2nd 2024", room: "Room D", title: "D 24 EN meeting", time: "03:00PM - 04:30PM", person: "Carol", startTime: "03:00PM", endTime: "04:30PM" },
+        { date: "Tuesday, September 3rd 2024", room: "Room C", title: "C 25 EN meeting", time: "03:00PM - 06:00PM", person: "John Zhang", startTime: "03:00PM", endTime: "06:00PM" },
+        { date: "Wednesday, September 4th 2024", room: "Room B", title: "B 26 Quick meeting", time: "12:30PM - 01:00PM", person: "N/A", startTime: "12:30PM", endTime: "01:00PM" },
+        { date: "Thursday, September 5th 2024", room: "Room D", title: "D 27 Research meeting", time: "01:00PM - 02:00PM", person: "Tina", startTime: "01:00PM", endTime: "02:00PM" },
+        { date: "Wednesday, September 4th 2024", room: "Room B", title: "B 26 Research meeting", time: "01:30PM - 03:00PM", person: "Zhang", startTime: "01:30PM", endTime: "03:00PM" },
       ]
     };
   },
 
-  // 获取房间的信息、会议房间的信息
+
   mounted() {
+
+    const screenWidth = window.screen.width;
+    // console.log('当前屏幕的宽度为:', screenWidth, '像素');
+    this.screenSize['width'] = screenWidth;
+
+    const screenHeight = window.screen.height;
+    // console.log('当前屏幕的高度为:', screenHeight, '像素');
+    this.screenSize['height'] = screenHeight;
+
+    console.log('当前屏幕的高度为:', this.screenSize, '像素');
+    // 输出示例：当前屏幕的宽度为: 1920 像素
+
     console.log('mounted getRooms enter')
     // console.log('mounted areaData', areaData)
     // setTimeout(() => {
@@ -274,7 +288,7 @@ export default defineComponent({
       const formattedDates = days.map((day, index) => {
         return {
           date: day,
-          color: (index+1) % 2 == 0?"#0288d1" : "#6a1b9a"
+          color: (index + 1) % 2 == 0 ? "#0288d1" : "#6a1b9a"
         };
       });
       return formattedDates;
@@ -310,7 +324,7 @@ export default defineComponent({
         this.getMeetRoom();
         const days = this.getDaysBetween(moment(e[0]).format('YYYY-MM-DD'), moment(e[1]).format('YYYY-MM-DD'));
         const tempdays = this.formatDays(days);
-        console.log('tempdays:',tempdays);
+        console.log('tempdays:', tempdays);
         this.days = tempdays;
       }
     },
@@ -328,6 +342,18 @@ export default defineComponent({
       console.log('getMeetRoom enter');
       const start = this.formatTime(this.startTime);
       const end = this.formatTime(this.endTime);
+      const itemNumber = this.rooms.length * this.days.length;
+      console.log('getMeetRoom itemNumber:',itemNumber);
+
+      if(itemNumber == 1) {
+          this.itemWidth = this.screenSize['width'];
+      } else if(itemNumber >= 2 && itemNumber <= 6) {
+        this.itemWidth = this.screenSize['width'] / itemNumber * 2;
+      } else  {
+        this.itemWidth = 228;
+      }
+      console.log('getMeetRoom itemWidth:',this.itemWidth);
+      
       // const meetRooms = homeData.data.
       // console.log('getMeetRoom homeData', homeData)
       return;
@@ -446,6 +472,7 @@ export default defineComponent({
 .table-container {
   display: flex;
   position: relative;
+  flex: 1;
 }
 
 .scroll-table-view {
@@ -503,6 +530,7 @@ export default defineComponent({
   color: #000000;
   font-size: 20px;
   text-align: center;
+  /* width: 100%; */
   padding: 5px 0px;
   padding-bottom: 0px;
   font-weight: bold;
@@ -513,7 +541,7 @@ export default defineComponent({
   flex-shrink: 0;
   display: flex;
   justify-content: center;
-  width: 218px;
+  /* width: 218px; */
   height: 800px;
   padding: 10px;
   padding-bottom: 0px;
