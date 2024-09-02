@@ -56,17 +56,17 @@
           </div>
         </div>
         <!-- day room -->
-        <div v-for="(day, indexday) in days" :key="indexday" class="day-header" :style="{ backgroundColor: day.color}">
+        <div v-for="(day, indexday) in days" :key="indexday" class="day-header" :style="{ backgroundColor: day.color }">
           {{ day.date }}
           <div class="room-header">
             <div v-for="(room, roomIndex) in rooms" :key="roomIndex" class="room-name"
-              :style="{ height: timeSlots.length * 60 + 40 + 'px',width: itemWidth + 'px'}">
+              :style="{ height: timeSlots.length * 60 + 40 + 'px', width: itemWidth + 'px' }">
               {{ room }}
               <template v-for="(event, indexeve) in events">
                 <!-- Rooms and Schedule -->
                 <template v-if="day.date == event.date && room == event.room">
                   <div :key="indexeve" class="room-meet-event"
-                    :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px',width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
+                    :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
                     <div class="event-title">{{ event.title }}</div>
                     <div class="event-time">{{ event.time }}</div>
                     <div class="event-person">{{ event.person }}</div>
@@ -120,7 +120,7 @@ export default defineComponent({
       endTime: 'End date',
       areas: [],
       meetRooms: [],
-      screenSize:{},
+      screenSize: {},
       itemWidth: 228,
       days: [
         { date: "Monday, September 2nd 2024", color: "#6a1b9a" },
@@ -343,17 +343,37 @@ export default defineComponent({
       const start = this.formatTime(this.startTime);
       const end = this.formatTime(this.endTime);
       const itemNumber = this.rooms.length * this.days.length;
-      console.log('getMeetRoom itemNumber:',itemNumber);
-
-      if(itemNumber == 1) {
-          this.itemWidth = this.screenSize['width'];
-      } else if(itemNumber >= 2 && itemNumber <= 6) {
+      console.log('getMeetRoom itemNumber:', itemNumber);
+      // 动态计算会议的宽度
+      if (itemNumber == 1) {
+        this.itemWidth = this.screenSize['width'];
+      } else if (itemNumber >= 2 && itemNumber <= 6) {
         this.itemWidth = this.screenSize['width'] / itemNumber * 2;
-      } else  {
+      } else {
         this.itemWidth = 228;
       }
-      console.log('getMeetRoom itemWidth:',this.itemWidth);
+      // console.log('getMeetRoom itemWidth:',this.itemWidth);
+
+      // 预定的会议信息
+      const allmeets = homeData.data.area_room.flatMap(area => area.rooms);
+      const tempmeets = allmeets.flatMap(meet => meet.entries)
+      console.log('getMeetRoom tempmeets:', tempmeets);
+      // { date: "Monday, September 2nd 2024", room: "Room A", title: "A 24 EN meeting", time: "09:00AM - 11:30AM", person: "Carol", startTime: "09:00AM", endTime: "11:30AM" }
       
+      const meetDates = tempmeets.map((meet, index) => {
+        return {
+          date: moment(meet.start_time).format('dddd, MMMM Do YYYY'),
+          room: '新增房间信息',
+          title: meet.entry_name,
+          time: meet.duration,
+          person: meet.book_by,
+          startTime: meet.duration.split('-')[0].trim(),
+          endTime: meet.duration.split('-')[1].trim()
+        };
+      });
+      console.log('getMeetRoom meetDates: ', meetDates);
+
+
       // const meetRooms = homeData.data.
       // console.log('getMeetRoom homeData', homeData)
       return;
