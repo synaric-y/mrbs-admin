@@ -44,4 +44,14 @@ export class Api {
         params["type"] = "room"
         return Request.post('del', params)
     }
+
+    static async getRooms(params) {
+        params["type"] = "area"
+        return Request.post('index',params)
+    }
+
+    static async getMeetRooms(params) {
+        params["type"] = "room"
+        return Request.post('index',params)
+    }
 }
