@@ -1,4 +1,13 @@
 
+export const adminData = {
+    "code": 0,
+    "message": "success",
+    "data": [
+        "admin"
+    ]
+}
+
+
 export const areaData = {
     "code": 0,
     "message": "success",
@@ -40,9 +49,9 @@ export const homeData = {
     "code": 0,
     "message": "success",
     "data": {
-        "min_time": "08:00 AM",
-        "max_time": "09:00 PM",
-        "time": "02:55 PM September 02, 2024",
+        "min_time": "08:00 AM",
+        "max_time": "09:00 PM",
+        "time": "02:55 PM September 02, 2024",
         "area_room": [
             {
                 "area_id": 1,
@@ -64,7 +73,7 @@ export const homeData = {
                                 "month": "09",
                                 "day": "03",
                                 "week": "Thursday",
-                                "duration": "12:00 PM-01:00 PM"                               
+                                "duration": "12:00 PM-01:00 PM"
                             },
                             {
                                 "entry_id": 2,
@@ -78,7 +87,7 @@ export const homeData = {
                                 "month": "09",
                                 "day": "03",
                                 "week": "Thursday",
-                                "duration": "18:00 PM-19:30 PM"           
+                                "duration": "18:00 PM-19:30 PM"
                             }
                         ]
                     },
@@ -99,7 +108,7 @@ export const homeData = {
                                 "month": "09",
                                 "day": "12",
                                 "week": "Monday",
-                                "duration": "02:30 PM-03:30 PM"                               
+                                "duration": "02:30 PM-03:30 PM"
                             },
                             {
                                 "entry_id": 2,
@@ -113,7 +122,7 @@ export const homeData = {
                                 "month": "09",
                                 "day": "02",
                                 "week": "Monday",
-                                "duration": "04:00 PM-04:30 PM"           
+                                "duration": "04:00 PM-04:30 PM"
                             }
                         ]
                     }

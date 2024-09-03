@@ -5,58 +5,58 @@
                 <!-- <div class="sub-title">{{ mode === "add" ? $t("area.addArea") : $t("area.editArea") }}</div> -->
                 <div class="sub-title">{{ $t("meet.title") }}</div>
             </div>
-
             <el-form :model="form" :rules="rules" label-width="auto" ref="meetForm" style="max-width: 530px">
-
                 <el-form-item prop="creat_by" :label="$t('meet.admin')">
-                    <el-select v-model="form.creat_by" />
+                    <el-select v-model="form.creat_by">
+                        <el-option v-for="(admin, index) in admins" :label="admin" :value="admin"
+                            :key="index"></el-option>
+                    </el-select>
                 </el-form-item>
-
                 <el-form-item prop="book_by" :label="$t('meet.booker')">
                     <el-input v-model="form.book_by" />
                 </el-form-item>
-
-                <el-form-item prop="short_desc" :label="$t('meet.short_desc')">
-                    <el-input v-model="form.short_desc" />
+                <el-form-item prop="name" :label="$t('meet.short_desc')">
+                    <el-input v-model="form.name" />
                 </el-form-item>
-
-                <el-form-item prop="remark_desc" :label="$t('meet.all_desc')">
+                <el-form-item prop="description" :label="$t('meet.all_desc')">
                     <el-input style="width: 240px" type="textarea" maxlength="100" show-word-limit
-                        v-model="form.remark_desc" />
+                        v-model="form.description" />
                 </el-form-item>
-
                 <el-form-item prop="start_date" :label="$t('meet.start_meet')">
                     <div class="picker-date-container">
-                        <el-date-picker v-model="form.start_date" type="date" placeholder="Pick a day" />
+                        <el-date-picker v-model="form.start_date" type="date" placeholder="Pick a day"
+                            @change="choseDate(0, $event)" />
                         <el-time-select v-model="form.start_hour" style="width: 240px;margin-left: 20px" start="06:00"
-                            step="00:30" end="21:30" :placeholder="$t('base.plzSelect')" />
+                            step="00:30" end="21:30" :placeholder="$t('base.plzSelect')"
+                            @change="choseHour(0, form.start_hour, $event)" />
                     </div>
                 </el-form-item>
-
                 <el-form-item prop="end_date" :label="$t('meet.end_meet')">
                     <div class="picker-date-container">
-                        <el-date-picker v-model="form.end_date" type="date" placeholder="Pick a day" />
+                        <el-date-picker v-model="form.end_date" type="date" placeholder="Pick a day"
+                            @change="choseDate(1, $event)" />
                         <el-time-select v-model="form.end_hour" style="width: 240px;margin-left: 20px" start="06:00"
-                            step="00:30" end="21:30" :placeholder="$t('base.plzSelect')" />
+                            step="00:30" end="21:30" :placeholder="$t('base.plzSelect')"
+                            @change="choseHour(1, form.end_hour, $event)" />
                     </div>
                 </el-form-item>
-
                 <el-form-item prop="room_number" :label="$t('meet.room')">
-                    <el-select v-model="form.room_number" style="width: 240px" :placeholder="$t('base.plzSelect')" />
+                    <el-select v-model="form.room_number" style="width: 240px" 
+                    :placeholder="$t('base.plzSelect')"  @change="choseRoom">
+                        <el-option v-for="(room, index) in rooms" :label="room.room_name" :value="room.room_id"
+                            :key="index"></el-option>
+                    </el-select>
                 </el-form-item>
-
                 <el-form-item prop="type" :label="$t('meet.type')">
-                    <el-select v-model="form.room_type" style="width: 240px" :placeholder="$t('base.plzSelect')">
+                    <el-select v-model="form.type" style="width: 240px" :placeholder="$t('base.plzSelect')">
                         <el-option v-for="item in form.meet_types" :key="item" :label="item" :value="item" />
                     </el-select>
                 </el-form-item>
-
                 <el-form-item style="margin-top: 60px">
                     <el-button type="info" size="default" @click="cancle">{{ $t("base.cancel") }}</el-button>
                     <el-button type="danger" size="default" @click="deleteMeet">{{ $t("meet.delete_meet") }}</el-button>
                     <el-button type="primary" size="default" @click="submit">{{ $t("base.confirm") }}</el-button>
                 </el-form-item>
-
             </el-form>
         </el-main>
     </el-container>
@@ -69,49 +69,54 @@ import { PageMixin } from "@/pages/PageMixin.js";
 import { Api } from "@/network/api.js";
 import { ElMessage } from "element-plus";
 import router from "@/router/index.js";
+import { adminData, areaData } from "./home";
 
 export default {
     mixins: [PageMixin],
     data() {
         return {
             mode: 'update',
+            rooms: [],
+            admins: [],
             form: {
-
                 creat_by: "",
                 admins: [],
                 book_by: "",
-                short_desc: "",
-                remark_desc: "",
+                name: "",
+                description: "",
                 room_number: "",
-                room_type: "",
-
+                type: "",
                 start_date: "",
                 start_hour: "",
-
+                start_seconds: 0,
+                end_seconds: 0,
                 end_date: "",
                 end_hour: "",
-
                 meet_types: ["I", "E"],
-
-                area_name: "",
-                sort_key: "",
-                area_disabled: 0,
-                area_timezone: "",
-                area_start_first_slot: "",
-                area_start_last_slot: "",
-                area_def_duration_mins: 60,
-                area_res_mins: 30,
-                area_default_type: "I",
-                area_periods: ["Period 1", "Period 2"],
-
+                type: 'I',
+                rooms: [],
+                edit_series: 0,
+                rep_type: 0,
             },
             rules: {
-                creat_by: [{ required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }],
-                book_by: [{ required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }],
-                short_desc: [{ required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }],
-                remark_desc: [{ required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }],
-                room_number: [{ required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }],
-                room_type: [{ required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }],
+                creat_by: [
+                    { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
+                ],
+                book_by: [
+                    { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
+                ],
+                name: [
+                    { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
+                ],
+                description: [
+                    { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
+                ],
+                room_number: [
+                    { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
+                ],
+                type: [
+                    { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
+                ],
                 start_date: [
                     { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
                 ],
@@ -140,10 +145,8 @@ export default {
         }
     },
     methods: {
-
         submit() {
-
-            console.log('submit meetForm',this.form)
+            console.log('submit meetForm', this.form)
             this.$refs.meetForm.validate((pass) => {
                 if (!pass) {
                     return
@@ -167,7 +170,7 @@ export default {
         },
         deleteMeet() {
             console.log('deleteMeet')
-            Api.deleteMeet({entry_id: Number(id)}).then(data => {
+            Api.deleteMeet({ entry_id: Number(id) }).then(data => {
                 ElMessage({
                     message: this.$t('base.editSuccess'),
                     type: 'success',
@@ -177,6 +180,29 @@ export default {
                 ElMessage.error(this.$t('editFailed'))
             })
         },
+
+        choseDate(mode, e) {
+            if (mode == 0) {
+                this.form.start_date = moment(e[0]).format('YYYY-MM-DD');
+                return
+            }
+            this.form.end_date = moment(e[0]).format('YYYY-MM-DD');
+        },
+
+        choseHour(mode, str, e) {
+            if (mode == 0) {
+                this.form.start_seconds = moment(str, "hh:mma").unix();
+                return
+            }
+            this.form.end_seconds = moment(str, "hh:mma").unix();
+        },
+
+        choseRoom(room) {
+            console.log('choseRoom room',room)
+            this.form.rooms = []
+            this.form.rooms.push(room)
+        },
+
         formatTime(hours, minutes) {
             let date = new Date(0, 0, 0, hours, minutes, 0);
             return date.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
@@ -184,8 +210,12 @@ export default {
     },
     mounted() {
         let { id } = this.$route.params
-        console.log('meetDetail mounted id',id)
-        Api.getMeetDetail({id: Number(id)}).then(data => {
+        // 获取房间信息
+        this.rooms = areaData.data.areas[0].rooms
+        // 获取创建人信息
+        this.admins = adminData.data
+        console.log('meetDetail mounted id', id)
+        Api.getMeetDetail({ id: Number(id) }).then(data => {
             if (!data) {
                 return
             }
