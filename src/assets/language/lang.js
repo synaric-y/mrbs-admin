@@ -32,7 +32,7 @@ export const messages = {
             start_meet: '起始',
             end_meet: '结束',
             room: '房间',
-            meet_type: '类型',
+            type: '类型',
             delete_meet: '删除'
         },
         login: {
@@ -157,7 +157,7 @@ export const messages = {
             start_meet: 'Start',
             end_meet: 'End',
             room: 'Room',
-            meet_type: 'Type',
+            type: 'Type',
             delete_meet: 'Delete'
         },
         login: {

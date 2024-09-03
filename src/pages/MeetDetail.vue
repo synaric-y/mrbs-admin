@@ -8,12 +8,12 @@
 
             <el-form :model="form" :rules="rules" label-width="auto" ref="meetForm" style="max-width: 530px">
 
-                <el-form-item prop="creat_name" :label="$t('meet.admin')">
-                    <el-select v-model="form.creat_name" />
+                <el-form-item prop="creat_by" :label="$t('meet.admin')">
+                    <el-select v-model="form.creat_by" />
                 </el-form-item>
 
-                <el-form-item prop="booked_by" :label="$t('meet.booker')">
-                    <el-input v-model="form.booked_by" />
+                <el-form-item prop="book_by" :label="$t('meet.booker')">
+                    <el-input v-model="form.book_by" />
                 </el-form-item>
 
                 <el-form-item prop="short_desc" :label="$t('meet.short_desc')">
@@ -25,17 +25,17 @@
                         v-model="form.remark_desc" />
                 </el-form-item>
 
-                <el-form-item prop="start_day" :label="$t('meet.start')">
+                <el-form-item prop="start_date" :label="$t('meet.start_meet')">
                     <div class="picker-date-container">
-                        <el-date-picker v-model="form.start_day" type="date" placeholder="Pick a day" />
+                        <el-date-picker v-model="form.start_date" type="date" placeholder="Pick a day" />
                         <el-time-select v-model="form.start_hour" style="width: 240px;margin-left: 20px" start="06:00"
                             step="00:30" end="21:30" :placeholder="$t('base.plzSelect')" />
                     </div>
                 </el-form-item>
 
-                <el-form-item prop="end_day" :label="$t('meet.end')">
+                <el-form-item prop="end_date" :label="$t('meet.end_meet')">
                     <div class="picker-date-container">
-                        <el-date-picker v-model="form.end_day" type="date" placeholder="Pick a day" />
+                        <el-date-picker v-model="form.end_date" type="date" placeholder="Pick a day" />
                         <el-time-select v-model="form.end_hour" style="width: 240px;margin-left: 20px" start="06:00"
                             step="00:30" end="21:30" :placeholder="$t('base.plzSelect')" />
                     </div>
@@ -45,7 +45,7 @@
                     <el-select v-model="form.room_number" style="width: 240px" :placeholder="$t('base.plzSelect')" />
                 </el-form-item>
 
-                <el-form-item prop="room_type" :label="$t('meet.type')">
+                <el-form-item prop="type" :label="$t('meet.type')">
                     <el-select v-model="form.room_type" style="width: 240px" :placeholder="$t('base.plzSelect')">
                         <el-option v-for="item in form.meet_types" :key="item" :label="item" :value="item" />
                     </el-select>
@@ -77,21 +77,21 @@ export default {
             mode: 'update',
             form: {
 
-                creat_name: "",
+                creat_by: "",
                 admins: [],
-                booked_by: "",
+                book_by: "",
                 short_desc: "",
                 remark_desc: "",
                 room_number: "",
                 room_type: "",
 
-                start_day: "",
+                start_date: "",
                 start_hour: "",
 
-                end_day: "",
+                end_date: "",
                 end_hour: "",
 
-                meet_types: ["内部类型", "外部类型"],
+                meet_types: ["I", "E"],
 
                 area_name: "",
                 sort_key: "",
@@ -106,19 +106,19 @@ export default {
 
             },
             rules: {
-                creat_name: [{ required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }],
-                booked_by: [{ required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }],
+                creat_by: [{ required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }],
+                book_by: [{ required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }],
                 short_desc: [{ required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }],
                 remark_desc: [{ required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }],
                 room_number: [{ required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }],
                 room_type: [{ required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }],
-                start_day: [
+                start_date: [
                     { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
                 ],
                 start_hour: [
                     { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
                 ],
-                end_day: [
+                end_date: [
                     { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
                 ],
                 end_hour: [
@@ -140,7 +140,10 @@ export default {
         }
     },
     methods: {
+
         submit() {
+
+            console.log('submit meetForm',this.form)
             this.$refs.meetForm.validate((pass) => {
                 if (!pass) {
                     return
