@@ -38,6 +38,11 @@ const router = createRouter({
       path: '/room_detail/:id',
       name: 'room_detail',
       component: () => import('@/pages/RoomDetailPage.vue')
+    },
+    {
+      path: '/user_detail/:mode/:id',
+      name: 'user_detail',
+      component: () => import('@/pages/UserDetailPage.vue')
     }
   ]
 })

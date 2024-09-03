@@ -9,6 +9,7 @@ export const messages = {
             login: '登录',
             areaManagement: '区域管理',
             roomManagement: '会议室管理',
+            userManagement: '用户管理',
             add: '+ 添加',
             plzSelect: '请选择',
             confirm: '确定',
@@ -82,6 +83,34 @@ export const messages = {
             deleteRoomHint: '确定删除该会议室吗',
             invalidCapacity: '必须为大于0的整数',
         },
+        user: {
+            tableUser: {
+                name: '登录名',
+                displayName: '展示名',
+                level: '权限',
+                email: 'Email地址',
+                updateTime: '最近更新',
+                loginTime: '最近登录',
+                operate: '操作',
+            },
+            formUser: {
+                name: 'Name',
+                displayName: 'Display Name',
+                level: 'Level',
+                email: 'Email',
+                password0: 'Password',
+                password1: 'Confirm Password'
+            },
+            role: {
+                level0: '无',
+                level1: '用户',
+                level2: '管理员'
+            },
+            addUser: '新增用户',
+            editUser: '编辑用户',
+            deleteUserHint: '确定要删除当前用户吗',
+            password1Hint: '两次输入的密码不一致',
+        }
     },
 
     en: {
@@ -93,6 +122,7 @@ export const messages = {
             login: 'Login',
             areaManagement: 'Area Management',
             roomManagement: 'Room Management',
+            userManagement: 'User Management',
             add: '+ Add',
             plzSelect: 'Select',
             confirm: 'Confirm',
@@ -166,5 +196,33 @@ export const messages = {
             deleteRoomHint: 'Are you sure you want to delete this room?',
             invalidCapacity: '必须为大于0的整数',
         },
+        user: {
+            tableUser: {
+                name: 'Name',
+                displayName: 'Display Name',
+                level: 'Level',
+                email: 'Email',
+                updateTime: 'Update Time',
+                loginTime: 'Login Time',
+                operate: 'Operate',
+            },
+            formUser: {
+                name: 'Name',
+                displayName: 'Display Name',
+                level: 'Level',
+                email: 'Email',
+                password0: 'Password',
+                password1: 'Confirm Password'
+            },
+            role: {
+                level0: 'None',
+                level1: 'User',
+                level2: 'Admin'
+            },
+            addUser: 'New User',
+            editUser: 'Edit User',
+            deleteUserHint: 'Are you sure you want to delete this user?',
+            password1Hint: 'The passwords are inconsistent',
+        }
     }
 }

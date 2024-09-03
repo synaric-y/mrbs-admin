@@ -61,7 +61,7 @@ export default {
           })
           this.back()
         }).catch(() => {
-          ElMessage.error(this.$t('editFailed'))
+          ElMessage.error(this.$t('base.editFailed'))
         })
       })
     },

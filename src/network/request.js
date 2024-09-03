@@ -1,5 +1,6 @@
 import {HOST} from "@/config.js";
 import axios from "@/network/axios.js";
+import router from "@/router/index.js";
 
 export class Request {
 
@@ -11,6 +12,10 @@ export class Request {
         })
 
         let rep = res.data;
+        if (rep.code == -99) {
+            await router.replace('/login')
+            return {}
+        }
         if (rep.code != 0) {
             throw Error('message')
         }

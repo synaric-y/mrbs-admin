@@ -16,9 +16,7 @@ export default {
   methods: {
     login() {
       Api.login(this.form).then((data) => {
-        if (data.code == 0) {
-          this.switchTab('/')
-        }
+        this.switchTab('/')
       })
     }
   },

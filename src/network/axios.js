@@ -4,6 +4,7 @@ import {HOST} from "@/config.js";
 const instance = axios.create({
     baseURL: HOST, // 设置后端 API 的基本 URL
     timeout: 30000, // 设置请求超时时间
+    withCredentials: true,
 })
 
 instance.interceptors.request.use(
