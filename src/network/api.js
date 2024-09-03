@@ -47,12 +47,16 @@ export class Api {
 
     static async getRooms(params) {
         params["type"] = "area"
+<<<<<<< HEAD
         return Request.post('get_all_rooms',params)
+=======
+        return Request.post('index', params)
+>>>>>>> 131408bee7ba44f62d8e83af78df65cbbae6ad4f
     }
 
     static async getMeetRooms(params) {
         params["type"] = "room"
-        return Request.post('index',params)
+        return Request.post('index', params)
     }
 
     static async getRoom(params) {
@@ -79,5 +83,27 @@ export class Api {
     static async deleteMeet(params) {
         return Request.post('del_entry',params)
     }
-    
+
+    static async getUserList(params) {
+        return Request.post('get_all_users', params)
+    }
+
+    static async addUser(params) {
+        params["action"] = "add"
+        return Request.post('edit_users', params)
+    }
+
+    static async deleteUser(params) {
+        params["action"] = "delete"
+        return Request.post('edit_users', params)
+    }
+
+    static async updateUser(params) {
+        params["action"] = "edit"
+        return Request.post('edit_users', params)
+    }
+
+    static async getUserById(params) {
+        return Request.post('get_user_by_id', params)
+    }
 }
