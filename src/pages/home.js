@@ -54,6 +54,7 @@ export const homeData = {
                         "entries": [
                             {
                                 "entry_id": 1,
+                                "room_name": "room A",
                                 "start_time": 1725249600,
                                 "end_time": 1725253200,
                                 "entry_name": "entry1",
@@ -67,6 +68,7 @@ export const homeData = {
                             },
                             {
                                 "entry_id": 2,
+                                "room_name": "room A",
                                 "start_time": 1725271200,
                                 "end_time": 1725276600,
                                 "entry_name": "entry1",
@@ -87,6 +89,7 @@ export const homeData = {
                         "entries": [
                             {
                                 "entry_id": 1,
+                                "room_name": "room B",
                                 "start_time": 1725258600,
                                 "end_time": 1725262200,
                                 "entry_name": "entry1",
@@ -100,6 +103,7 @@ export const homeData = {
                             },
                             {
                                 "entry_id": 2,
+                                "room_name": "room B",
                                 "start_time": 1725264000,
                                 "end_time": 1725265800,
                                 "entry_name": "entry1",

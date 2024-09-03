@@ -47,7 +47,7 @@ export class Api {
 
     static async getRooms(params) {
         params["type"] = "area"
-        return Request.post('index',params)
+        return Request.post('get_all_rooms',params)
     }
 
     static async getMeetRooms(params) {
@@ -63,4 +63,21 @@ export class Api {
     static async editRoom(params) {
         return Request.post('edit_room_handler', params)
     }
+
+    static async getAdmins(params) {
+        return Request.post('get_admin',params)
+    }
+
+    static async getMeetDetail(params) {
+        return Request.post('get_entry_by_id',params)
+    }
+
+    static async editMeet(params) {
+        return Request.post('edit_entry_handler',params)
+    }
+
+    static async deleteMeet(params) {
+        return Request.post('del_entry',params)
+    }
+    
 }

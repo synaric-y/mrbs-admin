@@ -10,6 +10,11 @@ const router = createRouter({
       component: HomePage
     },
     {
+      path: '/meet_detail/:id',
+      name: 'meet_detail',
+      component: () => import('@/pages/MeetDetail.vue')
+    },
+    {
       path: '/login',
       name: 'login',
       component: () => import('@/pages/LoginPage.vue')

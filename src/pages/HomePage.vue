@@ -44,13 +44,13 @@
   </div>
 
   <div class="table-container">
-    <el-scrollbar class="scroll-table-view" always>
+    <el-scrollbar ref="scrollContainer" class="scroll-table-view" always >
       <!-- calendar header -->
       <div class="calendar-header">
         <!-- time line -->
         <div class="time-header">
           <div class="time-slots">
-            <div v-for="time in timeSlots" :key="time" class="time-slot">
+            <div v-for="(time,timeIndex) in timeSlots" :key="time" class="time-slot">
               {{ time }}
             </div>
           </div>
@@ -60,12 +60,20 @@
           {{ day.date }}
           <div class="room-header">
             <div v-for="(room, roomIndex) in rooms" :key="roomIndex" class="room-name"
-              :style="{ height: timeSlots.length * 60 + 40 + 'px', width: itemWidth + 'px' }">
+              :style="{ height: timeSlots.length * 60 + 40 + 'px', width: itemWidth + 'px' }" >
+
               {{ room }}
+
+              <template v-for="(time,timeIndex) in tempTimeSlots">
+                  <div class="empty-meet-div" 
+                  :style="{height: 55 + 'px', width: itemWidth + 'px',top:(timeIndex +1)*60 + 'px'}"
+                  @click="toMeet(time,room)"></div>
+              </template>
+              
               <template v-for="(event, indexeve) in events">
                 <!-- Rooms and Schedule -->
                 <template v-if="day.date == event.date && room == event.room">
-                  <div :key="indexeve" class="room-meet-event"
+                  <div :key="indexeve" class="room-meet-event" @click="editMeet(event)"
                     :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
                     <div class="event-title">{{ event.title }}</div>
                     <div class="event-time">{{ event.time }}</div>
@@ -86,6 +94,8 @@
 </template>
 
 <script>
+
+import router from "@/router/index.js";
 import { defineComponent } from 'vue';
 import { ElRow, ElCol, ElSelect, ElOption, ElButton, ElIcon, ElButtonGroup } from 'element-plus';
 // picker date
@@ -95,8 +105,10 @@ import { areaData, homeData } from './home';
 const size = ref < 'default' | 'large' | 'small' > ('default')
 const value1 = ref('')
 import moment from "moment";
+import {PageMixin} from "@/pages/PageMixin.js";
 
 export default defineComponent({
+  mixins: [PageMixin],
   components: {
     ElRow,
     ElCol,
@@ -122,6 +134,7 @@ export default defineComponent({
       meetRooms: [],
       screenSize: {},
       itemWidth: 228,
+      scrollY: 0,
       days: [
         { date: "Monday, September 2nd 2024", color: "#6a1b9a" },
         { date: "Tuesday, September 3rd 2024", color: "#0288d1" },
@@ -134,6 +147,11 @@ export default defineComponent({
         "09:00AM", "ㆍ", "10:00AM", "ㆍ", "11:00AM", "ㆍ", "12:00PM", "ㆍ",
         "01:00PM", "ㆍ", "02:00PM", "ㆍ", "03:00PM", "ㆍ", "04:00PM", "ㆍ",
         "05:00PM", "ㆍ", "06:00PM", "ㆍ", "07:00PM", "ㆍ", "08:00PM", "ㆍ", "09:00PM"
+      ],
+      tempTimeSlots: [
+        "09:00AM", "09:30AM", "10:00AM", "10:30AM", "11:00AM", "11:30AM", "12:00PM", "12:30PM",
+        "01:00PM", "01:30PM", "02:00PM", "02:30PM", "03:00PM", "03:30PM", "04:00PM", "04:30PM",
+        "05:00PM", "05:30PM", "06:00PM", "06:30PM", "07:00PM", "07:30PM", "08:00PM", "08:30PM", "09:00PM"
       ],
       events: [
         { date: "Monday, September 2nd 2024", room: "Room A", title: "A 24 EN meeting", time: "09:00AM - 11:30AM", person: "Carol", startTime: "09:00AM", endTime: "11:30AM" },
@@ -150,7 +168,6 @@ export default defineComponent({
 
 
   mounted() {
-
     const screenWidth = window.screen.width;
     // console.log('当前屏幕的宽度为:', screenWidth, '像素');
     this.screenSize['width'] = screenWidth;
@@ -163,13 +180,14 @@ export default defineComponent({
     // 输出示例：当前屏幕的宽度为: 1920 像素
 
     console.log('mounted getRooms enter')
-    // console.log('mounted areaData', areaData)
-    // setTimeout(() => {
-
-    // },50)
     this.areas = areaData.data.areas;
     console.log('mounted this.areas', this.areas[0].area_name)
     console.log('mounted this.areas', this.areas[1].area_name)
+
+
+    
+
+
     return;
     Api.getRooms({}).then(data => {
       console.log('mounted getRooms data:', data)
@@ -179,6 +197,7 @@ export default defineComponent({
       data = data[0]
     })
   },
+
 
   methods: {
     getEventsForRoom(room) {
@@ -294,6 +313,15 @@ export default defineComponent({
       return formattedDates;
     },
 
+    toMeet(time,room) {
+      console.log('toMeet time:',time,room)
+      this.push(`/meet_detail/0`);
+    },
+
+    editMeet(event) {
+      this.push(`/meet_detail/${event.entry_id}`);
+    },
+
     // chose day/3/week
     choseArea(e) {
       this.currenArea = e;
@@ -363,9 +391,10 @@ export default defineComponent({
       const meetDates = tempmeets.map((meet, index) => {
         return {
           date: moment(meet.start_time).format('dddd, MMMM Do YYYY'),
-          room: '新增房间信息',
+          room: meet.room_name,
           title: meet.entry_name,
           time: meet.duration,
+          status: meet.status,
           person: meet.book_by,
           startTime: meet.duration.split('-')[0].trim(),
           endTime: meet.duration.split('-')[1].trim()
@@ -518,6 +547,7 @@ export default defineComponent({
   padding-bottom: 0px;
   font-weight: bold;
   color: white;
+  position: relative;
 }
 
 .time-slots {
@@ -536,6 +566,24 @@ export default defineComponent({
   font-weight: normal;
   font-family: PingFangSC-regular;
   text-align: right;
+  /* display: flex; */
+}
+
+/* .empty-row-meets {
+  flex: 1;
+  position: absolute;
+  left: 100px;
+  width: 100px;
+  height: 80px;
+  background-color: red;
+} */
+
+.empty-meet-div {
+  position: absolute;
+  top: 100px;
+  width: 60px;
+  height: 60px;
+  /* background-color: red; */
 }
 
 .day-header {
