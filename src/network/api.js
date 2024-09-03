@@ -47,11 +47,7 @@ export class Api {
 
     static async getRooms(params) {
         params["type"] = "area"
-<<<<<<< HEAD
         return Request.post('get_all_rooms',params)
-=======
-        return Request.post('index', params)
->>>>>>> 131408bee7ba44f62d8e83af78df65cbbae6ad4f
     }
 
     static async getMeetRooms(params) {
