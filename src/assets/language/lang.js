@@ -23,6 +23,18 @@ export const messages = {
             noDataHint: '该设置不能为空',
             mustNumberHint: '该设置必须为数字'
         },
+        meet: {
+            title: '编辑会议',
+            admin: '创建人',
+            booker: '预约人',
+            short_desc: '简要说明',
+            all_desc: '完整说明',
+            start_meet: '起始',
+            end_meet: '结束',
+            room: '房间',
+            meet_type: '类型',
+            delete_meet: '删除'
+        },
         login: {
             account: '账号',
             password: '密码',
@@ -135,6 +147,18 @@ export const messages = {
             editFailed: 'Edit failed',
             noDataHint: 'Cannot be empty',
             mustNumberHint: 'Must be a number'
+        },
+        meet: {
+            title: 'Editing Meetings',
+            admin: 'Creator',
+            booker: 'Booker',
+            short_desc: 'Brief Description',
+            all_desc: 'Full description',
+            start_meet: 'Start',
+            end_meet: 'End',
+            room: 'Room',
+            meet_type: 'Type',
+            delete_meet: 'Delete'
         },
         login: {
             account: 'Account',

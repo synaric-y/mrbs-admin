@@ -154,14 +154,14 @@ export default defineComponent({
         "05:00PM", "05:30PM", "06:00PM", "06:30PM", "07:00PM", "07:30PM", "08:00PM", "08:30PM", "09:00PM"
       ],
       events: [
-        { date: "Monday, September 2nd 2024", room: "Room A", title: "A 24 EN meeting", time: "09:00AM - 11:30AM", person: "Carol", startTime: "09:00AM", endTime: "11:30AM" },
-        { date: "Monday, September 2nd 2024", room: "Room B", title: "B 24 EN meeting", time: "10:00AM - 11:30AM", person: "Carol", startTime: "10:00AM", endTime: "11:30AM" },
-        { date: "Monday, September 2nd 2024", room: "Room C", title: "C 24 EN meeting", time: "12:00PM - 01:30PM", person: "Carol", startTime: "12:00PM", endTime: "01:30PM" },
-        { date: "Monday, September 2nd 2024", room: "Room D", title: "D 24 EN meeting", time: "03:00PM - 04:30PM", person: "Carol", startTime: "03:00PM", endTime: "04:30PM" },
-        { date: "Tuesday, September 3rd 2024", room: "Room C", title: "C 25 EN meeting", time: "03:00PM - 06:00PM", person: "John Zhang", startTime: "03:00PM", endTime: "06:00PM" },
-        { date: "Wednesday, September 4th 2024", room: "Room B", title: "B 26 Quick meeting", time: "12:30PM - 01:00PM", person: "N/A", startTime: "12:30PM", endTime: "01:00PM" },
-        { date: "Thursday, September 5th 2024", room: "Room D", title: "D 27 Research meeting", time: "01:00PM - 02:00PM", person: "Tina", startTime: "01:00PM", endTime: "02:00PM" },
-        { date: "Wednesday, September 4th 2024", room: "Room B", title: "B 26 Research meeting", time: "01:30PM - 03:00PM", person: "Zhang", startTime: "01:30PM", endTime: "03:00PM" },
+        { date: "Monday, September 2nd 2024", entry_id: 1, room: "Room A", title: "A 24 EN meeting", time: "09:00AM - 11:30AM", person: "Carol", startTime: "09:00AM", endTime: "11:30AM" },
+        { date: "Monday, September 2nd 2024", entry_id: 2, room: "Room B", title: "B 24 EN meeting", time: "10:00AM - 11:30AM", person: "Carol", startTime: "10:00AM", endTime: "11:30AM" },
+        { date: "Monday, September 2nd 2024", entry_id: 3, room: "Room C", title: "C 24 EN meeting", time: "12:00PM - 01:30PM", person: "Carol", startTime: "12:00PM", endTime: "01:30PM" },
+        { date: "Monday, September 2nd 2024", entry_id: 4, room: "Room D", title: "D 24 EN meeting", time: "03:00PM - 04:30PM", person: "Carol", startTime: "03:00PM", endTime: "04:30PM" },
+        { date: "Tuesday, September 3rd 2024", entry_id: 5, room: "Room C", title: "C 25 EN meeting", time: "03:00PM - 06:00PM", person: "John Zhang", startTime: "03:00PM", endTime: "06:00PM" },
+        { date: "Wednesday, September 4th 2024", entry_id: 6, room: "Room B", title: "B 26 Quick meeting", time: "12:30PM - 01:00PM", person: "N/A", startTime: "12:30PM", endTime: "01:00PM" },
+        { date: "Thursday, September 5th 2024", entry_id: 7, room: "Room D", title: "D 27 Research meeting", time: "01:00PM - 02:00PM", person: "Tina", startTime: "01:00PM", endTime: "02:00PM" },
+        { date: "Wednesday, September 4th 2024", entry_id: 8, room: "Room B", title: "B 26 Research meeting", time: "01:30PM - 03:00PM", person: "Zhang", startTime: "01:30PM", endTime: "03:00PM" },
       ]
     };
   },
@@ -171,14 +171,11 @@ export default defineComponent({
     const screenWidth = window.screen.width;
     // console.log('当前屏幕的宽度为:', screenWidth, '像素');
     this.screenSize['width'] = screenWidth;
-
     const screenHeight = window.screen.height;
     // console.log('当前屏幕的高度为:', screenHeight, '像素');
     this.screenSize['height'] = screenHeight;
-
     console.log('当前屏幕的高度为:', this.screenSize, '像素');
     // 输出示例：当前屏幕的宽度为: 1920 像素
-
     console.log('mounted getRooms enter')
     this.areas = areaData.data.areas;
     console.log('mounted this.areas', this.areas[0].area_name)
@@ -394,6 +391,7 @@ export default defineComponent({
           room: meet.room_name,
           title: meet.entry_name,
           time: meet.duration,
+          entry_id: meet.entry_id,
           status: meet.status,
           person: meet.book_by,
           startTime: meet.duration.split('-')[0].trim(),
