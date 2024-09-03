@@ -1,4 +1,4 @@
-import {HOST} from "@/config.js";
+import {HOST, STORAGE} from "@/config.js";
 import axios from "@/network/axios.js";
 import router from "@/router/index.js";
 
@@ -13,6 +13,7 @@ export class Request {
 
         let rep = res.data;
         if (rep.code == -99) {
+            localStorage.removeItem(STORAGE.USER_INFO)
             await router.replace('/login')
             return {}
         }

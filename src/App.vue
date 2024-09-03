@@ -1,6 +1,7 @@
 <script>
 import router from "@/router/index.js"
 import {PageMixin} from "@/pages/PageMixin.js";
+import {STORAGE} from "@/config.js";
 
 export default {
   mixins: [PageMixin],
@@ -23,13 +24,24 @@ export default {
           path: "/user",
           name: "base.user"
         },
-      ]
+      ],
+      showPop: false
     }
   },
   methods: {
     toProfile() {
-      router.replace("/login")
+      let user = this.getUserInfo()
+      if (!user) {
+        router.replace("/login")
+      } else {
+        this.showPop = !this.showPop
+      }
     },
+    toLogout() {
+      this.logout()
+      this.showPop = false
+      router.replace("/login")
+    }
   }
 }
 </script>
@@ -41,7 +53,14 @@ export default {
 
         <el-button :class="['nav-button', currentTab == item.path ? '' : 'nav-button-inactive']" type="primary" round size="large" @click="switchTab(item.path)" v-for="(item, index) in tabs" :index="index">{{ $t(item.name) }}</el-button>
         <div style="flex: 1"></div>
-        <img style="width: 30px; height: 30px" src="/profile.png" @click="toProfile" />
+        <el-popover :visible="showPop" placement="bottom" :width="160">
+          <el-button style="width: 135px" size="small" type="primary" @click="toLogout">
+            {{$t('base.logout')}}
+          </el-button>
+          <template #reference>
+            <img style="width: 30px; height: 30px" src="/profile.png" @click="toProfile" />
+          </template>
+        </el-popover>
       </div>
     </div>
 <!--    <transition name="el-fade-in" mode="out-in">-->

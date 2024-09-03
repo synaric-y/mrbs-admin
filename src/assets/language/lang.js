@@ -14,6 +14,7 @@ export const messages = {
             plzSelect: '请选择',
             confirm: '确定',
             cancel: '取消',
+            logout: '登出',
 
             exchange: 'Exchange',
             wxwork: '企业微信',
@@ -38,7 +39,7 @@ export const messages = {
         login: {
             account: '账号',
             password: '密码',
-            accountPH: '用户名/邮箱',
+            accountPH: '用户名 / 邮箱',
         },
         area: {
             tableArea: {
@@ -139,6 +140,7 @@ export const messages = {
             plzSelect: 'Select',
             confirm: 'Confirm',
             cancel: 'Cancel',
+            logout: 'Logout',
 
             exchange: 'Exchange',
             wxwork: 'Wxwork',
@@ -163,7 +165,7 @@ export const messages = {
         login: {
             account: 'Account',
             password: 'Password',
-            accountPH: 'Username/E-Mail',
+            accountPH: 'Username / E-Mail',
         },
         area: {
             tableArea: {

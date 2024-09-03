@@ -1,6 +1,7 @@
 <script>
 import {Api} from "@/network/api.js";
 import {PageMixin} from "@/pages/PageMixin.js";
+import {STORAGE} from "@/config.js";
 
 export default {
   mixins: [PageMixin],
@@ -14,8 +15,9 @@ export default {
     }
   },
   methods: {
-    login() {
+    submit() {
       Api.login(this.form).then((data) => {
+        this.login(data)
         this.switchTab('/')
       })
     }
@@ -33,14 +35,14 @@ export default {
       <el-form :model="form" label-width="auto" style="max-width: 530px">
 
         <el-form-item :label="$t('login.account')">
-          <el-input v-model="form.username" :placeholder="$t('accountPH')" />
+          <el-input v-model="form.username" :placeholder="$t('login.accountPH')" />
         </el-form-item>
 
         <el-form-item :label="$t('login.password')">
           <el-input v-model="form.password" />
         </el-form-item>
 
-        <el-button style="margin-top: 30px" type="primary" size="default" @click="login">{{ $t("base.login") }}</el-button>
+        <el-button style="margin-top: 30px" type="primary" size="default" @click="submit">{{ $t("base.login") }}</el-button>
       </el-form>
     </el-main>
   </el-container>

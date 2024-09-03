@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomePage from '@/pages/HomePage.vue'
+import {STORAGE} from "@/config.js";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -50,6 +51,22 @@ const router = createRouter({
       component: () => import('@/pages/UserDetailPage.vue')
     }
   ]
+})
+
+router.beforeEach((to, from) => {
+  if (to.name == 'home' || to.name == 'login') {
+    return true
+  }
+  let json = localStorage.getItem(STORAGE.USER_INFO)
+  if (!json) {
+    localStorage.removeItem(STORAGE.USER_INFO)
+    return false
+  }
+  let user = JSON.parse(json)
+  if (user["level"] < 2) {
+    return false
+  }
+  return true
 })
 
 export default router
