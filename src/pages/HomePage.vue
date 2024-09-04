@@ -333,11 +333,12 @@ export default defineComponent({
       // console.log('toMeet time:', time, room)
       const tempTime = Common.getTimestampForTodayWithTime(time);
       console.log('toMeet tempTime:',tempTime)
-      this.push(`/meet_detail/0/${room.room_id}/${room.area_id}/0/${tempTime}`);
+      this.push(`/meet_detail/0/${room.room_id}/${room.area_id}/${tempTime}`);
     },
 
     editMeet(event) {
-      this.push(`/meet_detail/${event.entry_id}`);
+      // /meet_detail/:id/:room_id/:area_id/:timestamp',
+      this.push(`/meet_detail/${event.entry_id}/${event.room_id}/${event.area_id}/0`);
     },
 
     choseArea(e) {
