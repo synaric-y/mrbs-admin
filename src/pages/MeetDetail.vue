@@ -6,21 +6,21 @@
                     <!-- <div class="sub-title">{{ mode === "add" ? $t("area.addArea") : $t("area.editArea") }}</div> -->
                     <div class="sub-title">{{ $t("meet.title") }}</div>
                 </div>
-                <el-form :model="form" :rules="rules" label-width="auto" ref="meetForm" style="min-width: 730px">
-                    <el-form-item prop="create_by" :label="$t('meet.admin')">
+                <el-form :model="form" :rules="rules" label-width="auto" ref="meetForm" style="min-width: 430px">
+                    <el-form-item prop="create_by" :label="$t('meet.admin')"  style="width: 400px">
                         <el-select v-model="form.create_by">
                             <el-option v-for="(admin, index) in admins" :label="admin" :value="admin"
                                 :key="index"></el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item prop="book_by" :label="$t('meet.booker')">
+                    <el-form-item prop="book_by" :label="$t('meet.booker')" style="width: 400px">
                         <el-input v-model="form.book_by" />
                     </el-form-item>
-                    <el-form-item prop="name" :label="$t('meet.short_desc')">
+                    <el-form-item prop="name" :label="$t('meet.short_desc')"  style="width: 400px">
                         <el-input v-model="form.name" />
                     </el-form-item>
-                    <el-form-item prop="description" :label="$t('meet.all_desc')">
-                        <el-input style="width: 240px" type="textarea" maxlength="100" show-word-limit
+                    <el-form-item prop="description" :label="$t('meet.all_desc')"  style="width: 400px">
+                        <el-input type="textarea" maxlength="100" show-word-limit
                             v-model="form.description" />
                     </el-form-item>
                     <el-form-item prop="start_date" :label="$t('meet.start_meet')">
@@ -291,6 +291,25 @@ export default {
 </script>
 
 <style scoped>
+
+/*内容页容器*/
+.container-sub-page {
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  align-items: center;
+}
+
+/*内容页main部分*/
+.container-sub-page-main {
+  min-width: 930px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+}
+
+
 .picker-date-container {
     display: flex;
     flex-direction: row;
