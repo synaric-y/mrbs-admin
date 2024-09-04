@@ -330,10 +330,10 @@ export default defineComponent({
     },
 
     toMeet(time, room) {
-      console.log('toMeet time:', time, room)
-      const roomName = encodeURIComponent(room.room_name)
-      const tempTime = encodeURIComponent(time)
-      this.push(`/meet_detail/0/${room.room_id}/${room.area_id}`);
+      // console.log('toMeet time:', time, room)
+      const tempTime = Common.getTimestampForTodayWithTime(time);
+      console.log('toMeet tempTime:',tempTime)
+      this.push(`/meet_detail/0/${room.room_id}/${room.area_id}/0/${tempTime}`);
     },
 
     editMeet(event) {
@@ -531,7 +531,7 @@ export default defineComponent({
 }
 
 .home-calendar {
-  margin-left: 10px;
+  margin-left: 20px;
 }
 
 .demo-date-picker {

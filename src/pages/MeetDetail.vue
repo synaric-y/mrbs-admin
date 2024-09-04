@@ -84,6 +84,7 @@ export default {
             admins: [],
             meet_types: ["I", "E"],
             oneMeet: {},
+            entry_id: 0,
             form: {
                 create_by: "",
                 admins: [],
@@ -191,7 +192,7 @@ export default {
         },
         deleteMeet() {
             console.log('deleteMeet')
-            Api.deleteMeet({ entry_id: Number(id) }).then(data => {
+            Api.deleteMeet({ entry_id: Number(this.entry_id) }).then(data => {
                 ElMessage({
                     message: this.$t('base.editSuccess'),
                     type: 'success',
@@ -231,9 +232,18 @@ export default {
         }
     },
     mounted() {
-        let { id, room_id, room_name, timestamp, area_id } = this.$route.params
-        // room_name = decodeURIComponent(room_name)
-        // timestamp = decodeURIComponent(timestamp)
+        let { id, room_id, timestamp, area_id, entry_id } = this.$route.params
+        if(timestamp) {
+            // 将时间戳转化成08:00PM
+            // console.log('mounted timestamp begin',timestamp)
+            timestamp = moment.unix(timestamp).format('hh:mm')
+            this.form.start_hour = timestamp
+            // console.log('mounted timestamp end',timestamp)
+        }
+        if(entry_id) {
+            this.entry_id = entry_id
+        }
+
         console.log('meetDetail mounted id room_id  area_id ', id, room_id, area_id)
         Api.getAdmins().then(data => {
             if (!data) {

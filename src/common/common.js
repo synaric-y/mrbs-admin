@@ -38,5 +38,17 @@ export class Common {
         const [hours, minutes] = timeString.split(':').map(Number);
         const timeInMs = (hours * 60 * 60) + (minutes * 60);
         return timeInMs;
+    }
+
+    static getTimestampForTodayWithTime(timeString) {
+        const now = moment();
+        const time = moment(timeString, 'hh:mmA');
+        const combined = now.set({
+          hour: time.get('hour'),
+          minute: time.get('minute'),
+          second: 0,
+          millisecond: 0
+        });
+        return Math.floor(combined.valueOf() / 1000);
       }
 } 
