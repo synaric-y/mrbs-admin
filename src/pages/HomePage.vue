@@ -33,7 +33,7 @@
         </el-button-group>
       </el-col>
       <!-- Date-picker -->
-      <el-col :span="6">
+      <el-col :span="7">
         <el-date-picker v-model="baseTime" type="daterange" range-separator="To" :start-placeholder="startTime"
           :end-placeholder="endTime" @change="choseDate" />
       </el-col>
@@ -118,7 +118,6 @@ export default defineComponent({
   },
   data() {
     return {
-      currentDateTime: '12:00 pm August 30, 2024',
       selectedRoom: 'All',
       currenArea: '',
       customDate: null,
@@ -372,6 +371,8 @@ export default defineComponent({
             message: this.$t('base.selectDateError'),
             type: 'fail'
           })
+          this.startTime = ''
+          this.endTime = ''
           return
         }
 
