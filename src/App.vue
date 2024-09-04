@@ -70,8 +70,10 @@ export default {
             {{$t('base.logout')}}
           </el-button>
           <template #reference>
-            <img style="width: 30px; height: 30px" src="/imgs/profile.png" @click="toProfile" />
-            <div class="username">{{userInfo ? userInfo.display_name : ''}}</div>
+            <div class="username-wrapper" @click="toProfile">
+              <img style="width: 30px; height: 30px" src="/imgs/profile.png" v-if="!userInfo.display_name" />
+              <div class="username">{{userInfo.display_name}}</div>
+            </div>
           </template>
         </el-popover>
       </div>
@@ -186,9 +188,16 @@ export default {
   flex: 1;
 }
 
+.username-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
 .username {
-  font-size: 22px;
+  font-size: 18px;
   font-weight: bold;
   color: var(--el-color-primary);
+  margin-left: 10px;
 }
 </style>

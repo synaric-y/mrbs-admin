@@ -39,6 +39,7 @@ export const PageMixin = {
         },
         logout(callback) {
             localStorage.removeItem(STORAGE.USER_INFO)
+            this.userInfo = {level: 0}
             Api.logout({}).then(() => {
                 if (callback) {
                     callback()
@@ -50,7 +51,10 @@ export const PageMixin = {
             if (json) {
                 return JSON.parse(json)
             }
-            return null
+            return {level: 0}
         },
+    },
+    mounted() {
+        this.userInfo = this.getUserInfo()
     }
 }
