@@ -200,11 +200,7 @@ export default defineComponent({
     })
   },
 
-
-
-
   methods: {
-
     getAllRoom(data) {
       // 拼接 entries 数组
       const allRoom = [];
@@ -226,9 +222,7 @@ export default defineComponent({
       console.log('allRoom:', allRoom)
       return allRoom
     },
-    getEventsForRoom(room) {
-      return this.events.filter(event => event.room === room);
-    },
+
     getEventStyle(event) {
       const startHour = parseInt(event.startTime.split(':')[0]);
       const endHour = parseInt(event.endTime.split(':')[0]);
@@ -242,6 +236,7 @@ export default defineComponent({
         height: `${duration}px`,
       };
     },
+
     getTimeSlotIndex(time) {
       const [hour, minutePeriod] = time.split(":");
       const [minute, period] = [minutePeriod.slice(0, -2), minutePeriod.slice(-2)];
