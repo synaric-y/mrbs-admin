@@ -60,6 +60,7 @@ router.beforeEach((to, from) => {
   let json = localStorage.getItem(STORAGE.USER_INFO)
   if (!json) {
     localStorage.removeItem(STORAGE.USER_INFO)
+    router.push('/login')
     return false
   }
   let user = JSON.parse(json)
