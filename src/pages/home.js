@@ -7,6 +7,50 @@ export const adminData = {
     ]
 }
 
+export const meetData = {
+    "code": 0,
+    "message": "success",
+    "data": {
+        "id": "1101",
+        // "start_time": "1725249600",
+        // "end_time": "1725253200",
+
+        "start_time": 1725249600,
+        "end_time": 1725253200,
+        "entry_type": "1",
+        "repeat_id": "20",
+        "room_id": "3",
+        "room_name" : "Room A",
+        "timestamp": "2024-08-30 12:23:41",
+        "create_by": "admin",
+        "modified_by": "",
+        "name": "short remark",
+        "type": "I",
+        "description": "all remark",
+        "status": "4",
+        "reminded": null,
+        "info_time": null,
+        "info_user": null,
+        "info_text": null,
+        "ical_uid": "1123123",
+        "ical_sequence": "1",
+        "ical_recur_id": "20241103T160320Z",
+        "allow_registration": "0",
+        "registrant_limit": "10",
+        "registrant_limit_enabled": "1",
+        "registration_opens": "1209600",
+        "registration_opens_enabled": "0",
+        "registration_closes": "1",
+        "registration_closes_enabled": "0",
+        "book_by": "joy book",
+        "exchange_id": "AQMkADNjOWVjNWJkLWU3ZjMtNDhmOC04OTBkLWFkYzAyNTNmYzEyZQBGAAADGnORf1pex0qMUmK6PBXz5wcAZNcQvx0R/EWHphHpbd/SRQAAAgENAAAAZNcQvx0R/EWHphHpbd/SRQAAAgWgAAAA",
+        "exchange_key": "DwAAABYAAABk1xC/HRH8RYemEelt39JFAAAAAAU6",
+        "wxwork_bid": null,
+        "wxwork_sid": null,
+        "create_source": null
+    }
+}
+
 
 export const areaData = {
     "code": 0,

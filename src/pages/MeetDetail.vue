@@ -1,11 +1,12 @@
 <template>
     <el-container class="container-sub-page">
+        <el-scrollbar class="scroll-table-view" always >
         <el-main class="container-sub-page-main">
-            <div class="sub-title-wrapper">
+            <div class="sub-title-wrapper" style="height: 70 + 'px';">
                 <!-- <div class="sub-title">{{ mode === "add" ? $t("area.addArea") : $t("area.editArea") }}</div> -->
                 <div class="sub-title">{{ $t("meet.title") }}</div>
             </div>
-            <el-form :model="form" :rules="rules" label-width="auto" ref="meetForm" style="max-width: 530px">
+            <el-form :model="form" :rules="rules" label-width="auto" ref="meetForm" style="min-width: 730px">
                 <el-form-item prop="creat_by" :label="$t('meet.admin')">
                     <el-select v-model="form.creat_by">
                         <el-option v-for="(admin, index) in admins" :label="admin" :value="admin"
@@ -24,7 +25,7 @@
                 </el-form-item>
                 <el-form-item prop="start_date" :label="$t('meet.start_meet')">
                     <div class="picker-date-container">
-                        <el-date-picker v-model="form.start_date" type="date" placeholder="Pick a day"
+                        <el-date-picker v-model="form.start_date" type="date" placeholder="Pick start day"
                             @change="choseDate(0, $event)" />
                         <el-time-select v-model="form.start_hour" style="width: 240px;margin-left: 20px" start="06:00"
                             step="00:30" end="21:30" :placeholder="$t('base.plzSelect')"
@@ -33,7 +34,7 @@
                 </el-form-item>
                 <el-form-item prop="end_date" :label="$t('meet.end_meet')">
                     <div class="picker-date-container">
-                        <el-date-picker v-model="form.end_date" type="date" placeholder="Pick a day"
+                        <el-date-picker v-model="form.end_date" type="date" placeholder="Pick end day"
                             @change="choseDate(1, $event)" />
                         <el-time-select v-model="form.end_hour" style="width: 240px;margin-left: 20px" start="06:00"
                             step="00:30" end="21:30" :placeholder="$t('base.plzSelect')"
@@ -49,7 +50,7 @@
                 </el-form-item>
                 <el-form-item prop="type" :label="$t('meet.type')">
                     <el-select v-model="form.type" style="width: 240px" :placeholder="$t('base.plzSelect')">
-                        <el-option v-for="item in form.meet_types" :key="item" :label="item" :value="item" />
+                        <el-option v-for="item in meet_types" :key="item" :label="item" :value="item" />
                     </el-select>
                 </el-form-item>
                 <el-form-item style="margin-top: 60px">
@@ -59,6 +60,7 @@
                 </el-form-item>
             </el-form>
         </el-main>
+    </el-scrollbar>
     </el-container>
 </template>
 
@@ -69,7 +71,7 @@ import { PageMixin } from "@/pages/PageMixin.js";
 import { Api } from "@/network/api.js";
 import { ElMessage } from "element-plus";
 import router from "@/router/index.js";
-import { adminData, areaData } from "./home";
+import { adminData, areaData, meetData } from "./home";
 
 export default {
     mixins: [PageMixin],
@@ -78,6 +80,8 @@ export default {
             mode: 'update',
             rooms: [],
             admins: [],
+            meet_types: ["I", "E"],
+            oneMeet:{},
             form: {
                 creat_by: "",
                 admins: [],
@@ -92,7 +96,7 @@ export default {
                 end_seconds: 0,
                 end_date: "",
                 end_hour: "",
-                meet_types: ["I", "E"],
+                
                 type: 'I',
                 rooms: [],
                 edit_series: 0,
@@ -182,6 +186,7 @@ export default {
         },
 
         choseDate(mode, e) {
+            console.log('choseDate e',e)
             if (mode == 0) {
                 this.form.start_date = moment(e[0]).format('YYYY-MM-DD');
                 return
@@ -214,6 +219,40 @@ export default {
         this.rooms = areaData.data.areas[0].rooms
         // 获取创建人信息
         this.admins = adminData.data
+        // 获取会议信息
+        this.oneMeet = meetData.data;
+
+        this.form.creat_by = meetData.data.create_by
+        this.form.book_by = meetData.data.book_by
+        this.form.name = meetData.data.name
+        this.form.description = meetData.data.description
+        this.form.type = meetData.data.type
+        // this.form.start_date = moment(Number(meetData.data.start_time)).format('YYYY-MM-DD');
+        // this.form.end_date = moment(Number(meetData.data.end_time)).format('YYYY-MM-DD');
+        // this.form.start_seconds = moment(Number(meetData.data.start_time)).format("hh:mma")
+        // this.form.start_hour = moment(Number(meetData.data.start_time)).format("hh:mma")
+        // this.form.end_seconds = moment(Number(meetData.data.end_time)).format("hh:mma")
+        // this.form.end_hour = moment(Number(meetData.data.end_time)).format("hh:mma")
+
+        const start_time = meetData.data.start_time
+        const end_time = meetData.data.end_time
+
+        
+        this.form.start_date = moment(start_time).format('YYYY-MM-DD')
+        this.form.end_date = moment(end_time).format('YYYY-MM-DD')
+        this.form.start_seconds = moment(start_time).format("hh:mm")
+        this.form.end_seconds = moment(end_time).format("hh:mm")
+        this.form.start_hour = moment(start_time).format("hh:mm")
+        this.form.end_hour = moment(end_time).format("hh:mm")
+        this.form.rooms = []
+        this.form.rooms.push(meetData.data.room_id)
+        this.form.room_number = meetData.data.room_name
+
+
+        console.log('start_time y-m-d',start_time,moment(start_time).format('YYYY-MM-DD'))
+        console.log('end_time y-m-d',end_time,moment(end_time).format('YYYY-MM-DD'))
+        console.log('this.form',this.form)
+
         console.log('meetDetail mounted id', id)
         Api.getMeetDetail({ id: Number(id) }).then(data => {
             if (!data) {
@@ -227,13 +266,8 @@ export default {
             if (!data) {
                 return
             }
-            data = data[0]
             console.log('getAdmins data', data)
-            this.admins = data['admins']
-            // this.form["area_disabled"] = Number(data["disabled"])
-            // this.form["area_timezone"] = data["timezone"]
-            // this.form["area_start_first_slot"] = this.formatTime(data["morningstarts"], data["morningstarts_minutes"])
-            // this.form["area_start_last_slot"] = this.formatTime(data["eveningends"], data["eveningends_minutes"])
+            this.admins = data
         })
     }
 }
@@ -243,5 +277,10 @@ export default {
 .picker-date-container {
     display: flex;
     flex-direction: row;
+}
+
+.scroll-table-view {
+    width: 100%;
+    height: 800px;
 }
 </style>
