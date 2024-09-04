@@ -34,7 +34,7 @@ export default {
   },
   methods: {
     toProfile() {
-      let user = this.getUserInfo()
+      let user = this.userInfo
       if (!user) {
         router.replace("/login")
       } else {
@@ -44,11 +44,13 @@ export default {
     toLogout() {
       this.showPop = false
       this.logout(() => {
-        router.replace("/login")
+        // router.replace("/login")
       })
+      router.replace("/login")
     }
   },
   mounted() {
+    this.getCacheUserInfo()
     console.log('~~', this.userInfo)
   }
 }
@@ -62,7 +64,7 @@ export default {
         <template v-for="(item, index) in tabs" :index="index">
           <el-button :class="['nav-button', currentTab == item.path ? '' : 'nav-button-inactive']" type="primary" round
                      size="large" @click="switchTab(item.path)"
-                     v-if="item && userInfo && (userInfo.level >= item.level)">{{ $t(item.name) }}</el-button>
+                     v-if="item && (item.level == 0 || userInfo && (userInfo.level >= item.level))">{{ $t(item.name) }}</el-button>
         </template>
         <div style="flex: 1"></div>
         <el-popover :visible="showPop" placement="bottom" :width="160">
@@ -71,8 +73,8 @@ export default {
           </el-button>
           <template #reference>
             <div class="username-wrapper" @click="toProfile">
-              <img style="width: 30px; height: 30px" src="/imgs/profile.png" v-if="!userInfo.display_name" />
-              <div class="username">{{userInfo.display_name}}</div>
+              <img style="width: 30px; height: 30px" src="/imgs/profile.png" v-if="!userInfo || !userInfo.display_name" />
+              <div class="username">{{userInfo ? userInfo.display_name : ''}}</div>
             </div>
           </template>
         </el-popover>
