@@ -86,6 +86,7 @@ export default {
             oneMeet: {},
             entry_id: 0,
             form: {
+                id: 0,
                 create_by: "",
                 admins: [],
                 book_by: "",
@@ -175,6 +176,7 @@ export default {
                 }
                 // this.form["sort_key"] = this.form["area_name"]
                 // 编辑或者新增会议
+
                 Api.editMeet(this.form).then(data => {
                     ElMessage({
                         message: this.$t('base.editSuccess'),
@@ -253,8 +255,9 @@ export default {
         if(room_id) {
             this.form.rooms.push(Number(room_id))
         }
-        if(entry_id) {
-            this.entry_id = entry_id
+        if(id) {
+            this.entry_id = id
+            this.form.id = id
         }
 
         console.log('meetDetail mounted id room_id  area_id ', id, room_id, area_id)
@@ -302,6 +305,7 @@ export default {
             this.form.end_hour = moment(end_time).format("hh:mm")
             this.form.rooms = []
             this.form.rooms.push(Number(data.room_id))
+            this.form.id = data.id
             this.form.room_number = data.room_name
             console.log('start_time y-m-d', start_time, moment(start_time).format('YYYY-MM-DD'))
             console.log('end_time y-m-d', end_time, moment(end_time).format('YYYY-MM-DD'))

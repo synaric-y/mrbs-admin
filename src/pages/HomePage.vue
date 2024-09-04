@@ -25,8 +25,7 @@
         <el-button-group>
           <el-button :class="[dayRrangeVal == 1 ? 'button-selected' : 'button-normal']"
             @click="dayRrange(1)">Today</el-button>
-          <el-button :class="[dayRrangeVal == 3 ? 'button-selected' : 'button-normal']" 
-            @click="dayRrange(3)">3
+          <el-button :class="[dayRrangeVal == 3 ? 'button-selected' : 'button-normal']" @click="dayRrange(3)">3
             Days</el-button>
           <el-button :class="[dayRrangeVal == 7 ? 'button-selected' : 'button-normal']"
             @click="dayRrange(7)">Week</el-button>
@@ -59,7 +58,7 @@
             <div v-for="(room, roomIndex) in rooms" :key="roomIndex" class="room-name"
               :style="{ height: timeSlots.length * 60 + 40 + 'px', width: itemWidth + 'px' }">
               {{ room.room_name }}
-              <template v-for="(time, timeIndex) in tempTimeSlots">
+              <template v-for="(time, timeIndex) in localTimeSlots">
                 <div class="empty-meet-div"
                   :style="{ height: 55 + 'px', width: itemWidth + 'px', top: (timeIndex + 1) * 60 + 'px' }"
                   @click="toMeet(time, room)"></div>
@@ -133,12 +132,28 @@ export default defineComponent({
       nowTime: '',
       days: [],
       rooms: [],
-      timeSlots:[],
-      events:[],
+      timeSlots: [],
+      events: [],
+      timeSlots: [
+        "09:00AM", "ㆍ", "10:00AM", "ㆍ", "11:00AM", "ㆍ", "12:00PM", "ㆍ",
+        "01:00PM", "ㆍ", "02:00PM", "ㆍ", "03:00PM", "ㆍ", "04:00PM", "ㆍ",
+        "05:00PM", "ㆍ", "06:00PM", "ㆍ", "07:00PM", "ㆍ", "08:00PM", "ㆍ", "09:00PM"
+      ],
+      localTimeSlots: [
+        "09:00AM", "09:30AM", "10:00AM", "10:30AM", "11:00AM", "11:30AM", "12:00PM", "12:30PM",
+        "01:00PM", "01:30PM", "02:00PM", "02:30PM", "03:00PM", "03:30PM", "04:00PM", "04:30PM",
+        "05:00PM", "05:30PM", "06:00PM", "06:30PM", "07:00PM", "07:30PM", "08:00PM", "08:30PM", "09:00PM"
+      ],
     };
   },
 
   mounted() {
+
+    // const temp = moment(1725411600 * 1000).format('dddd, MMMM Do YYYY')
+
+    // console.log('mounted moment:',temp)
+
+
     const screenWidth = window.screen.width;
     this.screenSize['width'] = screenWidth;
     const screenHeight = window.screen.height;
@@ -299,8 +314,8 @@ export default defineComponent({
     },
 
     toMeet(time, room) {
-      const tempTime = Common.getTimestampForTodayWithTime(time);
-      console.log('toMeet tempTime:',tempTime)
+      const tempTime = Common.getTimestampForTodayWithTime(time*1000);
+      console.log('toMeet tempTime:', tempTime)
       this.push(`/meet_detail/0/${room.room_id}/${room.area_id}/${tempTime}`);
     },
 
@@ -394,11 +409,11 @@ export default defineComponent({
     },
 
     getInMeeting(data) {
-      if (!data || data.area_room == null || data.area_room.length == 0) {
+      if (!data || data.areas == null || data.areas.length == 0) {
         return
       }
       const entriesRoom = [];
-      data.area_room.forEach(area => {
+      data.areas.forEach(area => {
         const areaId = area.area_id;
         const areaName = area.area_name;
         area.rooms.forEach(room => {
@@ -410,7 +425,7 @@ export default defineComponent({
               area_name: areaName,
               room_id: roomId,
               room_name: roomName,
-              date: moment(entry.start_time).format('dddd, MMMM Do YYYY'),
+              date: moment(Number(entry.start_time * 1000)).format('dddd, MMMM Do YYYY'),
               startTime: entry.duration.split('-')[0].trim(),
               endTime: entry.duration.split('-')[1].trim(),
               ...entry
