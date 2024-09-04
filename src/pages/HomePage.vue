@@ -1,12 +1,12 @@
 <template>
   <div class="toolbar">
     <!-- Icon and Date-Time -->
-    <el-row :gutter="20">
+    <el-row :gutter="10">
       <!-- Current Date -->
-      <el-col :span="8">
+      <el-col :span="6">
         <el-icon class="home-time-icon">
         </el-icon>
-        <span>{{ currentDateTime }}</span>
+        <span>{{ nowTime }}</span>
       </el-col>
       <!-- Dropdown Room -->
       <el-col :span="3">
@@ -14,10 +14,6 @@
           <el-option label="All Areas" value="All"></el-option>
           <el-option v-for="(area, index) in areas" :label="area.area_name" :value="area.area_id"
             :key="index"></el-option>
-          <!-- <el-option label="Room A" value="A"></el-option>
-            <el-option label="Room B" value="B"></el-option>
-            <el-option label="Room C" value="C"></el-option>
-            <el-option label="Room D" value="D"></el-option> -->
         </el-select>
       </el-col>
       <!-- Calendar Icon -->
@@ -25,11 +21,12 @@
         <el-icon class="home-calendar-icon" type="text"></el-icon>
       </el-col>
       <!-- Buttons Group -->
-      <el-col :span="8">
+      <el-col :span="9">
         <el-button-group>
           <el-button :class="[dayRrangeVal == 1 ? 'button-selected' : 'button-normal']"
             @click="dayRrange(1)">Today</el-button>
-          <el-button :class="[dayRrangeVal == 3 ? 'button-selected' : 'button-normal']" @click="dayRrange(3)">3
+          <el-button :class="[dayRrangeVal == 3 ? 'button-selected' : 'button-normal']" 
+            @click="dayRrange(3)">3
             Days</el-button>
           <el-button :class="[dayRrangeVal == 7 ? 'button-selected' : 'button-normal']"
             @click="dayRrange(7)">Week</el-button>
@@ -138,6 +135,7 @@ export default defineComponent({
       scrollY: 0,
       startStamp: 0,
       endStamp: 0,
+      nowTime: '',
       days: [
         { date: "Monday, September 2nd 2024", color: "#6a1b9a" },
         { date: "Tuesday, September 3rd 2024", color: "#0288d1" },
@@ -170,9 +168,6 @@ export default defineComponent({
     };
   },
 
-
-
-
   mounted() {
     const screenWidth = window.screen.width;
     this.screenSize['width'] = screenWidth;
@@ -182,9 +177,6 @@ export default defineComponent({
     console.log('mounted getRooms enter')
     this.startStamp = Common.getThreeDaysTimestamps().start
     this.endStamp = Common.getThreeDaysTimestamps().end
-
-
-
     Api.getAreaRooms({}).then(data => {
       console.log('mounted getRooms data:', data)
       if (!data) {
@@ -429,6 +421,7 @@ export default defineComponent({
           return
         }
         console.log('getMeetRooms api data:', data)
+        this.nowTime = data.time
         this.getInMeeting(data)
       })
     },
@@ -479,8 +472,8 @@ export default defineComponent({
 }
 
 .home-time-icon {
-  width: 30px;
-  height: 30px;
+  width: 20px;
+  height: 20px;
   background-image: url('/imgs/home_time_icon.png');
   background-size: contain;
   background-repeat: no-repeat;
@@ -538,7 +531,7 @@ export default defineComponent({
 }
 
 .home-calendar {
-  margin-left: 100px;
+  margin-left: 10px;
 }
 
 .demo-date-picker {
