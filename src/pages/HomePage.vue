@@ -40,7 +40,7 @@
   </div>
 
   <div class="table-container">
-    <el-scrollbar ref="scrollContainer" class="scroll-table-view" always>
+    <el-scrollbar ref="scrollContainer" :class="[screenHeight <= 720 ? 'scroll-table-view':'scroll-table-big-view']" always>
       <!-- calendar header -->
       <div class="calendar-header">
         <!-- time line -->
@@ -130,16 +130,19 @@ export default defineComponent({
       startStamp: 0,
       endStamp: 0,
       nowTime: '',
+      screenHeight: 700,
       days: [],
       rooms: [],
       timeSlots: [],
       events: [],
       timeSlots: [
+        "08:00AM", "ㆍ",
         "09:00AM", "ㆍ", "10:00AM", "ㆍ", "11:00AM", "ㆍ", "12:00PM", "ㆍ",
         "01:00PM", "ㆍ", "02:00PM", "ㆍ", "03:00PM", "ㆍ", "04:00PM", "ㆍ",
         "05:00PM", "ㆍ", "06:00PM", "ㆍ", "07:00PM", "ㆍ", "08:00PM", "ㆍ", "09:00PM"
       ],
       localTimeSlots: [
+        "08:00AM", "08:30AM",
         "09:00AM", "09:30AM", "10:00AM", "10:30AM", "11:00AM", "11:30AM", "12:00PM", "12:30PM",
         "01:00PM", "01:30PM", "02:00PM", "02:30PM", "03:00PM", "03:30PM", "04:00PM", "04:30PM",
         "05:00PM", "05:30PM", "06:00PM", "06:30PM", "07:00PM", "07:30PM", "08:00PM", "08:30PM", "09:00PM"
@@ -158,7 +161,12 @@ export default defineComponent({
     this.screenSize['width'] = screenWidth;
     const screenHeight = window.screen.height;
     this.screenSize['height'] = screenHeight;
-    // console.log('当前屏幕的高度为:', this.screenSize, '像素');
+    if(screenHeight <= 720) {
+      this.screenHeight = screenHeight
+    } else {
+
+    }
+    console.log('当前屏幕的高度为:', this.screenSize, '像素');
     console.log('mounted getRooms enter')
     this.startStamp = Common.getThreeDaysTimestamps().start
     this.endStamp = Common.getThreeDaysTimestamps().end
@@ -547,7 +555,12 @@ export default defineComponent({
 }
 
 .scroll-table-view {
-  height: 500px;
+  height: 420px;
+  width: 100%;
+}
+
+.scroll-table-big-view {
+  height: 660px;
   width: 100%;
 }
 

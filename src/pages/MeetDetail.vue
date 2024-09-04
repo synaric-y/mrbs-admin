@@ -27,18 +27,18 @@
                         <div class="picker-date-container">
                             <el-date-picker v-model="form.start_date" type="date" placeholder="Pick start day"
                                 @change="choseDate(0, $event)" />
-                            <el-time-select v-model="form.start_hour" style="width: 240px;margin-left: 20px"
-                                start="06:00" step="00:30" end="21:30" :placeholder="$t('base.plzSelect')"
-                                @change="choseHour(0, form.start_hour, $event)" />
+                            <el-time-select v-model="start_hour" style="width: 240px;margin-left: 20px"
+                                start="08:00" step="00:30" end="21:00" :placeholder="$t('base.plzSelect')"
+                                @change="choseHour(0, start_hour, $event)" />
                         </div>
                     </el-form-item>
                     <el-form-item prop="end_date" :label="$t('meet.end_meet')">
                         <div class="picker-date-container">
                             <el-date-picker v-model="form.end_date" type="date" placeholder="Pick end day"
                                 @change="choseDate(1, $event)" />
-                            <el-time-select v-model="form.end_hour" style="width: 240px;margin-left: 20px" start="06:00"
-                                step="00:30" end="21:30" :placeholder="$t('base.plzSelect')"
-                                @change="choseHour(1, form.end_hour, $event)" />
+                            <el-time-select v-model="end_hour" style="width: 240px;margin-left: 20px" start="08:00"
+                                step="00:30" end="21:00" :placeholder="$t('base.plzSelect')"
+                                @change="choseHour(1, end_hour, $event)" />
                         </div>
                     </el-form-item>
                     <el-form-item prop="room_number" :label="$t('meet.room')">
@@ -85,6 +85,8 @@ export default {
             meet_types: ["I", "E"],
             oneMeet: {},
             entry_id: 0,
+            start_hour: "",
+            end_hour: "",
             form: {
                 id: 0,
                 create_by: "",
@@ -95,11 +97,9 @@ export default {
                 room_number: "",
                 type: "",
                 start_date: "",
-                start_hour: "",
                 start_seconds: 0,
                 end_seconds: 0,
                 end_date: "",
-                end_hour: "",
                 type: 'I',
                 rooms: [],
                 edit_series: 0,
@@ -236,15 +236,14 @@ export default {
     },
     mounted() {
         let { id, room_id, timestamp, area_id, entry_id } = this.$route.params
-        if(timestamp) {
-            // 将时间戳转化成08:00PM
+        if(timestamp > 0) {
             console.log('mounted timestamp begin',timestamp)
             const starttimestamp = moment.unix(timestamp).format('HH:mm')
-            this.form.start_hour = starttimestamp
+            this.start_hour = starttimestamp
             this.form.start_seconds = Common.getTimestampForTodayWithTime(this.form.start_hour)
             const endstamp = Number(timestamp) + 60 * 60
             console.log('mounted timestamp endstamp',endstamp)
-            this.form.end_hour = moment.unix(endstamp).format('HH:mm')
+            this.end_hour = moment.unix(endstamp).format('HH:mm')
             this.form.end_seconds = Common.getTimestampForTodayWithTime(this.form.end_hour)
             console.log('mounted timestamp end',timestamp)
 
@@ -275,7 +274,6 @@ export default {
                     return
                 }
                 console.log('mounted getAreaRooms data', data)
-                // this.form.rooms = data.areas[0].rooms
                 this.rooms = data.areas[0].rooms
                 const roomName = data.areas[0].rooms.filter(room => room.room_id == room_id)
                 this.form.room_number = roomName[0].room_name
@@ -295,14 +293,14 @@ export default {
             this.form.name = data.name
             this.form.description = data.description
             this.form.type = data.type
-            const start_time = data.start_time
-            const end_time = data.end_time
+            const start_time = data.start_time * 1000
+            const end_time = data.end_time * 1000
             this.form.start_date = moment(start_time).format('YYYY-MM-DD')
             this.form.end_date = moment(end_time).format('YYYY-MM-DD')
             this.form.start_seconds = moment(start_time).format("hh:mm")
             this.form.end_seconds = moment(end_time).format("hh:mm")
-            this.form.start_hour = moment(start_time).format("hh:mm")
-            this.form.end_hour = moment(end_time).format("hh:mm")
+            this.start_hour = moment(start_time).format("hh:mm")
+            this.end_hour = moment(end_time).format("hh:mm")
             this.form.rooms = []
             this.form.rooms.push(Number(data.room_id))
             this.form.id = data.id
@@ -319,7 +317,6 @@ export default {
 
 <style scoped>
 
-/*内容页容器*/
 .container-sub-page {
   width: 100vw;
   display: flex;
@@ -328,14 +325,12 @@ export default {
   align-items: center;
 }
 
-/*内容页main部分*/
 .container-sub-page-main {
   min-width: 930px;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
 }
-
 
 .picker-date-container {
     display: flex;
