@@ -187,6 +187,7 @@ export default defineComponent({
       }
       console.log('mounted this.areas data', data)
       this.areas = data.areas
+      this.dayRrange(3)
       this.rooms = this.getAllRoom(data)
       this.getMeetRooms()
     })
