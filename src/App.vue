@@ -51,7 +51,7 @@ export default {
   },
   mounted() {
     this.getCacheUserInfo()
-    console.log('~~', this.userInfo)
+    this.$forceUpdate()
   }
 }
 </script>

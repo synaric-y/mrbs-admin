@@ -5,7 +5,7 @@ import {Api} from "@/network/api.js";
 
 
 export const UserStore = defineStore('user', {
-  state: () => ({ userInfo: null }),
+  state: () => ({ userInfo: {level: 0} }),
   getters: {
     // double: (state) => state.currentTab,
   },
@@ -18,7 +18,7 @@ export const UserStore = defineStore('user', {
     },
     logout(callback) {
       localStorage.removeItem(STORAGE.USER_INFO)
-      this.userInfo = null
+      this.userInfo = {level: 0}
       Api.logout({}).then(() => {
         if (callback) {
           callback()
