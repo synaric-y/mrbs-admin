@@ -61,9 +61,7 @@
           <div class="room-header">
             <div v-for="(room, roomIndex) in rooms" :key="roomIndex" class="room-name"
               :style="{ height: timeSlots.length * 60 + 40 + 'px', width: itemWidth + 'px' }">
-
-              {{ room }}
-
+              {{ room.room_name }}
               <template v-for="(time, timeIndex) in tempTimeSlots">
                 <div class="empty-meet-div"
                   :style="{ height: 55 + 'px', width: itemWidth + 'px', top: (timeIndex + 1) * 60 + 'px' }"
@@ -72,7 +70,7 @@
 
               <template v-for="(event, indexeve) in events">
                 <!-- Rooms and Schedule -->
-                <template v-if="day.date == event.date && room == event.room">
+                <template v-if="day.date == event.date && room.room_id == event.room_id">
                   <div :key="indexeve" class="room-meet-event" @click="editMeet(event)"
                     :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
                     <div class="event-title">{{ event.entry_name }}</div>
@@ -106,6 +104,8 @@ const size = ref < 'default' | 'large' | 'small' > ('default')
 const value1 = ref('')
 import moment from "moment";
 import { PageMixin } from "@/pages/PageMixin.js";
+import { Common } from "@/common/common";
+import { ElMessage } from "element-plus/es";
 
 export default defineComponent({
   mixins: [PageMixin],
@@ -122,7 +122,7 @@ export default defineComponent({
     return {
       currentDateTime: '12:00 pm August 30, 2024',
       selectedRoom: 'All',
-      currenArea: '1',
+      currenArea: '',
       customDate: null,
       hoursNumber: 24,
       testam: '09:00AM',
@@ -135,6 +135,8 @@ export default defineComponent({
       screenSize: {},
       itemWidth: 228,
       scrollY: 0,
+      startStamp: 0,
+      endStamp: 0,
       days: [
         { date: "Monday, September 2nd 2024", color: "#6a1b9a" },
         { date: "Tuesday, September 3rd 2024", color: "#0288d1" },
@@ -168,62 +170,59 @@ export default defineComponent({
   },
 
 
+
+
   mounted() {
     const screenWidth = window.screen.width;
-    // console.log('当前屏幕的宽度为:', screenWidth, '像素');
     this.screenSize['width'] = screenWidth;
     const screenHeight = window.screen.height;
-    // console.log('当前屏幕的高度为:', screenHeight, '像素');
     this.screenSize['height'] = screenHeight;
     console.log('当前屏幕的高度为:', this.screenSize, '像素');
-    // 输出示例：当前屏幕的宽度为: 1920 像素
     console.log('mounted getRooms enter')
-    this.areas = areaData.data.areas;
-    console.log('mounted this.areas', this.areas[0].area_name)
-    console.log('mounted this.areas', this.areas[1].area_name)
+    this.startStamp = Common.getThreeDaysTimestamps().start
+    this.endStamp = Common.getThreeDaysTimestamps().end
 
 
-    // 拼接 entries 数组
-    const entriesRoom = [];
-    homeData.data.area_room.forEach(area => {
-      const areaId = area.area_id;
-      const areaName = area.area_name;
-      area.rooms.forEach(room => {
-        const roomId = room.room_id;
-        const roomName = room.room_name;
-        room.entries.forEach(entry => {
-          // 拼接信息
-          entriesRoom.push({
-            area_id: areaId,
-            area_name: areaName,
-            room_id: roomId,
-            room_name: roomName,
-            startTime: entry.duration.split('-')[0].trim(),
-            endTime: entry.duration.split('-')[1].trim(),
-            ...entry
-          });
-        });
-      });
-    });
-    console.log('entriesRoom:', entriesRoom)
 
-    this.getMeetRooms()
-    return
-
-    Api.getRooms({}).then(data => {
+    Api.getAreaRooms({}).then(data => {
       console.log('mounted getRooms data:', data)
       if (!data) {
+        ElMessage({
+          message: this.$t('base.getAreaError'),
+          type: 'fail'
+        })
         return
       }
-      data = data[0]
+      console.log('mounted this.areas data', data)
+      this.areas = data.areas
+      this.rooms = this.getAllRoom(data)
+      this.getMeetRooms()
     })
   },
 
-
   methods: {
-    getEventsForRoom(room) {
-      return this.events.filter(event => event.room === room);
+    getAllRoom(data) {
+      // 拼接 entries 数组
+      const allRoom = [];
+      data.areas.forEach(area => {
+        const areaId = area.area_id;
+        const areaName = area.area_name;
+        area.rooms.forEach(room => {
+          const roomId = room.room_id;
+          const roomName = room.room_name;
+           // 拼接信息
+           allRoom.push({
+              area_id: areaId,
+              area_name: areaName,
+              room_id: roomId,
+              room_name: `${areaName} ${roomName}`,
+            });
+        });
+      });
+      console.log('allRoom:', allRoom)
+      return allRoom
     },
+
     getEventStyle(event) {
       const startHour = parseInt(event.startTime.split(':')[0]);
       const endHour = parseInt(event.endTime.split(':')[0]);
@@ -237,6 +236,7 @@ export default defineComponent({
         height: `${duration}px`,
       };
     },
+
     getTimeSlotIndex(time) {
       const [hour, minutePeriod] = time.split(":");
       const [minute, period] = [minutePeriod.slice(0, -2), minutePeriod.slice(-2)];
@@ -254,19 +254,30 @@ export default defineComponent({
     dayRrange(day) {
       this.dayRrangeVal = day;
       let days = [];
+      let tempTime = {};
       if (day == 1) {
         console.log('One Days:', this.getCurrenDay());
         days = this.getCurrenDay();
+        tempTime = Common.getTodayTimestamps()
+        console.log(Common.getTodayTimestamps())
       } else if (day == 3) {
         console.log('Next Three Days:', this.getThreeDays());
         days = this.getThreeDays();
+        tempTime = Common.getThreeDaysTimestamps()
+        console.log(Common.getThreeDaysTimestamps())
       } else if (day == 7) {
         console.log('Week Days:', this.getCurrenWeek());
         days = this.getCurrenWeek();
+        tempTime = Common.getThisWeekTimestamps()
+        console.log(Common.getThisWeekTimestamps())
       } else {
         console.log('Next Three Days:', this.getThreeDays());
         days = this.getThreeDays();
+        tempTime = Common.getThreeDaysTimestamps()
+        console.log(Common.getThreeDaysTimestamps())
       }
+      this.startStamp = tempTime.start
+      this.endStamp = tempTime.end
       this.days = this.formatDays(days);
       this.getMeetRooms();
     },
@@ -315,14 +326,6 @@ export default defineComponent({
       return days;
     },
 
-    getYearToDay(timestamp) {
-      const date = moment(timestamp);
-      const year = date.format('YYYY');
-      const month = date.format('MM');
-      const day = date.format('DD');
-      return `${year}-${month}-${day}`;
-    },
-
     formatDays(days) {
       const formattedDates = days.map((day, index) => {
         return {
@@ -362,7 +365,6 @@ export default defineComponent({
       }
     },
 
-    // chose start/end time
     choseDate(e) {
       if (e.length > 0) {
         this.startTime = e[0];
@@ -386,8 +388,14 @@ export default defineComponent({
 
     getMeetRooms() {
       console.log('getMeetRooms enter');
-      const start = this.formatTime(this.startTime) || 0;
-      const end = this.formatTime(this.endTime) || 0;
+      if (this.startTime && this.startTime != 'Start date') {
+        this.startStamp = this.formatTime(this.startTime) || 0;
+        this.endStamp = this.formatTime(this.endTime) || 0;
+      } else {
+        const temp = Common.getThreeDaysTimestamps()
+        this.startStamp = temp.start
+        this.endStamp = temp.end
+      }
       const itemNumber = this.rooms.length * this.days.length;
       console.log('getMeetRooms itemNumber:', itemNumber);
       // 动态计算会议的宽度
@@ -398,16 +406,15 @@ export default defineComponent({
       } else {
         this.itemWidth = 228;
       }
-      console.log('getMeetRooms itemWidth:', this.itemWidth);
-      console.log('getMeetRooms currenArea:  start: end: ', this.currenArea, start, end);
+      // console.log('getMeetRooms itemWidth:', this.itemWidth);
+      console.log('getMeetRooms currenArea:  start: end: ', this.currenArea, this.startStamp, this.endStamp);
       // 获取开始、结束时间的时间戳
-      Api.getMeetRooms({ id: this.currenArea, start_time: start, end_time: end }).then(data => {
+      Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp, end_time: this.endStamp }).then(data => {
         if (!data) {
           return
         }
         console.log('getMeetRooms api data:', data)
         this.getInMeeting(data)
-        // 处理会议数据
       })
     },
 

@@ -49,8 +49,8 @@ export class Api {
         return Request.post('del', params)
     }
 
-    static async getRooms(params) {
-        params["type"] = "area"
+    static async getAreaRooms(params) {
+        params["type"] = "all"
         return Request.post('get_all_rooms',params)
     }
 
