@@ -210,13 +210,13 @@ export default defineComponent({
         area.rooms.forEach(room => {
           const roomId = room.room_id;
           const roomName = room.room_name;
-           // 拼接信息
-           allRoom.push({
-              area_id: areaId,
-              area_name: areaName,
-              room_id: roomId,
-              room_name: `${areaName} ${roomName}`,
-            });
+          // 拼接信息
+          allRoom.push({
+            area_id: areaId,
+            area_name: areaName,
+            room_id: roomId,
+            room_name: `${areaName} ${roomName}`,
+          });
         });
       });
       console.log('allRoom:', allRoom)
@@ -369,10 +369,22 @@ export default defineComponent({
 
     choseDate(e) {
       if (e.length > 0) {
+        const start_date = moment(e[0]).format('YYYY-MM-DD')
+        const end_date = moment(e[1]).format('YYYY-MM-DD')
+        const start = moment(start_date);
+        const end = moment(end_date)
+        if (end - start > 30) {
+          ElMessage({
+            message: this.$t('base.selectDateError'),
+            type: 'fail'
+          })
+          return
+        }
+
         this.startTime = e[0];
         this.endTime = e[1];
         this.getMeetRooms();
-        const days = this.getDaysBetween(moment(e[0]).format('YYYY-MM-DD'), moment(e[1]).format('YYYY-MM-DD'));
+        const days = this.getDaysBetween(start_date, end_date);
         const tempdays = this.formatDays(days);
         console.log('tempdays:', tempdays);
         this.days = tempdays;
