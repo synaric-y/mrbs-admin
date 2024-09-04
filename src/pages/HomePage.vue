@@ -88,6 +88,7 @@
       <template v-if="getTimeSlotIndex(testam)">
       </template>
     </el-scrollbar>
+    <div class="empty-bottom"></div>
   </div>
 </template>
 
@@ -567,12 +568,13 @@ export default defineComponent({
 
 .table-container {
   display: flex;
+  flex-direction: column;
   position: relative;
   flex: 1;
 }
 
 .scroll-table-view {
-  height: 700px;
+  height: 470px;
   width: 100%;
 }
 
@@ -700,5 +702,11 @@ export default defineComponent({
 .event-person {
   font-size: 10px;
   color: #555;
+}
+
+.empty-bottom {
+  height: 30px;
+  width: 100%;
+  /* background-color: red; */
 }
 </style>
