@@ -2,7 +2,7 @@
     <el-container class="container-sub-page">
         <el-scrollbar class="scroll-table-view" always>
             <el-main class="container-sub-page-main">
-                <div class="sub-title-wrapper" style="height: 70 + 'px';">
+                <div class="sub-title-wrapper" style="height: 20 + 'px';">
                     <!-- <div class="sub-title">{{ mode === "add" ? $t("area.addArea") : $t("area.editArea") }}</div> -->
                     <div class="sub-title">{{ $t("meet.title") }}</div>
                 </div>
@@ -53,7 +53,7 @@
                             <el-option v-for="item in meet_types" :key="item" :label="item" :value="item" />
                         </el-select>
                     </el-form-item>
-                    <el-form-item style="margin-top: 60px">
+                    <el-form-item style="margin-top: 20px">
                         <el-button type="info" size="default" @click="cancle">{{ $t("base.cancel") }}</el-button>
                         <el-button type="danger" size="default" @click="deleteMeet">{{ $t("meet.delete_meet")
                             }}</el-button>
