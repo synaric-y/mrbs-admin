@@ -61,9 +61,7 @@
           <div class="room-header">
             <div v-for="(room, roomIndex) in rooms" :key="roomIndex" class="room-name"
               :style="{ height: timeSlots.length * 60 + 40 + 'px', width: itemWidth + 'px' }">
-
-              {{ room }}
-
+              {{ room.room_name }}
               <template v-for="(time, timeIndex) in tempTimeSlots">
                 <div class="empty-meet-div"
                   :style="{ height: 55 + 'px', width: itemWidth + 'px', top: (timeIndex + 1) * 60 + 'px' }"
@@ -72,7 +70,7 @@
 
               <template v-for="(event, indexeve) in events">
                 <!-- Rooms and Schedule -->
-                <template v-if="day.date == event.date && room == event.room">
+                <template v-if="day.date == event.date && room.room_id == event.room_id">
                   <div :key="indexeve" class="room-meet-event" @click="editMeet(event)"
                     :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
                     <div class="event-title">{{ event.entry_name }}</div>
@@ -172,46 +170,19 @@ export default defineComponent({
   },
 
 
+
+
   mounted() {
     const screenWidth = window.screen.width;
-    // console.log('当前屏幕的宽度为:', screenWidth, '像素');
     this.screenSize['width'] = screenWidth;
     const screenHeight = window.screen.height;
-    // console.log('当前屏幕的高度为:', screenHeight, '像素');
     this.screenSize['height'] = screenHeight;
     console.log('当前屏幕的高度为:', this.screenSize, '像素');
-    // 输出示例：当前屏幕的宽度为: 1920 像素
     console.log('mounted getRooms enter')
-
     this.startStamp = Common.getThreeDaysTimestamps().start
     this.endStamp = Common.getThreeDaysTimestamps().end
 
 
-    // 拼接 entries 数组
-    // const entriesRoom = [];
-    // homeData.data.area_room.forEach(area => {
-    //   const areaId = area.area_id;
-    //   const areaName = area.area_name;
-    //   area.rooms.forEach(room => {
-    //     const roomId = room.room_id;
-    //     const roomName = room.room_name;
-    //     room.entries.forEach(entry => {
-    //       // 拼接信息
-    //       entriesRoom.push({
-    //         area_id: areaId,
-    //         area_name: areaName,
-    //         room_id: roomId,
-    //         room_name: roomName,
-    //         startTime: entry.duration.split('-')[0].trim(),
-    //         endTime: entry.duration.split('-')[1].trim(),
-    //         ...entry
-    //       });
-    //     });
-    //   });
-    // });
-    // console.log('entriesRoom:', entriesRoom)
-
-   
 
     Api.getAreaRooms({}).then(data => {
       console.log('mounted getRooms data:', data)
@@ -224,12 +195,37 @@ export default defineComponent({
       }
       console.log('mounted this.areas data', data)
       this.areas = data.areas
+      this.rooms = this.getAllRoom(data)
       this.getMeetRooms()
     })
   },
 
 
+
+
   methods: {
+
+    getAllRoom(data) {
+      // 拼接 entries 数组
+      const allRoom = [];
+      data.areas.forEach(area => {
+        const areaId = area.area_id;
+        const areaName = area.area_name;
+        area.rooms.forEach(room => {
+          const roomId = room.room_id;
+          const roomName = room.room_name;
+           // 拼接信息
+           allRoom.push({
+              area_id: areaId,
+              area_name: areaName,
+              room_id: roomId,
+              room_name: `${areaName} ${roomName}`,
+            });
+        });
+      });
+      console.log('allRoom:', allRoom)
+      return allRoom
+    },
     getEventsForRoom(room) {
       return this.events.filter(event => event.room === room);
     },
@@ -374,7 +370,6 @@ export default defineComponent({
       }
     },
 
-    // chose start/end time
     choseDate(e) {
       if (e.length > 0) {
         this.startTime = e[0];
@@ -398,8 +393,7 @@ export default defineComponent({
 
     getMeetRooms() {
       console.log('getMeetRooms enter');
-      console.log('getMeetRooms this.startTime',this.startTime)
-      if(this.startTime && this.startTime != 'Start date') {
+      if (this.startTime && this.startTime != 'Start date') {
         this.startStamp = this.formatTime(this.startTime) || 0;
         this.endStamp = this.formatTime(this.endTime) || 0;
       } else {
