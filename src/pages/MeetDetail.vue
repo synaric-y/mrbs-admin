@@ -242,6 +242,9 @@ export default {
             console.log('mounted timestamp endstamp',endstamp)
             this.form.end_hour = moment.unix(endstamp).format('HH:mm')
             console.log('mounted timestamp end',timestamp)
+
+            this.form.start_date = moment.unix(timestamp).format('YYYY-MM-DD')
+            this.form.end_date = moment.unix(timestamp).format('YYYY-MM-DD')
         }
         if(entry_id) {
             this.entry_id = entry_id
@@ -265,7 +268,7 @@ export default {
                 this.form.rooms = data.areas[0].rooms
                 this.rooms = data.areas[0].rooms
                 const roomName = data.areas[0].rooms.filter(room => room.room_id == room_id)
-                this.form.room_number = roomName.room_name
+                this.form.room_number = roomName[0].room_name
                 console.log('get roomName', roomName)
             })
         }
