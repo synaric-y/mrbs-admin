@@ -213,6 +213,7 @@ export default {
         },
 
         choseHour(mode, str, e) {
+            console.log('choseHour str',str)
             if (mode == 0) {
                 this.form.start_seconds = Common.getTimestampForTodayWithTime(str);
                 return
@@ -223,7 +224,7 @@ export default {
         choseRoom(room) {
             console.log('choseRoom room', room)
             this.form.rooms = []
-            this.form.rooms.push(room)
+            this.form.rooms.push(Number(room))
         },
 
         formatTime(hours, minutes) {
@@ -238,13 +239,19 @@ export default {
             console.log('mounted timestamp begin',timestamp)
             const starttimestamp = moment.unix(timestamp).format('HH:mm')
             this.form.start_hour = starttimestamp
+            this.form.start_seconds = Common.getTimestampForTodayWithTime(this.form.start_hour)
             const endstamp = Number(timestamp) + 60 * 60
             console.log('mounted timestamp endstamp',endstamp)
             this.form.end_hour = moment.unix(endstamp).format('HH:mm')
+            this.form.end_seconds = Common.getTimestampForTodayWithTime(this.form.end_hour)
             console.log('mounted timestamp end',timestamp)
 
             this.form.start_date = moment.unix(timestamp).format('YYYY-MM-DD')
             this.form.end_date = moment.unix(timestamp).format('YYYY-MM-DD')
+        }
+
+        if(room_id) {
+            this.form.rooms.push(Number(room_id))
         }
         if(entry_id) {
             this.entry_id = entry_id
@@ -265,7 +272,7 @@ export default {
                     return
                 }
                 console.log('mounted getAreaRooms data', data)
-                this.form.rooms = data.areas[0].rooms
+                // this.form.rooms = data.areas[0].rooms
                 this.rooms = data.areas[0].rooms
                 const roomName = data.areas[0].rooms.filter(room => room.room_id == room_id)
                 this.form.room_number = roomName[0].room_name
@@ -294,7 +301,7 @@ export default {
             this.form.start_hour = moment(start_time).format("hh:mm")
             this.form.end_hour = moment(end_time).format("hh:mm")
             this.form.rooms = []
-            this.form.rooms.push(data.room_id)
+            this.form.rooms.push(Number(data.room_id))
             this.form.room_number = data.room_name
             console.log('start_time y-m-d', start_time, moment(start_time).format('YYYY-MM-DD'))
             console.log('end_time y-m-d', end_time, moment(end_time).format('YYYY-MM-DD'))

@@ -81,9 +81,6 @@
           </div>
         </div>
       </div>
-      <!-- test -->
-      <template v-if="getTimeSlotIndex(testam)">
-      </template>
     </el-scrollbar>
     <div class="empty-bottom"></div>
   </div>
@@ -122,7 +119,6 @@ export default defineComponent({
       currenArea: '',
       customDate: null,
       hoursNumber: 24,
-      testam: '09:00AM',
       dayRrangeVal: 3,
       baseTime: '',
       startTime: 'Start date',
@@ -135,35 +131,10 @@ export default defineComponent({
       startStamp: 0,
       endStamp: 0,
       nowTime: '',
-      days: [
-        { date: "Monday, September 2nd 2024", color: "#6a1b9a" },
-        { date: "Tuesday, September 3rd 2024", color: "#0288d1" },
-        { date: "Wednesday, September 4th 2024", color: "#6a1b9a" },
-        { date: "Thursday, September 5th 2024", color: "#0288d1" },
-      ],
-      rooms: ["Room A", "Room B", "Room C", "Room D"],
-      // rooms: ["Room A", "Room B", "Room C", "Room D","Room E","Room F","Room G"],
-      timeSlots: [
-        "09:00AM", "ㆍ", "10:00AM", "ㆍ", "11:00AM", "ㆍ", "12:00PM", "ㆍ",
-        "01:00PM", "ㆍ", "02:00PM", "ㆍ", "03:00PM", "ㆍ", "04:00PM", "ㆍ",
-        "05:00PM", "ㆍ", "06:00PM", "ㆍ", "07:00PM", "ㆍ", "08:00PM", "ㆍ", "09:00PM"
-      ],
-      tempTimeSlots: [
-        "09:00AM", "09:30AM", "10:00AM", "10:30AM", "11:00AM", "11:30AM", "12:00PM", "12:30PM",
-        "01:00PM", "01:30PM", "02:00PM", "02:30PM", "03:00PM", "03:30PM", "04:00PM", "04:30PM",
-        "05:00PM", "05:30PM", "06:00PM", "06:30PM", "07:00PM", "07:30PM", "08:00PM", "08:30PM", "09:00PM"
-      ],
-      events: [],
-      events1: [
-        { date: "Monday, September 2nd 2024", entry_id: 1, room: "Room A", entry_name: "A 24 EN meeting", duration: "09:00AM - 11:30AM", book_by: "Carol", startTime: "09:00AM", endTime: "11:30AM" },
-        { date: "Monday, September 2nd 2024", entry_id: 2, room: "Room B", entry_name: "B 24 EN meeting", duration: "10:00AM - 11:30AM", book_by: "Carol", startTime: "10:00AM", endTime: "11:30AM" },
-        { date: "Monday, September 2nd 2024", entry_id: 3, room: "Room C", entry_name: "C 24 EN meeting", duration: "12:00PM - 01:30PM", book_by: "Carol", startTime: "12:00PM", endTime: "01:30PM" },
-        { date: "Monday, September 2nd 2024", entry_id: 4, room: "Room D", entry_name: "D 24 EN meeting", duration: "03:00PM - 04:30PM", book_by: "Carol", startTime: "03:00PM", endTime: "04:30PM" },
-        { date: "Tuesday, September 3rd 2024", entry_id: 5, room: "Room C", entry_name: "C 25 EN meeting", duration: "03:00PM - 06:00PM", book_by: "John Zhang", startTime: "03:00PM", endTime: "06:00PM" },
-        { date: "Wednesday, September 4th 2024", entry_id: 6, room: "Room B", entry_name: "B 26 Quick meeting", duration: "12:30PM - 01:00PM", book_by: "N/A", startTime: "12:30PM", endTime: "01:00PM" },
-        { date: "Thursday, September 5th 2024", entry_id: 7, room: "Room D", entry_name: "D 27 Research meeting", duration: "01:00PM - 02:00PM", book_by: "Tina", startTime: "01:00PM", endTime: "02:00PM" },
-        { date: "Wednesday, September 4th 2024", entry_id: 8, room: "Room B", entry_name: "B 26 Research meeting", duration: "01:30PM - 03:00PM", book_by: "Zhang", startTime: "01:30PM", endTime: "03:00PM" },
-      ]
+      days: [],
+      rooms: [],
+      timeSlots:[],
+      events:[],
     };
   },
 
@@ -172,7 +143,7 @@ export default defineComponent({
     this.screenSize['width'] = screenWidth;
     const screenHeight = window.screen.height;
     this.screenSize['height'] = screenHeight;
-    console.log('当前屏幕的高度为:', this.screenSize, '像素');
+    // console.log('当前屏幕的高度为:', this.screenSize, '像素');
     console.log('mounted getRooms enter')
     this.startStamp = Common.getThreeDaysTimestamps().start
     this.endStamp = Common.getThreeDaysTimestamps().end
@@ -195,7 +166,6 @@ export default defineComponent({
 
   methods: {
     getAllRoom(data) {
-      // 拼接 entries 数组
       const allRoom = [];
       data.areas.forEach(area => {
         const areaId = area.area_id;
@@ -203,7 +173,6 @@ export default defineComponent({
         area.rooms.forEach(room => {
           const roomId = room.room_id;
           const roomName = room.room_name;
-          // 拼接信息
           allRoom.push({
             area_id: areaId,
             area_name: areaName,
@@ -330,14 +299,12 @@ export default defineComponent({
     },
 
     toMeet(time, room) {
-      // console.log('toMeet time:', time, room)
       const tempTime = Common.getTimestampForTodayWithTime(time);
       console.log('toMeet tempTime:',tempTime)
       this.push(`/meet_detail/0/${room.room_id}/${room.area_id}/${tempTime}`);
     },
 
     editMeet(event) {
-      // /meet_detail/:id/:room_id/:area_id/:timestamp',
       this.push(`/meet_detail/${event.entry_id}/${event.room_id}/${event.area_id}/0`);
     },
 
@@ -408,7 +375,6 @@ export default defineComponent({
       }
       const itemNumber = this.rooms.length * this.days.length;
       console.log('getMeetRooms itemNumber:', itemNumber);
-      // 动态计算会议的宽度
       if (itemNumber == 1) {
         this.itemWidth = this.screenSize['width'];
       } else if (itemNumber >= 2 && itemNumber <= 6) {
@@ -416,9 +382,7 @@ export default defineComponent({
       } else {
         this.itemWidth = 228;
       }
-      // console.log('getMeetRooms itemWidth:', this.itemWidth);
       console.log('getMeetRooms currenArea:  start: end: ', this.currenArea, this.startStamp, this.endStamp);
-      // 获取开始、结束时间的时间戳
       Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp, end_time: this.endStamp }).then(data => {
         if (!data) {
           return
@@ -433,7 +397,6 @@ export default defineComponent({
       if (!data || data.area_room == null || data.area_room.length == 0) {
         return
       }
-      // 拼接 entries 数组
       const entriesRoom = [];
       data.area_room.forEach(area => {
         const areaId = area.area_id;
@@ -442,7 +405,6 @@ export default defineComponent({
           const roomId = room.room_id;
           const roomName = room.room_name;
           room.entries.forEach(entry => {
-            // 拼接信息
             entriesRoom.push({
               area_id: areaId,
               area_name: areaName,
