@@ -574,7 +574,7 @@ export default defineComponent({
 }
 
 .scroll-table-view {
-  height: 470px;
+  height: 500px;
   width: 100%;
 }
 
@@ -605,6 +605,7 @@ export default defineComponent({
   flex-direction: column;
   padding-right: 10px;
   font-weight: bold;
+  z-index: 1000;
 }
 
 .time-slot {
