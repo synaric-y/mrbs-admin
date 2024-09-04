@@ -31,4 +31,12 @@ export class Common {
             end: Math.floor(endOfWeek / 1000)
         };
     }
+
+    static getTimestampForTodayWithTime(timeString) {
+        const now = new Date();
+        const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+        const [hours, minutes] = timeString.split(':').map(Number);
+        const timeInMs = (hours * 60 * 60) + (minutes * 60);
+        return timeInMs;
+      }
 } 

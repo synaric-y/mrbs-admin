@@ -73,6 +73,7 @@ import { Api } from "@/network/api.js";
 import { ElMessage } from "element-plus";
 import router from "@/router/index.js";
 import { adminData, areaData, meetData } from "./home";
+import { Common } from "@/common/common";
 
 export default {
     mixins: [PageMixin],
@@ -101,6 +102,34 @@ export default {
                 rooms: [],
                 edit_series: 0,
                 rep_type: 0,
+                // 不可知参数
+                all_day: "",
+                original_room_id: null,
+                ical_uid: "",
+                ical_sequence: 1,
+                ical_recur_id: "",
+                allow_registration: "",
+                registrant_limit: 10,
+                registrant_limit_enabled: "1",
+                registration_opens_value: 1,
+                registration_open_units: "",
+                registration_open_enabled: "",
+                registration_closes_value: 1,
+                registration_closes_units: "",
+                registration_closes_enabled: "",
+                rep_id: null,
+                edit_series: 0,
+                rep_type: 0,
+                rep_end_date: "",
+                rep_day: [],
+                rep_interval: 1,
+                month_type: 0,
+                month_absolute: 2,
+                month_relative_ord: "",
+                month_relative_day: "",
+                skip: 1,
+                no_mail: 1,
+                private: ""
             },
             rules: {
                 creat_by: [
@@ -184,10 +213,10 @@ export default {
 
         choseHour(mode, str, e) {
             if (mode == 0) {
-                this.form.start_seconds = moment(str, "hh:mma").unix();
+                this.form.start_seconds = Common.getTimestampForTodayWithTime(str);
                 return
             }
-            this.form.end_seconds = moment(str, "hh:mma").unix();
+            this.form.end_seconds = Common.getTimestampForTodayWithTime(str);
         },
 
         choseRoom(room) {
