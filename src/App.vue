@@ -58,7 +58,7 @@ export default {
 
 <template>
   <div class="container">
-    <div class="nav">
+    <div class="nav" v-if="!isLoginPage">
       <div class="nav-inner">
 
         <template v-for="(item, index) in tabs" :index="index">

@@ -23,10 +23,10 @@ export default {
     }
   },
   mounted() {
-    console.log('1')
+    this.enterLogin()
   },
   unmounted() {
-    console.log('2')
+    this.exitLogin()
   }
 }
 </script>

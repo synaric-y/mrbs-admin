@@ -9,11 +9,11 @@ export const PageMixin = {
     computed: {
         ...mapStores(NavigationStore, UserStore),
         ...mapState(NavigationStore, ['currentTab']),
-        ...mapState(UserStore, ['userInfo'])
+        ...mapState(UserStore, ['userInfo', 'isLoginPage'])
     },
     methods: {
         ...mapActions(NavigationStore, ['setTab']),
-        ...mapActions(UserStore, ['login', 'logout', 'getCacheUserInfo']),
+        ...mapActions(UserStore, ['login', 'logout', 'getCacheUserInfo', 'enterLogin', 'exitLogin']),
         switchTab(path) {
             this.setTab(path)
             this.$router.replace(path)
