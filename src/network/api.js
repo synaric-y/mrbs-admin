@@ -65,7 +65,7 @@ export class Api {
     }
 
     static async editRoom(params) {
-        return Request.post('edit_room_handler', params)
+        return Request.post('edit_entry_handler', params)
     }
 
     static async getAdmins(params) {

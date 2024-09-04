@@ -7,8 +7,8 @@
                     <div class="sub-title">{{ $t("meet.title") }}</div>
                 </div>
                 <el-form :model="form" :rules="rules" label-width="auto" ref="meetForm" style="min-width: 730px">
-                    <el-form-item prop="creat_by" :label="$t('meet.admin')">
-                        <el-select v-model="form.creat_by">
+                    <el-form-item prop="create_by" :label="$t('meet.admin')">
+                        <el-select v-model="form.create_by">
                             <el-option v-for="(admin, index) in admins" :label="admin" :value="admin"
                                 :key="index"></el-option>
                         </el-select>
@@ -85,7 +85,7 @@ export default {
             meet_types: ["I", "E"],
             oneMeet: {},
             form: {
-                creat_by: "",
+                create_by: "",
                 admins: [],
                 book_by: "",
                 name: "",
@@ -132,7 +132,7 @@ export default {
                 private: ""
             },
             rules: {
-                creat_by: [
+                create_by: [
                     { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
                 ],
                 book_by: [
@@ -174,7 +174,7 @@ export default {
                 }
                 // this.form["sort_key"] = this.form["area_name"]
                 // 编辑或者新增会议
-                Api.editRoom(this.form).then(data => {
+                Api.editMeet(this.form).then(data => {
                     ElMessage({
                         message: this.$t('base.editSuccess'),
                         type: 'success',
@@ -264,7 +264,7 @@ export default {
             if (!data) {
                 return
             }
-            this.form.creat_by = data.create_by
+            this.form.create_by = data.create_by
             this.form.book_by = data.book_by
             this.form.name = data.name
             this.form.description = data.description
