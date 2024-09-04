@@ -35,7 +35,7 @@ export default {
   methods: {
     toProfile() {
       let user = this.userInfo
-      if (!user) {
+      if (!user || !user.display_name) {
         router.replace("/login")
       } else {
         this.showPop = !this.showPop

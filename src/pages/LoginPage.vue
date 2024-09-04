@@ -23,6 +23,10 @@ export default {
     }
   },
   mounted() {
+    console.log('1')
+  },
+  unmounted() {
+    console.log('2')
   }
 }
 </script>
