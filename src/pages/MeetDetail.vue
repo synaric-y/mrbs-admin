@@ -221,6 +221,7 @@ export default {
                 }
                 console.log('mounted getAreaRooms data', data)
                 this.form.rooms = data.areas[0].rooms
+                this.rooms = data.areas[0].rooms
                 const roomName = data.areas[0].rooms.filter(room => room.room_id == room_id)
                 this.form.room_number = roomName.room_name
                 console.log('get roomName', roomName)
@@ -234,12 +235,6 @@ export default {
             if (!data) {
                 return
             }
-            // 获取房间信息
-            // this.rooms = areaData.data.areas[0].rooms
-            // 获取创建人信息
-            // this.admins = adminData.data
-            // 获取会议信息
-            // this.oneMeet = meetData.data;
             this.form.creat_by = data.create_by
             this.form.book_by = data.book_by
             this.form.name = data.name
