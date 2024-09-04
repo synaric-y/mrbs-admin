@@ -22,7 +22,8 @@ export const messages = {
             editSuccess: '编辑成功',
             editFailed: '编辑失败',
             noDataHint: '该设置不能为空',
-            mustNumberHint: '该设置必须为数字'
+            mustNumberHint: '该设置必须为数字',
+            getAreaError: '获取区域房间异常，请检查相关配置'
         },
         meet: {
             title: '编辑会议',
@@ -148,7 +149,8 @@ export const messages = {
             editSuccess: 'Edited successfully',
             editFailed: 'Edit failed',
             noDataHint: 'Cannot be empty',
-            mustNumberHint: 'Must be a number'
+            mustNumberHint: 'Must be a number',
+            getAreaError: 'The regional room is abnormal, please check the relevant configuration'
         },
         meet: {
             title: 'Editing Meetings',

@@ -107,6 +107,7 @@ const value1 = ref('')
 import moment from "moment";
 import { PageMixin } from "@/pages/PageMixin.js";
 import { Common } from "@/common/common";
+import { ElMessage } from "element-plus/es";
 
 export default defineComponent({
   mixins: [PageMixin],
@@ -181,46 +182,49 @@ export default defineComponent({
     console.log('当前屏幕的高度为:', this.screenSize, '像素');
     // 输出示例：当前屏幕的宽度为: 1920 像素
     console.log('mounted getRooms enter')
-    this.areas = areaData.data.areas;
-    console.log('mounted this.areas', this.areas[0].area_name)
-    console.log('mounted this.areas', this.areas[1].area_name)
 
     this.startStamp = Common.getThreeDaysTimestamps().start
     this.endStamp = Common.getThreeDaysTimestamps().end
 
 
     // 拼接 entries 数组
-    const entriesRoom = [];
-    homeData.data.area_room.forEach(area => {
-      const areaId = area.area_id;
-      const areaName = area.area_name;
-      area.rooms.forEach(room => {
-        const roomId = room.room_id;
-        const roomName = room.room_name;
-        room.entries.forEach(entry => {
-          // 拼接信息
-          entriesRoom.push({
-            area_id: areaId,
-            area_name: areaName,
-            room_id: roomId,
-            room_name: roomName,
-            startTime: entry.duration.split('-')[0].trim(),
-            endTime: entry.duration.split('-')[1].trim(),
-            ...entry
-          });
-        });
-      });
-    });
-    console.log('entriesRoom:', entriesRoom)
+    // const entriesRoom = [];
+    // homeData.data.area_room.forEach(area => {
+    //   const areaId = area.area_id;
+    //   const areaName = area.area_name;
+    //   area.rooms.forEach(room => {
+    //     const roomId = room.room_id;
+    //     const roomName = room.room_name;
+    //     room.entries.forEach(entry => {
+    //       // 拼接信息
+    //       entriesRoom.push({
+    //         area_id: areaId,
+    //         area_name: areaName,
+    //         room_id: roomId,
+    //         room_name: roomName,
+    //         startTime: entry.duration.split('-')[0].trim(),
+    //         endTime: entry.duration.split('-')[1].trim(),
+    //         ...entry
+    //       });
+    //     });
+    //   });
+    // });
+    // console.log('entriesRoom:', entriesRoom)
 
-    this.getMeetRooms()
+   
 
     Api.getAreaRooms({}).then(data => {
       console.log('mounted getRooms data:', data)
       if (!data) {
+        ElMessage({
+          message: this.$t('base.getAreaError'),
+          type: 'fail'
+        })
         return
       }
-      data = data[0]
+      console.log('mounted this.areas data', data)
+      this.areas = data.areas
+      this.getMeetRooms()
     })
   },
 
