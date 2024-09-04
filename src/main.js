@@ -2,6 +2,7 @@ import ElementPlus from 'element-plus'
 import '@/assets/mytheme.scss'
 // import 'element-plus/dist/index.css'
 import en from 'element-plus/es/locale/lang/en'
+import VueCookies from 'vue3-cookies';
 import {createI18n} from "vue-i18n";
 
 import { createApp } from 'vue'
@@ -28,6 +29,7 @@ router.afterEach((to, from) => {
 
 app.use(createPinia())
 app.use(router)
+app.use(VueCookies)
 app.use(ElementPlus, {
     locale: en,
 })
