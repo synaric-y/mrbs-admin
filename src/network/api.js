@@ -51,7 +51,7 @@ export class Api {
     }
 
     static async getMeetRooms(params) {
-        params["type"] = "room"
+        params["type"] = "all"
         return Request.post('index', params)
     }
 

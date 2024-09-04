@@ -44,13 +44,13 @@
   </div>
 
   <div class="table-container">
-    <el-scrollbar ref="scrollContainer" class="scroll-table-view" always >
+    <el-scrollbar ref="scrollContainer" class="scroll-table-view" always>
       <!-- calendar header -->
       <div class="calendar-header">
         <!-- time line -->
         <div class="time-header">
           <div class="time-slots">
-            <div v-for="(time,timeIndex) in timeSlots" :key="time" class="time-slot">
+            <div v-for="(time, timeIndex) in timeSlots" :key="time" class="time-slot">
               {{ time }}
             </div>
           </div>
@@ -60,24 +60,24 @@
           {{ day.date }}
           <div class="room-header">
             <div v-for="(room, roomIndex) in rooms" :key="roomIndex" class="room-name"
-              :style="{ height: timeSlots.length * 60 + 40 + 'px', width: itemWidth + 'px' }" >
+              :style="{ height: timeSlots.length * 60 + 40 + 'px', width: itemWidth + 'px' }">
 
               {{ room }}
 
-              <template v-for="(time,timeIndex) in tempTimeSlots">
-                  <div class="empty-meet-div" 
-                  :style="{height: 55 + 'px', width: itemWidth + 'px',top:(timeIndex +1)*60 + 'px'}"
-                  @click="toMeet(time,room)"></div>
+              <template v-for="(time, timeIndex) in tempTimeSlots">
+                <div class="empty-meet-div"
+                  :style="{ height: 55 + 'px', width: itemWidth + 'px', top: (timeIndex + 1) * 60 + 'px' }"
+                  @click="toMeet(time, room)"></div>
               </template>
-              
+
               <template v-for="(event, indexeve) in events">
                 <!-- Rooms and Schedule -->
                 <template v-if="day.date == event.date && room == event.room">
                   <div :key="indexeve" class="room-meet-event" @click="editMeet(event)"
                     :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
-                    <div class="event-title">{{ event.title }}</div>
-                    <div class="event-time">{{ event.time }}</div>
-                    <div class="event-person">{{ event.person }}</div>
+                    <div class="event-title">{{ event.entry_name }}</div>
+                    <div class="event-time">{{ event.duration }}</div>
+                    <div class="event-person">{{ event.book_by }}</div>
                   </div>
                 </template>
               </template>
@@ -105,7 +105,7 @@ import { areaData, homeData } from './home';
 const size = ref < 'default' | 'large' | 'small' > ('default')
 const value1 = ref('')
 import moment from "moment";
-import {PageMixin} from "@/pages/PageMixin.js";
+import { PageMixin } from "@/pages/PageMixin.js";
 
 export default defineComponent({
   mixins: [PageMixin],
@@ -122,7 +122,7 @@ export default defineComponent({
     return {
       currentDateTime: '12:00 pm August 30, 2024',
       selectedRoom: 'All',
-      currenArea: '',
+      currenArea: '1',
       customDate: null,
       hoursNumber: 24,
       testam: '09:00AM',
@@ -153,15 +153,16 @@ export default defineComponent({
         "01:00PM", "01:30PM", "02:00PM", "02:30PM", "03:00PM", "03:30PM", "04:00PM", "04:30PM",
         "05:00PM", "05:30PM", "06:00PM", "06:30PM", "07:00PM", "07:30PM", "08:00PM", "08:30PM", "09:00PM"
       ],
-      events: [
-        { date: "Monday, September 2nd 2024", entry_id: 1, room: "Room A", title: "A 24 EN meeting", time: "09:00AM - 11:30AM", person: "Carol", startTime: "09:00AM", endTime: "11:30AM" },
-        { date: "Monday, September 2nd 2024", entry_id: 2, room: "Room B", title: "B 24 EN meeting", time: "10:00AM - 11:30AM", person: "Carol", startTime: "10:00AM", endTime: "11:30AM" },
-        { date: "Monday, September 2nd 2024", entry_id: 3, room: "Room C", title: "C 24 EN meeting", time: "12:00PM - 01:30PM", person: "Carol", startTime: "12:00PM", endTime: "01:30PM" },
-        { date: "Monday, September 2nd 2024", entry_id: 4, room: "Room D", title: "D 24 EN meeting", time: "03:00PM - 04:30PM", person: "Carol", startTime: "03:00PM", endTime: "04:30PM" },
-        { date: "Tuesday, September 3rd 2024", entry_id: 5, room: "Room C", title: "C 25 EN meeting", time: "03:00PM - 06:00PM", person: "John Zhang", startTime: "03:00PM", endTime: "06:00PM" },
-        { date: "Wednesday, September 4th 2024", entry_id: 6, room: "Room B", title: "B 26 Quick meeting", time: "12:30PM - 01:00PM", person: "N/A", startTime: "12:30PM", endTime: "01:00PM" },
-        { date: "Thursday, September 5th 2024", entry_id: 7, room: "Room D", title: "D 27 Research meeting", time: "01:00PM - 02:00PM", person: "Tina", startTime: "01:00PM", endTime: "02:00PM" },
-        { date: "Wednesday, September 4th 2024", entry_id: 8, room: "Room B", title: "B 26 Research meeting", time: "01:30PM - 03:00PM", person: "Zhang", startTime: "01:30PM", endTime: "03:00PM" },
+      events: [],
+      events1: [
+        { date: "Monday, September 2nd 2024", entry_id: 1, room: "Room A", entry_name: "A 24 EN meeting", duration: "09:00AM - 11:30AM", book_by: "Carol", startTime: "09:00AM", endTime: "11:30AM" },
+        { date: "Monday, September 2nd 2024", entry_id: 2, room: "Room B", entry_name: "B 24 EN meeting", duration: "10:00AM - 11:30AM", book_by: "Carol", startTime: "10:00AM", endTime: "11:30AM" },
+        { date: "Monday, September 2nd 2024", entry_id: 3, room: "Room C", entry_name: "C 24 EN meeting", duration: "12:00PM - 01:30PM", book_by: "Carol", startTime: "12:00PM", endTime: "01:30PM" },
+        { date: "Monday, September 2nd 2024", entry_id: 4, room: "Room D", entry_name: "D 24 EN meeting", duration: "03:00PM - 04:30PM", book_by: "Carol", startTime: "03:00PM", endTime: "04:30PM" },
+        { date: "Tuesday, September 3rd 2024", entry_id: 5, room: "Room C", entry_name: "C 25 EN meeting", duration: "03:00PM - 06:00PM", book_by: "John Zhang", startTime: "03:00PM", endTime: "06:00PM" },
+        { date: "Wednesday, September 4th 2024", entry_id: 6, room: "Room B", entry_name: "B 26 Quick meeting", duration: "12:30PM - 01:00PM", book_by: "N/A", startTime: "12:30PM", endTime: "01:00PM" },
+        { date: "Thursday, September 5th 2024", entry_id: 7, room: "Room D", entry_name: "D 27 Research meeting", duration: "01:00PM - 02:00PM", book_by: "Tina", startTime: "01:00PM", endTime: "02:00PM" },
+        { date: "Wednesday, September 4th 2024", entry_id: 8, room: "Room B", entry_name: "B 26 Research meeting", duration: "01:30PM - 03:00PM", book_by: "Zhang", startTime: "01:30PM", endTime: "03:00PM" },
       ]
     };
   },
@@ -182,10 +183,33 @@ export default defineComponent({
     console.log('mounted this.areas', this.areas[1].area_name)
 
 
-    
+    // 拼接 entries 数组
+    const entriesRoom = [];
+    homeData.data.area_room.forEach(area => {
+      const areaId = area.area_id;
+      const areaName = area.area_name;
+      area.rooms.forEach(room => {
+        const roomId = room.room_id;
+        const roomName = room.room_name;
+        room.entries.forEach(entry => {
+          // 拼接信息
+          entriesRoom.push({
+            area_id: areaId,
+            area_name: areaName,
+            room_id: roomId,
+            room_name: roomName,
+            startTime: entry.duration.split('-')[0].trim(),
+            endTime: entry.duration.split('-')[1].trim(),
+            ...entry
+          });
+        });
+      });
+    });
+    console.log('entriesRoom:', entriesRoom)
 
+    this.getMeetRooms()
+    return
 
-    return;
     Api.getRooms({}).then(data => {
       console.log('mounted getRooms data:', data)
       if (!data) {
@@ -244,8 +268,7 @@ export default defineComponent({
         days = this.getThreeDays();
       }
       this.days = this.formatDays(days);
-      // 获取接口的数据
-      this.getMeetRoom();
+      this.getMeetRooms();
     },
 
     getCurrenDay() {
@@ -310,8 +333,8 @@ export default defineComponent({
       return formattedDates;
     },
 
-    toMeet(time,room) {
-      console.log('toMeet time:',time,room)
+    toMeet(time, room) {
+      console.log('toMeet time:', time, room)
       this.push(`/meet_detail/0`);
     },
 
@@ -319,12 +342,11 @@ export default defineComponent({
       this.push(`/meet_detail/${event.entry_id}`);
     },
 
-    // chose day/3/week
     choseArea(e) {
       this.currenArea = e;
       console.log('choseArea currenArea', this.currenArea);
       this.getAreaRooms();
-      this.getMeetRoom();
+      this.getMeetRooms();
     },
 
     getAreaRooms() {
@@ -342,11 +364,10 @@ export default defineComponent({
 
     // chose start/end time
     choseDate(e) {
-      // console.log('choseDate', e[0],e[1]);
       if (e.length > 0) {
         this.startTime = e[0];
         this.endTime = e[1];
-        this.getMeetRoom();
+        this.getMeetRooms();
         const days = this.getDaysBetween(moment(e[0]).format('YYYY-MM-DD'), moment(e[1]).format('YYYY-MM-DD'));
         const tempdays = this.formatDays(days);
         console.log('tempdays:', tempdays);
@@ -363,12 +384,12 @@ export default defineComponent({
       return timestamp;
     },
 
-    getMeetRoom() {
-      console.log('getMeetRoom enter');
-      const start = this.formatTime(this.startTime);
-      const end = this.formatTime(this.endTime);
+    getMeetRooms() {
+      console.log('getMeetRooms enter');
+      const start = this.formatTime(this.startTime) || 0;
+      const end = this.formatTime(this.endTime) || 0;
       const itemNumber = this.rooms.length * this.days.length;
-      console.log('getMeetRoom itemNumber:', itemNumber);
+      console.log('getMeetRooms itemNumber:', itemNumber);
       // 动态计算会议的宽度
       if (itemNumber == 1) {
         this.itemWidth = this.screenSize['width'];
@@ -377,41 +398,48 @@ export default defineComponent({
       } else {
         this.itemWidth = 228;
       }
-      // console.log('getMeetRoom itemWidth:',this.itemWidth);
-
-      // 预定的会议信息
-      const allmeets = homeData.data.area_room.flatMap(area => area.rooms);
-      const tempmeets = allmeets.flatMap(meet => meet.entries)
-      console.log('getMeetRoom tempmeets:', tempmeets);
-      // { date: "Monday, September 2nd 2024", room: "Room A", title: "A 24 EN meeting", time: "09:00AM - 11:30AM", person: "Carol", startTime: "09:00AM", endTime: "11:30AM" }
-      
-      const meetDates = tempmeets.map((meet, index) => {
-        return {
-          date: moment(meet.start_time).format('dddd, MMMM Do YYYY'),
-          room: meet.room_name,
-          title: meet.entry_name,
-          time: meet.duration,
-          entry_id: meet.entry_id,
-          status: meet.status,
-          person: meet.book_by,
-          startTime: meet.duration.split('-')[0].trim(),
-          endTime: meet.duration.split('-')[1].trim()
-        };
-      });
-      console.log('getMeetRoom meetDates: ', meetDates);
-
-
-      // const meetRooms = homeData.data.
-      // console.log('getMeetRoom homeData', homeData)
-      return;
+      console.log('getMeetRooms itemWidth:', this.itemWidth);
+      console.log('getMeetRooms currenArea:  start: end: ', this.currenArea, start, end);
       // 获取开始、结束时间的时间戳
       Api.getMeetRooms({ id: this.currenArea, start_time: start, end_time: end }).then(data => {
         if (!data) {
           return
         }
-        data = data[0]
+        console.log('getMeetRooms api data:', data)
+        this.getInMeeting(data)
         // 处理会议数据
       })
+    },
+
+    getInMeeting(data) {
+      if (!data || data.area_room == null || data.area_room.length == 0) {
+        return
+      }
+      // 拼接 entries 数组
+      const entriesRoom = [];
+      data.area_room.forEach(area => {
+        const areaId = area.area_id;
+        const areaName = area.area_name;
+        area.rooms.forEach(room => {
+          const roomId = room.room_id;
+          const roomName = room.room_name;
+          room.entries.forEach(entry => {
+            // 拼接信息
+            entriesRoom.push({
+              area_id: areaId,
+              area_name: areaName,
+              room_id: roomId,
+              room_name: roomName,
+              date: moment(entry.start_time).format('dddd, MMMM Do YYYY'),
+              startTime: entry.duration.split('-')[0].trim(),
+              endTime: entry.duration.split('-')[1].trim(),
+              ...entry
+            });
+          });
+        });
+      });
+      this.events = entriesRoom
+      console.log('getMeetRooms entriesRoom:', entriesRoom)
     },
   }
 
@@ -564,24 +592,13 @@ export default defineComponent({
   font-weight: normal;
   font-family: PingFangSC-regular;
   text-align: right;
-  /* display: flex; */
 }
-
-/* .empty-row-meets {
-  flex: 1;
-  position: absolute;
-  left: 100px;
-  width: 100px;
-  height: 80px;
-  background-color: red;
-} */
 
 .empty-meet-div {
   position: absolute;
   top: 100px;
   width: 60px;
   height: 60px;
-  /* background-color: red; */
 }
 
 .day-header {
@@ -596,7 +613,6 @@ export default defineComponent({
   color: #000000;
   font-size: 20px;
   text-align: center;
-  /* width: 100%; */
   padding: 5px 0px;
   padding-bottom: 0px;
   font-weight: bold;
@@ -607,7 +623,6 @@ export default defineComponent({
   flex-shrink: 0;
   display: flex;
   justify-content: center;
-  /* width: 218px; */
   height: 800px;
   padding: 10px;
   padding-bottom: 0px;
