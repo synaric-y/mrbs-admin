@@ -628,7 +628,7 @@ export default defineComponent({
 }
 
 .empty-meet-div:hover {
-  background-color: beige;
+  background-color: rgba(89, 27, 183, 1);
 }
 
 .day-header {
@@ -706,8 +706,7 @@ export default defineComponent({
 }
 
 .empty-bottom {
-  height: 30px;
+  height: 10px;
   width: 100%;
-  /* background-color: red; */
 }
 </style>
