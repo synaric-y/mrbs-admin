@@ -1,66 +1,67 @@
 <template>
     <el-container class="container-sub-page">
-        <el-scrollbar class="scroll-table-view" always >
-        <el-main class="container-sub-page-main">
-            <div class="sub-title-wrapper" style="height: 70 + 'px';">
-                <!-- <div class="sub-title">{{ mode === "add" ? $t("area.addArea") : $t("area.editArea") }}</div> -->
-                <div class="sub-title">{{ $t("meet.title") }}</div>
-            </div>
-            <el-form :model="form" :rules="rules" label-width="auto" ref="meetForm" style="min-width: 730px">
-                <el-form-item prop="creat_by" :label="$t('meet.admin')">
-                    <el-select v-model="form.creat_by">
-                        <el-option v-for="(admin, index) in admins" :label="admin" :value="admin"
-                            :key="index"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item prop="book_by" :label="$t('meet.booker')">
-                    <el-input v-model="form.book_by" />
-                </el-form-item>
-                <el-form-item prop="name" :label="$t('meet.short_desc')">
-                    <el-input v-model="form.name" />
-                </el-form-item>
-                <el-form-item prop="description" :label="$t('meet.all_desc')">
-                    <el-input style="width: 240px" type="textarea" maxlength="100" show-word-limit
-                        v-model="form.description" />
-                </el-form-item>
-                <el-form-item prop="start_date" :label="$t('meet.start_meet')">
-                    <div class="picker-date-container">
-                        <el-date-picker v-model="form.start_date" type="date" placeholder="Pick start day"
-                            @change="choseDate(0, $event)" />
-                        <el-time-select v-model="form.start_hour" style="width: 240px;margin-left: 20px" start="06:00"
-                            step="00:30" end="21:30" :placeholder="$t('base.plzSelect')"
-                            @change="choseHour(0, form.start_hour, $event)" />
-                    </div>
-                </el-form-item>
-                <el-form-item prop="end_date" :label="$t('meet.end_meet')">
-                    <div class="picker-date-container">
-                        <el-date-picker v-model="form.end_date" type="date" placeholder="Pick end day"
-                            @change="choseDate(1, $event)" />
-                        <el-time-select v-model="form.end_hour" style="width: 240px;margin-left: 20px" start="06:00"
-                            step="00:30" end="21:30" :placeholder="$t('base.plzSelect')"
-                            @change="choseHour(1, form.end_hour, $event)" />
-                    </div>
-                </el-form-item>
-                <el-form-item prop="room_number" :label="$t('meet.room')">
-                    <el-select v-model="form.room_number" style="width: 240px" 
-                    :placeholder="$t('base.plzSelect')"  @change="choseRoom">
-                        <el-option v-for="(room, index) in rooms" :label="room.room_name" :value="room.room_id"
-                            :key="index"></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item prop="type" :label="$t('meet.type')">
-                    <el-select v-model="form.type" style="width: 240px" :placeholder="$t('base.plzSelect')">
-                        <el-option v-for="item in meet_types" :key="item" :label="item" :value="item" />
-                    </el-select>
-                </el-form-item>
-                <el-form-item style="margin-top: 60px">
-                    <el-button type="info" size="default" @click="cancle">{{ $t("base.cancel") }}</el-button>
-                    <el-button type="danger" size="default" @click="deleteMeet">{{ $t("meet.delete_meet") }}</el-button>
-                    <el-button type="primary" size="default" @click="submit">{{ $t("base.confirm") }}</el-button>
-                </el-form-item>
-            </el-form>
-        </el-main>
-    </el-scrollbar>
+        <el-scrollbar class="scroll-table-view" always>
+            <el-main class="container-sub-page-main">
+                <div class="sub-title-wrapper" style="height: 70 + 'px';">
+                    <!-- <div class="sub-title">{{ mode === "add" ? $t("area.addArea") : $t("area.editArea") }}</div> -->
+                    <div class="sub-title">{{ $t("meet.title") }}</div>
+                </div>
+                <el-form :model="form" :rules="rules" label-width="auto" ref="meetForm" style="min-width: 730px">
+                    <el-form-item prop="creat_by" :label="$t('meet.admin')">
+                        <el-select v-model="form.creat_by">
+                            <el-option v-for="(admin, index) in admins" :label="admin" :value="admin"
+                                :key="index"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item prop="book_by" :label="$t('meet.booker')">
+                        <el-input v-model="form.book_by" />
+                    </el-form-item>
+                    <el-form-item prop="name" :label="$t('meet.short_desc')">
+                        <el-input v-model="form.name" />
+                    </el-form-item>
+                    <el-form-item prop="description" :label="$t('meet.all_desc')">
+                        <el-input style="width: 240px" type="textarea" maxlength="100" show-word-limit
+                            v-model="form.description" />
+                    </el-form-item>
+                    <el-form-item prop="start_date" :label="$t('meet.start_meet')">
+                        <div class="picker-date-container">
+                            <el-date-picker v-model="form.start_date" type="date" placeholder="Pick start day"
+                                @change="choseDate(0, $event)" />
+                            <el-time-select v-model="form.start_hour" style="width: 240px;margin-left: 20px"
+                                start="06:00" step="00:30" end="21:30" :placeholder="$t('base.plzSelect')"
+                                @change="choseHour(0, form.start_hour, $event)" />
+                        </div>
+                    </el-form-item>
+                    <el-form-item prop="end_date" :label="$t('meet.end_meet')">
+                        <div class="picker-date-container">
+                            <el-date-picker v-model="form.end_date" type="date" placeholder="Pick end day"
+                                @change="choseDate(1, $event)" />
+                            <el-time-select v-model="form.end_hour" style="width: 240px;margin-left: 20px" start="06:00"
+                                step="00:30" end="21:30" :placeholder="$t('base.plzSelect')"
+                                @change="choseHour(1, form.end_hour, $event)" />
+                        </div>
+                    </el-form-item>
+                    <el-form-item prop="room_number" :label="$t('meet.room')">
+                        <el-select v-model="form.room_number" style="width: 240px" :placeholder="$t('base.plzSelect')"
+                            @change="choseRoom">
+                            <el-option v-for="(room, index) in rooms" :label="room.room_name" :value="room.room_id"
+                                :key="index"></el-option>
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item prop="type" :label="$t('meet.type')">
+                        <el-select v-model="form.type" style="width: 240px" :placeholder="$t('base.plzSelect')">
+                            <el-option v-for="item in meet_types" :key="item" :label="item" :value="item" />
+                        </el-select>
+                    </el-form-item>
+                    <el-form-item style="margin-top: 60px">
+                        <el-button type="info" size="default" @click="cancle">{{ $t("base.cancel") }}</el-button>
+                        <el-button type="danger" size="default" @click="deleteMeet">{{ $t("meet.delete_meet")
+                            }}</el-button>
+                        <el-button type="primary" size="default" @click="submit">{{ $t("base.confirm") }}</el-button>
+                    </el-form-item>
+                </el-form>
+            </el-main>
+        </el-scrollbar>
     </el-container>
 </template>
 
@@ -81,7 +82,7 @@ export default {
             rooms: [],
             admins: [],
             meet_types: ["I", "E"],
-            oneMeet:{},
+            oneMeet: {},
             form: {
                 creat_by: "",
                 admins: [],
@@ -96,11 +97,10 @@ export default {
                 end_seconds: 0,
                 end_date: "",
                 end_hour: "",
-                
                 type: 'I',
                 rooms: [],
-                edit_series: 0,
-                rep_type: 0,
+                edit_series: 0,
+                rep_type: 0,
             },
             rules: {
                 creat_by: [
@@ -133,19 +133,7 @@ export default {
                 end_hour: [
                     { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
                 ],
-                area_exchange_server: [
-                    {
-                        validator: (rule, value, callback, source, options) => {
-                            const errors = [];
-                            if (this.form["area_use_exchange"] && !value) {
-                                errors.push(new Error(this.$t('base.noDataHint')))
-                            }
-                            return errors;
-                        },
-                    },
-                ],
             },
-            collapse: ["1", "2"]
         }
     },
     methods: {
@@ -186,7 +174,7 @@ export default {
         },
 
         choseDate(mode, e) {
-            console.log('choseDate e',e)
+            console.log('choseDate e', e)
             if (mode == 0) {
                 this.form.start_date = moment(e[0]).format('YYYY-MM-DD');
                 return
@@ -203,7 +191,7 @@ export default {
         },
 
         choseRoom(room) {
-            console.log('choseRoom room',room)
+            console.log('choseRoom room', room)
             this.form.rooms = []
             this.form.rooms.push(room)
         },
@@ -214,54 +202,10 @@ export default {
         }
     },
     mounted() {
-        let { id } = this.$route.params
-        // 获取房间信息
-        this.rooms = areaData.data.areas[0].rooms
-        // 获取创建人信息
-        this.admins = adminData.data
-        // 获取会议信息
-        this.oneMeet = meetData.data;
-
-        this.form.creat_by = meetData.data.create_by
-        this.form.book_by = meetData.data.book_by
-        this.form.name = meetData.data.name
-        this.form.description = meetData.data.description
-        this.form.type = meetData.data.type
-        // this.form.start_date = moment(Number(meetData.data.start_time)).format('YYYY-MM-DD');
-        // this.form.end_date = moment(Number(meetData.data.end_time)).format('YYYY-MM-DD');
-        // this.form.start_seconds = moment(Number(meetData.data.start_time)).format("hh:mma")
-        // this.form.start_hour = moment(Number(meetData.data.start_time)).format("hh:mma")
-        // this.form.end_seconds = moment(Number(meetData.data.end_time)).format("hh:mma")
-        // this.form.end_hour = moment(Number(meetData.data.end_time)).format("hh:mma")
-
-        const start_time = meetData.data.start_time
-        const end_time = meetData.data.end_time
-
-        
-        this.form.start_date = moment(start_time).format('YYYY-MM-DD')
-        this.form.end_date = moment(end_time).format('YYYY-MM-DD')
-        this.form.start_seconds = moment(start_time).format("hh:mm")
-        this.form.end_seconds = moment(end_time).format("hh:mm")
-        this.form.start_hour = moment(start_time).format("hh:mm")
-        this.form.end_hour = moment(end_time).format("hh:mm")
-        this.form.rooms = []
-        this.form.rooms.push(meetData.data.room_id)
-        this.form.room_number = meetData.data.room_name
-
-
-        console.log('start_time y-m-d',start_time,moment(start_time).format('YYYY-MM-DD'))
-        console.log('end_time y-m-d',end_time,moment(end_time).format('YYYY-MM-DD'))
-        console.log('this.form',this.form)
-
-        console.log('meetDetail mounted id', id)
-        Api.getMeetDetail({ id: Number(id) }).then(data => {
-            if (!data) {
-                return
-            }
-            data = data[0]
-            console.log('getMeetDetail data', data)
-        })
-
+        let { id, room_id, room_name, timestamp, area_id } = this.$route.params
+        // room_name = decodeURIComponent(room_name)
+        // timestamp = decodeURIComponent(timestamp)
+        console.log('meetDetail mounted id room_id  area_id ', id, room_id, area_id)
         Api.getAdmins().then(data => {
             if (!data) {
                 return
@@ -269,6 +213,55 @@ export default {
             console.log('getAdmins data', data)
             this.admins = data
         })
+
+        if (area_id) {
+            Api.getAreaRooms({ id: Number(area_id) }).then(data => {
+                if (!data) {
+                    return
+                }
+                console.log('mounted getAreaRooms data', data)
+                this.form.rooms = data.areas[0].rooms
+                const roomName = data.areas[0].rooms.filter(room => room.room_id == room_id)
+                this.form.room_number = roomName.room_name
+                console.log('get roomName', roomName)
+            })
+        }
+
+        if (!id || id == 0) {
+            return
+        }
+        Api.getMeetDetail({ id: Number(id) }).then(data => {
+            if (!data) {
+                return
+            }
+            // 获取房间信息
+            // this.rooms = areaData.data.areas[0].rooms
+            // 获取创建人信息
+            // this.admins = adminData.data
+            // 获取会议信息
+            // this.oneMeet = meetData.data;
+            this.form.creat_by = data.create_by
+            this.form.book_by = data.book_by
+            this.form.name = data.name
+            this.form.description = data.description
+            this.form.type = data.type
+            const start_time = data.start_time
+            const end_time = data.end_time
+            this.form.start_date = moment(start_time).format('YYYY-MM-DD')
+            this.form.end_date = moment(end_time).format('YYYY-MM-DD')
+            this.form.start_seconds = moment(start_time).format("hh:mm")
+            this.form.end_seconds = moment(end_time).format("hh:mm")
+            this.form.start_hour = moment(start_time).format("hh:mm")
+            this.form.end_hour = moment(end_time).format("hh:mm")
+            this.form.rooms = []
+            this.form.rooms.push(data.room_id)
+            this.form.room_number = data.room_name
+            console.log('start_time y-m-d', start_time, moment(start_time).format('YYYY-MM-DD'))
+            console.log('end_time y-m-d', end_time, moment(end_time).format('YYYY-MM-DD'))
+            console.log('this.form', this.form)
+            console.log('getMeetDetail data', data)
+        })
+
     }
 }
 </script>
