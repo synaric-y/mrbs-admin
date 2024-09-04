@@ -40,7 +40,7 @@
   </div>
 
   <div class="table-container">
-    <el-scrollbar ref="scrollContainer" :class="[screenHeight <= 720 ? 'scroll-table-view':'scroll-table-big-view']" always>
+    <el-scrollbar :class="[screenHeight == 720 ? 'scroll-table-view':'scroll-table-big-view']" always>
       <!-- calendar header -->
       <div class="calendar-header">
         <!-- time line -->
