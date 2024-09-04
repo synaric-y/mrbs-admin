@@ -12,9 +12,6 @@ export const meetData = {
     "message": "success",
     "data": {
         "id": "1101",
-        // "start_time": "1725249600",
-        // "end_time": "1725253200",
-
         "start_time": 1725249600,
         "end_time": 1725253200,
         "entry_type": "1",

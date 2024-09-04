@@ -11,7 +11,7 @@ const router = createRouter({
       component: HomePage
     },
     {
-      path: '/meet_detail/:id',
+      path: '/meet_detail/:id/:room_id/:area_id',
       name: 'meet_detail',
       component: () => import('@/pages/MeetDetail.vue')
     },

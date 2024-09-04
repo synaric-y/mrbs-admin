@@ -338,7 +338,9 @@ export default defineComponent({
 
     toMeet(time, room) {
       console.log('toMeet time:', time, room)
-      this.push(`/meet_detail/0`);
+      const roomName = encodeURIComponent(room.room_name)
+      const tempTime = encodeURIComponent(time)
+      this.push(`/meet_detail/0/${room.room_id}/${room.area_id}`);
     },
 
     editMeet(event) {
