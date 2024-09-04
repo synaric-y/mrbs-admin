@@ -8,7 +8,12 @@ export default {
       tableData: [
       ],
       showDeleteUserDialog: false,
-      pendingDeleteName: null
+      pendingDeleteName: null,
+      role: [
+        this.$t('user.role.level0'),
+        this.$t('user.role.level1'),
+        this.$t('user.role.level2'),
+      ]
     }
   },
   methods: {
@@ -28,6 +33,9 @@ export default {
     getUserList() {
       Api.getUserList({}).then(data => {
         if (data) {
+          data.forEach(it => {
+            it["level"] = this.role[it["level"]]
+          })
           this.tableData = data
         }
       })
@@ -68,6 +76,7 @@ export default {
             prop="level"
             :label="$t('user.tableUser.level')"
             width="120">
+
         </el-table-column>
         <el-table-column
             prop="email"

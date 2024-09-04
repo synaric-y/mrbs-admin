@@ -582,6 +582,12 @@ export default defineComponent({
   width: 60px;
   height: 60px;
   /* background-color: red; */
+  transition: all 0.3s ease;
+}
+
+.empty-meet-div:hover {
+
+  background-color: beige;
 }
 
 .day-header {

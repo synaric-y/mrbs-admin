@@ -6,6 +6,10 @@ export class Api {
         return Request.post('login', params)
     }
 
+    static async logout(params) {
+        return Request.post('logout', params)
+    }
+
     static async getAreaList(params) {
         params["type"] = "area"
         return Request.post('admin', params)

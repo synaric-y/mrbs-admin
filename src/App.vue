@@ -38,9 +38,10 @@ export default {
       }
     },
     toLogout() {
-      this.logout()
       this.showPop = false
-      router.replace("/login")
+      this.logout(() => {
+        router.replace("/login")
+      })
     }
   }
 }
