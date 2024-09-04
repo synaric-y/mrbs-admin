@@ -235,10 +235,13 @@ export default {
         let { id, room_id, timestamp, area_id, entry_id } = this.$route.params
         if(timestamp) {
             // 将时间戳转化成08:00PM
-            // console.log('mounted timestamp begin',timestamp)
-            timestamp = moment.unix(timestamp).format('hh:mm')
-            this.form.start_hour = timestamp
-            // console.log('mounted timestamp end',timestamp)
+            console.log('mounted timestamp begin',timestamp)
+            const starttimestamp = moment.unix(timestamp).format('HH:mm')
+            this.form.start_hour = starttimestamp
+            const endstamp = Number(timestamp) + 60 * 60
+            console.log('mounted timestamp endstamp',endstamp)
+            this.form.end_hour = moment.unix(endstamp).format('HH:mm')
+            console.log('mounted timestamp end',timestamp)
         }
         if(entry_id) {
             this.entry_id = entry_id
@@ -270,7 +273,7 @@ export default {
         if (!id || id == 0) {
             return
         }
-        Api.getMeetDetail({ id: Number(id) }).then(data => {
+        Api.getMeetDetail({ id: Number(this.entry_id) }).then(data => {
             if (!data) {
                 return
             }
