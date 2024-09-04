@@ -93,8 +93,8 @@ export default {
             :label="$t('user.tableUser.operate')"
             width="120">
           <template #default="scope">
-            <img class="tb-op-icon tb-op-icon-span" src="/edit.png" @click="toUserDetail('update', scope.row.id)">
-            <img class="tb-op-icon" src="/delete.png" @click="pendingDeleteUser(scope.row.name)">
+            <img class="tb-op-icon tb-op-icon-span" src="/imgs/edit.png" @click="toUserDetail('update', scope.row.id)">
+            <img class="tb-op-icon" src="/imgs/delete.png" @click="pendingDeleteUser(scope.row.name)">
 
           </template>
         </el-table-column>

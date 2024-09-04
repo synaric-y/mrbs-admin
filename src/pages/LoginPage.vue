@@ -30,7 +30,7 @@ export default {
 <template>
   <el-container class="container-sub-page">
     <el-main class="container-sub-page-main">
-      <img class="logo" src="/logo-large.png">
+      <img class="logo" src="/imgs/logo-large.png">
 
       <el-form :model="form" label-width="auto" style="max-width: 530px">
 

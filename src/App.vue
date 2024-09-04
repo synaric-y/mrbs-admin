@@ -10,19 +10,23 @@ export default {
       tabs: [
         {
           path: "/",
-          name: "base.home"
+          name: "base.home",
+          level: 0
         },
         {
           path: "/area",
-          name: "base.area"
+          name: "base.area",
+          level: 2
         },
         {
           path: "/room",
-          name: "base.room"
+          name: "base.room",
+          level: 2
         },
         {
           path: "/user",
-          name: "base.user"
+          name: "base.user",
+          level: 2
         },
       ],
       showPop: false
@@ -43,6 +47,9 @@ export default {
         router.replace("/login")
       })
     }
+  },
+  mounted() {
+    console.log('~~', this.userInfo)
   }
 }
 </script>
@@ -52,14 +59,21 @@ export default {
     <div class="nav">
       <div class="nav-inner">
 
-        <el-button :class="['nav-button', currentTab == item.path ? '' : 'nav-button-inactive']" type="primary" round size="large" @click="switchTab(item.path)" v-for="(item, index) in tabs" :index="index">{{ $t(item.name) }}</el-button>
+        <template v-for="(item, index) in tabs" :index="index">
+          <el-button :class="['nav-button', currentTab == item.path ? '' : 'nav-button-inactive']" type="primary" round
+                     size="large" @click="switchTab(item.path)"
+                     v-if="item && userInfo && (userInfo.level >= item.level)">{{ $t(item.name) }}</el-button>
+        </template>
         <div style="flex: 1"></div>
         <el-popover :visible="showPop" placement="bottom" :width="160">
           <el-button style="width: 135px" size="small" type="primary" @click="toLogout">
             {{$t('base.logout')}}
           </el-button>
           <template #reference>
-            <img style="width: 30px; height: 30px" src="/profile.png" @click="toProfile" />
+            <div class="username-wrapper" @click="toProfile">
+              <img style="width: 30px; height: 30px" src="/imgs/profile.png" v-if="!userInfo.display_name" />
+              <div class="username">{{userInfo.display_name}}</div>
+            </div>
           </template>
         </el-popover>
       </div>
@@ -172,5 +186,18 @@ export default {
   font-size: 22px;
   font-weight: bold;
   flex: 1;
+}
+
+.username-wrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.username {
+  font-size: 18px;
+  font-weight: bold;
+  color: var(--el-color-primary);
+  margin-left: 10px;
 }
 </style>

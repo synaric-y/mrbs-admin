@@ -158,8 +158,8 @@ export default {
             :label="$t('room.tableRoom.operate')"
             width="120">
           <template #default="scope">
-            <img class="tb-op-icon tb-op-icon-span" src="/edit.png" @click="toRoomDetail(scope.row.id)">
-            <img class="tb-op-icon" src="/delete.png" @click="pendingDeleteRoom(scope.row.id)">
+            <img class="tb-op-icon tb-op-icon-span" src="/imgs/edit.png" @click="toRoomDetail(scope.row.id)">
+            <img class="tb-op-icon" src="/imgs/delete.png" @click="pendingDeleteRoom(scope.row.id)">
 
           </template>
         </el-table-column>

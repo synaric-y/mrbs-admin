@@ -5,6 +5,13 @@ import {Api} from "@/network/api.js";
 
 export const PageMixin = {
 
+    data() {
+        return {
+            userInfo: {
+                level: 0
+            }
+        }
+    },
     computed: {
         ...mapStores(NavigationStore),
         ...mapState(NavigationStore, ['currentTab'])
@@ -25,10 +32,14 @@ export const PageMixin = {
             this.$router.back()
         },
         login(info) {
+            if (info) {
+                this.userInfo = info
+            }
             localStorage.setItem(STORAGE.USER_INFO, JSON.stringify(info))
         },
         logout(callback) {
             localStorage.removeItem(STORAGE.USER_INFO)
+            this.userInfo = {level: 0}
             Api.logout({}).then(() => {
                 if (callback) {
                     callback()
@@ -40,7 +51,10 @@ export const PageMixin = {
             if (json) {
                 return JSON.parse(json)
             }
-            return null
+            return {level: 0}
         },
+    },
+    mounted() {
+        this.userInfo = this.getUserInfo()
     }
 }

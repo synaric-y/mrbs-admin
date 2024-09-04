@@ -98,8 +98,8 @@ export default {
             :label="$t('area.tableArea.operate')"
             width="120">
           <template #default="scope">
-            <img class="tb-op-icon tb-op-icon-span" src="/edit.png" @click="toAreaDetail(scope.row.id)">
-            <img class="tb-op-icon" src="/delete.png" @click="pendingDeleteArea(scope.row.id)">
+            <img class="tb-op-icon tb-op-icon-span" src="/imgs/edit.png" @click="toAreaDetail(scope.row.id)">
+            <img class="tb-op-icon" src="/imgs/delete.png" @click="pendingDeleteArea(scope.row.id)">
 
           </template>
         </el-table-column>

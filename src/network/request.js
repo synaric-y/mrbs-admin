@@ -15,7 +15,7 @@ export class Request {
         if (rep.code == -99) {
             localStorage.removeItem(STORAGE.USER_INFO)
             await router.replace('/login')
-            return {}
+            throw Error('message')
         }
         if (rep.code != 0) {
             throw Error('message')
