@@ -108,7 +108,6 @@ export default {
   flex-direction: column;
   background: #EFEFEF;
   box-sizing: border-box;
-  position: fixed;
 }
 
 /*内容页容器*/
@@ -126,6 +125,13 @@ export default {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  scrollbar-color: transparent transparent;
+}
+/*隐藏滚动条*/
+.container-sub-page-main::-webkit-scrollbar {
+  display: none;
 }
 
 /*顶部导航栏*/

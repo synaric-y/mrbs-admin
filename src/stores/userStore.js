@@ -31,6 +31,10 @@ export const UserStore = defineStore('user', {
         },
         enterLogin() {
             this.isLoginPage = true
+            let user = localStorage.getItem(STORAGE.USER_INFO)
+            if (!user) {
+                this.userInfo = {level: 0}
+            }
         },
         exitLogin() {
             this.isLoginPage = false
