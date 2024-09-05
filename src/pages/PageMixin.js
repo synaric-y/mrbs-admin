@@ -42,5 +42,8 @@ export const PageMixin = {
         //         }
         //     })
         // },
+    },
+    mounted() {
+        this.getCacheUserInfo()
     }
 }

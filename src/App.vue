@@ -50,7 +50,6 @@ export default {
     }
   },
   mounted() {
-    this.getCacheUserInfo()
     this.$forceUpdate()
   }
 }

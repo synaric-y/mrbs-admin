@@ -41,8 +41,8 @@ export const UserStore = defineStore('user', {
         },
         getCacheUserInfo() {
             let user = localStorage.getItem(STORAGE.USER_INFO)
-            if (user && !this.userInfo) {
-                this.userInfo = user
+            if (user && (!this.userInfo || !this.userInfo.display_name)) {
+                this.userInfo = JSON.parse(user)
             }
             return user
         }
