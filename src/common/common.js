@@ -2,6 +2,14 @@ import moment from "moment";
 
 export class Common {
 
+    static getLocalLang() {
+        let lang = navigator.language || navigator.userLanguage
+        if(lang == 'zh-CN') {
+            return 'zh-cn'
+        }
+        return lang
+    }
+
     static getBrowserLanguege() {
         let lang = navigator.language || navigator.userLanguage
         console.log('lang:',lang)

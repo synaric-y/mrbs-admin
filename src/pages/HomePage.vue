@@ -151,18 +151,8 @@ export default defineComponent({
   },
 
   mounted() {
-    
     console.log('获取当前浏览器语言设置:',Common.getBrowserLanguege())
-
     this.localLangFormat = Common.getBrowserLanguege()
-
-
-    const today = moment();
-    const tempDay = today.format(this.localLangFormat)
-    // 获取星期
-    console.log('获取星期',Common.translateWeekDay(tempDay))
-    
-
     const screenWidth = window.screen.width;
     this.screenSize['width'] = screenWidth;
     const screenHeight = window.screen.height;
