@@ -220,7 +220,7 @@ export const messages = {
             addArea: 'New Area',
             editArea: 'Edit Area',
             deleteAreaHint: 'Are you sure you want to delete this area?',
-            allArea: '全部区域',
+            allArea: 'All Areas',
         },
         room: {
             tableRoom: {
