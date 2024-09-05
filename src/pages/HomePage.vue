@@ -1,10 +1,10 @@
 <template>
   <div class="toolbar">
     <el-row :gutter="10">
-      <el-col :span="6">
+      <el-col :span="7">
         <el-icon class="home-time-icon">
         </el-icon>
-        <span>{{ nowTime }}</span>
+        <span class="now-time">{{ nowTime }}</span>
       </el-col>
       <el-col :span="3">
         <el-select v-model="selectedRoom" placeholder="All Rooms" @change="choseArea">
@@ -97,6 +97,7 @@ import { ElMessage } from "element-plus/es";
 import { ref } from 'vue'
 import { Api } from '@/network/api';
 import { areaData, homeData } from './home';
+import { STORAGE } from "@/config";
 const size = ref < 'default' | 'large' | 'small' > ('default')
 const value1 = ref('')
 
@@ -153,6 +154,22 @@ export default defineComponent({
   mounted() {
     console.log('获取当前浏览器语言设置:',Common.getBrowserLanguege())
     this.localLangFormat = Common.getBrowserLanguege()
+
+    const selectDays = Number(localStorage.getItem(STORAGE.SELECT_DAYS))
+    const selectStartDate = localStorage.getItem(STORAGE.SELECT_START_DATE)
+    const selectEndDate = localStorage.getItem(STORAGE.SELECT_END_DATE)
+
+    if(selectStartDate && selectEndDate) {
+      this.startTime = selectStartDate
+      this.endTime = selectEndDate
+    }
+    if(selectDays) {
+      this.dayRrangeVal = selectDays
+    }
+    console.log('获取缓存的日期',selectStartDate,selectEndDate)
+    console.log('获取缓存的选择天数',selectDays)
+    
+
     const screenWidth = window.screen.width;
     this.screenSize['width'] = screenWidth;
     const screenHeight = window.screen.height;
@@ -172,7 +189,7 @@ export default defineComponent({
       }
       console.log('mounted this.areas data', data)
       this.areas = data.areas
-      this.dayRrange(3)
+      this.dayRrange(this.dayRrangeVal)
       this.rooms = this.getAllRoom(data)
       this.getMeetRooms()
     })
@@ -252,6 +269,7 @@ export default defineComponent({
         tempTime = Common.getThreeDaysTimestamps()
         console.log(Common.getThreeDaysTimestamps())
       }
+      localStorage.setItem(STORAGE.SELECT_DAYS, day)
       this.startStamp = tempTime.start
       this.endStamp = tempTime.end
       this.days = this.formatDays(days);
@@ -365,6 +383,9 @@ export default defineComponent({
         }
         this.startTime = e[0];
         this.endTime = e[1];
+
+        localStorage.setItem(STORAGE.SELECT_START_DATE,start_date)
+        localStorage.setItem(STORAGE.SELECT_END_DATE,end_date)
         this.getMeetRooms();
         const days = this.getDaysBetween(start_date, end_date);
         const tempdays = this.formatDays(days);
@@ -460,6 +481,16 @@ export default defineComponent({
   user-select: none;
 }
 
+.container-sub-page-main {
+  min-width: 930px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  /* overflow-y: scroll; */
+  scrollbar-width: none;
+  scrollbar-color: transparent transparent;
+}
+
 .toolbar {
   display: flex;
   align-items: center;
@@ -467,6 +498,11 @@ export default defineComponent({
   padding-bottom: 10px;
   padding-left: 150px;
   padding-right: 150px;
+}
+
+.now-time {
+  font-size: 16px;
+  color: #333333;
 }
 
 .home-time-icon {
