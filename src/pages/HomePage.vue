@@ -52,7 +52,9 @@
               <template v-for="(time, timeIndex) in localTimeSlots">
                 <div class="empty-meet-div"
                   :style="{ height: 55 + 'px', width: itemWidth + 'px', top: (timeIndex + 1) * 60 + 'px' }"
-                  @click="toMeet(time, room)"></div>
+                  @click="toMeet(time, room)">
+                  <text class="empty-meet-duration">{{ time }}</text>
+                </div>
               </template>
               <template v-for="(event, indexeve) in events">
                 <template v-if="day.date == event.date && room.room_id == event.room_id">
@@ -591,7 +593,13 @@ export default defineComponent({
   transition: all 0.3s ease;
 }
 
+.empty-meet-duration {
+  color: #e1e1e1;
+  font-size: 16px;
+}
+
 .empty-meet-div:hover {
+  color: white;
   background-color: rgba(89, 27, 183, 1);
 }
 
