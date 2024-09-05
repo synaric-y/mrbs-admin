@@ -33,6 +33,7 @@ export const messages = {
             startDate: '开始',
             endDate: '结束',
             allAreas: '所有区域',
+            getMeetRoomError:'获取会议信息异常',
         },
         meet: {
             title: '编辑会议',
@@ -170,7 +171,8 @@ export const messages = {
             week: 'Week',
             startDate: 'Start date',
             endDate: 'End date',
-            allAreas: 'All Areas'
+            allAreas: 'All Areas',
+            getMeetRoomError:'Obtaining conference information is abnormal',
         },
         meet: {
             title: 'Editing Meetings',

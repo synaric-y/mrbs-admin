@@ -18,12 +18,12 @@
       </el-col>
       <el-col :span="9">
         <el-button-group>
-          <el-button :class="[dayRrangeVal == 1 ? 'button-selected' : 'button-normal']"
-            @click="dayRrange(1)">{{ $t('base.today') }}</el-button>
-          <el-button :class="[dayRrangeVal == 3 ? 'button-selected' : 'button-normal']" 
-          @click="dayRrange(3)">{{ $t('base.threeDays') }}</el-button>
-          <el-button :class="[dayRrangeVal == 7 ? 'button-selected' : 'button-normal']"
-            @click="dayRrange(7)">{{ $t('base.week') }}</el-button>
+          <el-button :class="[dayRrangeVal == 1 ? 'button-selected' : 'button-normal']" @click="dayRrange(1)">{{
+            $t('base.today') }}</el-button>
+          <el-button :class="[dayRrangeVal == 3 ? 'button-selected' : 'button-normal']" @click="dayRrange(3)">{{
+            $t('base.threeDays') }}</el-button>
+          <el-button :class="[dayRrangeVal == 7 ? 'button-selected' : 'button-normal']" @click="dayRrange(7)">{{
+            $t('base.week') }}</el-button>
         </el-button-group>
       </el-col>
       <el-col :span="7">
@@ -34,7 +34,7 @@
   </div>
 
   <div class="table-container">
-    <el-scrollbar class="scroll-table-view"  :style="{height: (this.screenHeight - 170) + 'px'}">
+    <el-scrollbar class="scroll-table-view" :style="{ height: (this.screenHeight - 170) + 'px' }">
       <div class="calendar-header">
         <div class="time-header">
           <div class="time-slots">
@@ -60,19 +60,19 @@
                 <template v-if="day.date == event.date && room.room_id == event.room_id">
                   <template v-if="event.status == 2">
                     <div :key="indexeve" class="room-meet-timeout-event" @click="editMeet(event)"
-                    :style="{ top: 55 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
-                    <div class="event-title">{{ event.entry_name }}</div>
-                    <div class="event-time">{{ event.duration }}</div>
-                    <div class="event-person">{{ event.book_by }}</div>
-                  </div>
+                      :style="{ top: 55 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
+                      <div class="event-title">{{ event.entry_name }}</div>
+                      <div class="event-time">{{ event.duration }}</div>
+                      <div class="event-person">{{ event.book_by }}</div>
+                    </div>
                   </template>
                   <template v-else>
                     <div :key="indexeve" class="room-meet-event" @click="editMeet(event)"
-                    :style="{ top: 55 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
-                    <div class="event-title">{{ event.entry_name }}</div>
-                    <div class="event-time">{{ event.duration }}</div>
-                    <div class="event-person">{{ event.book_by }}</div>
-                  </div>
+                      :style="{ top: 55 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
+                      <div class="event-title">{{ event.entry_name }}</div>
+                      <div class="event-time">{{ event.duration }}</div>
+                      <div class="event-person">{{ event.book_by }}</div>
+                    </div>
                   </template>
                 </template>
               </template>
@@ -152,13 +152,13 @@ export default defineComponent({
   mounted() {
     let lang = navigator.language || navigator.userLanguage;
     if (!lang) {
-        lang = 'en'
+      lang = 'en'
     } else if (lang.startsWith('zh')) {
-        lang = 'zh'
+      lang = 'zh'
     } else {
-        lang = 'en'
+      lang = 'en'
     }
-    console.log('当前语言',lang)
+    console.log('当前语言', lang)
 
     const screenWidth = window.screen.width;
     this.screenSize['width'] = screenWidth;
@@ -173,15 +173,15 @@ export default defineComponent({
     console.log('当前屏幕的高度为:', this.screenSize, '像素');
     this.startStamp = Common.getThreeDaysTimestamps().start
     this.endStamp = Common.getThreeDaysTimestamps().end
-    Api.getAreaRooms({}).then(({data, code}) => {
+    Api.getAreaRooms({}).then(({ data, code }) => {
       console.log('mounted getRooms data:', data)
-      if(code != 0) {
+      if (code != 0) {
         ElMessage({
           message: this.$t('base.getAreaError'),
           type: 'warning'
         })
         return
-      } 
+      }
       console.log('mounted this.areas data', data)
       this.areas = data.areas
       this.dayRrange(3)
@@ -325,7 +325,7 @@ export default defineComponent({
     },
 
     toMeet(time, room, day) {
-      console.log('toMeet time',day.date)
+      console.log('toMeet time', day.date)
       // const timestamp = moment(day.date, "dddd, MMMM Do YYYY");
       const tempTime = Common.getTimestampForTodayWithTime(time);
       console.log('toMeet tempTime:', tempTime)
@@ -362,7 +362,7 @@ export default defineComponent({
         const end_date = moment(e[1]).format('YYYY-MM-DD')
         const start = moment(start_date);
         const end = moment(end_date)
-        const diffDay = (end - start) / (24*60*60*1000)
+        const diffDay = (end - start) / (24 * 60 * 60 * 1000)
         if (diffDay > 30) {
           ElMessage({
             message: this.$t('base.selectDateError'),
@@ -393,7 +393,7 @@ export default defineComponent({
 
     getMeetRooms() {
       console.log('getMeetRooms enter');
-      if (this.startTime && this.startTime != 'Start date') {
+      if (this.startTime && this.startTime != this.$t('base.startDate')) {
         this.startStamp = this.formatTime(this.startTime) || 0;
         this.endStamp = this.formatTime(this.endTime) || 0;
       } else {
@@ -411,8 +411,12 @@ export default defineComponent({
         this.itemWidth = 228;
       }
       console.log('getMeetRooms currenArea:  start: end: ', this.currenArea, this.startStamp, this.endStamp);
-      Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp, end_time: this.endStamp }).then(({data,code}) => {
-        if (!data || code != 0) {
+      Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp, end_time: this.endStamp }).then(({ data, code }) => {
+        if (!data) {
+          ElMessage({
+            message: this.$t('base.getMeetRoomError'),
+            type: 'error'
+          })
           return
         }
         console.log('getMeetRooms api data:', data)
@@ -422,6 +426,7 @@ export default defineComponent({
     },
 
     getInMeeting(data) {
+      console.log('getInMeeting areas',data.areas)
       if (!data || data.areas == null || data.areas.length == 0) {
         return
       }
@@ -455,9 +460,9 @@ export default defineComponent({
 
 <style scoped>
 * {
-  -webkit-user-select: none; 
-  -moz-user-select: none; 
-  -ms-user-select: none; 
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
   user-select: none;
 }
 
@@ -701,7 +706,7 @@ export default defineComponent({
   position: absolute;
   left: 5px;
   right: 5px;
-  background-color: rgba(206,206,206,0.14);
+  background-color: rgba(206, 206, 206, 0.14);
   border-radius: 4px;
   width: 218px;
   padding: 5px;
