@@ -52,7 +52,7 @@
               <template v-for="(time, timeIndex) in localTimeSlots">
                 <div class="empty-meet-div"
                   :style="{ height: 55 + 'px', width: itemWidth + 'px', top: (timeIndex + 1) * 60 + 'px' }"
-                  @click="toMeet(time, room, day.date)">
+                  @click="toMeet(time, room, day)">
                   <text class="empty-meet-duration">{{ time }}</text>
                 </div>
               </template>
@@ -165,11 +165,6 @@ export default defineComponent({
     const screenHeight = window.screen.height;
     this.screenSize['height'] = screenHeight;
     this.screenHeight = screenHeight
-    // if(screenHeight <= 720) {
-    //   this.screenHeight = screenHeight
-    // } else {
-
-    // }
     console.log('当前屏幕的高度为:', this.screenSize, '像素');
     this.startStamp = Common.getThreeDaysTimestamps().start
     this.endStamp = Common.getThreeDaysTimestamps().end
@@ -326,8 +321,12 @@ export default defineComponent({
 
     toMeet(time, room, day) {
       console.log('toMeet time', day.date)
-      // const timestamp = moment(day.date, "dddd, MMMM Do YYYY");
-      const tempTime = Common.getTimestampForTodayWithTime(time);
+
+      const dayTimestamp = moment(day.date, "dddd, MMMM Do YYYY").unix();
+      const ymd = moment(dayTimestamp * 1000).format('YYYY-MM-DD')
+      console.log('toMeet ymd',ymd)
+      console.log('toMeet time',time)
+      const tempTime = Common.getTimestampFromDateAndTime(ymd,time);
       console.log('toMeet tempTime:', tempTime)
       this.push(`/meet_detail/0/${room.room_id}/${room.area_id}/${tempTime}`);
     },
