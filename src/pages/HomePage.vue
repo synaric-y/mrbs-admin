@@ -34,7 +34,7 @@
   </div>
 
   <div class="table-container">
-    <el-scrollbar class="scroll-table-view"  :style="{height: (this.screenHeight - 170) + 'px'}" always>
+    <el-scrollbar class="scroll-table-view"  :style="{height: (this.screenHeight - 170) + 'px'}">
       <div class="calendar-header">
         <div class="time-header">
           <div class="time-slots">
@@ -88,19 +88,18 @@
 </template>
 
 <script>
-
 import router from "@/router/index.js";
 import { defineComponent } from 'vue';
 import { ElRow, ElCol, ElSelect, ElOption, ElButton, ElIcon, ElButtonGroup } from 'element-plus';
+import moment from "moment";
+import { PageMixin } from "@/pages/PageMixin.js";
+import { Common } from "@/common/common";
+import { ElMessage } from "element-plus/es";
 import { ref } from 'vue'
 import { Api } from '@/network/api';
 import { areaData, homeData } from './home';
 const size = ref < 'default' | 'large' | 'small' > ('default')
 const value1 = ref('')
-import moment from "moment";
-import { PageMixin } from "@/pages/PageMixin.js";
-import { Common } from "@/common/common";
-import { ElMessage } from "element-plus/es";
 
 export default defineComponent({
   mixins: [PageMixin],
@@ -443,7 +442,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
-
 * {
   -webkit-user-select: none; 
   -moz-user-select: none; 
@@ -523,7 +521,7 @@ export default defineComponent({
   margin-left: 20px;
 }
 
-.demo-date-picker {
+/* .demo-date-picker {
   display: flex;
   width: 100%;
   padding: 0;
@@ -546,7 +544,7 @@ export default defineComponent({
   color: var(--el-text-color-secondary);
   font-size: 14px;
   margin-bottom: 20px;
-}
+} */
 
 .table-container {
   display: flex;
