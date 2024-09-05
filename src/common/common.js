@@ -40,15 +40,36 @@ export class Common {
         return timeInMs;
     }
 
+    static getTimestampFromDateAndTime(dateString, timeString) {
+        const [year, month, day] = dateString.split('-').map(Number);
+        let [time, modifier] = timeString.split(/(AM|PM)/);
+        let [hours, minutes] = time.split(':').map(Number);
+        if (modifier === "PM" && hours < 12) {
+            hours += 12;
+        }
+        if (modifier === "AM" && hours === 12) {
+            hours = 0;
+        }
+        const date = new Date(year, month - 1, day, hours, minutes);
+        return Math.floor(date.getTime() / 1000);
+    }
+
+    static getTimestampForDateAndTime(dateString, timeString) {
+        const [year, month, day] = dateString.split('-').map(Number);
+        const [hours, minutes] = timeString.split(':').map(Number);
+        const date = new Date(year, month - 1, day, hours, minutes);
+        return Math.floor(date.getTime() / 1000);
+    }
+
     static getTimestampForTodayWithTime(timeString) {
         const now = moment();
         const time = moment(timeString, 'hh:mmA');
         const combined = now.set({
-          hour: time.get('hour'),
-          minute: time.get('minute'),
-          second: 0,
-          millisecond: 0
+            hour: time.get('hour'),
+            minute: time.get('minute'),
+            second: 0,
+            millisecond: 0
         });
         return Math.floor(combined.valueOf() / 1000);
-      }
+    }
 } 

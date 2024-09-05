@@ -223,11 +223,13 @@ export default {
 
         choseHour(mode, str, e) {
             console.log('choseHour str', str)
+            // 或者指定年月日下的时间戳
+            const ymd = this.form.start_date
             if (mode == 0) {
-                this.form.start_seconds = Common.getTimestampForTodayWithTime(str);
+                this.form.start_seconds = Common.getTimestampForDateAndTime(ymd,str);
                 return
             }
-            this.form.end_seconds = Common.getTimestampForTodayWithTime(str);
+            this.form.end_seconds = Common.getTimestampForDateAndTime(ymd,str);
         },
 
         choseRoom(room) {
