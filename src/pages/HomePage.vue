@@ -58,12 +58,23 @@
               </template>
               <template v-for="(event, indexeve) in events">
                 <template v-if="day.date == event.date && room.room_id == event.room_id">
-                  <div :key="indexeve" class="room-meet-event" @click="editMeet(event)"
+                  <template v-if="event.status == 2">
+                    <div :key="indexeve" class="room-meet-timeout-event" @click="editMeet(event)"
                     :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
                     <div class="event-title">{{ event.entry_name }}</div>
                     <div class="event-time">{{ event.duration }}</div>
                     <div class="event-person">{{ event.book_by }}</div>
                   </div>
+                  </template>
+                  <template v-else>
+                    <div :key="indexeve" class="room-meet-event" @click="editMeet(event)"
+                    :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
+                    <div class="event-title">{{ event.entry_name }}</div>
+                    <div class="event-time">{{ event.duration }}</div>
+                    <div class="event-person">{{ event.book_by }}</div>
+                  </div>
+                  </template>
+                  
                 </template>
               </template>
             </div>
@@ -666,6 +677,21 @@ export default defineComponent({
   font-size: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   border-left: 10px solid #54BCBD;
+}
+
+.room-meet-timeout-event {
+  position: absolute;
+  left: 5px;
+  right: 5px;
+  background-color: rgba(206,206,206,0.14);
+  border-radius: 4px;
+  width: 218px;
+  padding: 5px;
+  margin: 2px 0;
+  color: #000;
+  font-size: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  border-left: 10px solid #9A9A9A;
 }
 
 .event-title {
