@@ -248,7 +248,7 @@ export const messages = {
             addRoom: 'New Room',
             editRoom: 'Edit Room',
             deleteRoomHint: 'Are you sure you want to delete this room?',
-            invalidCapacity: '必须为大于0的整数',
+            invalidCapacity: 'Must be an integer greater than 0',
         },
         user: {
             tableUser: {

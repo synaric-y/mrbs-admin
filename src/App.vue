@@ -116,6 +116,11 @@ export default {
 
 <style>
 
+body {
+  display: block;
+  margin: 0 !important;
+}
+
 /*总容器*/
 .container {
   width: 100vw;
