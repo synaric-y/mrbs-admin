@@ -54,12 +54,16 @@ export default {
           req["new_area"] = req["area"]
         }
         req["area"] = Number(req["area"])
-        Api.editRoom(req).then(({data}) => {
-          ElMessage({
-            message: this.$t('base.editSuccess'),
-            type: 'success',
-          })
-          this.back()
+        Api.editRoom(req).then(({data, code}) => {
+          if (code) {
+            ElMessage({
+              message: this.$t('base.editSuccess'),
+              type: 'success',
+            })
+            this.back()
+          } else {
+            ElMessage.error(this.$t('base.editFailed'))
+          }
         }).catch(() => {
           ElMessage.error(this.$t('base.editFailed'))
         })

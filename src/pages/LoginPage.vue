@@ -2,6 +2,7 @@
 import {Api} from "@/network/api.js";
 import {PageMixin} from "@/pages/PageMixin.js";
 import {STORAGE} from "@/config.js";
+import {ElMessage} from "element-plus";
 
 export default {
   mixins: [PageMixin],
@@ -20,6 +21,8 @@ export default {
         if (code == 0) {
           this.login(data)
           this.switchTab('/')
+        } else {
+          ElMessage.error(this.$t('base.loginError'))
         }
       })
     }

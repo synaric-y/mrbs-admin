@@ -95,12 +95,16 @@ export default {
           return
         }
         this.form["sort_key"] = this.form["area_name"]
-        Api.editArea(this.form).then(({data}) => {
-          ElMessage({
-            message: this.$t('base.editSuccess'),
-            type: 'success',
-          })
-          this.back()
+        Api.editArea(this.form).then(({data, code}) => {
+          if (code == 0) {
+            ElMessage({
+              message: this.$t('base.editSuccess'),
+              type: 'success',
+            })
+            this.back()
+          } else {
+            ElMessage.error(this.$t('base.editFailed'))
+          }
         }).catch(() => {
           ElMessage.error(this.$t('base.editFailed'))
         })

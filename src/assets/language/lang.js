@@ -24,7 +24,8 @@ export const messages = {
             noDataHint: '该设置不能为空',
             mustNumberHint: '该设置必须为数字',
             getAreaError: '获取区域房间异常，请检查相关配置',
-            selectDateError: '选择时间跨度不能超过一个月'
+            selectDateError: '选择时间跨度不能超过一个月',
+            loginError: '账号或密码不正确',
         },
         meet: {
             title: '编辑会议',
@@ -154,7 +155,8 @@ export const messages = {
             noDataHint: 'Cannot be empty',
             mustNumberHint: 'Must be a number',
             getAreaError: 'The regional room is abnormal, please check the relevant configuration',
-            selectDateError: 'The selected time span cannot exceed one month'
+            selectDateError: 'The selected time span cannot exceed one month',
+            loginError: 'The username or password is incorrect',
         },
         meet: {
             title: 'Editing Meetings',
