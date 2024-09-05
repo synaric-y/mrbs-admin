@@ -27,7 +27,7 @@
         </el-button-group>
       </el-col>
       <el-col :span="7">
-        <el-date-picker v-model="baseTime" type="daterange" range-separator="To" :start-placeholder="startTime"
+        <el-date-picker v-model="baseTime" type="daterange" :range-separator="$t('base.to')" :start-placeholder="startTime"
           :end-placeholder="endTime" @change="choseDate" />
       </el-col>
     </el-row>
@@ -130,6 +130,7 @@ export default defineComponent({
       endStamp: 0,
       nowTime: '',
       screenHeight: 700,
+      localLangFormat: 'dddd, MMMM Do YYYY',
       days: [],
       rooms: [],
       timeSlots: [],
@@ -150,15 +151,17 @@ export default defineComponent({
   },
 
   mounted() {
-    let lang = navigator.language || navigator.userLanguage;
-    if (!lang) {
-      lang = 'en'
-    } else if (lang.startsWith('zh')) {
-      lang = 'zh'
-    } else {
-      lang = 'en'
-    }
-    console.log('当前语言', lang)
+    
+    console.log('获取当前浏览器语言设置:',Common.getBrowserLanguege())
+
+    this.localLangFormat = Common.getBrowserLanguege()
+
+
+    const today = moment();
+    const tempDay = today.format(this.localLangFormat)
+    // 获取星期
+    console.log('获取星期',Common.translateWeekDay(tempDay))
+    
 
     const screenWidth = window.screen.width;
     this.screenSize['width'] = screenWidth;
@@ -268,7 +271,7 @@ export default defineComponent({
     getCurrenDay() {
       const today = moment();
       const oneDays = [
-        today.format('dddd, MMMM Do YYYY'),
+      Common.translateWeekDay(today.format(this.localLangFormat)),
       ];
       return oneDays;
     },
@@ -276,9 +279,9 @@ export default defineComponent({
     getThreeDays() {
       const today = moment();
       const nextThreeDays = [
-        today.format('dddd, MMMM Do YYYY'),
-        today.add(1, 'days').format('dddd, MMMM Do YYYY'),
-        today.add(1, 'days').format('dddd, MMMM Do YYYY')
+      Common.translateWeekDay(today.format(this.localLangFormat)),
+      Common.translateWeekDay(today.add(1, 'days').format(this.localLangFormat)),
+      Common.translateWeekDay(today.add(1, 'days').format(this.localLangFormat))
       ];
       return nextThreeDays;
     },
@@ -289,7 +292,7 @@ export default defineComponent({
       const weekDays = [];
       let day = startOfWeek;
       while (day <= endOfWeek) {
-        weekDays.push(day.format('dddd, MMMM Do YYYY'));
+        weekDays.push(Common.translateWeekDay(day.format(this.localLangFormat)));
         day = day.add(1, 'days');
       }
       return weekDays;
@@ -302,7 +305,7 @@ export default defineComponent({
       const end = moment(endDate);
       const days = [];
       while (start <= end) {
-        days.push(start.format('dddd, MMMM Do YYYY'));
+        days.push(Common.translateWeekDay(start.format(this.localLangFormat)));
         start.add(1, 'days');
       }
       console.log('getDaysBetween days', days);
@@ -321,8 +324,7 @@ export default defineComponent({
 
     toMeet(time, room, day) {
       console.log('toMeet time', day.date)
-
-      const dayTimestamp = moment(day.date, "dddd, MMMM Do YYYY").unix();
+      const dayTimestamp = moment(day.date, this.localLangFormat).unix();
       const ymd = moment(dayTimestamp * 1000).format('YYYY-MM-DD')
       console.log('toMeet ymd',ymd)
       console.log('toMeet time',time)
@@ -419,6 +421,9 @@ export default defineComponent({
           return
         }
         console.log('getMeetRooms api data:', data)
+        if(this.lang == 'en') {
+
+        }
         this.nowTime = data.time
         this.getInMeeting(data)
       })
@@ -442,7 +447,7 @@ export default defineComponent({
               area_name: areaName,
               room_id: roomId,
               room_name: roomName,
-              date: moment(Number(entry.start_time * 1000)).format('dddd, MMMM Do YYYY'),
+              date: Common.translateWeekDay(moment(Number(entry.start_time * 1000)).format(this.localLangFormat)),
               startTime: entry.duration.split('-')[0].trim(),
               endTime: entry.duration.split('-')[1].trim(),
               ...entry
@@ -699,7 +704,6 @@ export default defineComponent({
   font-size: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   border-left: 10px solid #54BCBD;
-  cursor: pointer;
 }
 
 .room-meet-timeout-event {
@@ -715,7 +719,6 @@ export default defineComponent({
   font-size: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   border-left: 10px solid #9A9A9A;
-  cursor: pointer;
 }
 
 .event-title {

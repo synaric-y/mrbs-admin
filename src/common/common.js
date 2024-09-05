@@ -2,6 +2,48 @@ import moment from "moment";
 
 export class Common {
 
+    static getBrowserLanguege() {
+        let lang = navigator.language || navigator.userLanguage
+        console.log('lang:',lang)
+        let dateFormat = 'dddd, MMMM Do YYYY'
+        if(lang == 'en') {
+             dateFormat = 'dddd, MMMM Do YYYY'
+        } else if(lang == 'zh-CN') {
+             dateFormat = 'YYYY年MM月DD日 dddd'
+        } else if(lang == 'ko') {
+             dateFormat = 'YYYY년MM월DD일 dddd'
+        } else {
+            dateFormat = 'dddd, MMMM Do YYYY'
+        }
+        return dateFormat
+    }
+
+    static translateWeekDay(ymdDay) {
+        // 2024年09月05日 Thursday
+        // 2024년09월05일 Thursday
+        let lang = navigator.language || navigator.userLanguage
+        if(lang == 'en') {
+            return ymdDay
+        }
+        const weekDays = {
+            zh: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+            en: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+            ko: ['일요일', '월요일', '화요일', '수요일', '목요일', '금요일', '토요일']
+        };
+        const [datePart, weekPart] = ymdDay.split(' ');
+        const weekIndex = weekDays.en.indexOf(weekPart);
+        if (weekIndex === -1) {
+            return ymdDay;
+        }
+        if(lang == 'zh-CN') {
+            return `${datePart} ${weekDays.zh[weekIndex]}`
+        } else if(lang == 'ko') {
+            return `${datePart} ${weekDays.ko[weekIndex]}`
+        } else {
+            return ymdDay
+        }
+    }
+
     static getTodayTimestamps() {
         const now = new Date();
         const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
