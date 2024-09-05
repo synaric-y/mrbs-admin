@@ -47,6 +47,20 @@ export default {
         // router.replace("/login")
       })
       router.replace("/login")
+    },
+    handleVisibleChange(visible) {
+      const handleDocumentClick = (event) => {
+        // 判断点击事件是否发生在 Popover 外部
+        if (!elPopover.value.$el.contains(event.target)) {
+          this.showPop = false;
+          document.removeEventListener('mousedown', handleDocumentClick);
+        }
+      }
+
+      if (visible) {
+        this.showPop = true;
+        document.addEventListener('mousedown', handleDocumentClick);
+      }
     }
   },
   mounted() {
@@ -67,7 +81,7 @@ export default {
                        v-if="item && (item.level == 0 || userInfo && (userInfo.level >= item.level))">{{ $t(item.name) }}</el-button>
           </template>
           <div style="flex: 1"></div>
-          <el-popover :visible="showPop" placement="bottom" :width="160">
+          <el-popover trigger="click" placement="bottom" :width="160">
             <el-button style="width: 135px" size="small" type="primary" @click="toLogout">
               {{$t('base.logout')}}
             </el-button>
@@ -157,7 +171,7 @@ export default {
   align-items: center;
   justify-content: center;
   position: fixed;
-  z-index: 9999;
+  z-index: 2003;
   top: 0;
   border-bottom: 0.06rem solid rgba(187,187,187,1);
 }
@@ -183,6 +197,7 @@ export default {
   margin-right: 22px;
   font-size: 20px;
   border-radius: 126px;
+  font-weight: bold;
 }
 
 .nav-button-inactive {
