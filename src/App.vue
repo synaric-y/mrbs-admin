@@ -58,28 +58,31 @@ export default {
 
 <template>
   <div class="container">
-    <div class="nav" v-if="!isLoginPage">
-      <div class="nav-inner">
+    <div class="nav_wrapper">
+      <div class="nav" v-if="!isLoginPage">
+        <div class="nav-inner">
 
-        <template v-for="(item, index) in tabs" :index="index">
-          <el-button :class="['nav-button', currentTab == item.path ? '' : 'nav-button-inactive']" type="primary" round
-                     size="large" @click="switchTab(item.path)"
-                     v-if="item && (item.level == 0 || userInfo && (userInfo.level >= item.level))">{{ $t(item.name) }}</el-button>
-        </template>
-        <div style="flex: 1"></div>
-        <el-popover :visible="showPop" placement="bottom" :width="160">
-          <el-button style="width: 135px" size="small" type="primary" @click="toLogout">
-            {{$t('base.logout')}}
-          </el-button>
-          <template #reference>
-            <div class="username-wrapper" @click="toProfile">
-              <img style="width: 30px; height: 30px" src="/imgs/profile.png" v-if="!userInfo || !userInfo.display_name" />
-              <div class="username">{{userInfo ? userInfo.display_name : ''}}</div>
-            </div>
+          <template v-for="(item, index) in tabs" :index="index">
+            <el-button :class="['nav-button', currentTab == item.path ? '' : 'nav-button-inactive']" type="primary" round
+                       size="large" @click="switchTab(item.path)"
+                       v-if="item && (item.level == 0 || userInfo && (userInfo.level >= item.level))">{{ $t(item.name) }}</el-button>
           </template>
-        </el-popover>
+          <div style="flex: 1"></div>
+          <el-popover :visible="showPop" placement="bottom" :width="160">
+            <el-button style="width: 135px" size="small" type="primary" @click="toLogout">
+              {{$t('base.logout')}}
+            </el-button>
+            <template #reference>
+              <div class="username-wrapper" @click="toProfile">
+                <img style="width: 30px; height: 30px" src="/imgs/profile.png" v-if="!userInfo || !userInfo.display_name" />
+                <div class="username">{{userInfo ? userInfo.display_name : ''}}</div>
+              </div>
+            </template>
+          </el-popover>
+        </div>
       </div>
     </div>
+    <div class="nav-block"></div>
 <!--    <transition name="el-fade-in" mode="out-in">-->
 <!--      <keep-alive>-->
 <!--        <router-view></router-view>-->
@@ -143,8 +146,23 @@ export default {
   align-items: center;
   justify-content: center;
   background: white;
-  border-bottom: 0.06rem solid rgba(187,187,187,1);
   box-sizing: border-box;
+  padding: 0 75px 0 75px ;
+}
+
+.nav_wrapper {
+  width: 100%;
+  background: white;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  border-bottom: 0.06rem solid rgba(187,187,187,1);
+}
+
+.nav-block {
+  height: 75px;
   padding: 0 75px 0 75px ;
 }
 
