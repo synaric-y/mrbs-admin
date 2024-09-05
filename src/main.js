@@ -34,9 +34,20 @@ app.use(ElementPlus, {
     locale: en,
 })
 
+let lang = navigator.language || navigator.userLanguage;
+if (!lang) {
+    lang = 'en'
+} else if (lang.startsWith('zh')) {
+    lang = 'zh'
+} else {
+    lang = 'en'
+}
+const fallbackLang = 'en'; // 默认语言
+const locale = messages[lang] ? lang : fallbackLang;
 const i18n = createI18n({
     legacy: false,
-    locale: 'en', // set locale
+    locale, // set locale
+    fallbackLocale: fallbackLang,
     messages, // set locale messages
 })
 app.use(i18n)
