@@ -55,7 +55,7 @@ export default {
         }
         req["area"] = Number(req["area"])
         Api.editRoom(req).then(({data, code}) => {
-          if (code) {
+          if (code == 0) {
             ElMessage({
               message: this.$t('base.editSuccess'),
               type: 'success',
