@@ -39,6 +39,8 @@ if (!lang) {
     lang = 'en'
 } else if (lang.startsWith('zh')) {
     lang = 'zh'
+} else if (lang.startsWith('ko')) {
+    lang = 'ko'
 } else {
     lang = 'en'
 }
