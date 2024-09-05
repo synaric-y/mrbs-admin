@@ -316,7 +316,7 @@ export default defineComponent({
     },
 
     toMeet(time, room) {
-      const tempTime = Common.getTimestampForTodayWithTime(time*1000);
+      const tempTime = Common.getTimestampForTodayWithTime(time);
       console.log('toMeet tempTime:', tempTime)
       this.push(`/meet_detail/0/${room.room_id}/${room.area_id}/${tempTime}`);
     },

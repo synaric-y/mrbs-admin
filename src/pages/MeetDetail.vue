@@ -3,8 +3,7 @@
         <el-scrollbar class="scroll-table-view" always>
             <el-main class="container-sub-page-main">
                 <div class="sub-title-wrapper" style="height: 20 + 'px';">
-                    <!-- <div class="sub-title">{{ mode === "add" ? $t("area.addArea") : $t("area.editArea") }}</div> -->
-                    <div class="sub-title">{{ $t("meet.title") }}</div>
+                    <div class="sub-title">{{ mode == 'update' ? $t("meet.editMeet"):$t("meet.addMeet") }}</div>
                 </div>
                 <el-form :model="form" :rules="rules" label-width="auto" ref="meetForm" style="min-width: 430px">
                     <el-form-item prop="create_by" :label="$t('meet.admin')"  style="width: 400px">
@@ -79,7 +78,7 @@ export default {
     mixins: [PageMixin],
     data() {
         return {
-            mode: 'update',
+            mode: 'add',
             rooms: [],
             admins: [],
             meet_types: ["I", "E"],
@@ -254,9 +253,12 @@ export default {
         if(room_id) {
             this.form.rooms.push(Number(room_id))
         }
-        if(id) {
+        console.log('id val:',id)
+        if(id != 0) {
             this.entry_id = id
             this.form.id = id
+            this.mode = 'update'
+            console.log('enter id val:',id)
         }
 
         console.log('meetDetail mounted id room_id  area_id ', id, room_id, area_id)
