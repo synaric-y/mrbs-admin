@@ -157,6 +157,7 @@ export default {
   align-items: center;
   justify-content: center;
   position: fixed;
+  z-index: 9999;
   top: 0;
   border-bottom: 0.06rem solid rgba(187,187,187,1);
 }
