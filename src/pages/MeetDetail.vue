@@ -48,7 +48,7 @@
                     </el-form-item>
                     <el-form-item prop="type" :label="$t('meet.type')">
                         <el-select v-model="form.type" style="width: 240px" :placeholder="$t('base.plzSelect')">
-                            <el-option v-for="item in meet_types" :key="item" :label="item" :value="item" />
+                            <el-option v-for="(meet,index) in meetTypes" :key="index" :label="meet" :value="meet" />
                         </el-select>
                     </el-form-item>
                     <el-form-item style="margin-top: 20px">
@@ -80,7 +80,7 @@ export default {
             mode: 'add',
             rooms: [],
             admins: [],
-            meet_types: ["I", "E"],
+            meetTypes: [],
             oneMeet: {},
             entry_id: 0,
             start_hour: "",
@@ -278,7 +278,20 @@ export default {
                 this.form.start_date = moment.unix(timestamp).format('YYYY-MM-DD')
                 this.form.end_date = moment.unix(timestamp).format('YYYY-MM-DD')
             }
-        }
+        },
+        
+        configMeetTypes() {
+            const lang = Common.getLocalLang()
+            if(lang == 'en') {
+                this.meetTypes = ['Internal meeting','External meeting']
+            }else if(lang == 'ko') {
+                this.meetTypes = ['내부 회의','외부 회의']
+            }else {
+                this.meetTypes = ['内部会议','外部会议']
+            }
+        },
+
+        
     },
     mounted() {
         let { id, room_id, timestamp, area_id, entry_id } = this.$route.params
@@ -286,6 +299,7 @@ export default {
         if (room_id != 0) {
             this.form.rooms.push(Number(room_id))
         }
+        this.configMeetTypes()
         if (id != 0) {
             this.entry_id = id
             this.form.id = id
@@ -318,7 +332,6 @@ export default {
             console.log('getMeetDetail data',data)
             this.editData(data)
         })
-
     }
 }
 </script>
