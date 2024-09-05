@@ -36,7 +36,9 @@ export const messages = {
             end_meet: '结束',
             room: '房间',
             type: '类型',
-            delete_meet: '删除'
+            delete_meet: '删除',
+            addMeet: '添加会议',
+            editMeet: '编辑会议'
         },
         login: {
             account: '账号',
@@ -164,7 +166,9 @@ export const messages = {
             end_meet: 'End',
             room: 'Room',
             type: 'Type',
-            delete_meet: 'Delete'
+            delete_meet: 'Delete',
+            addMeet: 'New Meet',
+            editMeet: 'Edit Meet'
         },
         login: {
             account: 'Account',

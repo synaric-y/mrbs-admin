@@ -316,7 +316,7 @@ export default defineComponent({
     },
 
     toMeet(time, room) {
-      const tempTime = Common.getTimestampForTodayWithTime(time*1000);
+      const tempTime = Common.getTimestampForTodayWithTime(time);
       console.log('toMeet tempTime:', tempTime)
       this.push(`/meet_detail/0/${room.room_id}/${room.area_id}/${tempTime}`);
     },
@@ -443,6 +443,14 @@ export default defineComponent({
 </script>
 
 <style scoped>
+
+* {
+  -webkit-user-select: none; 
+  -moz-user-select: none; 
+  -ms-user-select: none; 
+  user-select: none;
+}
+
 .toolbar {
   display: flex;
   align-items: center;
