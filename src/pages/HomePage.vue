@@ -34,7 +34,7 @@
   </div>
 
   <div class="table-container">
-    <el-scrollbar :class="[screenHeight == 720 ? 'scroll-table-view':'scroll-table-big-view']" always>
+    <el-scrollbar class="scroll-table-view"  :style="{height: (this.screenHeight - 170) + 'px'}" always>
       <div class="calendar-header">
         <div class="time-header">
           <div class="time-slots">
@@ -158,7 +158,7 @@ export default defineComponent({
       if (!data) {
         ElMessage({
           message: this.$t('base.getAreaError'),
-          type: 'fail'
+          type: 'warning'
         })
         return
       }
@@ -343,7 +343,7 @@ export default defineComponent({
         if (end - start > 30) {
           ElMessage({
             message: this.$t('base.selectDateError'),
-            type: 'fail'
+            type: 'warning'
           })
           this.startTime = ''
           this.endTime = ''
@@ -536,7 +536,8 @@ export default defineComponent({
 }
 
 .scroll-table-view {
-  height: 420px;
+  /* height: 420px; */
+  height: 550px;
   width: 100%;
 }
 
