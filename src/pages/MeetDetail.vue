@@ -3,10 +3,10 @@
         <el-scrollbar class="scroll-table-view" always>
             <el-main class="container-sub-page-main">
                 <div class="sub-title-wrapper" style="height: 20 + 'px';">
-                    <div class="sub-title">{{ mode == 'update' ? $t("meet.editMeet"):$t("meet.addMeet") }}</div>
+                    <div class="sub-title">{{ mode == 'update' ? $t("meet.editMeet") : $t("meet.addMeet") }}</div>
                 </div>
                 <el-form :model="form" :rules="rules" label-width="auto" ref="meetForm" style="min-width: 430px">
-                    <el-form-item prop="create_by" :label="$t('meet.admin')"  style="width: 400px">
+                    <el-form-item prop="create_by" :label="$t('meet.admin')" style="width: 400px">
                         <el-select v-model="form.create_by">
                             <el-option v-for="(admin, index) in admins" :label="admin" :value="admin"
                                 :key="index"></el-option>
@@ -15,19 +15,18 @@
                     <el-form-item prop="book_by" :label="$t('meet.booker')" style="width: 400px">
                         <el-input v-model="form.book_by" />
                     </el-form-item>
-                    <el-form-item prop="name" :label="$t('meet.short_desc')"  style="width: 400px">
+                    <el-form-item prop="name" :label="$t('meet.short_desc')" style="width: 400px">
                         <el-input v-model="form.name" />
                     </el-form-item>
-                    <el-form-item prop="description" :label="$t('meet.all_desc')"  style="width: 400px">
-                        <el-input type="textarea" maxlength="100" show-word-limit
-                            v-model="form.description" />
+                    <el-form-item prop="description" :label="$t('meet.all_desc')" style="width: 400px">
+                        <el-input type="textarea" maxlength="100" show-word-limit v-model="form.description" />
                     </el-form-item>
                     <el-form-item prop="start_date" :label="$t('meet.start_meet')">
                         <div class="picker-date-container">
                             <el-date-picker v-model="form.start_date" type="date" placeholder="Pick start day"
                                 @change="choseDate(0, $event)" />
-                            <el-time-select v-model="start_hour" style="width: 240px;margin-left: 20px"
-                                start="08:00" step="00:30" end="21:00" :placeholder="$t('base.plzSelect')"
+                            <el-time-select v-model="start_hour" style="width: 240px;margin-left: 20px" start="08:00"
+                                step="00:30" end="21:00" :placeholder="$t('base.plzSelect')"
                                 @change="choseHour(0, start_hour, $event)" />
                         </div>
                     </el-form-item>
@@ -173,12 +172,19 @@ export default {
                 if (!pass) {
                     return
                 }
-                Api.editMeet(this.form).then(data => {
-                    ElMessage({
-                        message: this.$t('base.editSuccess'),
-                        type: 'success',
-                    })
-                    this.back()
+                Api.editMeet(this.form).then(({ data, code }) => {
+                    if (code == 0) {
+                        ElMessage({
+                            message: this.$t('base.editSuccess'),
+                            type: 'success',
+                        })
+                        this.back()
+                    } else {
+                        ElMessage({
+                            message: this.$t('base.editError'),
+                            type: 'error',
+                        })
+                    }
                 }).catch(() => {
                     ElMessage.error(this.$t('editFailed'))
                 })
@@ -190,12 +196,17 @@ export default {
         },
         deleteMeet() {
             console.log('deleteMeet')
-            Api.deleteMeet({ entry_id: Number(this.entry_id) }).then(data => {
-                ElMessage({
-                    message: this.$t('base.editSuccess'),
-                    type: 'success',
-                })
-                this.back()
+            Api.deleteMeet({ entry_id: Number(this.entry_id) }).then(({ data, code }) => {
+                if (code == 0) {
+                    ElMessage({
+                        message: this.$t('base.editSuccess'),
+                        type: 'success',
+                    })
+                    this.back()
+                } else {
+                    ElMessage.error(this.$t('editFailed'))
+                }
+
             }).catch(() => {
                 ElMessage.error(this.$t('editFailed'))
             })
@@ -211,7 +222,7 @@ export default {
         },
 
         choseHour(mode, str, e) {
-            console.log('choseHour str',str)
+            console.log('choseHour str', str)
             if (mode == 0) {
                 this.form.start_seconds = Common.getTimestampForTodayWithTime(str);
                 return
@@ -251,28 +262,28 @@ export default {
         },
 
         editTime(timestamp) {
-            if(timestamp > 0) {
-            console.log('mounted timestamp begin',timestamp)
-            const starttimestamp = moment.unix(timestamp).format('HH:mm')
-            this.start_hour = starttimestamp
-            this.form.start_seconds = Common.getTimestampForTodayWithTime(this.form.start_hour)
-            const endstamp = Number(timestamp) + 60 * 60
-            console.log('mounted timestamp endstamp',endstamp)
-            this.end_hour = moment.unix(endstamp).format('HH:mm')
-            this.form.end_seconds = Common.getTimestampForTodayWithTime(this.form.end_hour)
-            console.log('mounted timestamp end',timestamp)
-            this.form.start_date = moment.unix(timestamp).format('YYYY-MM-DD')
-            this.form.end_date = moment.unix(timestamp).format('YYYY-MM-DD')
-        }
+            if (timestamp > 0) {
+                console.log('mounted timestamp begin', timestamp)
+                const starttimestamp = moment.unix(timestamp).format('HH:mm')
+                this.start_hour = starttimestamp
+                this.form.start_seconds = Common.getTimestampForTodayWithTime(this.form.start_hour)
+                const endstamp = Number(timestamp) + 60 * 60
+                console.log('mounted timestamp endstamp', endstamp)
+                this.end_hour = moment.unix(endstamp).format('HH:mm')
+                this.form.end_seconds = Common.getTimestampForTodayWithTime(this.form.end_hour)
+                console.log('mounted timestamp end', timestamp)
+                this.form.start_date = moment.unix(timestamp).format('YYYY-MM-DD')
+                this.form.end_date = moment.unix(timestamp).format('YYYY-MM-DD')
+            }
         }
     },
     mounted() {
         let { id, room_id, timestamp, area_id, entry_id } = this.$route.params
         this.editTime(timestamp)
-        if(room_id != 0) {
+        if (room_id != 0) {
             this.form.rooms.push(Number(room_id))
         }
-        if(id != 0) {
+        if (id != 0) {
             this.entry_id = id
             this.form.id = id
             this.mode = 'update'
@@ -298,11 +309,11 @@ export default {
         if (!id || id == 0) {
             return
         }
-        Api.getMeetDetail({ id: Number(this.entry_id) }).then(data => {
+        Api.getMeetDetail({ id: Number(this.entry_id) }).then(({data, code}) => {
             if (!data) {
                 return
             }
-            this.editData(data)   
+            this.editData(data)
         })
 
     }
@@ -310,20 +321,19 @@ export default {
 </script>
 
 <style scoped>
-
 .container-sub-page {
-  width: 100vw;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  align-items: center;
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    align-items: center;
 }
 
 .container-sub-page-main {
-  min-width: 930px;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
+    min-width: 930px;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
 }
 
 .picker-date-container {

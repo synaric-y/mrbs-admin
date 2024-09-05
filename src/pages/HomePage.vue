@@ -163,15 +163,15 @@ export default defineComponent({
     console.log('当前屏幕的高度为:', this.screenSize, '像素');
     this.startStamp = Common.getThreeDaysTimestamps().start
     this.endStamp = Common.getThreeDaysTimestamps().end
-    Api.getAreaRooms({}).then(({data}) => {
+    Api.getAreaRooms({}).then(({data, code}) => {
       console.log('mounted getRooms data:', data)
-      if (!data) {
+      if(code != 0) {
         ElMessage({
           message: this.$t('base.getAreaError'),
           type: 'warning'
         })
         return
-      }
+      } 
       console.log('mounted this.areas data', data)
       this.areas = data.areas
       this.dayRrange(3)
@@ -399,8 +399,8 @@ export default defineComponent({
         this.itemWidth = 228;
       }
       console.log('getMeetRooms currenArea:  start: end: ', this.currenArea, this.startStamp, this.endStamp);
-      Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp, end_time: this.endStamp }).then(({data}) => {
-        if (!data) {
+      Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp, end_time: this.endStamp }).then(({data,code}) => {
+        if (!data || code != 0) {
           return
         }
         console.log('getMeetRooms api data:', data)
@@ -520,31 +520,6 @@ export default defineComponent({
 .home-calendar {
   margin-left: 20px;
 }
-
-/* .demo-date-picker {
-  display: flex;
-  width: 100%;
-  padding: 0;
-  flex-wrap: wrap;
-}
-
-.demo-date-picker .block {
-  padding: 30px 0;
-  text-align: center;
-  border-right: solid 1px var(--el-border-color);
-  flex: 1;
-}
-
-.demo-date-picker .block:last-child {
-  border-right: none;
-}
-
-.demo-date-picker .demonstration {
-  display: block;
-  color: var(--el-text-color-secondary);
-  font-size: 14px;
-  margin-bottom: 20px;
-} */
 
 .table-container {
   display: flex;
