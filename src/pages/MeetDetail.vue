@@ -215,10 +215,10 @@ export default {
         choseDate(mode, e) {
             console.log('choseDate e', e)
             if (mode == 0) {
-                this.form.start_date = moment(e[0]).format('YYYY-MM-DD');
+                this.form.start_date = moment(e).format('YYYY-MM-DD');
                 return
             }
-            this.form.end_date = moment(e[0]).format('YYYY-MM-DD');
+            this.form.end_date = moment(e).format('YYYY-MM-DD');
         },
 
         choseHour(mode, str, e) {
@@ -262,6 +262,7 @@ export default {
         },
 
         editTime(timestamp) {
+            console.log('editTime timestamp',timestamp)
             if (timestamp > 0) {
                 console.log('mounted timestamp begin', timestamp)
                 const starttimestamp = moment.unix(timestamp).format('HH:mm')
@@ -288,7 +289,7 @@ export default {
             this.form.id = id
             this.mode = 'update'
         }
-        Api.getAdmins().then(data => {
+        Api.getAdmins().then(({data,code}) => {
             if (!data) {
                 return
             }
@@ -296,7 +297,7 @@ export default {
         })
 
         if (area_id) {
-            Api.getAreaRooms({ id: Number(area_id) }).then(data => {
+            Api.getAreaRooms({ id: Number(area_id) }).then(({data, code}) => {
                 if (!data) {
                     return
                 }
@@ -305,7 +306,6 @@ export default {
                 this.form.room_number = roomName[0].room_name
             })
         }
-
         if (!id || id == 0) {
             return
         }
@@ -313,6 +313,7 @@ export default {
             if (!data) {
                 return
             }
+            console.log('getMeetDetail data',data)
             this.editData(data)
         })
 

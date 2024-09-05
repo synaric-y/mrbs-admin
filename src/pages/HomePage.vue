@@ -51,8 +51,8 @@
               {{ room.room_name }}
               <template v-for="(time, timeIndex) in localTimeSlots">
                 <div class="empty-meet-div"
-                  :style="{ height: 55 + 'px', width: itemWidth + 'px', top: (timeIndex + 1) * 60 + 'px' }"
-                  @click="toMeet(time, room)">
+                  :style="{ height: 60 + 'px', width: itemWidth + 'px', top: (timeIndex + 1) * 60 + 'px' }"
+                  @click="toMeet(time, room, day.date)">
                   <text class="empty-meet-duration">{{ time }}</text>
                 </div>
               </template>
@@ -314,7 +314,9 @@ export default defineComponent({
       return formattedDates;
     },
 
-    toMeet(time, room) {
+    toMeet(time, room, day) {
+      console.log('toMeet time',day.date)
+      // const timestamp = moment(day.date, "dddd, MMMM Do YYYY");
       const tempTime = Common.getTimestampForTodayWithTime(time);
       console.log('toMeet tempTime:', tempTime)
       this.push(`/meet_detail/0/${room.room_id}/${room.area_id}/${tempTime}`);
