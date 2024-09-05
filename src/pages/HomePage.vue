@@ -340,7 +340,8 @@ export default defineComponent({
         const end_date = moment(e[1]).format('YYYY-MM-DD')
         const start = moment(start_date);
         const end = moment(end_date)
-        if (end - start > 30) {
+        const diffDay = (end - start) / (24*60*60*1000)
+        if (diffDay > 30) {
           ElMessage({
             message: this.$t('base.selectDateError'),
             type: 'warning'
