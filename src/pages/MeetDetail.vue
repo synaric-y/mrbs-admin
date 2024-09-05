@@ -173,10 +173,7 @@ export default {
                 if (!pass) {
                     return
                 }
-                // this.form["sort_key"] = this.form["area_name"]
-                // 编辑或者新增会议
-
-                Api.editMeet(this.form).then(({data}) => {
+                Api.editMeet(this.form).then(data => {
                     ElMessage({
                         message: this.$t('base.editSuccess'),
                         type: 'success',
@@ -193,7 +190,7 @@ export default {
         },
         deleteMeet() {
             console.log('deleteMeet')
-            Api.deleteMeet({ entry_id: Number(this.entry_id) }).then(({data}) => {
+            Api.deleteMeet({ entry_id: Number(this.entry_id) }).then(data => {
                 ElMessage({
                     message: this.$t('base.editSuccess'),
                     type: 'success',
@@ -231,65 +228,9 @@ export default {
         formatTime(hours, minutes) {
             let date = new Date(0, 0, 0, hours, minutes, 0);
             return date.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
-        }
-    },
-    mounted() {
-        let { id, room_id, timestamp, area_id, entry_id } = this.$route.params
-        if(timestamp > 0) {
-            console.log('mounted timestamp begin',timestamp)
-            const starttimestamp = moment.unix(timestamp).format('HH:mm')
-            this.start_hour = starttimestamp
-            this.form.start_seconds = Common.getTimestampForTodayWithTime(this.form.start_hour)
-            const endstamp = Number(timestamp) + 60 * 60
-            console.log('mounted timestamp endstamp',endstamp)
-            this.end_hour = moment.unix(endstamp).format('HH:mm')
-            this.form.end_seconds = Common.getTimestampForTodayWithTime(this.form.end_hour)
-            console.log('mounted timestamp end',timestamp)
+        },
 
-            this.form.start_date = moment.unix(timestamp).format('YYYY-MM-DD')
-            this.form.end_date = moment.unix(timestamp).format('YYYY-MM-DD')
-        }
-
-        if(room_id) {
-            this.form.rooms.push(Number(room_id))
-        }
-        console.log('id val:',id)
-        if(id != 0) {
-            this.entry_id = id
-            this.form.id = id
-            this.mode = 'update'
-            console.log('enter id val:',id)
-        }
-
-        console.log('meetDetail mounted id room_id  area_id ', id, room_id, area_id)
-        Api.getAdmins().then(({data}) => {
-            if (!data) {
-                return
-            }
-            console.log('getAdmins data', data)
-            this.admins = data
-        })
-
-        if (area_id) {
-            Api.getAreaRooms({ id: Number(area_id) }).then(({data}) => {
-                if (!data) {
-                    return
-                }
-                console.log('mounted getAreaRooms data', data)
-                this.rooms = data.areas[0].rooms
-                const roomName = data.areas[0].rooms.filter(room => room.room_id == room_id)
-                this.form.room_number = roomName[0].room_name
-                console.log('get roomName', roomName)
-            })
-        }
-
-        if (!id || id == 0) {
-            return
-        }
-        Api.getMeetDetail({ id: Number(this.entry_id) }).then(({data}) => {
-            if (!data) {
-                return
-            }
+        editData(data) {
             this.form.create_by = data.create_by
             this.form.book_by = data.book_by
             this.form.name = data.name
@@ -307,10 +248,61 @@ export default {
             this.form.rooms.push(Number(data.room_id))
             this.form.id = data.id
             this.form.room_number = data.room_name
-            console.log('start_time y-m-d', start_time, moment(start_time).format('YYYY-MM-DD'))
-            console.log('end_time y-m-d', end_time, moment(end_time).format('YYYY-MM-DD'))
-            console.log('this.form', this.form)
-            console.log('getMeetDetail data', data)
+        },
+
+        editTime(timestamp) {
+            if(timestamp > 0) {
+            console.log('mounted timestamp begin',timestamp)
+            const starttimestamp = moment.unix(timestamp).format('HH:mm')
+            this.start_hour = starttimestamp
+            this.form.start_seconds = Common.getTimestampForTodayWithTime(this.form.start_hour)
+            const endstamp = Number(timestamp) + 60 * 60
+            console.log('mounted timestamp endstamp',endstamp)
+            this.end_hour = moment.unix(endstamp).format('HH:mm')
+            this.form.end_seconds = Common.getTimestampForTodayWithTime(this.form.end_hour)
+            console.log('mounted timestamp end',timestamp)
+            this.form.start_date = moment.unix(timestamp).format('YYYY-MM-DD')
+            this.form.end_date = moment.unix(timestamp).format('YYYY-MM-DD')
+        }
+        }
+    },
+    mounted() {
+        let { id, room_id, timestamp, area_id, entry_id } = this.$route.params
+        this.editTime(timestamp)
+        if(room_id != 0) {
+            this.form.rooms.push(Number(room_id))
+        }
+        if(id != 0) {
+            this.entry_id = id
+            this.form.id = id
+            this.mode = 'update'
+        }
+        Api.getAdmins().then(data => {
+            if (!data) {
+                return
+            }
+            this.admins = data
+        })
+
+        if (area_id) {
+            Api.getAreaRooms({ id: Number(area_id) }).then(data => {
+                if (!data) {
+                    return
+                }
+                this.rooms = data.areas[0].rooms
+                const roomName = data.areas[0].rooms.filter(room => room.room_id == room_id)
+                this.form.room_number = roomName[0].room_name
+            })
+        }
+
+        if (!id || id == 0) {
+            return
+        }
+        Api.getMeetDetail({ id: Number(this.entry_id) }).then(data => {
+            if (!data) {
+                return
+            }
+            this.editData(data)   
         })
 
     }
