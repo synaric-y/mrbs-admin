@@ -48,7 +48,7 @@
                     </el-form-item>
                     <el-form-item prop="type" :label="$t('meet.type')">
                         <el-select v-model="form.type" style="width: 240px" :placeholder="$t('base.plzSelect')">
-                            <el-option v-for="(meet,index) in meetTypes" :key="index" :label="meet" :value="meet" />
+                            <el-option v-for="(meet,index) in meetTypes" :key="index" :label="meet" :value="index" />
                         </el-select>
                     </el-form-item>
                     <el-form-item style="margin-top: 20px">
@@ -81,6 +81,7 @@ export default {
             rooms: [],
             admins: [],
             meetTypes: [],
+            currenType:'',
             oneMeet: {},
             entry_id: 0,
             start_hour: "",
@@ -280,15 +281,25 @@ export default {
             }
         },
         
-        configMeetTypes() {
+        configMeetTypes(type) {
             const lang = Common.getLocalLang()
             if(lang == 'en') {
-                this.meetTypes = ['Internal meeting','External meeting']
+                this.meetTypes = {
+                    I: 'Internal meeting',
+                    E: 'External meeting'
+                }
             }else if(lang == 'ko') {
-                this.meetTypes = ['내부 회의','외부 회의']
+                this.meetTypes = {
+                   I: '내부 회의',
+                   E: '외부 회의'
+                }
             }else {
-                this.meetTypes = ['内部会议','外部会议']
+                this.meetTypes = {
+                    I: '内部会议',
+                    E: '外部会议'
+                }
             }
+            this.form.type = this.meetTypes[type];
         },
 
         
