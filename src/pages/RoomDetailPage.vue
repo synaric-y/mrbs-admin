@@ -34,7 +34,15 @@ export default {
         ],
         capacity: [
           {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'},
-          {type: 'number', message: this.$t('base.mustNumberHint')},
+          {
+            validator: (rule, value, callback, source, options) => {
+              const errors = [];
+              if (isNaN(value) || !/^(([1-9]\d+)|([1-9]))$/.test(value)) {
+                errors.push(new Error(this.$t('room.invalidCapacity')))
+              }
+              return errors;
+            },
+          },
         ],
       },
       area: {},
