@@ -443,6 +443,14 @@ export default defineComponent({
 </script>
 
 <style scoped>
+
+* {
+  -webkit-user-select: none; 
+  -moz-user-select: none; 
+  -ms-user-select: none; 
+  user-select: none;
+}
+
 .toolbar {
   display: flex;
   align-items: center;
