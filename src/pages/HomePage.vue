@@ -27,7 +27,7 @@
         </el-button-group>
       </el-col>
       <el-col :span="7">
-        <el-date-picker v-model="baseTime" type="daterange" range-separator="To" :start-placeholder="startTime"
+        <el-date-picker v-model="baseTime" type="daterange" :range-separator="$t('base.to')" :start-placeholder="startTime"
           :end-placeholder="endTime" @change="choseDate" />
       </el-col>
     </el-row>
@@ -321,7 +321,6 @@ export default defineComponent({
 
     toMeet(time, room, day) {
       console.log('toMeet time', day.date)
-
       const dayTimestamp = moment(day.date, "dddd, MMMM Do YYYY").unix();
       const ymd = moment(dayTimestamp * 1000).format('YYYY-MM-DD')
       console.log('toMeet ymd',ymd)
@@ -699,7 +698,6 @@ export default defineComponent({
   font-size: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   border-left: 10px solid #54BCBD;
-  cursor: pointer;
 }
 
 .room-meet-timeout-event {
@@ -715,7 +713,6 @@ export default defineComponent({
   font-size: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   border-left: 10px solid #9A9A9A;
-  cursor: pointer;
 }
 
 .event-title {
