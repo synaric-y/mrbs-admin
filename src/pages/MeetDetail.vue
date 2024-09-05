@@ -253,8 +253,8 @@ export default {
             const end_time = data.end_time * 1000
             this.form.start_date = moment(start_time).format('YYYY-MM-DD')
             this.form.end_date = moment(end_time).format('YYYY-MM-DD')
-            this.form.start_seconds = moment(start_time).format("hh:mm")
-            this.form.end_seconds = moment(end_time).format("hh:mm")
+            this.form.start_seconds = Common.getTimestampForDateAndTime(this.form.start_date,moment(start_time).format("hh:mm"))
+            this.form.end_seconds =  Common.getTimestampForDateAndTime(this.form.start_date,moment(end_time).format("hh:mm"))
             this.start_hour = moment(start_time).format("hh:mm")
             this.end_hour = moment(end_time).format("hh:mm")
             this.form.rooms = []
@@ -269,11 +269,11 @@ export default {
                 console.log('mounted timestamp begin', timestamp)
                 const starttimestamp = moment.unix(timestamp).format('HH:mm')
                 this.start_hour = starttimestamp
-                this.form.start_seconds = Common.getTimestampForTodayWithTime(this.form.start_hour)
+                this.form.start_seconds = Common.getTimestampForTodayWithTime(this.start_hour)
                 const endstamp = Number(timestamp) + 60 * 60
                 console.log('mounted timestamp endstamp', endstamp)
                 this.end_hour = moment.unix(endstamp).format('HH:mm')
-                this.form.end_seconds = Common.getTimestampForTodayWithTime(this.form.end_hour)
+                this.form.end_seconds = Common.getTimestampForTodayWithTime(this.end_hour)
                 console.log('mounted timestamp end', timestamp)
                 this.form.start_date = moment.unix(timestamp).format('YYYY-MM-DD')
                 this.form.end_date = moment.unix(timestamp).format('YYYY-MM-DD')
