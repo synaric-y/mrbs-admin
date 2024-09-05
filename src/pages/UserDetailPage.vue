@@ -78,7 +78,7 @@ export default {
     let {id, mode} = this.$route.params
     this.mode = mode
     if (mode == 'update') {
-      Api.getUserById({id: Number(id)}).then(data => {
+      Api.getUserById({id: Number(id)}).then(({data}) => {
         if (!data) {
           return
         }

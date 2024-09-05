@@ -26,12 +26,12 @@ export default {
     },
     deleteUser() {
       this.showDeleteUserDialog = false
-      Api.deleteUser({name: this.pendingDeleteName}).then(data => {
+      Api.deleteUser({name: this.pendingDeleteName}).then(({data}) => {
         this.getUserList()
       })
     },
     getUserList() {
-      Api.getUserList({}).then(data => {
+      Api.getUserList({}).then(({data}) => {
         if (data) {
           data.forEach(it => {
             it["level"] = this.role[it["level"]]

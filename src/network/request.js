@@ -17,9 +17,6 @@ export class Request {
             await router.replace('/login')
             throw Error('message')
         }
-        if (rep.code != 0) {
-            throw Error('message')
-        }
-        return rep.data
+        return rep
     }
 }

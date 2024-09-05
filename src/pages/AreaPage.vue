@@ -26,12 +26,12 @@ export default {
     },
     deleteArea() {
       this.showDeleteAreaDialog = false
-      Api.deleteArea({area: this.pendingDeleteId}).then(data => {
+      Api.deleteArea({area: this.pendingDeleteId}).then(({data}) => {
         this.getAreaList()
       })
     },
     getAreaList() {
-      Api.getAreaList({}).then(data => {
+      Api.getAreaList({}).then(({data}) => {
         if (data) {
           this.tableData = data
         }
@@ -39,7 +39,7 @@ export default {
     },
     addArea() {
       this.showAddAreaDialog = false
-      Api.addArea(this.form).then(data => {
+      Api.addArea(this.form).then(({data}) => {
         this.getAreaList()
       })
     }

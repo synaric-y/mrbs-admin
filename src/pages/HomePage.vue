@@ -164,7 +164,7 @@ export default defineComponent({
     console.log('当前屏幕的高度为:', this.screenSize, '像素');
     this.startStamp = Common.getThreeDaysTimestamps().start
     this.endStamp = Common.getThreeDaysTimestamps().end
-    Api.getAreaRooms({}).then(data => {
+    Api.getAreaRooms({}).then(({data}) => {
       console.log('mounted getRooms data:', data)
       if (!data) {
         ElMessage({
@@ -400,7 +400,7 @@ export default defineComponent({
         this.itemWidth = 228;
       }
       console.log('getMeetRooms currenArea:  start: end: ', this.currenArea, this.startStamp, this.endStamp);
-      Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp, end_time: this.endStamp }).then(data => {
+      Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp, end_time: this.endStamp }).then(({data}) => {
         if (!data) {
           return
         }

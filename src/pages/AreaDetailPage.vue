@@ -95,7 +95,7 @@ export default {
           return
         }
         this.form["sort_key"] = this.form["area_name"]
-        Api.editArea(this.form).then(data => {
+        Api.editArea(this.form).then(({data}) => {
           ElMessage({
             message: this.$t('base.editSuccess'),
             type: 'success',
@@ -113,7 +113,7 @@ export default {
   },
   mounted() {
     let {id} = this.$route.params
-    Api.getArea({id: Number(id)}).then(data => {
+    Api.getArea({id: Number(id)}).then(({data}) => {
       if (!data) {
         return
       }

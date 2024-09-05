@@ -54,7 +54,7 @@ export default {
           req["new_area"] = req["area"]
         }
         req["area"] = Number(req["area"])
-        Api.editRoom(req).then(data => {
+        Api.editRoom(req).then(({data}) => {
           ElMessage({
             message: this.$t('base.editSuccess'),
             type: 'success',
@@ -66,9 +66,11 @@ export default {
       })
     },
     async getData() {
-      this.areaList = await Api.getAreaList({})
+      let areaListRep = await Api.getAreaList({})
+      this.areaList = areaListRep.data
       let {id} = this.$route.params
-      let data = await Api.getRoom({id: Number(id)})
+      let roomRep = await Api.getRoom({id: Number(id)})
+      let data = roomRep.data
       if (!data) {
         return
       }
@@ -87,8 +89,8 @@ export default {
       this.form["exchange_password"] = data["exchange_password"]
       this.form["wxwork_mr_id"] = data["wxwork_mr_id"]
 
-      let areas =  await Api.getArea({id: this.form.area})
-      this.area = areas[0]
+      let areaRep =  await Api.getArea({id: this.form.area})
+      this.area = areaRep.data[0]
     },
     onAreaChange(e) {
       this.form["new_area"] = e

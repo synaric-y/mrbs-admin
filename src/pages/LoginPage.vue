@@ -16,9 +16,11 @@ export default {
   },
   methods: {
     submit() {
-      Api.login(this.form).then((data) => {
-        this.login(data)
-        this.switchTab('/')
+      Api.login(this.form).then(({data, code}) => {
+        if (code == 0) {
+          this.login(data)
+          this.switchTab('/')
+        }
       })
     }
   },

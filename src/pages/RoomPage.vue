@@ -44,12 +44,12 @@ export default {
     },
     deleteRoom() {
       this.showDeleteRoomDialog = false
-      Api.deleteRoom({room: Number(this.pendingDeleteId)}).then(data => {
+      Api.deleteRoom({room: Number(this.pendingDeleteId)}).then(({data}) => {
         this.getRoomList()
       })
     },
     getRoomList() {
-      Api.getRoomList({area: this.areaId}).then(data => {
+      Api.getRoomList({area: this.areaId}).then(({data}) => {
         if (data) {
           data.forEach(item => {
             if (item["battery_level"]) {
@@ -63,7 +63,7 @@ export default {
       })
     },
     getAreaList() {
-      Api.getAreaList({}).then(data => {
+      Api.getAreaList({}).then(({data}) => {
         if (data) {
           this.areaListNoAll = JSON.parse(JSON.stringify(data))
           data.unshift({
@@ -80,7 +80,7 @@ export default {
           return
         }
         this.showAddRoomDialog = false
-        Api.addRoom(this.form).then(data => {
+        Api.addRoom(this.form).then(({data}) => {
           this.getRoomList()
         })
       })

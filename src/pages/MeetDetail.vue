@@ -177,7 +177,7 @@ export default {
                 // this.form["sort_key"] = this.form["area_name"]
                 // 编辑或者新增会议
 
-                Api.editMeet(this.form).then(data => {
+                Api.editMeet(this.form).then(({data}) => {
                     ElMessage({
                         message: this.$t('base.editSuccess'),
                         type: 'success',
@@ -194,7 +194,7 @@ export default {
         },
         deleteMeet() {
             console.log('deleteMeet')
-            Api.deleteMeet({ entry_id: Number(this.entry_id) }).then(data => {
+            Api.deleteMeet({ entry_id: Number(this.entry_id) }).then(({data}) => {
                 ElMessage({
                     message: this.$t('base.editSuccess'),
                     type: 'success',
@@ -260,7 +260,7 @@ export default {
         }
 
         console.log('meetDetail mounted id room_id  area_id ', id, room_id, area_id)
-        Api.getAdmins().then(data => {
+        Api.getAdmins().then(({data}) => {
             if (!data) {
                 return
             }
@@ -269,7 +269,7 @@ export default {
         })
 
         if (area_id) {
-            Api.getAreaRooms({ id: Number(area_id) }).then(data => {
+            Api.getAreaRooms({ id: Number(area_id) }).then(({data}) => {
                 if (!data) {
                     return
                 }
@@ -284,7 +284,7 @@ export default {
         if (!id || id == 0) {
             return
         }
-        Api.getMeetDetail({ id: Number(this.entry_id) }).then(data => {
+        Api.getMeetDetail({ id: Number(this.entry_id) }).then(({data}) => {
             if (!data) {
                 return
             }
