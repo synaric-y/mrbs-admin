@@ -1,14 +1,11 @@
 <template>
   <div class="toolbar">
-    <!-- Icon and Date-Time -->
     <el-row :gutter="10">
-      <!-- Current Date -->
       <el-col :span="6">
         <el-icon class="home-time-icon">
         </el-icon>
         <span>{{ nowTime }}</span>
       </el-col>
-      <!-- Dropdown Room -->
       <el-col :span="3">
         <el-select v-model="selectedRoom" placeholder="All Rooms" @change="choseArea">
           <el-option label="All Areas" value="All"></el-option>
@@ -16,11 +13,9 @@
             :key="index"></el-option>
         </el-select>
       </el-col>
-      <!-- Calendar Icon -->
       <el-col :span="2" class="home-calendar">
         <el-icon class="home-calendar-icon" type="text"></el-icon>
       </el-col>
-      <!-- Buttons Group -->
       <el-col :span="9">
         <el-button-group>
           <el-button :class="[dayRrangeVal == 1 ? 'button-selected' : 'button-normal']"
@@ -31,7 +26,6 @@
             @click="dayRrange(7)">Week</el-button>
         </el-button-group>
       </el-col>
-      <!-- Date-picker -->
       <el-col :span="7">
         <el-date-picker v-model="baseTime" type="daterange" range-separator="To" :start-placeholder="startTime"
           :end-placeholder="endTime" @change="choseDate" />
@@ -41,9 +35,7 @@
 
   <div class="table-container">
     <el-scrollbar :class="[screenHeight == 720 ? 'scroll-table-view':'scroll-table-big-view']" always>
-      <!-- calendar header -->
       <div class="calendar-header">
-        <!-- time line -->
         <div class="time-header">
           <div class="time-slots">
             <div v-for="(time, timeIndex) in timeSlots" :key="time" class="time-slot">
@@ -51,7 +43,6 @@
             </div>
           </div>
         </div>
-        <!-- day room -->
         <div v-for="(day, indexday) in days" :key="indexday" class="day-header" :style="{ backgroundColor: day.color }">
           {{ day.date }}
           <div class="room-header">
@@ -63,9 +54,7 @@
                   :style="{ height: 55 + 'px', width: itemWidth + 'px', top: (timeIndex + 1) * 60 + 'px' }"
                   @click="toMeet(time, room)"></div>
               </template>
-
               <template v-for="(event, indexeve) in events">
-                <!-- Rooms and Schedule -->
                 <template v-if="day.date == event.date && room.room_id == event.room_id">
                   <div :key="indexeve" class="room-meet-event" @click="editMeet(event)"
                     :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
@@ -90,7 +79,6 @@
 import router from "@/router/index.js";
 import { defineComponent } from 'vue';
 import { ElRow, ElCol, ElSelect, ElOption, ElButton, ElIcon, ElButtonGroup } from 'element-plus';
-// picker date
 import { ref } from 'vue'
 import { Api } from '@/network/api';
 import { areaData, homeData } from './home';
@@ -151,12 +139,6 @@ export default defineComponent({
   },
 
   mounted() {
-
-    // const temp = moment(1725411600 * 1000).format('dddd, MMMM Do YYYY')
-
-    // console.log('mounted moment:',temp)
-
-
     const screenWidth = window.screen.width;
     this.screenSize['width'] = screenWidth;
     const screenHeight = window.screen.height;
@@ -167,7 +149,6 @@ export default defineComponent({
 
     }
     console.log('当前屏幕的高度为:', this.screenSize, '像素');
-    console.log('mounted getRooms enter')
     this.startStamp = Common.getThreeDaysTimestamps().start
     this.endStamp = Common.getThreeDaysTimestamps().end
     Api.getAreaRooms({}).then(data => {
@@ -366,7 +347,6 @@ export default defineComponent({
           this.endTime = ''
           return
         }
-
         this.startTime = e[0];
         this.endTime = e[1];
         this.getMeetRooms();
@@ -445,7 +425,6 @@ export default defineComponent({
       console.log('getMeetRooms entriesRoom:', entriesRoom)
     },
   }
-
 });
 </script>
 
@@ -609,7 +588,6 @@ export default defineComponent({
   top: 100px;
   width: 60px;
   height: 60px;
-  /* background-color: red; */
   transition: all 0.3s ease;
 }
 
