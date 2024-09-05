@@ -8,7 +8,7 @@
       </el-col>
       <el-col :span="3">
         <el-select v-model="selectedRoom" placeholder="All Rooms" @change="choseArea">
-          <el-option label="All Areas" value="All"></el-option>
+          <el-option :label="$t('base.allAreas')" value="All"></el-option>
           <el-option v-for="(area, index) in areas" :label="area.area_name" :value="area.area_id"
             :key="index"></el-option>
         </el-select>
@@ -19,11 +19,11 @@
       <el-col :span="9">
         <el-button-group>
           <el-button :class="[dayRrangeVal == 1 ? 'button-selected' : 'button-normal']"
-            @click="dayRrange(1)">Today</el-button>
-          <el-button :class="[dayRrangeVal == 3 ? 'button-selected' : 'button-normal']" @click="dayRrange(3)">3
-            Days</el-button>
+            @click="dayRrange(1)">{{ $t('base.today') }}</el-button>
+          <el-button :class="[dayRrangeVal == 3 ? 'button-selected' : 'button-normal']" 
+          @click="dayRrange(3)">{{ $t('base.threeDays') }}</el-button>
           <el-button :class="[dayRrangeVal == 7 ? 'button-selected' : 'button-normal']"
-            @click="dayRrange(7)">Week</el-button>
+            @click="dayRrange(7)">{{ $t('base.week') }}</el-button>
         </el-button-group>
       </el-col>
       <el-col :span="7">
@@ -51,7 +51,7 @@
               {{ room.room_name }}
               <template v-for="(time, timeIndex) in localTimeSlots">
                 <div class="empty-meet-div"
-                  :style="{ height: 60 + 'px', width: itemWidth + 'px', top: (timeIndex + 1) * 60 + 'px' }"
+                  :style="{ height: 55 + 'px', width: itemWidth + 'px', top: (timeIndex + 1) * 60 + 'px' }"
                   @click="toMeet(time, room, day.date)">
                   <text class="empty-meet-duration">{{ time }}</text>
                 </div>
@@ -60,7 +60,7 @@
                 <template v-if="day.date == event.date && room.room_id == event.room_id">
                   <template v-if="event.status == 2">
                     <div :key="indexeve" class="room-meet-timeout-event" @click="editMeet(event)"
-                    :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
+                    :style="{ top: 55 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
                     <div class="event-title">{{ event.entry_name }}</div>
                     <div class="event-time">{{ event.duration }}</div>
                     <div class="event-person">{{ event.book_by }}</div>
@@ -68,13 +68,12 @@
                   </template>
                   <template v-else>
                     <div :key="indexeve" class="room-meet-event" @click="editMeet(event)"
-                    :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
+                    :style="{ top: 55 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
                     <div class="event-title">{{ event.entry_name }}</div>
                     <div class="event-time">{{ event.duration }}</div>
                     <div class="event-person">{{ event.book_by }}</div>
                   </div>
                   </template>
-                  
                 </template>
               </template>
             </div>
@@ -120,8 +119,8 @@ export default defineComponent({
       hoursNumber: 24,
       dayRrangeVal: 3,
       baseTime: '',
-      startTime: 'Start date',
-      endTime: 'End date',
+      startTime: this.$t('base.startDate'),
+      endTime: this.$t('base.endDate'),
       areas: [],
       meetRooms: [],
       screenSize: {},
@@ -151,15 +150,26 @@ export default defineComponent({
   },
 
   mounted() {
+    let lang = navigator.language || navigator.userLanguage;
+    if (!lang) {
+        lang = 'en'
+    } else if (lang.startsWith('zh')) {
+        lang = 'zh'
+    } else {
+        lang = 'en'
+    }
+    console.log('当前语言',lang)
+
     const screenWidth = window.screen.width;
     this.screenSize['width'] = screenWidth;
     const screenHeight = window.screen.height;
     this.screenSize['height'] = screenHeight;
-    if(screenHeight <= 720) {
-      this.screenHeight = screenHeight
-    } else {
+    this.screenHeight = screenHeight
+    // if(screenHeight <= 720) {
+    //   this.screenHeight = screenHeight
+    // } else {
 
-    }
+    // }
     console.log('当前屏幕的高度为:', this.screenSize, '像素');
     this.startStamp = Common.getThreeDaysTimestamps().start
     this.endStamp = Common.getThreeDaysTimestamps().end
@@ -508,6 +518,31 @@ export default defineComponent({
 
 .el-select {
   min-width: 150px;
+}
+
+.demo-date-picker {
+  display: flex;
+  width: 100%;
+  padding: 0;
+  flex-wrap: wrap;
+}
+
+.demo-date-picker .block {
+  padding: 30px 0;
+  text-align: center;
+  border-right: solid 1px var(--el-border-color);
+  flex: 1;
+}
+
+.demo-date-picker .block:last-child {
+  border-right: none;
+}
+
+.demo-date-picker .demonstration {
+  display: block;
+  color: var(--el-text-color-secondary);
+  font-size: 14px;
+  margin-bottom: 20px;
 }
 
 .home-calendar-icon {

@@ -26,7 +26,13 @@ export const messages = {
             getAreaError: '获取区域房间异常，请检查相关配置',
             selectDateError: '选择时间跨度不能超过一个月',
             loginError: '账号或密码不正确',
-            editError: '编辑失败'
+            editError: '编辑失败',
+            today: '今天',
+            threeDays: '三天',
+            week: '周',
+            startDate: '开始',
+            endDate: '结束',
+            allAreas: '所有区域',
         },
         meet: {
             title: '编辑会议',
@@ -158,7 +164,13 @@ export const messages = {
             getAreaError: 'The regional room is abnormal, please check the relevant configuration',
             selectDateError: 'The selected time span cannot exceed one month',
             loginError: 'The username or password is incorrect',
-            editError: 'Edit error'
+            editError: 'Edit error',
+            today: 'Today',
+            threeDays: '3 Days',
+            week: 'Week',
+            startDate: 'Start date',
+            endDate: 'End date',
+            allAreas: 'All Areas'
         },
         meet: {
             title: 'Editing Meetings',
