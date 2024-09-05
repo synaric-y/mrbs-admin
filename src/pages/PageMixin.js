@@ -1,19 +1,20 @@
-import {mapActions, mapState, mapStores} from "pinia";
+import {mapActions, mapGetters, mapState, mapStores} from "pinia";
 import {NavigationStore} from "@/stores/navigationStore.js";
-import {STORAGE} from "@/config.js";
-import {Api} from "@/network/api.js";
 import {UserStore} from "@/stores/userStore.js";
+import {SettingStore} from "@/stores/settingStore.js";
 
 export const PageMixin = {
 
     computed: {
-        ...mapStores(NavigationStore, UserStore),
+        ...mapStores(NavigationStore, UserStore, SettingStore),
         ...mapState(NavigationStore, ['currentTab']),
-        ...mapState(UserStore, ['userInfo', 'isLoginPage'])
+        ...mapState(UserStore, ['userInfo', 'isLoginPage']),
+        ...mapState(SettingStore, ['getLang'])
     },
     methods: {
         ...mapActions(NavigationStore, ['setTab']),
         ...mapActions(UserStore, ['login', 'logout', 'getCacheUserInfo', 'enterLogin', 'exitLogin']),
+        ...mapActions(SettingStore, ['setLang']),
         switchTab(path) {
             this.setTab(path)
             this.$router.replace(path)
