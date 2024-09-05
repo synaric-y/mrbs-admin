@@ -700,6 +700,7 @@ export default defineComponent({
   font-size: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   border-left: 10px solid #54BCBD;
+  cursor: pointer;
 }
 
 .room-meet-timeout-event {
@@ -715,6 +716,7 @@ export default defineComponent({
   font-size: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   border-left: 10px solid #9A9A9A;
+  cursor: pointer;
 }
 
 .event-title {
