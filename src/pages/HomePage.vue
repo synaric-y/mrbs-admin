@@ -757,7 +757,7 @@ export default defineComponent({
   background-color: #e1f5fe;
   border-radius: 4px;
   width: 218px;
-  padding: 5px;
+  /* padding: 5px; */
   margin: 2px 0;
   color: #000;
   font-size: 12px;
@@ -772,7 +772,6 @@ export default defineComponent({
   background-color: rgba(206, 206, 206, 0.14);
   border-radius: 4px;
   width: 218px;
-  padding: 5px;
   margin: 2px 0;
   color: #000;
   font-size: 12px;
