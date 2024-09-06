@@ -2,6 +2,7 @@
 import {PageMixin} from "@/pages/PageMixin.js";
 import {Api} from "@/network/api.js";
 import router from "@/router/index.js";
+import {ElMessage} from "element-plus/es";
 
 export default {
   mixins: [PageMixin],
@@ -80,8 +81,12 @@ export default {
           return
         }
         this.showAddRoomDialog = false
-        Api.addRoom(this.form).then(({data}) => {
-          this.getRoomList()
+        Api.addRoom(this.form).then(({data, code, message}) => {
+          if (code == 0) {
+            this.getRoomList()
+          } else {
+            ElMessage.error(message)
+          }
         })
       })
     }

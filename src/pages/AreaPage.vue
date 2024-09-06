@@ -46,8 +46,12 @@ export default {
     },
     addArea() {
       this.showAddAreaDialog = false
-      Api.addArea(this.form).then(({data}) => {
-        this.getAreaList()
+      Api.addArea(this.form).then(({data, code, message}) => {
+        if (code == 0) {
+          this.getAreaList()
+        } else {
+          ElMessage.error(message)
+        }
       })
     }
   },
