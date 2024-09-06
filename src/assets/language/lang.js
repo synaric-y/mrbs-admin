@@ -100,6 +100,7 @@ export const messages = {
             formRoom: {
                 name: '会议室名称',
                 status: '是否启用',
+                area: '区域',
                 description: '说明',
                 galleryful: '容纳人数',
                 useExchange: '当前区域是否启用Exchange',
@@ -242,6 +243,7 @@ export const messages = {
             },
             formRoom: {
                 name: '회의실 이름',
+                area: '영역',
                 status: '활성화 여부',
                 description: '설명하다',
                 galleryful: '용량',
