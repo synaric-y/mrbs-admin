@@ -8,7 +8,6 @@
       </el-col>
       <el-col :span="3">
         <el-select v-model="currenAreaName" placeholder="All Areas" @change="choseArea">
-
           <!-- <el-option :label="currenAreaName || $t('base.allAreas')" :value="currenAreaName"></el-option> -->
           <el-option v-for="(area, index) in areas" :label="area.area_name" :value="area.area_id"
             :key="index"></el-option>
@@ -155,38 +154,47 @@ export default defineComponent({
     console.log('获取当前浏览器语言设置:', Common.getBrowserLanguege())
     this.localLangFormat = Common.getBrowserLanguege()
 
-    const selectDays = Number(localStorage.getItem(STORAGE.SELECT_DAYS))
-    const selectStartDate = localStorage.getItem(STORAGE.SELECT_START_DATE)
-    const selectEndDate = localStorage.getItem(STORAGE.SELECT_END_DATE)
-    const selectArea = localStorage.getItem(STORAGE.SELECT_AREA)
-    const selectAreaName = localStorage.getItem(STORAGE.SELECT_AREA_NAME)
-
-    if (selectStartDate && selectEndDate) {
-      this.startTime = selectStartDate
-      this.endTime = selectEndDate
-    }
-    if (selectDays) {
-      this.dayRrangeVal = selectDays
-    }
-    if (selectArea && selectAreaName) {
-      console.log('获取缓存的区域名字:', selectAreaName)
-      this.currenAreaName = selectAreaName
-      this.currenArea = selectArea
-    }
-    console.log('获取缓存的区域', selectArea)
-    console.log('获取缓存的日期', selectStartDate, selectEndDate)
-    console.log('获取缓存的选择天数', selectDays)
-
-
     const screenWidth = window.screen.width;
     this.screenSize['width'] = screenWidth;
     const screenHeight = window.screen.height;
     this.screenSize['height'] = screenHeight;
     this.screenHeight = screenHeight
     console.log('当前屏幕的高度为:', this.screenSize, '像素');
-    this.startStamp = Common.getThreeDaysTimestamps().start
-    this.endStamp = Common.getThreeDaysTimestamps().end
-    this.getNetworkRooms(0)
+
+    const selectDays = Number(localStorage.getItem(STORAGE.SELECT_DAYS))
+    const selectStartDate = localStorage.getItem(STORAGE.SELECT_START_DATE)
+    const selectEndDate = localStorage.getItem(STORAGE.SELECT_END_DATE)
+    const selectArea = localStorage.getItem(STORAGE.SELECT_AREA)
+    const selectAreaName = localStorage.getItem(STORAGE.SELECT_AREA_NAME)
+
+    if (selectArea && selectAreaName) {
+      console.log('获取缓存的区域名字:', selectAreaName)
+      this.currenAreaName = selectAreaName
+      this.currenArea = selectArea
+    } 
+    console.log('获取缓存的区域', selectArea)
+    console.log('获取缓存的日期', selectStartDate, selectEndDate)
+    console.log('获取缓存的选择天数', selectDays)
+
+    if (selectStartDate && selectEndDate) {
+      this.startTime = selectStartDate
+      this.endTime = selectEndDate
+      const days = this.getDaysBetween(selectStartDate, selectEndDate);
+      const tempdays = this.formatDays(days);
+      this.days = tempdays;
+      this.getNetworkRooms(this.currenArea);
+      this.getMeetRooms();
+    } else {
+      this.startStamp = Common.getThreeDaysTimestamps().start
+      this.endStamp = Common.getThreeDaysTimestamps().end
+      if (selectDays) {
+        this.dayRrangeVal = selectDays
+        this.dayRrange(selectDays)
+        this.getMeetRooms();
+      } else {
+        this.getNetworkRooms(0)
+      }
+    }
   },
 
   methods: {
@@ -210,9 +218,8 @@ export default defineComponent({
       return allRoom
     },
 
-    getNetworkRooms(id) {
-      Api.getAreaRooms({ id: id }).then(({ data, code }) => {
-        console.log('mounted getRooms data:', data)
+    getNetworkRooms(area_id) {
+      Api.getAreaRooms({ id: area_id }).then(({ data, code }) => {
         if (code != 0) {
           ElMessage({
             message: this.$t('base.getAreaError'),
@@ -220,9 +227,9 @@ export default defineComponent({
           })
           return
         }
-        console.log('mounted this.areas data', data)
+        console.log('mounted this.areas data', data,this.dayRrangeVal )
 
-        if (id == 0 && data.areas.length > 0) {
+        if (area_id == 0 && data.areas.length > 0) {
           this.areas = data.areas
           const firstArea = {
             "area_id": "",
@@ -231,7 +238,9 @@ export default defineComponent({
           }
           this.areas.splice(0, 0, firstArea)
         }
-        this.dayRrange(this.dayRrangeVal)
+        if(this.dayRrangeVal != 0) {
+          this.dayRrange(this.dayRrangeVal)
+        }
         this.rooms = this.getAllRoom(data)
         this.getMeetRooms()
       })
@@ -293,6 +302,11 @@ export default defineComponent({
       localStorage.setItem(STORAGE.SELECT_DAYS, day)
       this.startStamp = tempTime.start
       this.endStamp = tempTime.end
+      this.startTime = moment(tempTime.start * 1000).format('YYYY-MM-DD')
+      this.endTime = moment(tempTime.end * 1000).format('YYYY-MM-DD')
+      localStorage.setItem(STORAGE.SELECT_START_DATE,this.startTime)
+      localStorage.setItem(STORAGE.SELECT_END_DATE,this.endTime)
+      console.log('dayRrange tempTime',this.startTime,this.endTime)
       this.days = this.formatDays(days);
       this.getMeetRooms();
     },
@@ -332,6 +346,7 @@ export default defineComponent({
       console.log('getDaysBetween endDate', endDate);
       const start = moment(startDate);
       const end = moment(endDate);
+      this.dayRrangeVal = 0;
       const days = [];
       while (start <= end) {
         days.push(Common.translateWeekDay(start.format(this.localLangFormat)));
@@ -410,9 +425,9 @@ export default defineComponent({
           this.endTime = ''
           return
         }
-        this.startTime = e[0];
-        this.endTime = e[1];
-
+        console.log('获取选择的时间区域',start_date,end_date)
+        this.startTime = start_date;
+        this.endTime = end_date;
         localStorage.setItem(STORAGE.SELECT_START_DATE, start_date)
         localStorage.setItem(STORAGE.SELECT_END_DATE, end_date)
         this.getMeetRooms();
@@ -433,7 +448,6 @@ export default defineComponent({
     },
 
     getMeetRooms() {
-      console.log('getMeetRooms enter');
       if (this.startTime && this.startTime != this.$t('base.startDate')) {
         this.startStamp = this.formatTime(this.startTime) || 0;
         this.endStamp = this.formatTime(this.endTime) || 0;
@@ -443,7 +457,6 @@ export default defineComponent({
         this.endStamp = temp.end
       }
       const itemNumber = this.rooms.length * this.days.length;
-      console.log('getMeetRooms itemNumber:', itemNumber);
       if (itemNumber == 1) {
         this.itemWidth = this.screenSize['width'];
       } else if (itemNumber >= 2 && itemNumber <= 6) {
@@ -452,7 +465,7 @@ export default defineComponent({
         this.itemWidth = 228;
       }
       console.log('getMeetRooms currenArea:  start: end: ', this.currenArea, this.startStamp, this.endStamp);
-      Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp, end_time: this.endStamp }).then(({ data, code }) => {
+      Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp/1000, end_time: this.endStamp/1000 }).then(({ data, code }) => {
         if (!data) {
           ElMessage({
             message: this.$t('base.getMeetRoomError'),
