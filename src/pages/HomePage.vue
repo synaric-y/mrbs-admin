@@ -451,8 +451,8 @@ export default defineComponent({
       } else {
         this.itemWidth = 228;
       }
-      console.log('getMeetRooms currenArea:  start: end: ', this.currenArea, this.startStamp / 1000, this.endStamp / 1000);
-      Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp / 1000, end_time: this.endStamp / 1000 }).then(({ data, code }) => {
+      console.log('getMeetRooms currenArea:  start: end: ', this.currenArea, this.startStamp, this.endStamp);
+      Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp, end_time: this.endStamp }).then(({ data, code }) => {
         if (!data) {
           ElMessage({
             message: this.$t('base.getMeetRoomError'),
@@ -460,7 +460,7 @@ export default defineComponent({
           })
           return
         }
-        console.log('getMeetRooms api data:', data)
+        console.log('getMeetRooms api data:', data) 
         if (this.lang == 'en') {
 
         }
