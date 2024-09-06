@@ -135,7 +135,6 @@ export default defineComponent({
       localLangFormat: 'dddd, MMMM Do YYYY',
       days: [],
       rooms: [],
-      timeSlots: [],
       events: [],
       timeSlots: [
         "08:00AM", "ㆍ",
