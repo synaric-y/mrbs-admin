@@ -501,6 +501,12 @@ export default defineComponent({
 </script>
 
 <style scoped>
+
+body {
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
 * {
   -webkit-user-select: none;
   -moz-user-select: none;
