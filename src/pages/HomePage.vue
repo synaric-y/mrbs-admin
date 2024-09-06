@@ -132,6 +132,7 @@ export default defineComponent({
       nowTime: '',
       screenHeight: 700,
       localLangFormat: 'dddd, MMMM Do YYYY',
+      interval: null,
       days: [],
       rooms: [],
       events: [],
@@ -159,41 +160,55 @@ export default defineComponent({
     this.screenSize['height'] = screenHeight;
     this.screenHeight = screenHeight
     console.log('当前屏幕的高度为:', this.screenSize, '像素');
-    const selectDays = Number(localStorage.getItem(STORAGE.SELECT_DAYS))
-    const selectStartDate = localStorage.getItem(STORAGE.SELECT_START_DATE)
-    const selectEndDate = localStorage.getItem(STORAGE.SELECT_END_DATE)
-    const selectArea = localStorage.getItem(STORAGE.SELECT_AREA)
-    const selectAreaName = localStorage.getItem(STORAGE.SELECT_AREA_NAME)
-    this.getAllAreas();
-    if (selectStartDate && selectEndDate) {
-      this.startTime = selectStartDate
-      this.endTime = selectEndDate
-      const days = this.getDaysBetween(selectStartDate, selectEndDate);
-      const tempdays = this.formatDays(days);
-      this.days = tempdays;
-      this.getMeetRooms();
-    } else {
-      this.startStamp = Common.getThreeDaysTimestamps().start
-      this.endStamp = Common.getThreeDaysTimestamps().end
-      if (selectDays) {
-        this.dayRrangeVal = selectDays
-        this.dayRrange(selectDays)
-        this.getMeetRooms();
-      }
-    }
-
-    if (selectArea && selectAreaName) {
-      console.log('获取缓存的区域名字:', selectAreaName)
-      this.currenAreaName = selectAreaName
-      this.currenArea = selectArea
-    } 
-    this.getCurrentAreaRooms(this.currenArea)
-    console.log('获取缓存的区域', selectArea)
-    console.log('获取缓存的日期', selectStartDate, selectEndDate)
-    console.log('获取缓存的选择天数', selectDays)
+    this.startSync();
   },
 
   methods: {
+    startSync() {
+      if (this.interval) {
+        clearInterval(this.interval)
+        this.interval = null
+      }
+      this.getSyncInterval()
+      this.interval = setInterval(() => {
+        this.getSyncInterval()
+      }, 10000)
+    },
+    getSyncInterval() {
+      console.log('getSyncInterval')
+      const selectDays = Number(localStorage.getItem(STORAGE.SELECT_DAYS))
+      const selectStartDate = localStorage.getItem(STORAGE.SELECT_START_DATE)
+      const selectEndDate = localStorage.getItem(STORAGE.SELECT_END_DATE)
+      const selectArea = localStorage.getItem(STORAGE.SELECT_AREA)
+      const selectAreaName = localStorage.getItem(STORAGE.SELECT_AREA_NAME)
+      this.getAllAreas();
+      if (selectStartDate && selectEndDate) {
+        this.startTime = selectStartDate
+        this.endTime = selectEndDate
+        const days = this.getDaysBetween(selectStartDate, selectEndDate);
+        const tempdays = this.formatDays(days);
+        this.days = tempdays;
+        this.getMeetRooms();
+      } else {
+        this.startStamp = Common.getThreeDaysTimestamps().start
+        this.endStamp = Common.getThreeDaysTimestamps().end
+        if (selectDays) {
+          this.dayRrangeVal = selectDays
+          this.dayRrange(selectDays)
+          this.getMeetRooms();
+        }
+      }
+      if (selectArea && selectAreaName) {
+        console.log('获取缓存的区域名字:', selectAreaName)
+        this.currenAreaName = selectAreaName
+        this.currenArea = selectArea
+      }
+      this.getCurrentAreaRooms(this.currenArea)
+      console.log('获取缓存的区域', selectArea)
+      console.log('获取缓存的日期', selectStartDate, selectEndDate)
+      console.log('获取缓存的选择天数', selectDays)
+    },
+
     getAllRoom(data) {
       const allRoom = [];
       data.areas.forEach(area => {
@@ -214,9 +229,8 @@ export default defineComponent({
       return allRoom
     },
 
-
     getAllAreas() {
-      Api.getAreaRooms({  }).then(({ data, code }) => {
+      Api.getAreaRooms({}).then(({ data, code }) => {
         if (code != 0) {
           ElMessage({
             message: this.$t('base.getAreaError'),
@@ -234,7 +248,6 @@ export default defineComponent({
       })
     },
 
-
     getCurrentAreaRooms(area_id) {
       Api.getAreaRooms({ id: area_id }).then(({ data, code }) => {
         if (code != 0) {
@@ -244,7 +257,7 @@ export default defineComponent({
           })
           return
         }
-        if(this.dayRrangeVal != 0) {
+        if (this.dayRrangeVal != 0) {
           this.dayRrange(this.dayRrangeVal)
         }
         this.rooms = this.getAllRoom(data)
@@ -310,9 +323,9 @@ export default defineComponent({
       this.endStamp = tempTime.end
       this.startTime = moment(tempTime.start * 1000).format('YYYY-MM-DD')
       this.endTime = moment(tempTime.end * 1000).format('YYYY-MM-DD')
-      localStorage.setItem(STORAGE.SELECT_START_DATE,this.startTime)
-      localStorage.setItem(STORAGE.SELECT_END_DATE,this.endTime)
-      console.log('dayRrange tempTime',this.startTime,this.endTime)
+      localStorage.setItem(STORAGE.SELECT_START_DATE, this.startTime)
+      localStorage.setItem(STORAGE.SELECT_END_DATE, this.endTime)
+      console.log('dayRrange tempTime', this.startTime, this.endTime)
       this.days = this.formatDays(days);
       this.getMeetRooms();
     },
@@ -431,7 +444,7 @@ export default defineComponent({
           this.endTime = ''
           return
         }
-        console.log('获取选择的时间区域',start_date,end_date)
+        console.log('获取选择的时间区域', start_date, end_date)
         this.startTime = start_date;
         this.endTime = end_date;
         localStorage.setItem(STORAGE.SELECT_START_DATE, start_date)
@@ -471,7 +484,7 @@ export default defineComponent({
         this.itemWidth = 228;
       }
       console.log('getMeetRooms currenArea:  start: end: ', this.currenArea, this.startStamp, this.endStamp);
-      Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp/1000, end_time: this.endStamp/1000 }).then(({ data, code }) => {
+      Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp / 1000, end_time: this.endStamp / 1000 }).then(({ data, code }) => {
         if (!data) {
           ElMessage({
             message: this.$t('base.getMeetRoomError'),
@@ -479,7 +492,7 @@ export default defineComponent({
           })
           return
         }
-        console.log('getMeetRooms api data:', data) 
+        console.log('getMeetRooms api data:', data)
         if (this.lang == 'en') {
 
         }
