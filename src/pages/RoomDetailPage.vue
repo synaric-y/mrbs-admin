@@ -124,7 +124,7 @@ export default {
       <el-form :model="form" :rules="rules" label-width="auto" ref="roomForm" style="max-width: 530px">
 
         <el-form-item prop="room_name" :label="$t('room.formRoom.name')">
-          <el-input v-model="form.room_name"/>
+          <el-input v-model="form.room_name" maxlength="32" />
         </el-form-item>
 
         <el-form-item prop="room_disabled" :label="$t('room.formRoom.status')">
@@ -151,7 +151,7 @@ export default {
         </el-form-item>
 
         <el-form-item prop="description" :label="$t('room.formRoom.description')">
-          <el-input v-model="form.description"/>
+          <el-input v-model="form.description" maxlength="255" />
         </el-form-item>
 
         <el-collapse v-model="collapse">
@@ -161,11 +161,11 @@ export default {
             </el-form-item>
 
             <el-form-item prop="exchange_username" :label="$t('room.formRoom.exchangeUsername')">
-              <el-input v-model="form.exchange_username"/>
+              <el-input v-model="form.exchange_username" maxlength="255" />
             </el-form-item>
 
             <el-form-item prop="exchange_password" :label="$t('room.formRoom.exchangePassword')">
-              <el-input v-model="form.exchange_password"/>
+              <el-input v-model="form.exchange_password" maxlength="64" />
             </el-form-item>
           </el-collapse-item>
 
@@ -175,7 +175,7 @@ export default {
             </el-form-item>
 
             <el-form-item prop="wxwork_mr_id" :label="$t('room.formRoom.wxworkMRiD')">
-              <el-input v-model="form.wxwork_mr_id"/>
+              <el-input v-model="form.wxwork_mr_id" maxlength="20" />
             </el-form-item>
           </el-collapse-item>
         </el-collapse>
