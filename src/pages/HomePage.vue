@@ -161,6 +161,22 @@ export default defineComponent({
     this.screenHeight = screenHeight
     console.log('当前屏幕的高度为:', this.screenSize, '像素');
     this.startSync();
+
+
+
+
+    // 监听页面的可见性变化
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        // 页面不可见，停止定时器
+        console.log('页面不可见，停止定时器')
+        // stopTimer();
+      } else {
+        // 页面可见，重新启动定时器
+        // startTimer();
+        console.log('页面可见，重新启动定时器')
+      }
+    });
   },
 
   methods: {
@@ -530,6 +546,16 @@ export default defineComponent({
       this.events = entriesRoom
       console.log('getMeetRooms entriesRoom:', entriesRoom)
     },
+  },
+  onUnload() {
+    if (this.interval) {
+      clearInterval(this.interval)
+      this.interval = null
+    }
+    if (this.batteryInterval) {
+      clearInterval(this.batteryInterval)
+      this.batteryInterval = null
+    }
   }
 });
 </script>
