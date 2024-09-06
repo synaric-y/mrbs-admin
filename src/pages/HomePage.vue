@@ -8,7 +8,7 @@
       </el-col>
       <el-col :span="3">
         <el-select v-model="currenAreaName" placeholder="All Areas" @change="choseArea">
-          
+
           <!-- <el-option :label="currenAreaName || $t('base.allAreas')" :value="currenAreaName"></el-option> -->
           <el-option v-for="(area, index) in areas" :label="area.area_name" :value="area.area_id"
             :key="index"></el-option>
@@ -28,8 +28,8 @@
         </el-button-group>
       </el-col>
       <el-col :span="7">
-        <el-date-picker v-model="baseTime" type="daterange" :range-separator="$t('base.to')" :start-placeholder="startTime"
-          :end-placeholder="endTime" @change="choseDate" />
+        <el-date-picker v-model="baseTime" type="daterange" :range-separator="$t('base.to')"
+          :start-placeholder="startTime" :end-placeholder="endTime" @change="choseDate" />
       </el-col>
     </el-row>
   </div>
@@ -152,7 +152,7 @@ export default defineComponent({
   },
 
   mounted() {
-    console.log('获取当前浏览器语言设置:',Common.getBrowserLanguege())
+    console.log('获取当前浏览器语言设置:', Common.getBrowserLanguege())
     this.localLangFormat = Common.getBrowserLanguege()
 
     const selectDays = Number(localStorage.getItem(STORAGE.SELECT_DAYS))
@@ -161,22 +161,22 @@ export default defineComponent({
     const selectArea = localStorage.getItem(STORAGE.SELECT_AREA)
     const selectAreaName = localStorage.getItem(STORAGE.SELECT_AREA_NAME)
 
-    if(selectStartDate && selectEndDate) {
+    if (selectStartDate && selectEndDate) {
       this.startTime = selectStartDate
       this.endTime = selectEndDate
     }
-    if(selectDays) {
+    if (selectDays) {
       this.dayRrangeVal = selectDays
     }
-    if(selectArea && selectAreaName) {
-      console.log('获取缓存的区域名字:',selectAreaName)
+    if (selectArea && selectAreaName) {
+      console.log('获取缓存的区域名字:', selectAreaName)
       this.currenAreaName = selectAreaName
       this.currenArea = selectArea
     }
-    console.log('获取缓存的区域',selectArea)
-    console.log('获取缓存的日期',selectStartDate,selectEndDate)
-    console.log('获取缓存的选择天数',selectDays)
-    
+    console.log('获取缓存的区域', selectArea)
+    console.log('获取缓存的日期', selectStartDate, selectEndDate)
+    console.log('获取缓存的选择天数', selectDays)
+
 
     const screenWidth = window.screen.width;
     this.screenSize['width'] = screenWidth;
@@ -211,28 +211,30 @@ export default defineComponent({
     },
 
     getNetworkRooms(id) {
-      Api.getAreaRooms({id: id}).then(({ data, code }) => {
-      console.log('mounted getRooms data:', data)
-      if (code != 0) {
-        ElMessage({
-          message: this.$t('base.getAreaError'),
-          type: 'warning'
-        })
-        return
-      }
-      console.log('mounted this.areas data', data)
-      this.areas = data.areas
-      const firstArea = {
-        "area_id": "",
-        "area_name": "All",
-        "rooms": []
-      }
-      this.areas.splice(0, 0, firstArea)
-      this.dayRrange(this.dayRrangeVal)
-      this.rooms = this.getAllRoom(data)
+      Api.getAreaRooms({ id: id }).then(({ data, code }) => {
+        console.log('mounted getRooms data:', data)
+        if (code != 0) {
+          ElMessage({
+            message: this.$t('base.getAreaError'),
+            type: 'error'
+          })
+          return
+        }
+        console.log('mounted this.areas data', data)
 
-      this.getMeetRooms()
-    })
+        if (id == 0 && data.areas.length > 0) {
+          this.areas = data.areas
+          const firstArea = {
+            "area_id": "",
+            "area_name": "All",
+            "rooms": []
+          }
+          this.areas.splice(0, 0, firstArea)
+        }
+        this.dayRrange(this.dayRrangeVal)
+        this.rooms = this.getAllRoom(data)
+        this.getMeetRooms()
+      })
     },
 
     getEventStyle(event) {
@@ -298,7 +300,7 @@ export default defineComponent({
     getCurrenDay() {
       const today = moment();
       const oneDays = [
-      Common.translateWeekDay(today.format(this.localLangFormat)),
+        Common.translateWeekDay(today.format(this.localLangFormat)),
       ];
       return oneDays;
     },
@@ -306,9 +308,9 @@ export default defineComponent({
     getThreeDays() {
       const today = moment();
       const nextThreeDays = [
-      Common.translateWeekDay(today.format(this.localLangFormat)),
-      Common.translateWeekDay(today.add(1, 'days').format(this.localLangFormat)),
-      Common.translateWeekDay(today.add(1, 'days').format(this.localLangFormat))
+        Common.translateWeekDay(today.format(this.localLangFormat)),
+        Common.translateWeekDay(today.add(1, 'days').format(this.localLangFormat)),
+        Common.translateWeekDay(today.add(1, 'days').format(this.localLangFormat))
       ];
       return nextThreeDays;
     },
@@ -353,9 +355,9 @@ export default defineComponent({
       console.log('toMeet time', day.date)
       const dayTimestamp = moment(day.date, this.localLangFormat).unix();
       const ymd = moment(dayTimestamp * 1000).format('YYYY-MM-DD')
-      console.log('toMeet ymd',ymd)
-      console.log('toMeet time',time)
-      const tempTime = Common.getTimestampFromDateAndTime(ymd,time);
+      console.log('toMeet ymd', ymd)
+      console.log('toMeet time', time)
+      const tempTime = Common.getTimestampFromDateAndTime(ymd, time);
       console.log('toMeet tempTime:', tempTime)
       this.push(`/meet_detail/0/${room.room_id}/${room.area_id}/${tempTime}`);
     },
@@ -367,13 +369,13 @@ export default defineComponent({
     choseArea(e) {
       this.currenArea = e;
       console.log('choseArea e')
-      localStorage.setItem(STORAGE.SELECT_AREA,e)
+      localStorage.setItem(STORAGE.SELECT_AREA, e)
       const area = this.areas.filter(area => area.area_id == e)
-      console.log('choseArea areaName',area)
+      console.log('choseArea areaName', area)
       const areaName = area[0].area_name
       this.currenAreaName = areaName
-      localStorage.setItem(STORAGE.SELECT_AREA,e)
-      localStorage.setItem(STORAGE.SELECT_AREA,areaName)
+      localStorage.setItem(STORAGE.SELECT_AREA, e)
+      localStorage.setItem(STORAGE.SELECT_AREA, areaName)
       this.getNetworkRooms(this.currenArea)
       this.getAreaRooms();
       this.getMeetRooms();
@@ -411,8 +413,8 @@ export default defineComponent({
         this.startTime = e[0];
         this.endTime = e[1];
 
-        localStorage.setItem(STORAGE.SELECT_START_DATE,start_date)
-        localStorage.setItem(STORAGE.SELECT_END_DATE,end_date)
+        localStorage.setItem(STORAGE.SELECT_START_DATE, start_date)
+        localStorage.setItem(STORAGE.SELECT_END_DATE, end_date)
         this.getMeetRooms();
         const days = this.getDaysBetween(start_date, end_date);
         const tempdays = this.formatDays(days);
@@ -449,8 +451,8 @@ export default defineComponent({
       } else {
         this.itemWidth = 228;
       }
-      console.log('getMeetRooms currenArea:  start: end: ', this.currenArea, this.startStamp/1000, this.endStamp/1000);
-      Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp/1000, end_time: this.endStamp/1000 }).then(({ data, code }) => {
+      console.log('getMeetRooms currenArea:  start: end: ', this.currenArea, this.startStamp / 1000, this.endStamp / 1000);
+      Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp / 1000, end_time: this.endStamp / 1000 }).then(({ data, code }) => {
         if (!data) {
           ElMessage({
             message: this.$t('base.getMeetRoomError'),
@@ -459,7 +461,7 @@ export default defineComponent({
           return
         }
         console.log('getMeetRooms api data:', data)
-        if(this.lang == 'en') {
+        if (this.lang == 'en') {
 
         }
         this.nowTime = data.time
@@ -468,7 +470,7 @@ export default defineComponent({
     },
 
     getInMeeting(data) {
-      console.log('getInMeeting areas',data.areas)
+      console.log('getInMeeting areas', data.areas)
       if (!data || data.areas == null || data.areas.length == 0) {
         return
       }
@@ -501,10 +503,8 @@ export default defineComponent({
 </script>
 
 <style scoped>
-
-body {
-  overflow-x: hidden;
-  overflow-y: hidden;
+::-webkit-scrollbar {
+  display: none;
 }
 
 * {
