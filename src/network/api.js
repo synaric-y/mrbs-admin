@@ -56,6 +56,9 @@ export class Api {
 
     static async getMeetRooms(params) {
         params["type"] = "all"
+        if(params.id > 0) {
+            params["type"] = "area"
+        }
         return Request.post('index', params)
     }
 

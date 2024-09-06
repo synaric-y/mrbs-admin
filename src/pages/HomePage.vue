@@ -7,8 +7,9 @@
         <span class="now-time">{{ nowTime }}</span>
       </el-col>
       <el-col :span="3">
-        <el-select v-model="selectedRoom" placeholder="All Rooms" @change="choseArea">
-          <el-option :label="$t('base.allAreas')" value="All"></el-option>
+        <el-select v-model="currenAreaName" placeholder="All Areas" @change="choseArea">
+          
+          <!-- <el-option :label="currenAreaName || $t('base.allAreas')" :value="currenAreaName"></el-option> -->
           <el-option v-for="(area, index) in areas" :label="area.area_name" :value="area.area_id"
             :key="index"></el-option>
         </el-select>
@@ -114,8 +115,8 @@ export default defineComponent({
   },
   data() {
     return {
-      selectedRoom: 'All',
       currenArea: '',
+      currenAreaName: 'All',
       customDate: null,
       hoursNumber: 24,
       dayRrangeVal: 3,
@@ -158,6 +159,8 @@ export default defineComponent({
     const selectDays = Number(localStorage.getItem(STORAGE.SELECT_DAYS))
     const selectStartDate = localStorage.getItem(STORAGE.SELECT_START_DATE)
     const selectEndDate = localStorage.getItem(STORAGE.SELECT_END_DATE)
+    const selectArea = localStorage.getItem(STORAGE.SELECT_AREA)
+    const selectAreaName = localStorage.getItem(STORAGE.SELECT_AREA_NAME)
 
     if(selectStartDate && selectEndDate) {
       this.startTime = selectStartDate
@@ -166,6 +169,12 @@ export default defineComponent({
     if(selectDays) {
       this.dayRrangeVal = selectDays
     }
+    if(selectArea && selectAreaName) {
+      console.log('获取缓存的区域名字:',selectAreaName)
+      this.currenAreaName = selectAreaName
+      this.currenArea = selectArea
+    }
+    console.log('获取缓存的区域',selectArea)
     console.log('获取缓存的日期',selectStartDate,selectEndDate)
     console.log('获取缓存的选择天数',selectDays)
     
@@ -189,6 +198,12 @@ export default defineComponent({
       }
       console.log('mounted this.areas data', data)
       this.areas = data.areas
+      const firstArea = {
+        "area_id": "",
+        "area_name": "All",
+        "rooms": []
+      }
+      this.areas.splice(0, 0, firstArea)
       this.dayRrange(this.dayRrangeVal)
       this.rooms = this.getAllRoom(data)
       this.getMeetRooms()
@@ -347,7 +362,14 @@ export default defineComponent({
 
     choseArea(e) {
       this.currenArea = e;
-      console.log('choseArea currenArea', this.currenArea);
+      console.log('choseArea e')
+      localStorage.setItem(STORAGE.SELECT_AREA,e)
+      const area = this.areas.filter(area => area.area_id == e)
+      console.log('choseArea areaName',area)
+      const areaName = area[0].area_name
+      this.currenAreaName = areaName
+      localStorage.setItem(STORAGE.SELECT_AREA,e)
+      localStorage.setItem(STORAGE.SELECT_AREA,areaName)
       this.getAreaRooms();
       this.getMeetRooms();
     },
@@ -422,7 +444,7 @@ export default defineComponent({
       } else {
         this.itemWidth = 228;
       }
-      console.log('getMeetRooms currenArea:  start: end: ', this.currenArea, this.startStamp, this.endStamp);
+      console.log('getMeetRooms currenArea:  start: end: ', this.currenArea, this.startStamp/1000, this.endStamp/1000);
       Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp, end_time: this.endStamp }).then(({ data, code }) => {
         if (!data) {
           ElMessage({
