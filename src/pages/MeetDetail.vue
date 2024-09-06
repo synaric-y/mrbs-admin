@@ -200,16 +200,16 @@ export default {
             Api.deleteMeet({ entry_id: Number(this.entry_id) }).then(({ data, code }) => {
                 if (code == 0) {
                     ElMessage({
-                        message: this.$t('base.editSuccess'),
+                        message: this.$t('base.deleteSuccess'),
                         type: 'success',
                     })
                     this.back()
                 } else {
-                    ElMessage.error(this.$t('editFailed'))
+                    ElMessage.error(this.$t('deleteError'))
                 }
 
             }).catch(() => {
-                ElMessage.error(this.$t('editFailed'))
+                ElMessage.error(this.$t('deleteError'))
             })
         },
 

@@ -68,7 +68,7 @@
                   </template>
                   <template v-else>
                     <div :key="indexeve" class="room-meet-event" @click="editMeet(event)"
-                      :style="{ top: 55 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
+                      :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
                       <div class="event-title">{{ event.entry_name }}</div>
                       <div class="event-time">{{ event.duration }}</div>
                       <div class="event-person">{{ event.book_by }}</div>

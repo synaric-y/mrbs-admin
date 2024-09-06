@@ -35,6 +35,9 @@ export const messages = {
             to: '到',
             allAreas: '所有区域',
             getMeetRoomError:'获取会议信息异常',
+            deleteSuccess: '删除会议成功',
+            deleteError: '删除会议失败',
+
         },
         meet: {
             title: '编辑会议',
@@ -176,6 +179,8 @@ export const messages = {
             to: '도착하다',
             allAreas: '모든 지역',
             getMeetRoomError:'회의정보 입수 예외',
+            deleteSuccess: '회의가 삭제되었습니다.',
+            deleteError: '회의를 삭제하지 못했습니다.',
         },
         meet: {
             title: '편집회의',
@@ -316,6 +321,8 @@ export const messages = {
             to: 'TO',
             allAreas: 'All Areas',
             getMeetRoomError:'Obtaining conference information is abnormal',
+            deleteSuccess: 'Delete meeting successfully',
+            deleteError: 'Failed to delete meeting',
         },
         meet: {
             title: 'Editing Meetings',
