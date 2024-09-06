@@ -51,6 +51,9 @@ export class Api {
 
     static async getAreaRooms(params) {
         params["type"] = "all"
+        if(params.id > 0) {
+            params["type"] = "area"
+        }
         return Request.post('get_all_rooms',params)
     }
 

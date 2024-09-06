@@ -52,7 +52,7 @@
               {{ room.room_name }}
               <template v-for="(time, timeIndex) in localTimeSlots">
                 <div class="empty-meet-div"
-                  :style="{ height: 55 + 'px', width: itemWidth + 'px', top: (timeIndex + 1) * 60 + 'px' }"
+                  :style="{ height: 60 + 'px', width: itemWidth + 'px', top: (timeIndex + 1) * 60 + 'px' }"
                   @click="toMeet(time, room, day)">
                   <text class="empty-meet-duration">{{ time }}</text>
                 </div>
@@ -186,27 +186,7 @@ export default defineComponent({
     console.log('当前屏幕的高度为:', this.screenSize, '像素');
     this.startStamp = Common.getThreeDaysTimestamps().start
     this.endStamp = Common.getThreeDaysTimestamps().end
-    Api.getAreaRooms({}).then(({ data, code }) => {
-      console.log('mounted getRooms data:', data)
-      if (code != 0) {
-        ElMessage({
-          message: this.$t('base.getAreaError'),
-          type: 'warning'
-        })
-        return
-      }
-      console.log('mounted this.areas data', data)
-      this.areas = data.areas
-      const firstArea = {
-        "area_id": "",
-        "area_name": "All",
-        "rooms": []
-      }
-      this.areas.splice(0, 0, firstArea)
-      this.dayRrange(this.dayRrangeVal)
-      this.rooms = this.getAllRoom(data)
-      this.getMeetRooms()
-    })
+    this.getNetworkRooms(0)
   },
 
   methods: {
@@ -228,6 +208,31 @@ export default defineComponent({
       });
       console.log('allRoom:', allRoom)
       return allRoom
+    },
+
+    getNetworkRooms(id) {
+      Api.getAreaRooms({id: id}).then(({ data, code }) => {
+      console.log('mounted getRooms data:', data)
+      if (code != 0) {
+        ElMessage({
+          message: this.$t('base.getAreaError'),
+          type: 'warning'
+        })
+        return
+      }
+      console.log('mounted this.areas data', data)
+      this.areas = data.areas
+      const firstArea = {
+        "area_id": "",
+        "area_name": "All",
+        "rooms": []
+      }
+      this.areas.splice(0, 0, firstArea)
+      this.dayRrange(this.dayRrangeVal)
+      this.rooms = this.getAllRoom(data)
+
+      this.getMeetRooms()
+    })
     },
 
     getEventStyle(event) {
@@ -369,6 +374,7 @@ export default defineComponent({
       this.currenAreaName = areaName
       localStorage.setItem(STORAGE.SELECT_AREA,e)
       localStorage.setItem(STORAGE.SELECT_AREA,areaName)
+      this.getNetworkRooms(this.currenArea)
       this.getAreaRooms();
       this.getMeetRooms();
     },
@@ -444,7 +450,7 @@ export default defineComponent({
         this.itemWidth = 228;
       }
       console.log('getMeetRooms currenArea:  start: end: ', this.currenArea, this.startStamp/1000, this.endStamp/1000);
-      Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp, end_time: this.endStamp }).then(({ data, code }) => {
+      Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp/1000, end_time: this.endStamp/1000 }).then(({ data, code }) => {
         if (!data) {
           ElMessage({
             message: this.$t('base.getMeetRoomError'),
