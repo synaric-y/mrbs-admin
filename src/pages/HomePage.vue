@@ -153,36 +153,24 @@ export default defineComponent({
   mounted() {
     console.log('获取当前浏览器语言设置:', Common.getBrowserLanguege())
     this.localLangFormat = Common.getBrowserLanguege()
-
     const screenWidth = window.screen.width;
     this.screenSize['width'] = screenWidth;
     const screenHeight = window.screen.height;
     this.screenSize['height'] = screenHeight;
     this.screenHeight = screenHeight
     console.log('当前屏幕的高度为:', this.screenSize, '像素');
-
     const selectDays = Number(localStorage.getItem(STORAGE.SELECT_DAYS))
     const selectStartDate = localStorage.getItem(STORAGE.SELECT_START_DATE)
     const selectEndDate = localStorage.getItem(STORAGE.SELECT_END_DATE)
     const selectArea = localStorage.getItem(STORAGE.SELECT_AREA)
     const selectAreaName = localStorage.getItem(STORAGE.SELECT_AREA_NAME)
-
-    if (selectArea && selectAreaName) {
-      console.log('获取缓存的区域名字:', selectAreaName)
-      this.currenAreaName = selectAreaName
-      this.currenArea = selectArea
-    } 
-    console.log('获取缓存的区域', selectArea)
-    console.log('获取缓存的日期', selectStartDate, selectEndDate)
-    console.log('获取缓存的选择天数', selectDays)
-
+    this.getAllAreas();
     if (selectStartDate && selectEndDate) {
       this.startTime = selectStartDate
       this.endTime = selectEndDate
       const days = this.getDaysBetween(selectStartDate, selectEndDate);
       const tempdays = this.formatDays(days);
       this.days = tempdays;
-      this.getNetworkRooms(this.currenArea);
       this.getMeetRooms();
     } else {
       this.startStamp = Common.getThreeDaysTimestamps().start
@@ -191,10 +179,18 @@ export default defineComponent({
         this.dayRrangeVal = selectDays
         this.dayRrange(selectDays)
         this.getMeetRooms();
-      } else {
-        this.getNetworkRooms(0)
       }
     }
+
+    if (selectArea && selectAreaName) {
+      console.log('获取缓存的区域名字:', selectAreaName)
+      this.currenAreaName = selectAreaName
+      this.currenArea = selectArea
+    } 
+    this.getCurrentAreaRooms(this.currenArea)
+    console.log('获取缓存的区域', selectArea)
+    console.log('获取缓存的日期', selectStartDate, selectEndDate)
+    console.log('获取缓存的选择天数', selectDays)
   },
 
   methods: {
@@ -218,8 +214,9 @@ export default defineComponent({
       return allRoom
     },
 
-    getNetworkRooms(area_id) {
-      Api.getAreaRooms({ id: area_id }).then(({ data, code }) => {
+
+    getAllAreas() {
+      Api.getAreaRooms({  }).then(({ data, code }) => {
         if (code != 0) {
           ElMessage({
             message: this.$t('base.getAreaError'),
@@ -227,16 +224,25 @@ export default defineComponent({
           })
           return
         }
-        console.log('mounted this.areas data', data,this.dayRrangeVal )
+        this.areas = data.areas
+        const firstArea = {
+          "area_id": "",
+          "area_name": "All",
+          "rooms": []
+        }
+        this.areas.splice(0, 0, firstArea)
+      })
+    },
 
-        if (area_id == 0 && data.areas.length > 0) {
-          this.areas = data.areas
-          const firstArea = {
-            "area_id": "",
-            "area_name": "All",
-            "rooms": []
-          }
-          this.areas.splice(0, 0, firstArea)
+
+    getCurrentAreaRooms(area_id) {
+      Api.getAreaRooms({ id: area_id }).then(({ data, code }) => {
+        if (code != 0) {
+          ElMessage({
+            message: this.$t('base.getAreaError'),
+            type: 'error'
+          })
+          return
         }
         if(this.dayRrangeVal != 0) {
           this.dayRrange(this.dayRrangeVal)
@@ -391,7 +397,7 @@ export default defineComponent({
       this.currenAreaName = areaName
       localStorage.setItem(STORAGE.SELECT_AREA, e)
       localStorage.setItem(STORAGE.SELECT_AREA_NAME, areaName)
-      this.getNetworkRooms(this.currenArea)
+      this.getCurrentAreaRooms(this.currenArea)
       this.getAreaRooms();
       this.getMeetRooms();
     },

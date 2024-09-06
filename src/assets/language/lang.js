@@ -179,7 +179,7 @@ export const messages = {
             week: '주',
             startDate: '시작',
             endDate: '마치다',
-            to: '도착하다',
+            to: 'TO',
             allAreas: '모든 지역',
             getMeetRoomError:'회의정보 입수 예외',
             deleteSuccess: '회의가 삭제되었습니다.',
