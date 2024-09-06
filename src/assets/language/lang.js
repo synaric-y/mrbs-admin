@@ -86,6 +86,8 @@ export const messages = {
             editArea: '编辑区域',
             deleteAreaHint: '确定删除该区域吗',
             allArea: '全部区域',
+            deniedDeleteAreaHint: '无法删除该区域，区域下仍有房间',
+            deleteAreaFailed: '删除区域失败',
         },
         room: {
             tableRoom: {
@@ -230,6 +232,8 @@ export const messages = {
             editArea: '편집 영역',
             deleteAreaHint: '이 지역을 삭제하시겠습니까?',
             allArea: '모든 지역',
+            deniedDeleteAreaHint: '이 영역을 삭제할 수 없습니다. 영역 아래에 방이 있습니다',
+            deleteAreaFailed: '영역 삭제 실패',
         },
         room: {
             tableRoom: {
@@ -373,6 +377,8 @@ export const messages = {
             editArea: 'Edit Area',
             deleteAreaHint: 'Are you sure you want to delete this area?',
             allArea: 'All Areas',
+            deniedDeleteAreaHint: 'Cannot delete this area, there are still rooms under the area.',
+            deleteAreaFailed: 'Failed to delete the area',
         },
         room: {
             tableRoom: {

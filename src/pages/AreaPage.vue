@@ -2,6 +2,7 @@
 import {PageMixin} from "@/pages/PageMixin.js";
 import {Api} from "@/network/api.js";
 import router from "@/router/index.js";
+import {ElMessage} from "element-plus";
 export default {
   mixins: [PageMixin],
   data() {
@@ -26,8 +27,14 @@ export default {
     },
     deleteArea() {
       this.showDeleteAreaDialog = false
-      Api.deleteArea({area: this.pendingDeleteId}).then(({data}) => {
-        this.getAreaList()
+      Api.deleteArea({area: this.pendingDeleteId}).then(({data, code}) => {
+        if (code == 0) {
+          this.getAreaList()
+        } else if (code == -1) {
+          ElMessage.error(this.$t('area.deniedDeleteAreaHint'))
+        } else {
+          ElMessage.error(this.$t('area.deniedDeleteAreaHint'))
+        }
       })
     },
     getAreaList() {
