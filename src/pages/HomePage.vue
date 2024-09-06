@@ -390,7 +390,7 @@ export default defineComponent({
       const areaName = area[0].area_name
       this.currenAreaName = areaName
       localStorage.setItem(STORAGE.SELECT_AREA, e)
-      localStorage.setItem(STORAGE.SELECT_AREA, areaName)
+      localStorage.setItem(STORAGE.SELECT_AREA_NAME, areaName)
       this.getNetworkRooms(this.currenArea)
       this.getAreaRooms();
       this.getMeetRooms();
