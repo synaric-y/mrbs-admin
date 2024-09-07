@@ -829,7 +829,7 @@ export default defineComponent({
   color: #000;
   font-size: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  border-left: 10px solid #8f1111;
+  border-left: 10px solid red;
 }
 
 .room-meet-timeout-event {
