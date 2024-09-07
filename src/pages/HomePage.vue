@@ -165,6 +165,7 @@ export default defineComponent({
         "01:00PM", "01:30PM", "02:00PM", "02:30PM", "03:00PM", "03:30PM", "04:00PM", "04:30PM",
         "05:00PM", "05:30PM", "06:00PM", "06:30PM", "07:00PM", "07:30PM", "08:00PM", "08:30PM", "09:00PM"
       ],
+      localRooms:["A","B","C","D"],
     };
   },
 
@@ -248,6 +249,15 @@ export default defineComponent({
       return allRoom
     },
 
+    insertAllArea() {
+      const firstArea = {
+          "area_id": "",
+          "area_name": "All",
+          "rooms": []
+        }
+        this.areas.splice(0, 0, firstArea)
+    },
+
     getAllAreas() {
       Api.getAreaRooms({}).then(({ data, code }) => {
         if (code != 0) {
@@ -258,16 +268,12 @@ export default defineComponent({
           return
         }
         this.areas = data.areas
-        const firstArea = {
-          "area_id": "",
-          "area_name": "All",
-          "rooms": []
-        }
-        this.areas.splice(0, 0, firstArea)
+        this.insertAllArea()
       })
     },
 
     getCurrentAreaRooms(area_id) {
+      this.rooms = this.localRooms
       Api.getAreaRooms({ id: area_id }).then(({ data, code }) => {
         if (code != 0) {
           ElMessage({
@@ -840,10 +846,6 @@ export default defineComponent({
   font-size: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   border-left: 10px solid #9A9A9A;
-}
-
-.event-center {
-
 }
 
 .event-title {
