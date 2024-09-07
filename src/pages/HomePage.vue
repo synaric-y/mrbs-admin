@@ -190,7 +190,7 @@ export default defineComponent({
       this.getSyncInterval()
       this.interval = setInterval(() => {
         this.getSyncInterval()
-      }, 10000)
+      }, 20000)
     },
     getSyncInterval() {
       console.log('getSyncInterval')
