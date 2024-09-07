@@ -8,7 +8,6 @@
       </el-col>
       <el-col :span="3">
         <el-select v-model="currenAreaName" placeholder="All Areas" @change="choseArea">
-          <!-- <el-option :label="currenAreaName || $t('base.allAreas')" :value="currenAreaName"></el-option> -->
           <el-option v-for="(area, index) in areas" :label="area.area_name" :value="area.area_id"
             :key="index"></el-option>
         </el-select>
@@ -65,9 +64,9 @@
                     <div :key="indexeve" class="room-meet-in-event" @click="editMeet(event)"
                       :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
                       <div class="event-center">
-                        <div class="event-title">{{ event.entry_name }}</div>
-                        <div class="event-time">{{ event.duration }}</div>
-                        <div class="event-person">{{ event.book_by }}</div>
+                        <div class="event-title" style="color: black;">{{ event.entry_name }}</div>
+                        <div class="event-time" style="color: black;">{{ event.duration }}</div>
+                        <div class="event-person" style="color: black;">{{ event.book_by }}</div>
                       </div>
                     </div>
                   </template>
@@ -114,6 +113,7 @@ import { Common } from "@/common/common";
 import { ElMessage } from "element-plus/es";
 import { Api } from '@/network/api';
 import { STORAGE } from "@/config";
+import { STORAGE_IS_EDIT } from '@/const';
 
 const size = ref < 'default' | 'large' | 'small' > ('default')
 const value1 = ref('')
@@ -165,19 +165,20 @@ export default defineComponent({
         "01:00PM", "01:30PM", "02:00PM", "02:30PM", "03:00PM", "03:30PM", "04:00PM", "04:30PM",
         "05:00PM", "05:30PM", "06:00PM", "06:30PM", "07:00PM", "07:30PM", "08:00PM", "08:30PM", "09:00PM"
       ],
+      localRooms: ["A", "B", "C", "D"],
     };
   },
 
   mounted() {
     this.setTab('/')
-    console.log('获取当前浏览器语言设置:', Common.getBrowserLanguege())
+    console.log('Home getBrowserLanguege:', Common.getBrowserLanguege())
     this.localLangFormat = Common.getBrowserLanguege()
     const screenWidth = window.screen.width;
     this.screenSize['width'] = screenWidth;
     const screenHeight = window.screen.height;
     this.screenSize['height'] = screenHeight;
     this.screenHeight = screenHeight
-    console.log('当前屏幕的高度为:', this.screenSize, '像素');
+    console.log('Home screenSize:', this.screenSize);
     this.startSync();
   },
 
@@ -190,10 +191,10 @@ export default defineComponent({
       this.getSyncInterval()
       this.interval = setInterval(() => {
         this.getSyncInterval()
-      }, 10000)
+      }, 20000)
     },
     getSyncInterval() {
-      console.log('getSyncInterval')
+      console.log('Home getSyncInterval')
       const selectDays = Number(localStorage.getItem(STORAGE.SELECT_DAYS))
       const selectStartDate = localStorage.getItem(STORAGE.SELECT_START_DATE)
       const selectEndDate = localStorage.getItem(STORAGE.SELECT_END_DATE)
@@ -219,14 +220,14 @@ export default defineComponent({
         }
       }
       if (selectArea && selectAreaName) {
-        console.log('获取缓存的区域名字:', selectAreaName)
+        console.log('Home selectAreaName:', selectAreaName)
         this.currenAreaName = selectAreaName
         this.currenArea = selectArea
       }
       this.getCurrentAreaRooms(this.currenArea)
-      console.log('获取缓存的区域', selectArea)
-      console.log('获取缓存的日期', selectStartDate, selectEndDate)
-      console.log('获取缓存的选择天数', selectDays)
+      console.log('Home selectArea', selectArea)
+      console.log('Home selectStartDate', selectStartDate, selectEndDate)
+      console.log('Home selectDays', selectDays)
     },
 
     getAllRoom(data) {
@@ -241,12 +242,22 @@ export default defineComponent({
             area_id: areaId,
             area_name: areaName,
             room_id: roomId,
+            disabled: room.disabled,
             room_name: `${areaName} ${roomName}`,
           });
         });
       });
-      console.log('allRoom:', allRoom)
+      console.log('Home allRoom:', allRoom)
       return allRoom
+    },
+
+    insertAllArea() {
+      const firstArea = {
+        "area_id": "",
+        "area_name": "All",
+        "rooms": []
+      }
+      this.areas.splice(0, 0, firstArea)
     },
 
     getAllAreas() {
@@ -259,16 +270,12 @@ export default defineComponent({
           return
         }
         this.areas = data.areas
-        const firstArea = {
-          "area_id": "",
-          "area_name": "All",
-          "rooms": []
-        }
-        this.areas.splice(0, 0, firstArea)
+        this.insertAllArea()
       })
     },
 
     getCurrentAreaRooms(area_id) {
+      this.rooms = this.localRooms
       Api.getAreaRooms({ id: area_id }).then(({ data, code }) => {
         if (code != 0) {
           ElMessage({
@@ -317,22 +324,22 @@ export default defineComponent({
       let days = [];
       let tempTime = {};
       if (day == 1) {
-        console.log('One Days:', this.getCurrenDay());
+        console.log('Home One Days:', this.getCurrenDay());
         days = this.getCurrenDay();
         tempTime = Common.getTodayTimestamps()
         console.log(Common.getTodayTimestamps())
       } else if (day == 3) {
-        console.log('Next Three Days:', this.getThreeDays());
+        console.log('Home Next Three Days:', this.getThreeDays());
         days = this.getThreeDays();
         tempTime = Common.getThreeDaysTimestamps()
         console.log(Common.getThreeDaysTimestamps())
       } else if (day == 7) {
-        console.log('Week Days:', this.getCurrenWeek());
+        console.log('Home Week Days:', this.getCurrenWeek());
         days = this.getCurrenWeek();
         tempTime = Common.getThisWeekTimestamps()
         console.log(Common.getThisWeekTimestamps())
       } else {
-        console.log('Next Three Days:', this.getThreeDays());
+        console.log('Home Next Three Days:', this.getThreeDays());
         days = this.getThreeDays();
         tempTime = Common.getThreeDaysTimestamps()
         console.log(Common.getThreeDaysTimestamps())
@@ -344,7 +351,7 @@ export default defineComponent({
       this.endTime = moment(tempTime.end * 1000).format('YYYY-MM-DD')
       localStorage.setItem(STORAGE.SELECT_START_DATE, this.startTime)
       localStorage.setItem(STORAGE.SELECT_END_DATE, this.endTime)
-      console.log('dayRrange tempTime', this.startTime, this.endTime)
+      console.log('Home dayRrange tempTime', this.startTime, this.endTime)
       this.dayRrangeVal = day;
       this.days = this.formatDays(days);
       this.getMeetRooms();
@@ -381,8 +388,8 @@ export default defineComponent({
     },
 
     getDaysBetween(startDate, endDate) {
-      console.log('getDaysBetween startDate', startDate);
-      console.log('getDaysBetween endDate', endDate);
+      console.log('Home getDaysBetween startDate', startDate);
+      console.log('Home getDaysBetween endDate', endDate);
       const start = moment(startDate);
       const end = moment(endDate);
       this.dayRrangeVal = 0;
@@ -391,7 +398,7 @@ export default defineComponent({
         days.push(Common.translateWeekDay(start.format(this.localLangFormat)));
         start.add(1, 'days');
       }
-      console.log('getDaysBetween days', days);
+      console.log('Home getDaysBetween days', days);
       return days;
     },
 
@@ -406,26 +413,34 @@ export default defineComponent({
     },
 
     toMeet(time, room, day) {
-      console.log('toMeet time', day)
+      if(room.disabled == STORAGE_IS_EDIT.DISABLED) {
+        console.log('Home toMeet disabled',room.disabled)
+        return
+      }
+      console.log('Home toMeet time', day)
       const dayTimestamp = moment(day.date, this.localLangFormat).unix();
       const ymd = moment(dayTimestamp * 1000).format('YYYY-MM-DD')
-      console.log('toMeet ymd', ymd)
-      console.log('toMeet time', time)
+      console.log('Home toMeet ymd', ymd)
+      console.log('Home toMeet time', time)
       const tempTime = Common.getTimestampFromDateAndTime(ymd, time);
-      console.log('toMeet tempTime:', tempTime)
+      console.log('Home toMeet tempTime:', tempTime)
       this.push(`/meet_detail/0/${room.room_id}/${room.area_id}/${tempTime}`);
     },
 
     editMeet(event) {
+      if(event.disabled == STORAGE_IS_EDIT.DISABLED) {
+        console.log('Home editMeet disabled',event.disabled);
+        return
+      }
       this.push(`/meet_detail/${event.entry_id}/${event.room_id}/${event.area_id}/0`);
     },
 
     choseArea(e) {
       this.currenArea = e;
-      console.log('choseArea e')
+      console.log('Home choseArea e')
       localStorage.setItem(STORAGE.SELECT_AREA, e)
       const area = this.areas.filter(area => area.area_id == e)
-      console.log('choseArea areaName', area)
+      console.log('Home choseArea areaName', area)
       const areaName = area[0].area_name
       this.currenAreaName = areaName
       localStorage.setItem(STORAGE.SELECT_AREA, e)
@@ -436,15 +451,15 @@ export default defineComponent({
     },
 
     getAreaRooms() {
-      console.log('getAreaRooms this.currenArea', this.currenArea);
+      console.log('Home getAreaRooms this.currenArea', this.currenArea);
       if (this.currenArea == 'All' || this.currenArea == '') {
         const temprooms = this.areas.flatMap(area => area.rooms);
         this.rooms = temprooms.flatMap(room => room.room_name);
-        console.log('getAreaRooms all rooms:', this.rooms);
+        console.log('Home getAreaRooms all rooms:', this.rooms);
       } else {
         const temprooms = this.areas.find(area => area.area_id == this.currenArea);
         this.rooms = temprooms.rooms.flatMap(room => room.room_name);
-        console.log('getAreaRooms currenArea rooms:', this.rooms);
+        console.log('Home getAreaRooms currenArea rooms:', this.rooms);
       }
     },
 
@@ -464,7 +479,6 @@ export default defineComponent({
           this.endTime = ''
           return
         }
-        console.log('获取选择的时间区域', start_date, end_date)
         this.startTime = start_date;
         this.endTime = end_date;
         localStorage.setItem(STORAGE.SELECT_START_DATE, start_date)
@@ -472,7 +486,7 @@ export default defineComponent({
         this.getMeetRooms();
         const days = this.getDaysBetween(start_date, end_date);
         const tempdays = this.formatDays(days);
-        console.log('tempdays:', tempdays);
+        console.log('Home tempdays:', tempdays);
         this.days = tempdays;
       }
     },
@@ -503,7 +517,7 @@ export default defineComponent({
       } else {
         this.itemWidth = 228;
       }
-      console.log('getMeetRooms currenArea:  start: end: ', this.currenArea, this.startStamp, this.endStamp);
+      console.log('Home getMeetRooms currenArea:  start: end: ', this.currenArea, this.startStamp, this.endStamp);
       Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp / 1000, end_time: this.endStamp / 1000 }).then(({ data, code }) => {
         if (!data) {
           ElMessage({
@@ -512,7 +526,7 @@ export default defineComponent({
           })
           return
         }
-        console.log('getMeetRooms api data:', data)
+        console.log('Home getMeetRooms api data:', data)
         if (this.lang == 'en') {
 
         }
@@ -522,7 +536,7 @@ export default defineComponent({
     },
 
     getInMeeting(data) {
-      console.log('getInMeeting areas', data.areas)
+      console.log('Home getInMeeting areas', data.areas)
       if (!data || data.areas == null || data.areas.length == 0) {
         return
       }
@@ -539,6 +553,7 @@ export default defineComponent({
               area_name: areaName,
               room_id: roomId,
               room_name: roomName,
+              disabled: room.disabled,
               date: Common.translateWeekDay(moment(Number(entry.start_time * 1000)).format(this.localLangFormat)),
               startTime: entry.duration.split('-')[0].trim(),
               endTime: entry.duration.split('-')[1].trim(),
@@ -548,7 +563,7 @@ export default defineComponent({
         });
       });
       this.events = entriesRoom
-      console.log('getMeetRooms entriesRoom:', entriesRoom)
+      console.log('Home getMeetRooms entriesRoom:', entriesRoom)
     },
   },
   onUnload() {
@@ -581,7 +596,6 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  /* overflow-y: scroll; */
   scrollbar-width: none;
   scrollbar-color: transparent transparent;
 }
@@ -816,14 +830,14 @@ export default defineComponent({
   position: absolute;
   left: 5px;
   right: 5px;
-  background-color: #e1f5fe;
+  background-color: #ffb3b3;
   width: 218px;
   padding: 0px 5px;
   margin: 2px 0;
   color: #000;
   font-size: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  border-left: 10px solid #8f1111;
+  border-left: 10px solid #ff9999;
 }
 
 .room-meet-timeout-event {
@@ -841,10 +855,6 @@ export default defineComponent({
   font-size: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   border-left: 10px solid #9A9A9A;
-}
-
-.event-center {
-
 }
 
 .event-title {
