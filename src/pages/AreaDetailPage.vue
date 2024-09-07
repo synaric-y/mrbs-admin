@@ -152,7 +152,7 @@ export default {
       <el-form :model="form" :rules="rules" label-width="auto" ref="areaForm" style="max-width: 530px">
 
         <el-form-item prop="area_name" :label="$t('area.formArea.name')">
-          <el-input v-model="form.area_name"/>
+          <el-input v-model="form.area_name" maxlength="32" />
         </el-form-item>
 
         <el-form-item prop="area_timezone" :label="$t('area.formArea.timezone')">
@@ -193,7 +193,7 @@ export default {
             </el-form-item>
 
             <el-form-item prop="exchange_server" :label="$t('area.formArea.exchangeServer')">
-              <el-input v-model="form.area_exchange_server"/>
+              <el-input v-model="form.area_exchange_server" maxlength="255" />
             </el-form-item>
           </el-collapse-item>
 
@@ -203,11 +203,11 @@ export default {
             </el-form-item>
 
             <el-form-item prop="wxwork_corpid" :label="$t('area.formArea.wxworkCorpId')">
-              <el-input v-model="form.area_wxwork_corpid"/>
+              <el-input v-model="form.area_wxwork_corpid" maxlength="255" />
             </el-form-item>
 
             <el-form-item prop="wxwork_secret" :label="$t('area.formArea.wxworkSecret')">
-              <el-input v-model="form.area_wxwork_secret"/>
+              <el-input v-model="form.area_wxwork_secret" maxlength="255" />
             </el-form-item>
           </el-collapse-item>
         </el-collapse>

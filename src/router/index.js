@@ -54,14 +54,20 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from) => {
-  if (to.name == 'home' || to.name == 'login') {
+  if (to.name == 'home') {
     return true
   }
+
   let json = localStorage.getItem(STORAGE.USER_INFO)
   if (!json) {
     localStorage.removeItem(STORAGE.USER_INFO)
     router.push('/login')
     return false
+  } else if (to.name == 'login') {
+    return false
+  }
+  if (to.name == 'login') {
+    return true
   }
   let user = JSON.parse(json)
   if (user["level"] < 2) {

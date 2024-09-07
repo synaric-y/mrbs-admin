@@ -40,10 +40,10 @@ export default {
         // ],
       },
       role: [
-        {
-          name: this.$t('user.role.level0'),
-          value: 0,
-        },
+        // {
+        //   name: this.$t('user.role.level0'),
+        //   value: 0,
+        // },
         {
           name: this.$t('user.role.level1'),
           value: 1,
@@ -100,11 +100,11 @@ export default {
       <el-form :model="form" :rules="rules" label-width="auto" ref="userForm" style="max-width: 530px">
 
         <el-form-item prop="name" :label="$t('user.formUser.name')">
-          <el-input v-model="form.name"/>
+          <el-input v-model="form.name" maxlength="16" />
         </el-form-item>
 
         <el-form-item prop="display_name" :label="$t('user.formUser.displayName')">
-          <el-input v-model="form.display_name"/>
+          <el-input v-model="form.display_name" maxlength="16" />
         </el-form-item>
 
         <el-form-item prop="level" :label="$t('user.formUser.level')">
@@ -114,15 +114,15 @@ export default {
         </el-form-item>
 
         <el-form-item prop="email" :label="$t('user.formUser.email')">
-          <el-input v-model="form.email"/>
+          <el-input v-model="form.email" maxlength="64" />
         </el-form-item>
 
         <el-form-item prop="password0" :label="$t('user.formUser.password0')">
-          <el-input v-model="form.password0"/>
+          <el-input v-model="form.password0" maxlength="32" />
         </el-form-item>
 
         <el-form-item prop="password1" :label="$t('user.formUser.password1')">
-          <el-input v-model="form.password1"/>
+          <el-input v-model="form.password1" maxlength="32" />
         </el-form-item>
 
         <el-form-item style="margin-top: 60px">
