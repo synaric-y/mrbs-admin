@@ -210,6 +210,8 @@ export default defineComponent({
           this.dayRrangeVal = selectDays
           this.dayRrange(selectDays)
           this.getMeetRooms();
+        } else {
+          this.dayRrange(3);
         }
       }
       if (selectArea && selectAreaName) {
@@ -308,7 +310,6 @@ export default defineComponent({
     },
 
     dayRrange(day) {
-      this.dayRrangeVal = day;
       let days = [];
       let tempTime = {};
       if (day == 1) {
@@ -340,6 +341,7 @@ export default defineComponent({
       localStorage.setItem(STORAGE.SELECT_START_DATE, this.startTime)
       localStorage.setItem(STORAGE.SELECT_END_DATE, this.endTime)
       console.log('dayRrange tempTime', this.startTime, this.endTime)
+      this.dayRrangeVal = day;
       this.days = this.formatDays(days);
       this.getMeetRooms();
     },
@@ -400,7 +402,7 @@ export default defineComponent({
     },
 
     toMeet(time, room, day) {
-      console.log('toMeet time', day.date)
+      console.log('toMeet time', day)
       const dayTimestamp = moment(day.date, this.localLangFormat).unix();
       const ymd = moment(dayTimestamp * 1000).format('YYYY-MM-DD')
       console.log('toMeet ymd', ymd)
