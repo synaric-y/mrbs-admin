@@ -92,6 +92,7 @@ export default {
     }
   },
   mounted() {
+    this.setTab('/room')
     this.getRoomList()
     this.getAreaList()
 

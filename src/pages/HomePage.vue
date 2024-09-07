@@ -163,6 +163,7 @@ export default defineComponent({
   },
 
   mounted() {
+    this.setTab('/')
     console.log('获取当前浏览器语言设置:', Common.getBrowserLanguege())
     this.localLangFormat = Common.getBrowserLanguege()
     const screenWidth = window.screen.width;

@@ -3,7 +3,7 @@ import router from "@/router/index.js";
 
 
 export const NavigationStore = defineStore('navigation', {
-  state: () => ({ currentTab: '/' }),
+  state: () => ({ currentTab: '' }),
   getters: {
     // double: (state) => state.currentTab,
   },
