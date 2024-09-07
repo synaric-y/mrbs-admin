@@ -170,7 +170,7 @@ export default {
     },
     methods: {
         submit() {
-            console.log('submit meetForm', this.form)
+            console.log('Meet Detail submit meetForm', this.form)
             this.$refs.meetForm.validate((pass) => {
                 if (!pass) {
                     return
@@ -194,11 +194,11 @@ export default {
             })
         },
         cancle() {
-            console.log('cancle')
+            console.log('Meet Detail cancle')
             this.back()
         },
         deleteMeet() {
-            console.log('deleteMeet')
+            console.log('Meet Detail deleteMeet')
             Api.deleteMeet({ entry_id: Number(this.entry_id) }).then(({ data, code, message }) => {
                 if (code == 0) {
                     ElMessage({
@@ -216,7 +216,7 @@ export default {
         },
 
         choseDate(mode, e) {
-            console.log('choseDate e', e)
+            console.log('Meet Detail choseDate e', e)
             if (mode == 0) {
                 this.form.start_date = moment(e).format('YYYY-MM-DD');
                 return
@@ -225,7 +225,7 @@ export default {
         },
 
         choseHour(mode, str, e) {
-            console.log('choseHour str', str)
+            console.log('Meet Detail choseHour str', str)
             // 或者指定年月日下的时间戳
             const ymd = this.form.start_date
             if (mode == 0) {
@@ -236,7 +236,7 @@ export default {
         },
 
         choseRoom(room) {
-            console.log('choseRoom room', room)
+            console.log('Meet Detail choseRoom room', room)
             this.form.rooms = []
             this.form.rooms.push(Number(room))
         },
@@ -267,17 +267,17 @@ export default {
         },
 
         editTime(timestamp) {
-            console.log('editTime timestamp',timestamp)
+            console.log('Meet Detail editTime timestamp',timestamp)
             if (timestamp > 0) {
-                console.log('mounted timestamp begin', timestamp)
+                console.log('Meet Detail mounted timestamp begin', timestamp)
                 const starttimestamp = moment.unix(timestamp).format('HH:mm')
                 this.start_hour = starttimestamp
                 this.form.start_seconds = Common.getTimestampForTodayWithTime(this.start_hour)
                 const endstamp = Number(timestamp) + 60 * 60
-                console.log('mounted timestamp endstamp', endstamp)
+                console.log('Meet Detail mounted timestamp endstamp', endstamp)
                 this.end_hour = moment.unix(endstamp).format('HH:mm')
                 this.form.end_seconds = Common.getTimestampForTodayWithTime(this.end_hour)
-                console.log('mounted timestamp end', timestamp)
+                console.log('Meet Detail mounted timestamp end', timestamp)
                 this.form.start_date = moment.unix(timestamp).format('YYYY-MM-DD')
                 this.form.end_date = moment.unix(timestamp).format('YYYY-MM-DD')
             }
@@ -342,7 +342,7 @@ export default {
             if (!data) {
                 return
             }
-            console.log('getMeetDetail data',data)
+            console.log('Meet Detail getMeetDetail data',data)
             this.editData(data)
         })
     }
