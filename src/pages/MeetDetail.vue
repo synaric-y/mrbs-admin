@@ -13,7 +13,7 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item prop="book_by" :label="$t('meet.booker')" style="width: 400px">
-                        <el-input v-model="form.book_by" maxlength="15" />
+                        <el-input v-model="form.book_by" maxlength="15" show-word-limit/>
                     </el-form-item>
                     <el-form-item prop="name" :label="$t('meet.short_desc')" style="width: 400px">
                         <el-input v-model="form.name" maxlength="20" show-word-limit/>
