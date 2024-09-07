@@ -96,7 +96,7 @@ export default {
       this.form["room_disabled"] = Number(data["disabled"])
       this.form["description"] = data["description"]
       this.form["capacity"] = Number(data["capacity"])
-      this.form["room_admin_email"] = data["room_admin_email"]
+      this.form["room_admin_email"] = data["room_admin_email"] || ''
       this.form["exchange_username"] = data["exchange_username"]
       this.form["exchange_password"] = data["exchange_password"]
       this.form["wxwork_mr_id"] = data["wxwork_mr_id"]
