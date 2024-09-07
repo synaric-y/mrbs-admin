@@ -16,7 +16,7 @@
                         <el-input v-model="form.book_by" maxlength="15" />
                     </el-form-item>
                     <el-form-item prop="name" :label="$t('meet.short_desc')" style="width: 400px">
-                        <el-input v-model="form.name" maxlength="20"/>
+                        <el-input v-model="form.name" maxlength="20" show-word-limit/>
                     </el-form-item>
                     <el-form-item prop="description" :label="$t('meet.all_desc')" style="width: 400px">
                         <el-input type="textarea" maxlength="100" show-word-limit v-model="form.description" />
