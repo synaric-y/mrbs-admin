@@ -13,7 +13,7 @@
             :key="index"></el-option>
         </el-select>
       </el-col>
-      
+
       <el-col :span="9">
         <el-button-group class="buttons-margin">
           <el-button :class="[dayRrangeVal == 1 ? 'button-selected' : 'button-normal']" @click="dayRrange(1)">{{
@@ -60,31 +60,37 @@
               </template>
               <template v-for="(event, indexeve) in events">
                 <template v-if="day.date == event.date && room.room_id == event.room_id">
-                  
+
                   <template v-if="event.status == 1">
                     <div :key="indexeve" class="room-meet-in-event" @click="editMeet(event)"
                       :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
-                      <div class="event-title">{{ event.entry_name }}</div>
-                      <div class="event-time">{{ event.duration }}</div>
-                      <div class="event-person">{{ event.book_by }}</div>
+                      <div class="event-center">
+                        <div class="event-title">{{ event.entry_name }}</div>
+                        <div class="event-time">{{ event.duration }}</div>
+                        <div class="event-person">{{ event.book_by }}</div>
+                      </div>
                     </div>
                   </template>
 
                   <template v-if="event.status == 2">
                     <div :key="indexeve" class="room-meet-timeout-event"
                       :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
-                      <div class="event-title">{{ event.entry_name }}</div>
-                      <div class="event-time">{{ event.duration }}</div>
-                      <div class="event-person">{{ event.book_by }}</div>
+                      <div class="event-center">
+                        <div class="event-title">{{ event.entry_name }}</div>
+                        <div class="event-time">{{ event.duration }}</div>
+                        <div class="event-person">{{ event.book_by }}</div>
+                      </div>
                     </div>
                   </template>
 
                   <template v-if="event.status == 0">
                     <div :key="indexeve" class="room-meet-event" @click="editMeet(event)"
                       :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
-                      <div class="event-title">{{ event.entry_name }}</div>
-                      <div class="event-time">{{ event.duration }}</div>
-                      <div class="event-person">{{ event.book_by }}</div>
+                      <div class="event-center">
+                        <div class="event-title">{{ event.entry_name }}</div>
+                        <div class="event-time">{{ event.duration }}</div>
+                        <div class="event-person">{{ event.book_by }}</div>
+                      </div>
                     </div>
                   </template>
                 </template>
@@ -100,14 +106,14 @@
 </template>
 
 <script>
-import {defineComponent, ref} from 'vue';
-import {ElButton, ElButtonGroup, ElCol, ElIcon, ElOption, ElRow, ElSelect} from 'element-plus';
+import { defineComponent, ref } from 'vue';
+import { ElButton, ElButtonGroup, ElCol, ElIcon, ElOption, ElRow, ElSelect } from 'element-plus';
 import moment from "moment";
-import {PageMixin} from "@/pages/PageMixin.js";
-import {Common} from "@/common/common";
-import {ElMessage} from "element-plus/es";
-import {Api} from '@/network/api';
-import {STORAGE} from "@/config";
+import { PageMixin } from "@/pages/PageMixin.js";
+import { Common } from "@/common/common";
+import { ElMessage } from "element-plus/es";
+import { Api } from '@/network/api';
+import { STORAGE } from "@/config";
 
 const size = ref < 'default' | 'large' | 'small' > ('default')
 const value1 = ref('')
@@ -208,6 +214,8 @@ export default defineComponent({
           this.dayRrangeVal = selectDays
           this.dayRrange(selectDays)
           this.getMeetRooms();
+        } else {
+          this.dayRrange(3);
         }
       }
       if (selectArea && selectAreaName) {
@@ -306,7 +314,6 @@ export default defineComponent({
     },
 
     dayRrange(day) {
-      this.dayRrangeVal = day;
       let days = [];
       let tempTime = {};
       if (day == 1) {
@@ -338,6 +345,7 @@ export default defineComponent({
       localStorage.setItem(STORAGE.SELECT_START_DATE, this.startTime)
       localStorage.setItem(STORAGE.SELECT_END_DATE, this.endTime)
       console.log('dayRrange tempTime', this.startTime, this.endTime)
+      this.dayRrangeVal = day;
       this.days = this.formatDays(days);
       this.getMeetRooms();
     },
@@ -398,7 +406,7 @@ export default defineComponent({
     },
 
     toMeet(time, room, day) {
-      console.log('toMeet time', day.date)
+      console.log('toMeet time', day)
       const dayTimestamp = moment(day.date, this.localLangFormat).unix();
       const ymd = moment(dayTimestamp * 1000).format('YYYY-MM-DD')
       console.log('toMeet ymd', ymd)
@@ -785,6 +793,9 @@ export default defineComponent({
 }
 
 .room-meet-event {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: absolute;
   left: 5px;
   right: 5px;
@@ -799,6 +810,9 @@ export default defineComponent({
 }
 
 .room-meet-in-event {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: absolute;
   left: 5px;
   right: 5px;
@@ -813,6 +827,9 @@ export default defineComponent({
 }
 
 .room-meet-timeout-event {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: absolute;
   left: 5px;
   right: 5px;
@@ -824,6 +841,10 @@ export default defineComponent({
   font-size: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   border-left: 10px solid #9A9A9A;
+}
+
+.event-center {
+
 }
 
 .event-title {
