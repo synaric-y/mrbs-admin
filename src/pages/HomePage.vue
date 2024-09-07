@@ -65,9 +65,9 @@
                     <div :key="indexeve" class="room-meet-in-event" @click="editMeet(event)"
                       :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
                       <div class="event-center">
-                        <div class="event-title">{{ event.entry_name }}</div>
-                        <div class="event-time">{{ event.duration }}</div>
-                        <div class="event-person">{{ event.book_by }}</div>
+                        <div class="event-title" style="color: black;">{{ event.entry_name }}</div>
+                        <div class="event-time" style="color: black;">{{ event.duration }}</div>
+                        <div class="event-person" style="color: black;">{{ event.book_by }}</div>
                       </div>
                     </div>
                   </template>
@@ -822,14 +822,14 @@ export default defineComponent({
   position: absolute;
   left: 5px;
   right: 5px;
-  background-color: #e1f5fe;
+  background-color: #ffb3b3;
   width: 218px;
   padding: 0px 5px;
   margin: 2px 0;
   color: #000;
   font-size: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  border-left: 10px solid red;
+  border-left: 10px solid #ff9999;
 }
 
 .room-meet-timeout-event {
