@@ -35,7 +35,7 @@ export default {
   methods: {
     toProfile() {
       let user = this.userInfo
-      if (!user || !user.display_name) {
+      if (!user.display_name) {
         router.replace("/login")
       } else {
         this.showPop = !this.showPop
@@ -81,7 +81,7 @@ export default {
                        v-if="item && (item.level == 0 || userInfo && (userInfo.level >= item.level))">{{ $t(item.name) }}</el-button>
           </template>
           <div style="flex: 1"></div>
-          <el-popover trigger="click" placement="bottom" :width="160">
+          <el-popover :visible="showPop" placement="bottom" :width="160">
             <el-button style="width: 135px" size="small" type="primary" @click="toLogout">
               {{$t('base.logout')}}
             </el-button>
