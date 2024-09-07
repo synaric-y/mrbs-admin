@@ -108,7 +108,7 @@ export default {
         </el-form-item>
 
         <el-form-item prop="level" :label="$t('user.formUser.level')">
-          <el-select v-model="form.level" :placeholder="$t('base.plzSelect')">
+          <el-select v-model="form.level" :placeholder="$t('base.plzSelect')" :disabled="mode == 'update'">
             <el-option :label="item.name" :value="item.value" v-for="(item, index) in role" :key="index"/>
           </el-select>
         </el-form-item>
