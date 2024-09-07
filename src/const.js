@@ -9,3 +9,9 @@ export const STORAGE_MEETING_STATUS = {
 export const STORAGE_IS_EDIT = {
     DISABLED: '1'
 }
+
+export const STORAGE_DAY = {
+    TODAY: 1,
+    THREE: 3,
+    WEEK: 7
+}

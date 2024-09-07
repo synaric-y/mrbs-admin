@@ -113,7 +113,7 @@ import { Common } from "@/common/common";
 import { ElMessage } from "element-plus/es";
 import { Api } from '@/network/api';
 import { STORAGE } from "@/config";
-import { STORAGE_IS_EDIT } from '@/const';
+import { STORAGE_DAY, STORAGE_IS_EDIT } from '@/const';
 
 const size = ref < 'default' | 'large' | 'small' > ('default')
 const value1 = ref('')
@@ -135,7 +135,7 @@ export default defineComponent({
       currenAreaName: 'All',
       customDate: null,
       hoursNumber: 24,
-      dayRrangeVal: 3,
+      dayRrangeVal: STORAGE_DAY.THREE,
       baseTime: '',
       startTime: this.$t('base.startDate'),
       endTime: this.$t('base.endDate'),
@@ -170,6 +170,10 @@ export default defineComponent({
   },
 
   mounted() {
+    // window.onload = window.onresize = function () {
+    //   console.log('Home  window.onload zoom')
+    //   document.body.style.zoom = 1.0
+    // };
     this.setTab('/')
     console.log('Home getBrowserLanguege:', Common.getBrowserLanguege())
     this.localLangFormat = Common.getBrowserLanguege()
@@ -216,7 +220,7 @@ export default defineComponent({
           this.dayRrange(selectDays)
           this.getMeetRooms();
         } else {
-          this.dayRrange(3);
+          this.dayRrange(STORAGE_DAY.THREE);
         }
       }
       if (selectArea && selectAreaName) {
@@ -323,17 +327,17 @@ export default defineComponent({
     dayRrange(day) {
       let days = [];
       let tempTime = {};
-      if (day == 1) {
+      if (day == STORAGE_DAY.TODAY) {
         console.log('Home One Days:', this.getCurrenDay());
         days = this.getCurrenDay();
         tempTime = Common.getTodayTimestamps()
         console.log(Common.getTodayTimestamps())
-      } else if (day == 3) {
+      } else if (day == STORAGE_DAY.THREE) {
         console.log('Home Next Three Days:', this.getThreeDays());
         days = this.getThreeDays();
         tempTime = Common.getThreeDaysTimestamps()
         console.log(Common.getThreeDaysTimestamps())
-      } else if (day == 7) {
+      } else if (day == STORAGE_DAY.WEEK) {
         console.log('Home Week Days:', this.getCurrenWeek());
         days = this.getCurrenWeek();
         tempTime = Common.getThisWeekTimestamps()
@@ -413,8 +417,8 @@ export default defineComponent({
     },
 
     toMeet(time, room, day) {
-      if(room.disabled == STORAGE_IS_EDIT.DISABLED) {
-        console.log('Home toMeet disabled',room.disabled)
+      if (room.disabled == STORAGE_IS_EDIT.DISABLED) {
+        console.log('Home toMeet disabled', room.disabled)
         return
       }
       console.log('Home toMeet time', day)
@@ -428,8 +432,8 @@ export default defineComponent({
     },
 
     editMeet(event) {
-      if(event.disabled == STORAGE_IS_EDIT.DISABLED) {
-        console.log('Home editMeet disabled',event.disabled);
+      if (event.disabled == STORAGE_IS_EDIT.DISABLED) {
+        console.log('Home editMeet disabled', event.disabled);
         return
       }
       this.push(`/meet_detail/${event.entry_id}/${event.room_id}/${event.area_id}/0`);
