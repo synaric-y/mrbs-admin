@@ -100,18 +100,15 @@
 </template>
 
 <script>
-import router from "@/router/index.js";
-import { defineComponent } from 'vue';
-import { ElRow, ElCol, ElSelect, ElOption, ElButton, ElIcon, ElButtonGroup } from 'element-plus';
+import {defineComponent, ref} from 'vue';
+import {ElButton, ElButtonGroup, ElCol, ElIcon, ElOption, ElRow, ElSelect} from 'element-plus';
 import moment from "moment";
-import { PageMixin } from "@/pages/PageMixin.js";
-import { Common } from "@/common/common";
-import { ElMessage } from "element-plus/es";
-import { ref } from 'vue'
-import { Api } from '@/network/api';
-import { areaData, homeData } from './home';
-import { STORAGE } from "@/config";
-import { STORAGE_MEETING_STATUS } from "@/const";
+import {PageMixin} from "@/pages/PageMixin.js";
+import {Common} from "@/common/common";
+import {ElMessage} from "element-plus/es";
+import {Api} from '@/network/api';
+import {STORAGE} from "@/config";
+
 const size = ref < 'default' | 'large' | 'small' > ('default')
 const value1 = ref('')
 
