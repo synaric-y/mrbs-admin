@@ -59,7 +59,7 @@
               <template v-for="(event, indexeve) in events">
                 <template v-if="day.date == event.date && room.room_id == event.room_id">
                   <template v-if="event.status == 2">
-                    <div :key="indexeve" class="room-meet-timeout-event" @click="editMeet(event)"
+                    <div :key="indexeve" class="room-meet-timeout-event"
                       :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
                       <div class="event-title">{{ event.entry_name }}</div>
                       <div class="event-time">{{ event.duration }}</div>
@@ -161,22 +161,6 @@ export default defineComponent({
     this.screenHeight = screenHeight
     console.log('当前屏幕的高度为:', this.screenSize, '像素');
     this.startSync();
-
-
-
-
-    // 监听页面的可见性变化
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) {
-        // 页面不可见，停止定时器
-        console.log('页面不可见，停止定时器')
-        // stopTimer();
-      } else {
-        // 页面可见，重新启动定时器
-        // startTimer();
-        console.log('页面可见，重新启动定时器')
-      }
-    });
   },
 
   methods: {
