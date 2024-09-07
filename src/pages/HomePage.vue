@@ -13,11 +13,9 @@
             :key="index"></el-option>
         </el-select>
       </el-col>
-      <el-col :span="2" class="home-calendar">
-        <el-icon class="home-calendar-icon" type="text"></el-icon>
-      </el-col>
+      
       <el-col :span="9">
-        <el-button-group>
+        <el-button-group class="buttons-margin">
           <el-button :class="[dayRrangeVal == 1 ? 'button-selected' : 'button-normal']" @click="dayRrange(1)">{{
             $t('base.today') }}</el-button>
           <el-button :class="[dayRrangeVal == 3 ? 'button-selected' : 'button-normal']" @click="dayRrange(3)">{{
@@ -26,7 +24,11 @@
             $t('base.week') }}</el-button>
         </el-button-group>
       </el-col>
-      <el-col :span="7">
+
+      <el-col :span="2" class="home-calendar">
+        <el-icon class="home-calendar-icon" type="text"></el-icon>
+      </el-col>
+      <el-col :span="6">
         <el-date-picker v-model="baseTime" type="daterange" :range-separator="$t('base.to')"
           :start-placeholder="startTime" :end-placeholder="endTime" @change="choseDate" />
       </el-col>
@@ -58,6 +60,16 @@
               </template>
               <template v-for="(event, indexeve) in events">
                 <template v-if="day.date == event.date && room.room_id == event.room_id">
+                  
+                  <template v-if="event.status == 1">
+                    <div :key="indexeve" class="room-meet-in-event" @click="editMeet(event)"
+                      :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
+                      <div class="event-title">{{ event.entry_name }}</div>
+                      <div class="event-time">{{ event.duration }}</div>
+                      <div class="event-person">{{ event.book_by }}</div>
+                    </div>
+                  </template>
+
                   <template v-if="event.status == 2">
                     <div :key="indexeve" class="room-meet-timeout-event"
                       :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
@@ -66,7 +78,8 @@
                       <div class="event-person">{{ event.book_by }}</div>
                     </div>
                   </template>
-                  <template v-else>
+
+                  <template v-if="event.status == 0">
                     <div :key="indexeve" class="room-meet-event" @click="editMeet(event)"
                       :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
                       <div class="event-title">{{ event.entry_name }}</div>
@@ -98,6 +111,7 @@ import { ref } from 'vue'
 import { Api } from '@/network/api';
 import { areaData, homeData } from './home';
 import { STORAGE } from "@/config";
+import { STORAGE_MEETING_STATUS } from "@/const";
 const size = ref < 'default' | 'large' | 'small' > ('default')
 const value1 = ref('')
 
@@ -589,6 +603,10 @@ export default defineComponent({
   display: inline-block;
 }
 
+.buttons-margin {
+  margin-left: 60px;
+}
+
 .button-selected {
   height: 30px;
   line-height: 30px;
@@ -622,42 +640,18 @@ export default defineComponent({
   align-items: center;
 }
 
-.el-button-group .el-button {
+/* .el-button-group .el-button {
   margin-right: 30px;
-}
+} */
 
 .el-select {
   min-width: 150px;
 }
 
-.demo-date-picker {
-  display: flex;
-  width: 100%;
-  padding: 0;
-  flex-wrap: wrap;
-}
-
-.demo-date-picker .block {
-  padding: 30px 0;
-  text-align: center;
-  border-right: solid 1px var(--el-border-color);
-  flex: 1;
-}
-
-.demo-date-picker .block:last-child {
-  border-right: none;
-}
-
-.demo-date-picker .demonstration {
-  display: block;
-  color: var(--el-text-color-secondary);
-  font-size: 14px;
-  margin-bottom: 20px;
-}
-
 .home-calendar-icon {
   width: 30px;
   height: 30px;
+  margin-right: -70px;
   background-image: url('/imgs/home_calendar_icon.png');
   background-size: contain;
   background-repeat: no-repeat;
@@ -797,7 +791,6 @@ export default defineComponent({
   left: 5px;
   right: 5px;
   background-color: #e1f5fe;
-  border-radius: 4px;
   width: 218px;
   padding: 0px 5px;
   margin: 2px 0;
@@ -807,12 +800,25 @@ export default defineComponent({
   border-left: 10px solid #54BCBD;
 }
 
+.room-meet-in-event {
+  position: absolute;
+  left: 5px;
+  right: 5px;
+  background-color: #e1f5fe;
+  width: 218px;
+  padding: 0px 5px;
+  margin: 2px 0;
+  color: #000;
+  font-size: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  border-left: 10px solid #8f1111;
+}
+
 .room-meet-timeout-event {
   position: absolute;
   left: 5px;
   right: 5px;
   background-color: rgba(206, 206, 206, 0.14);
-  border-radius: 4px;
   width: 218px;
   margin: 2px 0;
   padding: 0px 5px;
