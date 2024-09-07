@@ -8,7 +8,6 @@
       </el-col>
       <el-col :span="3">
         <el-select v-model="currenAreaName" placeholder="All Areas" @change="choseArea">
-          <!-- <el-option :label="currenAreaName || $t('base.allAreas')" :value="currenAreaName"></el-option> -->
           <el-option v-for="(area, index) in areas" :label="area.area_name" :value="area.area_id"
             :key="index"></el-option>
         </el-select>
@@ -114,6 +113,7 @@ import { Common } from "@/common/common";
 import { ElMessage } from "element-plus/es";
 import { Api } from '@/network/api';
 import { STORAGE } from "@/config";
+import { STORAGE_IS_EDIT } from '@/const';
 
 const size = ref < 'default' | 'large' | 'small' > ('default')
 const value1 = ref('')
@@ -242,6 +242,7 @@ export default defineComponent({
             area_id: areaId,
             area_name: areaName,
             room_id: roomId,
+            disabled: room.disabled,
             room_name: `${areaName} ${roomName}`,
           });
         });
@@ -412,6 +413,10 @@ export default defineComponent({
     },
 
     toMeet(time, room, day) {
+      if(room.disabled == STORAGE_IS_EDIT.DISABLED) {
+        console.log('Home toMeet disabled',room.disabled)
+        return
+      }
       console.log('Home toMeet time', day)
       const dayTimestamp = moment(day.date, this.localLangFormat).unix();
       const ymd = moment(dayTimestamp * 1000).format('YYYY-MM-DD')
@@ -423,6 +428,10 @@ export default defineComponent({
     },
 
     editMeet(event) {
+      if(event.disabled == STORAGE_IS_EDIT.DISABLED) {
+        console.log('Home editMeet disabled',event.disabled);
+        return
+      }
       this.push(`/meet_detail/${event.entry_id}/${event.room_id}/${event.area_id}/0`);
     },
 
@@ -544,6 +553,7 @@ export default defineComponent({
               area_name: areaName,
               room_id: roomId,
               room_name: roomName,
+              disabled: room.disabled,
               date: Common.translateWeekDay(moment(Number(entry.start_time * 1000)).format(this.localLangFormat)),
               startTime: entry.duration.split('-')[0].trim(),
               endTime: entry.duration.split('-')[1].trim(),
