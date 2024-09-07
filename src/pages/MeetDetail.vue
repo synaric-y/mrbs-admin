@@ -46,15 +46,17 @@
                                 :key="index"></el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item prop="type" :label="$t('meet.type')">
+                    <!-- <el-form-item prop="type" :label="$t('meet.type')">
                         <el-select v-model="form.type" style="width: 240px" :placeholder="$t('base.plzSelect')">
                             <el-option v-for="(meet,index) in meetTypes" :key="index" :label="meet" :value="index" />
                         </el-select>
-                    </el-form-item>
+                    </el-form-item> -->
                     <el-form-item style="margin-top: 20px">
                         <el-button type="info" size="default" @click="cancle">{{ $t("base.cancel") }}</el-button>
-                        <el-button type="danger" size="default" @click="deleteMeet">{{ $t("meet.delete_meet")
+                        <template v-if="mode == 'update'">
+                            <el-button type="danger" size="default" @click="deleteMeet">{{ $t("meet.delete_meet")
                             }}</el-button>
+                        </template>
                         <el-button type="primary" size="default" @click="submit">{{ $t("base.confirm") }}</el-button>
                     </el-form-item>
                 </el-form>
