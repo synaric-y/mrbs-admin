@@ -16,7 +16,6 @@ export const PageMixin = {
         ...mapActions(UserStore, ['login', 'logout', 'getCacheUserInfo', 'enterLogin', 'exitLogin']),
         ...mapActions(SettingStore, ['setLang']),
         switchTab(path) {
-            this.setTab(path)
             this.$router.replace(path)
         },
         push(path) {
