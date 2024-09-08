@@ -11,7 +11,7 @@ export default {
       form: {
         name: '',
         display_name: '',
-        level: 0,
+        level: 1,
         email: '',
         password0: '',
         password1: ''
@@ -61,13 +61,21 @@ export default {
         if (!pass) {
           return
         }
+        if (this.form.password0 && this.form.password0 != this.form.password1) {
+          ElMessage.error(this.$t('user.password1Hint'))
+          return;
+        }
         let callAPi = this.mode == 'add' ? Api.addUser : Api.updateUser
-        callAPi(this.form).then(data => {
-          ElMessage({
-            message: this.$t('base.editSuccess'),
-            type: 'success',
-          })
-          this.back()
+        callAPi(this.form).then(({data, code, message}) => {
+          if (code == 0) {
+            ElMessage({
+              message: this.$t('base.editSuccess'),
+              type: 'success',
+            })
+            this.back()
+          } else {
+            ElMessage.error(message)
+          }
         }).catch(() => {
           ElMessage.error(this.$t('base.editFailed'))
         })
