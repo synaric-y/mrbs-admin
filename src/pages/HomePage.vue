@@ -178,13 +178,13 @@ export default defineComponent({
     this.setTab('/')
     console.log('Home getBrowserLanguege:', Common.getBrowserLanguege())
     this.localLangFormat = Common.getBrowserLanguege()
-    const screenWidth = window.screen.width;
-    this.screenSize['width'] = screenWidth;
-    const screenHeight = window.screen.height;
-    this.screenSize['height'] = screenHeight;
+    const screenWidth = window.screen.width
+    this.screenSize['width'] = screenWidth
+    const screenHeight = window.screen.height
+    this.screenSize['height'] = screenHeight
     this.screenHeight = screenHeight
-    console.log('Home screenSize:', this.screenSize);
-    this.startSync();
+    console.log('Home screenSize:', this.screenSize)
+    this.startSync()
   },
 
   methods: {
@@ -209,10 +209,10 @@ export default defineComponent({
       if (selectStartDate && selectEndDate) {
         this.startTime = selectStartDate
         this.endTime = selectEndDate
-        const days = this.getDaysBetween(selectStartDate, selectEndDate);
-        const tempdays = this.formatDays(days);
-        this.days = tempdays;
-        this.getMeetRooms();
+        const days = this.getDaysBetween(selectStartDate, selectEndDate)
+        const tempdays = this.formatDays(days)
+        this.days = tempdays
+        this.getMeetRooms()
       } else {
         this.startStamp = Common.getThreeDaysTimestamps().start
         this.endStamp = Common.getThreeDaysTimestamps().end
@@ -238,16 +238,16 @@ export default defineComponent({
     getAllRoom(data) {
       const allRoom = [];
       data.areas.forEach(area => {
-        const areaId = area.area_id;
-        const areaName = area.area_name;
+        const areaId = area.area_id
+        const areaName = area.area_name
         area.rooms.forEach(room => {
           const roomId = room.room_id;
           const roomName = room.room_name;
           allRoom.push({
             area_id: areaId,
             area_name: areaName,
-            room_id: roomId,
             disabled: room.disabled,
+            room_id: roomId,
             room_name: `${areaName} ${roomName}`,
           });
         });
@@ -298,13 +298,13 @@ export default defineComponent({
     },
 
     getEventStyle(event) {
-      const startHour = parseInt(event.startTime.split(':')[0]);
-      const endHour = parseInt(event.endTime.split(':')[0]);
-      const startMin = parseInt(event.startTime.split(':')[1].replace('AM', '').replace('PM', ''));
-      const endMin = parseInt(event.endTime.split(':')[1].replace('AM', '').replace('PM', ''));
-      const startPosition = ((startHour - 9) * 60 + startMin) / 60 * 60;
-      const endPosition = ((endHour - 9) * 60 + endMin) / 60 * 60;
-      const duration = endPosition - startPosition;
+      const startHour = parseInt(event.startTime.split(':')[0])
+      const endHour = parseInt(event.endTime.split(':')[0])
+      const startMin = parseInt(event.startTime.split(':')[1].replace('AM', '').replace('PM', ''))
+      const endMin = parseInt(event.endTime.split(':')[1].replace('AM', '').replace('PM', ''))
+      const startPosition = ((startHour - 9) * 60 + startMin) / 60 * 60
+      const endPosition = ((endHour - 9) * 60 + endMin) / 60 * 60
+      const duration = endPosition - startPosition
       return {
         top: `${startPosition}px`,
         height: `${duration}px`,
@@ -312,40 +312,40 @@ export default defineComponent({
     },
 
     getTimeSlotIndex(time) {
-      const [hour, minutePeriod] = time.split(":");
-      const [minute, period] = [minutePeriod.slice(0, -2), minutePeriod.slice(-2)];
-      const baseTime = `${hour.padStart(2, '0')}:00${period.toUpperCase()}`;
-      const baseIndex = this.timeSlots.indexOf(baseTime);
+      const [hour, minutePeriod] = time.split(":")
+      const [minute, period] = [minutePeriod.slice(0, -2), minutePeriod.slice(-2)]
+      const baseTime = `${hour.padStart(2, '0')}:00${period.toUpperCase()}`
+      const baseIndex = this.timeSlots.indexOf(baseTime)
       if (baseIndex === -1) {
-        return -1;
+        return -1
       }
       if (minute === "30") {
-        return baseIndex + 1;
+        return baseIndex + 1
       }
-      return baseIndex;
+      return baseIndex
     },
 
     dayRrange(day) {
-      let days = [];
-      let tempTime = {};
+      let days = []
+      let tempTime = {}
       if (day == STORAGE_DAY.TODAY) {
-        console.log('Home One Days:', this.getCurrenDay());
-        days = this.getCurrenDay();
+        console.log('Home One Days:', this.getCurrenDay())
+        days = this.getCurrenDay()
         tempTime = Common.getTodayTimestamps()
         console.log(Common.getTodayTimestamps())
       } else if (day == STORAGE_DAY.THREE) {
-        console.log('Home Next Three Days:', this.getThreeDays());
-        days = this.getThreeDays();
+        console.log('Home Next Three Days:', this.getThreeDays())
+        days = this.getThreeDays()
         tempTime = Common.getThreeDaysTimestamps()
         console.log(Common.getThreeDaysTimestamps())
       } else if (day == STORAGE_DAY.WEEK) {
-        console.log('Home Week Days:', this.getCurrenWeek());
-        days = this.getCurrenWeek();
+        console.log('Home Week Days:', this.getCurrenWeek())
+        days = this.getCurrenWeek()
         tempTime = Common.getThisWeekTimestamps()
         console.log(Common.getThisWeekTimestamps())
       } else {
-        console.log('Home Next Three Days:', this.getThreeDays());
-        days = this.getThreeDays();
+        console.log('Home Next Three Days:', this.getThreeDays())
+        days = this.getThreeDays()
         tempTime = Common.getThreeDaysTimestamps()
         console.log(Common.getThreeDaysTimestamps())
       }
@@ -357,17 +357,17 @@ export default defineComponent({
       localStorage.setItem(STORAGE.SELECT_START_DATE, this.startTime)
       localStorage.setItem(STORAGE.SELECT_END_DATE, this.endTime)
       console.log('Home dayRrange tempTime', this.startTime, this.endTime)
-      this.dayRrangeVal = day;
-      this.days = this.formatDays(days);
-      this.getMeetRooms();
+      this.dayRrangeVal = day
+      this.days = this.formatDays(days)
+      this.getMeetRooms()
     },
 
     getCurrenDay() {
-      const today = moment();
+      const today = moment()
       const oneDays = [
         Common.translateWeekDay(today.format(this.localLangFormat)),
       ];
-      return oneDays;
+      return oneDays
     },
 
     getThreeDays() {
@@ -377,33 +377,33 @@ export default defineComponent({
         Common.translateWeekDay(today.add(1, 'days').format(this.localLangFormat)),
         Common.translateWeekDay(today.add(1, 'days').format(this.localLangFormat))
       ];
-      return nextThreeDays;
+      return nextThreeDays
     },
 
     getCurrenWeek() {
-      const startOfWeek = moment().startOf('week');
-      const endOfWeek = moment().endOf('week');
-      const weekDays = [];
-      let day = startOfWeek;
+      const startOfWeek = moment().startOf('week')
+      const endOfWeek = moment().endOf('week')
+      const weekDays = []
+      let day = startOfWeek
       while (day <= endOfWeek) {
-        weekDays.push(Common.translateWeekDay(day.format(this.localLangFormat)));
+        weekDays.push(Common.translateWeekDay(day.format(this.localLangFormat)))
         day = day.add(1, 'days');
       }
-      return weekDays;
+      return weekDays
     },
 
     getDaysBetween(startDate, endDate) {
-      console.log('Home getDaysBetween startDate endDate', startDate,endDate);
-      const start = moment(startDate);
-      const end = moment(endDate);
-      this.dayRrangeVal = 0;
-      const days = [];
+      console.log('Home getDaysBetween startDate endDate', startDate,endDate)
+      const start = moment(startDate)
+      const end = moment(endDate)
+      this.dayRrangeVal = 0
+      const days = []
       while (start <= end) {
-        days.push(Common.translateWeekDay(start.format(this.localLangFormat)));
-        start.add(1, 'days');
+        days.push(Common.translateWeekDay(start.format(this.localLangFormat)))
+        start.add(1, 'days')
       }
-      console.log('Home getDaysBetween days', days);
-      return days;
+      console.log('Home getDaysBetween days', days)
+      return days
     },
 
     formatDays(days) {
@@ -426,17 +426,17 @@ export default defineComponent({
       const ymd = moment(dayTimestamp * 1000).format('YYYY-MM-DD')
       console.log('Home toMeet ymd', ymd)
       console.log('Home toMeet time', time)
-      const tempTime = Common.getTimestampFromDateAndTime(ymd, time);
+      const tempTime = Common.getTimestampFromDateAndTime(ymd, time)
       console.log('Home toMeet tempTime:', tempTime)
-      this.push(`/meet_detail/0/${room.room_id}/${room.area_id}/${tempTime}`);
+      this.push(`/meet_detail/0/${room.room_id}/${room.area_id}/${tempTime}`)
     },
 
     editMeet(event) {
       if (event.disabled == STORAGE_IS_EDIT.DISABLED) {
-        console.log('Home editMeet disabled', event.disabled);
+        console.log('Home editMeet disabled', event.disabled)
         return
       }
-      this.push(`/meet_detail/${event.entry_id}/${event.room_id}/${event.area_id}/0`);
+      this.push(`/meet_detail/${event.entry_id}/${event.room_id}/${event.area_id}/0`)
     },
 
     choseArea(e) {
@@ -450,20 +450,20 @@ export default defineComponent({
       localStorage.setItem(STORAGE.SELECT_AREA, e)
       localStorage.setItem(STORAGE.SELECT_AREA_NAME, areaName)
       this.getCurrentAreaRooms(this.currenArea)
-      this.getAreaRooms();
-      this.getMeetRooms();
+      this.getAreaRooms()
+      this.getMeetRooms()
     },
 
     getAreaRooms() {
-      console.log('Home getAreaRooms this.currenArea', this.currenArea);
+      console.log('Home getAreaRooms this.currenArea', this.currenArea)
       if (this.currenArea == 'All' || this.currenArea == '') {
-        const temprooms = this.areas.flatMap(area => area.rooms);
-        this.rooms = temprooms.flatMap(room => room.room_name);
-        console.log('Home getAreaRooms all rooms:', this.rooms);
+        const temprooms = this.areas.flatMap(area => area.rooms)
+        this.rooms = temprooms.flatMap(room => room.room_name)
+        console.log('Home getAreaRooms all rooms:', this.rooms)
       } else {
-        const temprooms = this.areas.find(area => area.area_id == this.currenArea);
-        this.rooms = temprooms.rooms.flatMap(room => room.room_name);
-        console.log('Home getAreaRooms currenArea rooms:', this.rooms);
+        const temprooms = this.areas.find(area => area.area_id == this.currenArea)
+        this.rooms = temprooms.rooms.flatMap(room => room.room_name)
+        console.log('Home getAreaRooms currenArea rooms:', this.rooms)
       }
     },
 
@@ -471,7 +471,7 @@ export default defineComponent({
       if (e.length > 0) {
         const start_date = moment(e[0]).format('YYYY-MM-DD')
         const end_date = moment(e[1]).format('YYYY-MM-DD')
-        const start = moment(start_date);
+        const start = moment(start_date)
         const end = moment(end_date)
         const diffDay = (end - start) / (24 * 60 * 60 * 1000)
         if (diffDay > 30) {
@@ -483,15 +483,15 @@ export default defineComponent({
           this.endTime = ''
           return
         }
-        this.startTime = start_date;
-        this.endTime = end_date;
+        this.startTime = start_date
+        this.endTime = end_date
         localStorage.setItem(STORAGE.SELECT_START_DATE, start_date)
         localStorage.setItem(STORAGE.SELECT_END_DATE, end_date)
-        this.getMeetRooms();
-        const days = this.getDaysBetween(start_date, end_date);
-        const tempdays = this.formatDays(days);
-        console.log('Home tempdays:', tempdays);
-        this.days = tempdays;
+        this.getMeetRooms()
+        const days = this.getDaysBetween(start_date, end_date)
+        const tempdays = this.formatDays(days)
+        console.log('Home tempdays:', tempdays)
+        this.days = tempdays
       }
     },
 
@@ -506,20 +506,20 @@ export default defineComponent({
 
     getMeetRooms() {
       if (this.startTime && this.startTime != this.$t('base.startDate')) {
-        this.startStamp = this.formatTime(this.startTime) || 0;
-        this.endStamp = this.formatTime(this.endTime) || 0;
+        this.startStamp = this.formatTime(this.startTime) || 0
+        this.endStamp = this.formatTime(this.endTime) || 0
       } else {
         const temp = Common.getThreeDaysTimestamps()
         this.startStamp = temp.start
         this.endStamp = temp.end
       }
-      const itemNumber = this.rooms.length * this.days.length;
+      const itemNumber = this.rooms.length * this.days.length
       if (itemNumber == 1) {
-        this.itemWidth = this.screenSize['width'];
+        this.itemWidth = this.screenSize['width']
       } else if (itemNumber >= 2 && itemNumber <= 6) {
-        this.itemWidth = this.screenSize['width'] / itemNumber * 2;
+        this.itemWidth = this.screenSize['width'] / itemNumber * 2
       } else {
-        this.itemWidth = 228;
+        this.itemWidth = 228
       }
       console.log('Home getMeetRooms currenArea:  start: end: ', this.currenArea, this.startStamp, this.endStamp);
       Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp / 1000, end_time: this.endStamp / 1000 }).then(({ data, code }) => {
@@ -534,6 +534,7 @@ export default defineComponent({
         if (this.lang == 'en') {
 
         }
+        this.currenTimestamp = data.timestamp
         this.nowTime = data.time
         this.getInMeeting(data)
       })
@@ -546,11 +547,11 @@ export default defineComponent({
       }
       const entriesRoom = [];
       data.areas.forEach(area => {
-        const areaId = area.area_id;
-        const areaName = area.area_name;
+        const areaId = area.area_id
+        const areaName = area.area_name
         area.rooms.forEach(room => {
-          const roomId = room.room_id;
-          const roomName = room.room_name;
+          const roomId = room.room_id
+          const roomName = room.room_name
           room.entries.forEach(entry => {
             entriesRoom.push({
               area_id: areaId,
