@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment from "moment-timezone";
 
 export class Common {
 
@@ -24,6 +24,28 @@ export class Common {
             dateFormat = 'dddd, MMMM Do YYYY'
         }
         return dateFormat
+    }
+
+    static getCurrenTimeZone() {
+        let lang = navigator.language || navigator.userLanguage
+        let timeZone = 'America/New_York'
+        if(lang == 'en') {
+            timeZone = 'America/New_York'
+        } else if(lang == 'zh-CN') {
+            timeZone = 'Asia/Shanghai'
+        } else if(lang == 'ko') {
+            timeZone = 'Asia/Seoul'
+        } else {
+            timeZone = 'America/New_York'
+        }
+        return timeZone
+    }
+
+    static formatDateWithTimeZone(timestamp, timeZone, locale, dateFormat) {
+        return moment.unix(timestamp)
+            .tz(timeZone)
+            .locale(locale)
+            .format(dateFormat);
     }
 
     static translateWeekDay(ymdDay) {

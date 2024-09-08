@@ -256,7 +256,7 @@ export default defineComponent({
     insertAllArea() {
       const firstArea = {
         "area_id": "",
-        "area_name": "All",
+        "area_name": this.$t('base.all'),
         "rooms": []
       }
       this.areas.splice(0, 0, firstArea)
@@ -414,12 +414,22 @@ export default defineComponent({
     },
 
     toMeet(time, room, day) {
+
+      // const timeZone = Common.getCurrenTimeZone()
+      // const lang = Common.getLocalLang()
+      // console.log("Home toMeet day.date timeZone lang",day.date,timeZone,lang)
+      // const formatTime = Common.formatDateWithTimeZone(day.date, timeZone, lang, this.localLangFormat)
+      // console.log("Home toMeet formatTime",formatTime)
+			// const endTime = Common.formatDate(end_time, 'Asia/Shanghai', 'zh-cn', this.localLangFormat);
+
+
+
       if (room.disabled == STORAGE_IS_EDIT.DISABLED) {
         console.log('Home toMeet disabled', room.disabled)
         return
       }
       console.log('Home toMeet time', day)
-      const dayTimestamp = moment(day.date, this.localLangFormat).unix();
+      const dayTimestamp = moment(day.date, this.localLangFormat).unix()
       const ymd = moment(dayTimestamp * 1000).format('YYYY-MM-DD')
       console.log('Home toMeet ymd', ymd)
       console.log('Home toMeet time', time)

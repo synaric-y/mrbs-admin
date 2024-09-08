@@ -1,3 +1,5 @@
+import { all } from "axios";
+
 export const messages = {
 
     zh: {
@@ -15,10 +17,8 @@ export const messages = {
             confirm: '确定',
             cancel: '取消',
             logout: '登出',
-
             exchange: 'Exchange',
             wxwork: '企业微信',
-
             editSuccess: '编辑成功',
             editFailed: '编辑失败',
             noDataHint: '该设置不能为空',
@@ -37,7 +37,7 @@ export const messages = {
             getMeetRoomError:'获取会议信息异常',
             deleteSuccess: '删除会议成功',
             deleteError: '删除会议失败',
-
+            all: '所有',
         },
         meet: {
             title: '编辑会议',
@@ -162,10 +162,8 @@ export const messages = {
             confirm: '확신하는',
             cancel: '취소',
             logout: '로그아웃',
-
             exchange: 'Exchange',
             wxwork: '엔터프라이즈 위챗',
-
             editSuccess: '수정되었습니다.',
             editFailed: '수정 실패',
             noDataHint: '이 설정은 비워둘 수 없습니다.',
@@ -184,6 +182,7 @@ export const messages = {
             getMeetRoomError:'회의정보 입수 예외',
             deleteSuccess: '회의가 삭제되었습니다.',
             deleteError: '회의를 삭제하지 못했습니다.',
+            all: '모든',
         },
         meet: {
             title: '편집회의',
@@ -307,10 +306,8 @@ export const messages = {
             confirm: 'Confirm',
             cancel: 'Cancel',
             logout: 'Logout',
-
             exchange: 'Exchange',
             wxwork: 'Wxwork',
-
             editSuccess: 'Edited successfully',
             editFailed: 'Edit failed',
             noDataHint: 'Cannot be empty',
@@ -329,6 +326,7 @@ export const messages = {
             getMeetRoomError:'Obtaining conference information is abnormal',
             deleteSuccess: 'Delete meeting successfully',
             deleteError: 'Failed to delete meeting',
+            all: 'All',
         },
         meet: {
             title: 'Editing Meetings',
