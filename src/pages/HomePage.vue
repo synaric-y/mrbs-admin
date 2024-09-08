@@ -100,7 +100,7 @@
         </div>
       </div>
     </el-scrollbar>
-    <div class="empty-bottom"></div>
+    <!-- <div class="empty-bottom"></div> -->
   </div>
 </template>
 
@@ -150,6 +150,7 @@ export default defineComponent({
       screenHeight: 700,
       localLangFormat: 'dddd, MMMM Do YYYY',
       interval: null,
+      currenTimestamp: 0,
       days: [],
       rooms: [],
       events: [],
@@ -392,8 +393,7 @@ export default defineComponent({
     },
 
     getDaysBetween(startDate, endDate) {
-      console.log('Home getDaysBetween startDate', startDate);
-      console.log('Home getDaysBetween endDate', endDate);
+      console.log('Home getDaysBetween startDate endDate', startDate,endDate);
       const start = moment(startDate);
       const end = moment(endDate);
       this.dayRrangeVal = 0;
@@ -570,7 +570,9 @@ export default defineComponent({
       console.log('Home getMeetRooms entriesRoom:', entriesRoom)
     },
   },
-  onUnload() {
+
+  
+  unmounted() {
     if (this.interval) {
       clearInterval(this.interval)
       this.interval = null
