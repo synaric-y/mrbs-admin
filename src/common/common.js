@@ -124,7 +124,7 @@ export class Common {
 
     static getThisWeekTimestamps() {
         const now = new Date();
-        const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay() + 1).getTime();
+        const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay()).getTime();
         const endOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay() + 7, 23, 59, 59, 999).getTime();
         return {
             start: Math.floor(startOfWeek / 1000),
