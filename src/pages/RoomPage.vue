@@ -45,8 +45,13 @@ export default {
     },
     deleteRoom() {
       this.showDeleteRoomDialog = false
-      Api.deleteRoom({room: Number(this.pendingDeleteId)}).then(({data}) => {
-        this.getRoomList()
+      Api.deleteRoom({room: Number(this.pendingDeleteId)}).then(({data, code, message}) => {
+        if (code == 0) {
+          this.getRoomList()
+        } else {
+          ElMessage.error(message)
+        }
+
       })
     },
     getRoomList() {

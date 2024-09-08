@@ -1,6 +1,7 @@
 <script>
 import {PageMixin} from "@/pages/PageMixin.js";
 import {Api} from "@/network/api.js";
+import {ElMessage} from "element-plus/es";
 export default {
   mixins: [PageMixin],
   data() {
@@ -26,8 +27,12 @@ export default {
     },
     deleteUser() {
       this.showDeleteUserDialog = false
-      Api.deleteUser({name: this.pendingDeleteName}).then(({data}) => {
-        this.getUserList()
+      Api.deleteUser({name: this.pendingDeleteName}).then(({data, code, message}) => {
+        if (code == 0) {
+          this.getUserList()
+        } else {
+          ElMessage.error(message)
+        }
       })
     },
     getUserList() {
