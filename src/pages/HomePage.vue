@@ -52,7 +52,7 @@
               {{ room.room_name }}
               <template v-for="(time, timeIndex) in localTimeSlots">
                 <div class="empty-meet-div"
-                  :style="{ height: 60 + 'px', width: itemWidth + 'px', top: (timeIndex + 1) * 60 + 'px' }"
+                  :style="{ height: 60 + 'px', width: itemWidth + 'px', top: (timeIndex * 60 + 70)  + 'px' }"
                   @click="toMeet(time, room, day)">
                   <text class="empty-meet-duration">{{ time }}</text>
                 </div>
@@ -61,7 +61,7 @@
                 <template v-if="day.date == event.date && room.room_id == event.room_id">
                   <template v-if="event.status == 0">
                     <div :key="indexeve" class="room-meet-event" @click="editMeet(event)"
-                      :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
+                      :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 70 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
                       <div class="event-center">
                         <div class="event-title">{{ event.entry_name }}</div>
                         <div class="event-time">{{ event.duration }}</div>
@@ -71,7 +71,7 @@
                   </template>
                   <template v-if="event.status == 1">
                     <div :key="indexeve" class="room-meet-in-event" @click="editMeet(event)"
-                      :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
+                      :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 70 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
                       <div class="event-center">
                         <div class="event-title" style="color: black;">{{ event.entry_name }}</div>
                         <div class="event-time" style="color: black;">{{ event.duration }}</div>
@@ -81,7 +81,7 @@
                   </template>
                   <template v-if="event.status == 2">
                     <div :key="indexeve" class="room-meet-timeout-event"
-                      :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
+                      :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 70 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
                       <div class="event-center">
                         <div class="event-title">{{ event.entry_name }}</div>
                         <div class="event-time">{{ event.duration }}</div>
@@ -789,13 +789,15 @@ export default defineComponent({
   padding: 5px 0px;
   padding-bottom: 0px;
   color: #FFFFFF;
-  font-size: 13px;
+  font-size: 12px;
+  -webkit-line-clamp: 2;
+  /* height: 60px; */
 }
 
 .room-header {
   display: flex;
   color: #000000;
-  font-size: 13px;
+  font-size: 12px;
   text-align: center;
   padding: 5px 0px;
   padding-bottom: 0px;
