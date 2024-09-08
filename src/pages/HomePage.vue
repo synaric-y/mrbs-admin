@@ -59,7 +59,16 @@
               </template>
               <template v-for="(event, indexeve) in events">
                 <template v-if="day.date == event.date && room.room_id == event.room_id">
-
+                  <template v-if="event.status == 0">
+                    <div :key="indexeve" class="room-meet-event" @click="editMeet(event)"
+                      :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
+                      <div class="event-center">
+                        <div class="event-title">{{ event.entry_name }}</div>
+                        <div class="event-time">{{ event.duration }}</div>
+                        <div class="event-person">{{ event.book_by }}</div>
+                      </div>
+                    </div>
+                  </template>
                   <template v-if="event.status == 1">
                     <div :key="indexeve" class="room-meet-in-event" @click="editMeet(event)"
                       :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
@@ -70,20 +79,8 @@
                       </div>
                     </div>
                   </template>
-
                   <template v-if="event.status == 2">
                     <div :key="indexeve" class="room-meet-timeout-event"
-                      :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
-                      <div class="event-center">
-                        <div class="event-title">{{ event.entry_name }}</div>
-                        <div class="event-time">{{ event.duration }}</div>
-                        <div class="event-person">{{ event.book_by }}</div>
-                      </div>
-                    </div>
-                  </template>
-
-                  <template v-if="event.status == 0">
-                    <div :key="indexeve" class="room-meet-event" @click="editMeet(event)"
                       :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 60 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
                       <div class="event-center">
                         <div class="event-title">{{ event.entry_name }}</div>
