@@ -129,7 +129,7 @@ export default defineComponent({
   data() {
     return {
       currenArea: '',
-      currenAreaName: 'All',
+      currenAreaName: this.$t('base.all'),
       customDate: null,
       hoursNumber: 24,
       dayRrangeVal: STORAGE_DAY.THREE,
@@ -137,6 +137,7 @@ export default defineComponent({
       startTime: this.$t('base.startDate'),
       endTime: this.$t('base.endDate'),
       areas: [],
+      // tempNetworkAreas:[],
       meetRooms: [],
       screenSize: {},
       itemWidth: 228,
@@ -272,12 +273,23 @@ export default defineComponent({
           return
         }
         this.areas = data.areas
+        // this.tempNetworkAreas = data.areas
         this.insertAllArea()
       })
     },
 
     getCurrentAreaRooms(area_id) {
       this.rooms = this.localRooms
+      // console.log('Home getCurrentAreaRooms area_id', area_id)
+      // console.log('Home getCurrentAreaRooms this.areas', this.areas)
+      // const tempArea = this.this.tempNetworkAreas.filter(area => area.area_id == area_id)
+      // if (this.dayRrangeVal != 0) {
+      //   this.dayRrange(this.dayRrangeVal)
+      // }
+      // console.log('Home getCurrentAreaRooms data', tempArea)
+      // this.rooms = this.getAllRoom(tempArea)
+      // this.getMeetRooms()
+      // return
       Api.getAreaRooms({ id: area_id }).then(({ data, code }) => {
         if (code != 0) {
           ElMessage({
@@ -289,6 +301,7 @@ export default defineComponent({
         if (this.dayRrangeVal != 0) {
           this.dayRrange(this.dayRrangeVal)
         }
+        console.log('Home getCurrentAreaRooms data', data)
         this.rooms = this.getAllRoom(data)
         this.getMeetRooms()
       })
@@ -390,7 +403,7 @@ export default defineComponent({
     },
 
     getDaysBetween(startDate, endDate) {
-      console.log('Home getDaysBetween startDate endDate', startDate,endDate)
+      console.log('Home getDaysBetween startDate endDate', startDate, endDate)
       const start = moment(startDate)
       const end = moment(endDate)
       this.dayRrangeVal = 0
@@ -414,15 +427,14 @@ export default defineComponent({
     },
 
     toMeet(time, room, day) {
-
       // const timeZone = Common.getCurrenTimeZone()
-      // const lang = Common.getLocalLang()
+      const lang = Common.getLocalLang()
       // console.log("Home toMeet day.date timeZone lang",day.date,timeZone,lang)
       // const formatTime = Common.formatDateWithTimeZone(day.date, timeZone, lang, this.localLangFormat)
       // console.log("Home toMeet formatTime",formatTime)
-			// const endTime = Common.formatDate(end_time, 'Asia/Shanghai', 'zh-cn', this.localLangFormat);
 
-
+      Common.getTimestampForWeek(day.date,lang);
+      // const endTime = Common.formatDate(end_time, 'Asia/Shanghai', 'zh-cn', this.localLangFormat);
 
       if (room.disabled == STORAGE_IS_EDIT.DISABLED) {
         console.log('Home toMeet disabled', room.disabled)
@@ -579,7 +591,7 @@ export default defineComponent({
     },
   },
 
-  
+
   unmounted() {
     if (this.interval) {
       clearInterval(this.interval)

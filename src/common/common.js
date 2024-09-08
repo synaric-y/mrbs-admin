@@ -1,10 +1,11 @@
-import moment from "moment-timezone";
+import momentzone from "moment-timezone";
+import moment  from "moment";
 
 export class Common {
 
     static getLocalLang() {
         let lang = navigator.language || navigator.userLanguage
-        if(lang == 'zh-CN') {
+        if (lang == 'zh-CN') {
             return 'zh-cn'
         }
         return lang
@@ -12,14 +13,14 @@ export class Common {
 
     static getBrowserLanguege() {
         let lang = navigator.language || navigator.userLanguage
-        console.log('lang:',lang)
+        console.log('lang:', lang)
         let dateFormat = 'dddd, MMMM Do YYYY'
-        if(lang == 'en') {
-             dateFormat = 'dddd, MMMM Do YYYY'
-        } else if(lang == 'zh-CN') {
-             dateFormat = 'YYYY年MM月DD日 dddd'
-        } else if(lang == 'ko') {
-             dateFormat = 'YYYY년MM월DD일 dddd'
+        if (lang == 'en') {
+            dateFormat = 'dddd, MMMM Do YYYY'
+        } else if (lang == 'zh-CN') {
+            dateFormat = 'YYYY年MM月DD日 dddd'
+        } else if (lang == 'ko') {
+            dateFormat = 'YYYY년MM월DD일 dddd'
         } else {
             dateFormat = 'dddd, MMMM Do YYYY'
         }
@@ -29,17 +30,44 @@ export class Common {
     static getCurrenTimeZone() {
         let lang = navigator.language || navigator.userLanguage
         let timeZone = 'America/New_York'
-        if(lang == 'en') {
+        if (lang == 'en') {
             timeZone = 'America/New_York'
-        } else if(lang == 'zh-CN') {
+        } else if (lang == 'zh-CN') {
             timeZone = 'Asia/Shanghai'
-        } else if(lang == 'ko') {
+        } else if (lang == 'ko') {
             timeZone = 'Asia/Seoul'
         } else {
             timeZone = 'America/New_York'
         }
         return timeZone
     }
+
+    static getTimestampForWeek(weekDay, lang) {
+        if (lang == 'en') {
+            moment.locale('en');  // 设置语言为英文（默认）
+            const enDate = moment('Thursday, 09/05/2024', 'dddd, MM/DD/YYYY').unix();
+            console.log('英文日期:', enDate);  // 输出：1725484800
+            return enDate
+        } else if (lang == 'zh-cn') {
+            moment.locale('zh-cn');  // 设置语言为中文
+            // 替换 '年', '月', '日' 为标准的日期格式
+            const zhDateStr = '2024年09月05日 星期四';
+            const zhFormattedDate = zhDateStr.replace('年', '-').replace('月', '-').replace('日', '').trim();
+            const zhDate = moment(zhFormattedDate, 'YYYY-MM-DD dddd').unix();
+            console.log('中文日期:', zhDate);  // 输出：1725484800
+            return zhDate
+        } else if (lang == 'ko') {
+            moment.locale('ko');  // 设置语言为韩文
+            // 替换 '년', '월', '일' 为标准的日期格式
+            const koDateStr = '2024년09월05일 목요일';
+            const koFormattedDate = koDateStr.replace('년', '-').replace('월', '-').replace('일', '').trim();
+            const koDate = moment(koFormattedDate, 'YYYY-MM-DD dddd').unix();
+            console.log('韩文日期:', koDate);  // 输出：1725484800
+            return koDate
+        }
+
+    }
+
 
     static formatDateWithTimeZone(timestamp, timeZone, locale, dateFormat) {
         return moment.unix(timestamp)
@@ -52,7 +80,7 @@ export class Common {
         // 2024年09月05日 Thursday
         // 2024년09월05일 Thursday
         let lang = navigator.language || navigator.userLanguage
-        if(lang == 'en') {
+        if (lang == 'en') {
             return ymdDay
         }
         const weekDays = {
@@ -65,9 +93,9 @@ export class Common {
         if (weekIndex === -1) {
             return ymdDay;
         }
-        if(lang == 'zh-CN') {
+        if (lang == 'zh-CN') {
             return `${datePart} ${weekDays.zh[weekIndex]}`
-        } else if(lang == 'ko') {
+        } else if (lang == 'ko') {
             return `${datePart} ${weekDays.ko[weekIndex]}`
         } else {
             return ymdDay
@@ -77,7 +105,7 @@ export class Common {
     static getTodayTimestamps() {
         const now = new Date();
         const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-        const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999).getTime();
+        const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 23, 59, 59, 999).getTime();
         return {
             start: Math.floor(startOfDay / 1000),
             end: Math.floor(endOfDay / 1000)
