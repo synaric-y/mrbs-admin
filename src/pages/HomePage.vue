@@ -789,13 +789,13 @@ export default defineComponent({
   padding: 5px 0px;
   padding-bottom: 0px;
   color: #FFFFFF;
-  font-size: 15px;
+  font-size: 13px;
 }
 
 .room-header {
   display: flex;
   color: #000000;
-  font-size: 15px;
+  font-size: 13px;
   text-align: center;
   padding: 5px 0px;
   padding-bottom: 0px;
