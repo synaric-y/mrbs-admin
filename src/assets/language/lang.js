@@ -1,4 +1,3 @@
-import { all } from "axios";
 
 export const messages = {
 

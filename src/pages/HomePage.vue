@@ -13,7 +13,7 @@
         </el-select>
       </el-col>
 
-      <el-col :span="9">
+      <el-col :span="10">
         <el-button-group class="buttons-margin">
           <el-button :class="[dayRrangeVal == 1 ? 'button-selected' : 'button-normal']" @click="dayRrange(1)">{{
             $t('base.today') }}</el-button>
@@ -29,7 +29,7 @@
       </el-col>
       <el-col :span="6">
         <el-date-picker v-model="baseTime" type="daterange" :range-separator="$t('base.to')"
-          :start-placeholder="startTime" :end-placeholder="endTime" @change="choseDate" />
+          :start-placeholder="startTime" :end-placeholder="endTime" @change="choseDate"  clearable="false"/>
       </el-col>
     </el-row>
   </div>
