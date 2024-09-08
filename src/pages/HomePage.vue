@@ -666,9 +666,10 @@ export default defineComponent({
   align-items: center;
 }
 
-/* .el-button-group .el-button {
-  margin-right: 30px;
-} */
+.el-button-group .el-button {
+  margin-right: 0px;
+  margin-left: 0px;
+}
 
 .el-select {
   min-width: 150px;
