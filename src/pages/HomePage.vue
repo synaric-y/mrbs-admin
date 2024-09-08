@@ -209,14 +209,14 @@ export default defineComponent({
         const days = this.getDaysBetween(selectStartDate, selectEndDate)
         const tempdays = this.formatDays(days)
         this.days = tempdays
-        this.getMeetRooms()
+        // this.getMeetRooms()
       } else {
         this.startStamp = Common.getThreeDaysTimestamps().start
         this.endStamp = Common.getThreeDaysTimestamps().end
         if (selectDays) {
           this.dayRrangeVal = selectDays
           this.dayRrange(selectDays)
-          this.getMeetRooms();
+          // this.getMeetRooms();
         } else {
           this.dayRrange(STORAGE_DAY.THREE);
         }
