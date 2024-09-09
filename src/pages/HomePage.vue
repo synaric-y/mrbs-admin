@@ -257,14 +257,14 @@ export default defineComponent({
       return allRoom
     },
 
-    insertAllArea() {
-      const firstArea = {
-        "area_id": "",
-        "area_name": this.$t('base.all'),
-        "rooms": []
-      }
-      this.areas.splice(0, 0, firstArea)
-    },
+    // insertAllArea() {
+    //   const firstArea = {
+    //     "area_id": "",
+    //     "area_name": this.$t('base.all'),
+    //     "rooms": []
+    //   }
+    //   this.areas.splice(0, 0, firstArea)
+    // },
 
     getAllAreas() {
       Api.getAreaRooms({}).then(({ data, code }) => {
@@ -276,13 +276,13 @@ export default defineComponent({
           return
         }
         let areas = data.areas
-        // const firstArea = {
-        //   "area_id": "",
-        //   "area_name": this.$t('base.all'),
-        //   "rooms": []
-        // }
-        // areas.splice(0, 0, firstArea)
-        this.insertAllArea()
+        const firstArea = {
+          "area_id": "",
+          "area_name": this.$t('base.all'),
+          "rooms": []
+        }
+        areas.splice(0, 0, firstArea)
+        // this.insertAllArea()
         this.areas = areas
         // this.tempNetworkAreas = data.areas
       })
