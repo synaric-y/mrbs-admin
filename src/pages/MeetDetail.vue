@@ -88,6 +88,7 @@ export default {
             entry_id: 0,
             start_hour: "",
             end_hour: "",
+            currentTimeZone: 'Asia/Shanghai',
             form: {
                 id: 0,
                 create_by: "",
@@ -218,21 +219,28 @@ export default {
         choseDate(mode, e) {
             console.log('Meet Detail choseDate e', e)
             if (mode == 0) {
-                this.form.start_date = moment(e).format('YYYY-MM-DD');
+                // this.form.start_date = moment(e).format('YYYY-MM-DD');
+                this.form.start_date = moment.tz(e, this.currentTimeZone).format('YYYY-MM-DD')
+                this.form.end_date = moment.tz(e, this.currentTimeZone).format('YYYY-MM-DD')
                 return
             }
-            this.form.end_date = moment(e).format('YYYY-MM-DD');
+            this.form.end_date = moment.tz(e, this.currentTimeZone).format('YYYY-MM-DD');
         },
 
         choseHour(mode, str, e) {
             console.log('Meet Detail choseHour str', str)
             // 或者指定年月日下的时间戳
             const ymd = this.form.start_date
+            const lang = Common.getLocalLang()
+            const appeedStr = ymd + ' ' + str
+            const formatStr = Common.getAssignFormat(appeedStr,lang)
+            const nextTimeStamp = moment.tz(formatStr, this.currentTimeZone).unix();
+            console.log('Meet choseHour appeedStr',nextTimeStamp)
             if (mode == 0) {
-                this.form.start_seconds = Common.getTimestampForDateAndTime(ymd,str);
+                this.form.start_seconds = nextTimeStamp;
                 return
             }
-            this.form.end_seconds = Common.getTimestampForDateAndTime(ymd,str);
+            this.form.end_seconds = nextTimeStamp;
         },
 
         choseRoom(room) {
@@ -254,12 +262,16 @@ export default {
             this.form.type = data.type
             const start_time = data.start_time * 1000
             const end_time = data.end_time * 1000
-            this.form.start_date = moment(start_time).format('YYYY-MM-DD')
-            this.form.end_date = moment(end_time).format('YYYY-MM-DD')
-            this.form.start_seconds = Common.getTimestampForDateAndTime(this.form.start_date,moment(start_time).format("hh:mm"))
-            this.form.end_seconds =  Common.getTimestampForDateAndTime(this.form.start_date,moment(end_time).format("hh:mm"))
-            this.start_hour = moment(start_time).format("hh:mm")
-            this.end_hour = moment(end_time).format("hh:mm")
+            // this.form.start_date = moment(start_time).format('YYYY-MM-DD')
+            // this.form.end_date = moment(end_time).format('YYYY-MM-DD')
+            this.form.start_date = moment.tz(start_time, this.currentTimeZone).format('YYYY-MM-DD')
+            this.form.end_date = moment.tz(end_time, this.currentTimeZone).format('YYYY-MM-DD')
+            
+            
+            this.form.start_seconds = Common.getTimestampForDateAndTime(this.form.start_date,moment.tz(start_time, this.currentTimeZone).format("hh:mm"))
+            this.form.end_seconds =  Common.getTimestampForDateAndTime(this.form.start_date,moment.tz(end_time, this.currentTimeZone).format("hh:mm"))
+            this.start_hour = moment.tz(start_time, this.currentTimeZone).format("hh:mm")
+            this.end_hour = moment.tz(end_time, this.currentTimeZone).format("hh:mm")
             this.form.rooms = []
             this.form.rooms.push(Number(data.room_id))
             this.form.id = data.id
@@ -270,16 +282,21 @@ export default {
             console.log('Meet Detail editTime timestamp',timestamp)
             if (timestamp > 0) {
                 console.log('Meet Detail mounted timestamp begin', timestamp)
-                const starttimestamp = moment.unix(timestamp).format('HH:mm')
+                // moment.tz(timestamp * 1000, this.currentTimeZone).format('YYYY-MM-DD HH:mm')
+                const starttimestamp = moment.tz(timestamp * 1000, this.currentTimeZone).format('HH:mm')
+                // const starttimestamp = moment.unix(timestamp).format('HH:mm')
                 this.start_hour = starttimestamp
                 this.form.start_seconds = Common.getTimestampForTodayWithTime(this.start_hour)
                 const endstamp = Number(timestamp) + 60 * 60
                 console.log('Meet Detail mounted timestamp endstamp', endstamp)
-                this.end_hour = moment.unix(endstamp).format('HH:mm')
+                // this.end_hour = moment.unix(endstamp).format('HH:mm')
+                this.end_hour = moment.tz(endstamp * 1000, this.currentTimeZone).format('HH:mm')
                 this.form.end_seconds = Common.getTimestampForTodayWithTime(this.end_hour)
                 console.log('Meet Detail mounted timestamp end', timestamp)
-                this.form.start_date = moment.unix(timestamp).format('YYYY-MM-DD')
-                this.form.end_date = moment.unix(timestamp).format('YYYY-MM-DD')
+                // this.form.start_date = moment.unix(timestamp).format('YYYY-MM-DD')
+                // this.form.end_date = moment.unix(timestamp).format('YYYY-MM-DD')
+                this.form.start_date = moment.tz(timestamp * 1000, this.currentTimeZone).format('YYYY-MM-DD')
+                this.form.end_date = moment.tz(timestamp * 1000, this.currentTimeZone).format('YYYY-MM-DD')
             }
         },
         
@@ -307,6 +324,8 @@ export default {
         
     },
     mounted() {
+        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+        this.currentTimeZone = timeZone
         let { id, room_id, timestamp, area_id, entry_id } = this.$route.params
         this.editTime(timestamp)
         if (room_id != 0) {

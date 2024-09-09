@@ -42,6 +42,29 @@ export class Common {
         return timeZone
     }
 
+
+    static getAssignFormat(dateStr,lang) {
+        // const dateStr = '2024年09月09日 星期一 09:00AM';
+        // dateStr = '2024年09月09日 星期一 03:00PM';
+        console.log('common getAssignFormat',lang)
+        let format;
+        if(lang == 'zh-cn') {
+            // YYYY年MM月DD日 dddd hh:mmA
+            const parsedDate = moment(dateStr, 'YYYY年MM月DD日 hh:mmA');
+            const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
+            format = result;
+        } else if(lang == 'en') {
+            const parsedDate = moment(dateStr, 'dddd, MMMM Do YYYY hh:mmA');
+            const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
+            format = result;
+        } else if(lang == 'ko') {
+            const parsedDate = moment(dateStr, 'YYYY년MM월DD일 h:mmA');
+            const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
+            format = result
+        }
+        return format
+    }
+
     static getTimestampForWeek(weekDay, lang, timeZone) {
 
         // 获取时间对应的日期格式
@@ -110,18 +133,8 @@ export class Common {
     }
 
     static getTodayTimestamps(timeZone) {
-        // const now = new Date();
-        // const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-        // const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999).getTime();
-        // return {
-        //     start: Math.floor(startOfDay / 1000),
-        //     end: Math.floor(endOfDay / 1000)
-        // };
-
-        // 获取当天的开始时间 (00:00:00)
-        const startOfDay = moment.tz(timeZone).startOf('day').unix(); // 返回秒级时间戳
-        // 获取当天的结束时间 (23:59:59)
-        const endOfDay = moment.tz(timeZone).endOf('day').unix(); // 返回秒级时间戳
+        const startOfDay = moment.tz(timeZone).startOf('day').unix();
+        const endOfDay = moment.tz(timeZone).endOf('day').unix();
         return {
             start: startOfDay,
             end: endOfDay
@@ -129,40 +142,20 @@ export class Common {
     }
 
     static getThreeDaysTimestamps(timeZone) {
-        // const now = new Date();
-        // const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-        // const endOfThreeDays = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 2, 23, 59, 59, 999).getTime();
-        // return {
-        //     start: Math.floor(startOfDay / 1000),
-        //     end: Math.floor(endOfThreeDays / 1000)
-        // };
-
-        // 获取当天的开始时间 (00:00:00)
-        const startOfDay = moment.tz(timeZone).startOf('day').unix(); // 返回秒级时间戳
-        // 获取三天后的结束时间 (第三天的 23:59:59)
-        const endOfThreeDays = moment.tz(timeZone).add(3, 'days').endOf('day').unix(); // 返回秒级时间戳
+        const startOfDay = moment.tz(timeZone).startOf('day').unix();
+        const endOfThreeDays = moment.tz(timeZone).add(2, 'days').endOf('day').unix();
         return {
-            start: startOfDay,  // 今天的 00:00:00 时间戳
-            end: endOfThreeDays // 三天后的 23:59:59 时间戳
+            start: startOfDay,
+            end: endOfThreeDays
         };
     }
 
     static getThisWeekTimestamps(timeZone) {
-        // const now = new Date();
-        // const startOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay()).getTime();
-        // const endOfWeek = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay() + 7, 23, 59, 59, 999).getTime();
-        // return {
-        //     start: Math.floor(startOfWeek / 1000),
-        //     end: Math.floor(endOfWeek / 1000)
-        // };
-
-        // 获取本周的开始时间（周日的 00:00:00）
-        const startOfWeek = moment.tz(timeZone).startOf('week').unix(); // 返回秒级时间戳
-        // 获取本周的结束时间（周六的 23:59:59）
-        const endOfWeek = moment.tz(timeZone).endOf('week').unix(); // 返回秒级时间戳
+        const startOfWeek = moment.tz(timeZone).startOf('week').unix();
+        const endOfWeek = moment.tz(timeZone).endOf('week').unix();
         return {
-            start: startOfWeek,  // 本周开始时间 00:00:00
-            end: endOfWeek       // 本周结束时间 23:59:59
+            start: startOfWeek,
+            end: endOfWeek
         };
     }
 
