@@ -29,7 +29,7 @@
       </el-col>
       <el-col :span="6">
         <el-date-picker v-model="baseTime" type="daterange" :range-separator="$t('base.to')"
-          :start-placeholder="startTime" :end-placeholder="endTime" @change="choseDate"  clearable="false"/>
+          :start-placeholder="startTime" :end-placeholder="endTime" @change="choseDate" clearable="false" />
       </el-col>
     </el-row>
   </div>
@@ -52,7 +52,7 @@
               {{ room.room_name }}
               <template v-for="(time, timeIndex) in localTimeSlots">
                 <div class="empty-meet-div"
-                  :style="{ height: 60 + 'px', width: itemWidth + 'px', top: (timeIndex * 60 + 70)  + 'px' }"
+                  :style="{ height: 60 + 'px', width: itemWidth + 'px', top: (timeIndex * 60 + 70) + 'px' }"
                   @click="toMeet(time, room, day)">
                   <text class="empty-meet-duration">{{ time }}</text>
                 </div>
@@ -186,7 +186,7 @@ export default defineComponent({
     console.log('Home screenSize:', this.screenSize)
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
     this.currentTimeZone = timeZone
-    console.log('Home 获取当前设备的时区',timeZone)
+    console.log('Home 获取当前设备的时区', timeZone)
     this.startSync()
   },
 
@@ -374,7 +374,7 @@ export default defineComponent({
       this.endStamp = tempTime.end
       // this.startTime = moment(tempTime.start * 1000).format('YYYY-MM-DD')
       // this.endTime = moment(tempTime.end * 1000).format('YYYY-MM-DD')
-      
+
       this.startTime = moment.tz(tempTime.start * 1000, this.currentTimeZone).format('YYYY-MM-DD')
       this.endTime = moment.tz(tempTime.end * 1000, this.currentTimeZone).format('YYYY-MM-DD')
       localStorage.setItem(STORAGE.SELECT_START_DATE, this.startTime)
@@ -387,7 +387,7 @@ export default defineComponent({
 
     getCurrenDay(timeZone) {
       const today = moment().tz(timeZone)
-      console.log('Home getCurrenDay timeZone',timeZone,today.format(this.localLangFormat))
+      console.log('Home getCurrenDay timeZone', timeZone, today.format(this.localLangFormat))
       const oneDays = [
         Common.translateWeekDay(today.format(this.localLangFormat)),
       ];
@@ -396,7 +396,7 @@ export default defineComponent({
 
     getThreeDays(timeZone) {
       const today = moment().tz(timeZone);
-      console.log('Home getThreeDays timeZone',timeZone,today.format(this.localLangFormat))
+      console.log('Home getThreeDays timeZone', timeZone, today.format(this.localLangFormat))
       const nextThreeDays = [
         Common.translateWeekDay(today.format(this.localLangFormat)),
         Common.translateWeekDay(today.add(1, 'days').format(this.localLangFormat)),
@@ -406,17 +406,31 @@ export default defineComponent({
     },
 
     getCurrenWeek(timeZone) {
-      const startDay = moment().tz(timeZone)
-      console.log('Home getCurrenWeek timeZone',timeZone)
-      const startOfWeek = startDay.startOf('week')
-      const endOfWeek = startDay.endOf('week')
-      const weekDays = []
-      let day = startOfWeek
+      const startDay = moment().tz(timeZone);
+      console.log('Home getCurrenWeek timeZone', timeZone);
+      // 克隆 startDay 防止修改原对象
+      const startOfWeek = startDay.clone().startOf('week');
+      const endOfWeek = startDay.clone().endOf('week');
+      const weekDays = [];
+      let day = startOfWeek;
       while (day <= endOfWeek) {
-        weekDays.push(Common.translateWeekDay(day.format(this.localLangFormat)))
+        // 使用 this.localLangFormat 格式化日期，并调用 Common.translateWeekDay
+        weekDays.push(Common.translateWeekDay(day.format(this.localLangFormat)));
         day = day.add(1, 'days');
       }
-      return weekDays
+      return weekDays;
+
+      // const startDay = moment().tz(timeZone)
+      // console.log('Home getCurrenWeek timeZone', timeZone)
+      // const startOfWeek = startDay.startOf('week')
+      // const endOfWeek = startDay.endOf('week')
+      // const weekDays = []
+      // let day = startOfWeek
+      // while (day <= endOfWeek) {
+      //   weekDays.push(Common.translateWeekDay(day.format(this.localLangFormat)))
+      //   day = day.add(1, 'days');
+      // }
+      // return weekDays
     },
 
     getDaysBetween(startDate, endDate) {
@@ -450,7 +464,7 @@ export default defineComponent({
       // const formatTime = Common.formatDateWithTimeZone(day.date, timeZone, lang, this.localLangFormat)
       // console.log("Home toMeet formatTime",formatTime)
 
-      Common.getTimestampForWeek(day.date,lang);
+      Common.getTimestampForWeek(day.date, lang);
 
       return
       // const endTime = Common.formatDate(end_time, 'Asia/Shanghai', 'zh-cn', this.localLangFormat);
@@ -461,7 +475,7 @@ export default defineComponent({
       }
       console.log('Home toMeet time', day)
       const dayTimestamp = moment(day.date, this.localLangFormat).unix()
-      const ymd = moment(dayTimestamp * 1000,this.currentTimeZone).format('YYYY-MM-DD')
+      const ymd = moment(dayTimestamp * 1000, this.currentTimeZone).format('YYYY-MM-DD')
       console.log('Home toMeet ymd', ymd)
       console.log('Home toMeet time', time)
       const tempTime = Common.getTimestampFromDateAndTime(ymd, time)
