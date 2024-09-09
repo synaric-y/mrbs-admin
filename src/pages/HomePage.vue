@@ -35,7 +35,7 @@
   </div>
 
   <div class="table-container">
-    <el-scrollbar class="scroll-table-view" always :style="{ height: (this.screenHeight - 150) + 'px' }">
+    <el-scrollbar class="scroll-table-view" always :style="{ height: (this.screenHeight - 137) + 'px' }">
       <div class="calendar-header">
         <div class="time-header">
           <div class="time-slots">
