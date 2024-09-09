@@ -73,34 +73,6 @@ export class Common {
         var enFormat = moment.tz("2024年09月05日 星期四", "America/New_York").unix();
         var koFormat = moment.tz("2024년09월05일 목요일", "Asia/Seoul").unix();
         console.log('getTimestampForWeek zhFormat: enFormat: kotmp:', zhFormat, enFormat, koFormat)
-
-
-        if (lang == 'en') {
-            moment.locale('en');  // 设置语言为英文（默认）
-            const enDate = moment('Thursday, 09/05/2024', 'dddd, MM/DD/YYYY').unix();
-            console.log('英文日期:', enDate);  // 输出：1725484800
-            return enDate
-        } else if (lang == 'zh-cn') {
-            moment.locale('zh-cn');  // 设置语言为中文
-            // 替换 '年', '月', '日' 为标准的日期格式
-            const zhDateStr = '2024年09月05日 星期四';
-            const zhDatetem = moment(zhDateStr, 'YYYY年MM月DD日 dddd').unix();
-            console.log('中文日期zhDatetem:', zhDatetem);
-            const zhFormattedDate = zhDateStr.replace('年', '-').replace('月', '-').replace('日', '').trim();
-            console.log('中文日期zhFormattedDate:', zhFormattedDate);
-            const zhDate = moment(zhFormattedDate, 'YYYY-MM-DD dddd').unix();
-            console.log('中文日期:', zhDate);  // 输出：1725484800
-            return zhDate
-        } else if (lang == 'ko') {
-            moment.locale('ko');  // 设置语言为韩文
-            // 替换 '년', '월', '일' 为标准的日期格式
-            const koDateStr = '2024년09월05일 목요일';
-            const koFormattedDate = koDateStr.replace('년', '-').replace('월', '-').replace('일', '').trim();
-            const koDate = moment(koFormattedDate, 'YYYY-MM-DD dddd').unix();
-            console.log('韩文日期:', koDate);  // 输出：1725484800
-            return koDate
-        }
-
     }
 
 
@@ -147,9 +119,9 @@ export class Common {
         // };
 
         // 获取当天的开始时间 (00:00:00)
-        const startOfDay = moment.tz(timezone).startOf('day').unix(); // 返回秒级时间戳
+        const startOfDay = moment.tz(timeZone).startOf('day').unix(); // 返回秒级时间戳
         // 获取当天的结束时间 (23:59:59)
-        const endOfDay = moment.tz(timezone).endOf('day').unix(); // 返回秒级时间戳
+        const endOfDay = moment.tz(timeZone).endOf('day').unix(); // 返回秒级时间戳
         return {
             start: startOfDay,
             end: endOfDay
@@ -166,9 +138,9 @@ export class Common {
         // };
 
         // 获取当天的开始时间 (00:00:00)
-        const startOfDay = moment.tz(timezone).startOf('day').unix(); // 返回秒级时间戳
+        const startOfDay = moment.tz(timeZone).startOf('day').unix(); // 返回秒级时间戳
         // 获取三天后的结束时间 (第三天的 23:59:59)
-        const endOfThreeDays = moment.tz(timezone).add(3, 'days').endOf('day').unix(); // 返回秒级时间戳
+        const endOfThreeDays = moment.tz(timeZone).add(3, 'days').endOf('day').unix(); // 返回秒级时间戳
         return {
             start: startOfDay,  // 今天的 00:00:00 时间戳
             end: endOfThreeDays // 三天后的 23:59:59 时间戳
@@ -185,9 +157,9 @@ export class Common {
         // };
 
         // 获取本周的开始时间（周日的 00:00:00）
-        const startOfWeek = moment.tz(timezone).startOf('week').unix(); // 返回秒级时间戳
+        const startOfWeek = moment.tz(timeZone).startOf('week').unix(); // 返回秒级时间戳
         // 获取本周的结束时间（周六的 23:59:59）
-        const endOfWeek = moment.tz(timezone).endOf('week').unix(); // 返回秒级时间戳
+        const endOfWeek = moment.tz(timeZone).endOf('week').unix(); // 返回秒级时间戳
         return {
             start: startOfWeek,  // 本周开始时间 00:00:00
             end: endOfWeek       // 本周结束时间 23:59:59

@@ -137,7 +137,7 @@ export default defineComponent({
       baseTime: '',
       startTime: this.$t('base.startDate'),
       endTime: this.$t('base.endDate'),
-      currentTimeZone: '',
+      currentTimeZone: 'Asia/Shanghai',
       areas: [],
       // tempNetworkAreas:[],
       meetRooms: [],
@@ -257,6 +257,15 @@ export default defineComponent({
       return allRoom
     },
 
+    insertAllArea() {
+      const firstArea = {
+        "area_id": "",
+        "area_name": this.$t('base.all'),
+        "rooms": []
+      }
+      this.areas.splice(0, 0, firstArea)
+    },
+
     getAllAreas() {
       Api.getAreaRooms({}).then(({ data, code }) => {
         if (code != 0) {
@@ -267,12 +276,13 @@ export default defineComponent({
           return
         }
         let areas = data.areas
-        const firstArea = {
-          "area_id": "",
-          "area_name": this.$t('base.all'),
-          "rooms": []
-        }
-        data.splice(0, 0, firstArea)
+        // const firstArea = {
+        //   "area_id": "",
+        //   "area_name": this.$t('base.all'),
+        //   "rooms": []
+        // }
+        // areas.splice(0, 0, firstArea)
+        this.insertAllArea()
         this.areas = areas
         // this.tempNetworkAreas = data.areas
       })
@@ -339,24 +349,24 @@ export default defineComponent({
       let days = []
       let tempTime = {}
       if (day == STORAGE_DAY.TODAY) {
-        console.log('Home One Days:', this.getCurrenDay())
-        days = this.getCurrenDay()
+        console.log('Home One Days:', this.getCurrenDay(this.currentTimeZone))
+        days = this.getCurrenDay(this.currentTimeZone)
         tempTime = Common.getTodayTimestamps(this.currentTimeZone)
         console.log(tempTime)
       } else if (day == STORAGE_DAY.THREE) {
-        console.log('Home Next Three Days:', this.getThreeDays())
-        days = this.getThreeDays()
+        console.log('Home Next Three Days:', this.getThreeDays(this.currentTimeZone))
+        days = this.getThreeDays(this.currentTimeZone)
         tempTime = Common.getThreeDaysTimestamps(this.currentTimeZone)
         console.log(tempTime)
       } else if (day == STORAGE_DAY.WEEK) {
-        console.log('Home Week Days:', this.getCurrenWeek())
-        days = this.getCurrenWeek()
+        console.log('Home Week Days:', this.getCurrenWeek(this.currentTimeZone))
+        days = this.getCurrenWeek(this.currentTimeZone)
         tempTime = Common.getThisWeekTimestamps(this.currentTimeZone)
         console.log(tempTime)
       } else {
-        console.log('Home Next Three Days:', this.getThreeDays())
-        days = this.getThreeDays()
-        tempTime = Common.getThreeDaysTimestamps()
+        console.log('Home Next Three Days:', this.getThreeDays(this.currentTimeZone))
+        days = this.getThreeDays(this.currentTimeZone)
+        tempTime = Common.getThreeDaysTimestamps(this.currentTimeZone)
         console.log(tempTime)
       }
       localStorage.setItem(STORAGE.SELECT_DAYS, day)
@@ -376,7 +386,8 @@ export default defineComponent({
     },
 
     getCurrenDay(timeZone) {
-      const today = momentzone().tz(timeZone)
+      const today = moment().tz(timeZone)
+      console.log('Home getCurrenDay timeZone',timeZone,today.format(this.localLangFormat))
       const oneDays = [
         Common.translateWeekDay(today.format(this.localLangFormat)),
       ];
@@ -384,7 +395,8 @@ export default defineComponent({
     },
 
     getThreeDays(timeZone) {
-      const today = momentzone().tz(timeZone);
+      const today = moment().tz(timeZone);
+      console.log('Home getThreeDays timeZone',timeZone,today.format(this.localLangFormat))
       const nextThreeDays = [
         Common.translateWeekDay(today.format(this.localLangFormat)),
         Common.translateWeekDay(today.add(1, 'days').format(this.localLangFormat)),
@@ -394,9 +406,10 @@ export default defineComponent({
     },
 
     getCurrenWeek(timeZone) {
-      const moment = momentzone().tz(timeZone)
-      const startOfWeek = moment.startOf('week')
-      const endOfWeek = moment.endOf('week')
+      const startDay = moment().tz(timeZone)
+      console.log('Home getCurrenWeek timeZone',timeZone)
+      const startOfWeek = startDay.startOf('week')
+      const endOfWeek = startDay.endOf('week')
       const weekDays = []
       let day = startOfWeek
       while (day <= endOfWeek) {
@@ -530,9 +543,9 @@ export default defineComponent({
     },
 
     getMeetRooms() {
-      if (this.startTime && this.startTime != this.$t('base.startDate')) {
-        this.startStamp = this.formatTime(this.startTime) || 0
-        this.endStamp = this.formatTime(this.endTime) || 0
+      if (this.startStamp && this.endStamp) {
+        // this.startStamp = this.formatTime(this.startTime) || 0
+        // this.endStamp = this.formatTime(this.endTime) || 0
       } else {
         const temp = Common.getThreeDaysTimestamps()
         this.startStamp = temp.start
@@ -547,7 +560,7 @@ export default defineComponent({
         this.itemWidth = 228
       }
       console.log('Home getMeetRooms currenArea:  start: end: ', this.currenArea, this.startStamp, this.endStamp);
-      Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp / 1000, end_time: this.endStamp / 1000, timeZone: this.currentTimeZone }).then(({ data, code }) => {
+      Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp, end_time: this.endStamp, timeZone: this.currentTimeZone }).then(({ data, code }) => {
         if (!data) {
           ElMessage({
             message: this.$t('base.getMeetRoomError'),
