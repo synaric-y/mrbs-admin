@@ -14,6 +14,11 @@ export default {
       form: {
         name: ''
       },
+      rules: {
+        name: [
+          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
+        ]
+      },
       pendingDeleteId: null
     }
   },
@@ -51,14 +56,20 @@ export default {
       this.showAddAreaDialog = true
     },
     addArea() {
-      this.showAddAreaDialog = false
-      Api.addArea(this.form).then(({data, code, message}) => {
-        if (code == 0) {
-          this.getAreaList()
-        } else {
-          ElMessage.error(message)
+      this.$refs.areaForm.validate((pass) => {
+        if (!pass) {
+          return
         }
+        this.showAddAreaDialog = false
+        Api.addArea(this.form).then(({data, code, message}) => {
+          if (code == 0) {
+            this.getAreaList()
+          } else {
+            ElMessage.error(message)
+          }
+        })
       })
+
     }
   },
   mounted() {
@@ -126,8 +137,8 @@ export default {
 
 
       <el-dialog v-model="showAddAreaDialog" :title="$t('area.addArea')" width="500">
-        <el-form :model="form">
-          <el-form-item :label="$t('area.formArea.name')">
+        <el-form :model="form" ref="areaForm" :rules="rules">
+          <el-form-item  prop="name" :label="$t('area.formArea.name')">
             <el-input v-model="form.name" autocomplete="off" />
           </el-form-item>
         </el-form>

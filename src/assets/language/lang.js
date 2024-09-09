@@ -94,7 +94,7 @@ export const messages = {
                 area: '区域',
                 state: '状态',
                 id: 'ID',
-                galleryful: '房间容量',
+                galleryful: '容纳人数',
                 battery: '电量',
                 operate: '操作',
             },
@@ -126,12 +126,12 @@ export const messages = {
                 operate: '操作',
             },
             formUser: {
-                name: 'Name',
-                displayName: 'Display Name',
-                level: 'Level',
-                email: 'Email',
-                password0: 'Password',
-                password1: 'Confirm Password'
+                name: '登录名',
+                displayName: '展示名',
+                level: '权限',
+                email: 'Email地址',
+                password0: '密码',
+                password1: '确认密码'
             },
             role: {
                 level0: '无',

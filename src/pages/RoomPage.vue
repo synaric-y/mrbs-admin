@@ -65,6 +65,8 @@ export default {
             }
           })
           this.tableData = data
+        } else {
+          this.tableData = []
         }
       })
     },
