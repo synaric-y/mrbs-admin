@@ -109,7 +109,7 @@ import { Common } from "@/common/common";
 import { ElMessage } from "element-plus/es";
 import { Api } from '@/network/api';
 import { STORAGE } from "@/config";
-import { STORAGE_DAY, STORAGE_IS_EDIT } from '@/const';
+import { STORAGE_DAY, STORAGE_IS_EDIT, USER_TYPE } from '@/const';
 import moment from 'moment';
 import momentzone from "moment-timezone";
 
@@ -422,6 +422,13 @@ export default defineComponent({
     },
 
     toMeet(time, room, day) {
+      if (room.disabled == STORAGE_IS_EDIT.DISABLED) {
+        console.log('Home toMeet disabled', room.disabled)
+        return
+      }
+      if (this.normalUser()) {
+        return
+      }
       const lang = Common.getLocalLang()
       console.log("Home toMeet day.date timeZone lang",day.date,this.currentTimeZone,this.localLangFormat)
       console.log("Home toMeet formatTime date",day.date)
@@ -434,14 +441,23 @@ export default defineComponent({
       const nextTimeStamp = moment.tz(formatStr, this.currentTimeZone).unix();
       console.log('Home toMeet nextTimeStamp',nextTimeStamp)
 
-      if (room.disabled == STORAGE_IS_EDIT.DISABLED) {
-        console.log('Home toMeet disabled', room.disabled)
-        return
-      }
+     
       this.push(`/meet_detail/0/${room.room_id}/${room.area_id}/${nextTimeStamp}`)
     },
 
+    normalUser() {
+      const userinfo = Storage.getItem(STORAGE.USER_INFO)
+      console.log('normalUser userinfo',userinfo)
+      if(userinfo.level == USER_TYPE.NORMAL) {
+        return true
+      }
+      return false
+    },
+
     editMeet(event) {
+      if (this.normalUser()) {
+        return
+      }
       if (event.disabled == STORAGE_IS_EDIT.DISABLED) {
         console.log('Home editMeet disabled', event.disabled)
         return

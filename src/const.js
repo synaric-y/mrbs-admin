@@ -15,3 +15,8 @@ export const STORAGE_DAY = {
     THREE: 3,
     WEEK: 7
 }
+
+export const USER_TYPE = {
+    NORMAL: '1',
+    ADMIN: '2'
+}
