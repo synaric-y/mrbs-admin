@@ -271,12 +271,12 @@ export const messages = {
                 operate: '작동하다',
             },
             formUser: {
-                name: 'Name',
-                displayName: 'Display Name',
-                level: 'Level',
-                email: 'Email',
-                password0: 'Password',
-                password1: 'Confirm Password'
+                name: '이름',
+                displayName: '표시 이름',
+                level: '수준',
+                email: '이메일',
+                password0: '비밀번호',
+                password1: '비밀번호 확인'
             },
             role: {
                 level0: '없음',
