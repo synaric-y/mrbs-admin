@@ -121,6 +121,7 @@ body {
   margin: 0 !important;
 }
 
+
 /*总容器*/
 .container {
   width: 100vw;
@@ -151,7 +152,7 @@ body {
   scrollbar-color: transparent transparent;
 }
 /*隐藏滚动条*/
-.container-sub-page-main::-webkit-scrollbar {
+::-webkit-scrollbar {
   display: none;
 }
 
