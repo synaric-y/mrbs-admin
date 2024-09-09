@@ -166,7 +166,6 @@ export default defineComponent({
         "01:00PM", "01:30PM", "02:00PM", "02:30PM", "03:00PM", "03:30PM", "04:00PM", "04:30PM",
         "05:00PM", "05:30PM", "06:00PM", "06:30PM", "07:00PM", "07:30PM", "08:00PM", "08:30PM", "09:00PM"
       ],
-      // localRooms: ["A", "B", "C", "D"],
     };
   },
 
@@ -257,15 +256,6 @@ export default defineComponent({
       return allRoom
     },
 
-    // insertAllArea() {
-    //   const firstArea = {
-    //     "area_id": "",
-    //     "area_name": this.$t('base.all'),
-    //     "rooms": []
-    //   }
-    //   this.areas.splice(0, 0, firstArea)
-    // },
-
     getAllAreas() {
       Api.getAreaRooms({}).then(({ data, code }) => {
         if (code != 0) {
@@ -282,24 +272,12 @@ export default defineComponent({
           "rooms": []
         }
         areas.splice(0, 0, firstArea)
-        // this.insertAllArea()
         this.areas = areas
         // this.tempNetworkAreas = data.areas
       })
     },
 
     getCurrentAreaRooms(area_id) {
-      // this.rooms = this.localRooms
-      // console.log('Home getCurrentAreaRooms area_id', area_id)
-      // console.log('Home getCurrentAreaRooms this.areas', this.areas)
-      // const tempArea = this.this.tempNetworkAreas.filter(area => area.area_id == area_id)
-      // if (this.dayRrangeVal != 0) {
-      //   this.dayRrange(this.dayRrangeVal)
-      // }
-      // console.log('Home getCurrentAreaRooms data', tempArea)
-      // this.rooms = this.getAllRoom(tempArea)
-      // this.getMeetRooms()
-      // return
       Api.getAreaRooms({ id: area_id }).then(({ data, code }) => {
         if (code != 0) {
           ElMessage({
@@ -408,29 +386,15 @@ export default defineComponent({
     getCurrenWeek(timeZone) {
       const startDay = moment().tz(timeZone);
       console.log('Home getCurrenWeek timeZone', timeZone);
-      // 克隆 startDay 防止修改原对象
       const startOfWeek = startDay.clone().startOf('week');
       const endOfWeek = startDay.clone().endOf('week');
       const weekDays = [];
       let day = startOfWeek;
       while (day <= endOfWeek) {
-        // 使用 this.localLangFormat 格式化日期，并调用 Common.translateWeekDay
         weekDays.push(Common.translateWeekDay(day.format(this.localLangFormat)));
         day = day.add(1, 'days');
       }
       return weekDays;
-
-      // const startDay = moment().tz(timeZone)
-      // console.log('Home getCurrenWeek timeZone', timeZone)
-      // const startOfWeek = startDay.startOf('week')
-      // const endOfWeek = startDay.endOf('week')
-      // const weekDays = []
-      // let day = startOfWeek
-      // while (day <= endOfWeek) {
-      //   weekDays.push(Common.translateWeekDay(day.format(this.localLangFormat)))
-      //   day = day.add(1, 'days');
-      // }
-      // return weekDays
     },
 
     getDaysBetween(startDate, endDate) {
@@ -458,29 +422,23 @@ export default defineComponent({
     },
 
     toMeet(time, room, day) {
-      // const timeZone = Common.getCurrenTimeZone()
       const lang = Common.getLocalLang()
-      // console.log("Home toMeet day.date timeZone lang",day.date,timeZone,lang)
-      // const formatTime = Common.formatDateWithTimeZone(day.date, timeZone, lang, this.localLangFormat)
-      // console.log("Home toMeet formatTime",formatTime)
+      console.log("Home toMeet day.date timeZone lang",day.date,this.currentTimeZone,this.localLangFormat)
+      console.log("Home toMeet formatTime date",day.date)
 
-      Common.getTimestampForWeek(day.date, lang);
-
-      return
-      // const endTime = Common.formatDate(end_time, 'Asia/Shanghai', 'zh-cn', this.localLangFormat);
+      // 2024年09月09日 星期一
+      const appeedStr = day.date + ' ' + time
+      console.log('Home toMeet appeedStr',appeedStr)
+      const formatStr = Common.getAssignFormatForAM(appeedStr,lang)
+      console.log('Home toMeet formatStr',formatStr)
+      const nextTimeStamp = moment.tz(formatStr, this.currentTimeZone).unix();
+      console.log('Home toMeet nextTimeStamp',nextTimeStamp)
 
       if (room.disabled == STORAGE_IS_EDIT.DISABLED) {
         console.log('Home toMeet disabled', room.disabled)
         return
       }
-      console.log('Home toMeet time', day)
-      const dayTimestamp = moment(day.date, this.localLangFormat).unix()
-      const ymd = moment(dayTimestamp * 1000, this.currentTimeZone).format('YYYY-MM-DD')
-      console.log('Home toMeet ymd', ymd)
-      console.log('Home toMeet time', time)
-      const tempTime = Common.getTimestampFromDateAndTime(ymd, time)
-      console.log('Home toMeet tempTime:', tempTime)
-      this.push(`/meet_detail/0/${room.room_id}/${room.area_id}/${tempTime}`)
+      this.push(`/meet_detail/0/${room.room_id}/${room.area_id}/${nextTimeStamp}`)
     },
 
     editMeet(event) {
