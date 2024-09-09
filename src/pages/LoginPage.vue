@@ -48,7 +48,7 @@ export default {
         </el-form-item>
 
         <el-form-item :label="$t('login.password')">
-          <el-input v-model="form.password" />
+          <el-input show-password v-model="form.password" />
         </el-form-item>
 
         <el-button style="margin-top: 30px" type="primary" size="default" @click="submit">{{ $t("base.login") }}</el-button>
