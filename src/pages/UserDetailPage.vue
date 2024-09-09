@@ -107,7 +107,7 @@ export default {
 
       <el-form :model="form" :rules="rules" label-width="auto" ref="userForm" style="max-width: 530px">
 
-        <el-form-item prop="name" :label="$t('user.formUser.name')">
+        <el-form-item prop="name" :label="$t('user.formUser.name')" :disabled="mode == 'update'">
           <el-input v-model="form.name" show-word-limit maxlength="16" />
         </el-form-item>
 
