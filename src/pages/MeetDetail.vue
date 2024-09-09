@@ -7,19 +7,19 @@
                 </div>
                 <el-form :model="form" :rules="rules" label-width="auto" ref="meetForm" style="min-width: 430px">
                     <el-form-item prop="create_by" :label="$t('meet.admin')" style="width: 400px">
-                        <el-select v-model="form.create_by">
+                        <el-select v-model.trim="form.create_by">
                             <el-option v-for="(admin, index) in admins" :label="admin" :value="admin"
                                 :key="index"></el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item prop="book_by" :label="$t('meet.booker')" style="width: 400px">
-                        <el-input v-model="form.book_by" maxlength="15" show-word-limit/>
+                        <el-input v-model.trim="form.book_by" maxlength="15" show-word-limit/>
                     </el-form-item>
                     <el-form-item prop="name" :label="$t('meet.short_desc')" style="width: 400px">
-                        <el-input v-model="form.name" maxlength="20" show-word-limit/>
+                        <el-input v-model.trim="form.name" maxlength="20" show-word-limit/>
                     </el-form-item>
                     <el-form-item prop="description" :label="$t('meet.all_desc')" style="width: 400px">
-                        <el-input type="textarea" maxlength="100" show-word-limit v-model="form.description" />
+                        <el-input type="textarea" maxlength="100" show-word-limit v-model.trim="form.description" />
                     </el-form-item>
                     <el-form-item prop="start_date" :label="$t('meet.start_meet')">
                         <div class="picker-date-container">
@@ -268,11 +268,11 @@ export default {
             this.form.end_date = moment.tz(end_time, this.currentTimeZone).format('YYYY-MM-DD')
             
             
-            this.form.start_seconds = Common.getTimestampForDateAndTime(this.form.start_date,moment.tz(start_time, this.currentTimeZone).format("hh:mm"))
-            this.form.end_seconds =  Common.getTimestampForDateAndTime(this.form.start_date,moment.tz(end_time, this.currentTimeZone).format("hh:mm"))
-            this.start_hour = moment.tz(start_time, this.currentTimeZone).format("hh:mm")
-            this.end_hour = moment.tz(end_time, this.currentTimeZone).format("hh:mm")
-            
+            this.form.start_seconds = data.start_time
+            this.form.end_seconds = data.end_time
+            this.start_hour = moment.tz(start_time, this.currentTimeZone).format("HH:mm")
+            this.end_hour = moment.tz(end_time, this.currentTimeZone).format("HH:mm")
+
             console.log('Meet editData start_hour',this.start_hour)
             console.log('Meet editData end_hour',this.end_hour)
             this.form.rooms = []
