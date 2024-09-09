@@ -1,27 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8">
     <link rel="icon" href="/imgs/favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MRBS</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <!-- 禁止在手机端缩放 -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
-    <!--禁止在电脑浏览器滚轮缩放 -->
-    <script>
-        document.addEventListener('mousewheel', function (e) {
-            e = e || window.event;
-            if ((e.wheelDelta && event.ctrlKey) || e.detail) {
-                event.preventDefault();
-            }
-        }, {
-            capture: false,
-            passive: false
-        });
-    </script>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+</head>
+<body>
+<div id="app"></div>
+<!-- 禁止在手机端缩放 -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+<!--禁止在电脑浏览器滚轮缩放 -->
+<script>
+    document.addEventListener('mousewheel', function (e) {
+        e = e || window.event;
+        if ((e.wheelDelta && event.ctrlKey) || e.detail) {
+            event.preventDefault();
+        }
+    }, {
+        capture: false,
+        passive: false
+    });
+    document.addEventListener('keydown', function (event) {
+        if ((event.ctrlKey === true || event.metaKey === true)
+            && (event.keyCode === 61 || event.keyCode === 107
+                || event.keyCode === 173 || event.keyCode === 109
+                || event.keyCode === 187 || event.keyCode === 189)) {
+            event.preventDefault();
+        }
+    }, false);
+
+</script>
+<script type="module" src="/src/main.js"></script>
+</body>
 </html>
