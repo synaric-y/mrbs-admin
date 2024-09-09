@@ -44,12 +44,30 @@ export class Common {
 
 
     static getAssignFormat(dateStr,lang) {
-        // const dateStr = '2024年09月09日 星期一 09:00AM';
-        // dateStr = '2024年09月09日 星期一 03:00PM';
         console.log('common getAssignFormat',lang)
         let format;
         if(lang == 'zh-cn') {
-            // YYYY年MM月DD日 dddd hh:mmA
+            // 2024年09月09日 星期一 09:00AM
+            const parsedDate = moment(dateStr, 'YYYY年MM月DD日 hh:mm');
+            const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
+            format = result;
+        } else if(lang == 'en') {
+            const parsedDate = moment(dateStr, 'dddd, MMMM Do YYYY hh:mm');
+            const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
+            format = result;
+        } else if(lang == 'ko') {
+            const parsedDate = moment(dateStr, 'YYYY년MM월DD일 h:mm');
+            const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
+            format = result
+        }
+        return format
+    }
+
+    static getAssignFormatWithAM(dateStr,lang) {
+        console.log('common getAssignFormat',lang)
+        let format;
+        if(lang == 'zh-cn') {
+            // 2024年09月09日 星期一 09:00AM
             const parsedDate = moment(dateStr, 'YYYY年MM月DD日 hh:mmA');
             const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
             format = result;

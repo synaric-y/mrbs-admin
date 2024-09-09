@@ -272,6 +272,9 @@ export default {
             this.form.end_seconds =  Common.getTimestampForDateAndTime(this.form.start_date,moment.tz(end_time, this.currentTimeZone).format("hh:mm"))
             this.start_hour = moment.tz(start_time, this.currentTimeZone).format("hh:mm")
             this.end_hour = moment.tz(end_time, this.currentTimeZone).format("hh:mm")
+            
+            console.log('Meet editData start_hour',this.start_hour)
+            console.log('Meet editData end_hour',this.end_hour)
             this.form.rooms = []
             this.form.rooms.push(Number(data.room_id))
             this.form.id = data.id
@@ -286,12 +289,12 @@ export default {
                 const starttimestamp = moment.tz(timestamp * 1000, this.currentTimeZone).format('HH:mm')
                 // const starttimestamp = moment.unix(timestamp).format('HH:mm')
                 this.start_hour = starttimestamp
-                this.form.start_seconds = Common.getTimestampForTodayWithTime(this.start_hour)
+                this.form.start_seconds = starttimestamp
                 const endstamp = Number(timestamp) + 60 * 60
                 console.log('Meet Detail mounted timestamp endstamp', endstamp)
                 // this.end_hour = moment.unix(endstamp).format('HH:mm')
                 this.end_hour = moment.tz(endstamp * 1000, this.currentTimeZone).format('HH:mm')
-                this.form.end_seconds = Common.getTimestampForTodayWithTime(this.end_hour)
+                this.form.end_seconds = endstamp
                 console.log('Meet Detail mounted timestamp end', timestamp)
                 // this.form.start_date = moment.unix(timestamp).format('YYYY-MM-DD')
                 // this.form.end_date = moment.unix(timestamp).format('YYYY-MM-DD')

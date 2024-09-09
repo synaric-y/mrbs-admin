@@ -429,7 +429,7 @@ export default defineComponent({
       // 2024年09月09日 星期一
       const appeedStr = day.date + ' ' + time
       console.log('Home toMeet appeedStr',appeedStr)
-      const formatStr = Common.getAssignFormatForAM(appeedStr,lang)
+      const formatStr = Common.getAssignFormatWithAM(appeedStr,lang)
       console.log('Home toMeet formatStr',formatStr)
       const nextTimeStamp = moment.tz(formatStr, this.currentTimeZone).unix();
       console.log('Home toMeet nextTimeStamp',nextTimeStamp)
