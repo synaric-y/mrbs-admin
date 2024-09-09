@@ -117,7 +117,7 @@ export const messages = {
         },
         user: {
             tableUser: {
-                name: '登录名',
+                name: '账号',
                 displayName: '展示名',
                 level: '权限',
                 email: 'Email地址',
@@ -126,7 +126,7 @@ export const messages = {
                 operate: '操作',
             },
             formUser: {
-                name: '登录名',
+                name: '账号',
                 displayName: '展示名',
                 level: '权限',
                 email: 'Email地址',
@@ -405,7 +405,7 @@ export const messages = {
         },
         user: {
             tableUser: {
-                name: 'Name',
+                name: 'Account',
                 displayName: 'Display Name',
                 level: 'Level',
                 email: 'Email',
@@ -414,7 +414,7 @@ export const messages = {
                 operate: 'Operate',
             },
             formUser: {
-                name: 'Name',
+                name: 'Account',
                 displayName: 'Display Name',
                 level: 'Level',
                 email: 'Email',
