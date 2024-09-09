@@ -192,10 +192,10 @@ export default {
                  :rules="rules"
                  ref="roomForm"
                  label-width="auto">
-          <el-form-item :label="$t('room.formRoom.name')" label-position="right">
-            <el-input v-model="form.name" autocomplete="off"/>
+          <el-form-item prop="name" :label="$t('room.formRoom.name')" label-position="right">
+            <el-input v-model="form.name" />
           </el-form-item>
-          <el-form-item :label="$t('room.formRoom.area')" label-position="right">
+          <el-form-item prop="area" :label="$t('room.formRoom.area')" label-position="right">
             <el-select
                 v-model="form.area"
                 :empty-values="[null, undefined]"
@@ -208,10 +208,10 @@ export default {
               />
             </el-select>
           </el-form-item>
-          <el-form-item :label="$t('room.formRoom.description')" label-position="right">
+          <el-form-item prop="description" :label="$t('room.formRoom.description')" label-position="right">
             <el-input v-model="form.description" autocomplete="off"/>
           </el-form-item>
-          <el-form-item :label="$t('room.formRoom.galleryful')" label-position="right">
+          <el-form-item prop="capacity" :label="$t('room.formRoom.galleryful')" label-position="right">
             <el-input v-model="form.capacity" autocomplete="off"/>
           </el-form-item>
         </el-form>
