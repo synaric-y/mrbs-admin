@@ -35,7 +35,7 @@
   </div>
 
   <div class="table-container">
-    <el-scrollbar class="scroll-table-view" :style="{ height: (this.screenHeight - 170) + 'px' }">
+    <el-scrollbar class="scroll-table-view" :style="{ height: (this.screenHeight - 150) + 'px' }">
       <div class="calendar-header">
         <div class="time-header">
           <div class="time-slots">
@@ -104,13 +104,14 @@
 <script>
 import { defineComponent, ref } from 'vue';
 import { ElButton, ElButtonGroup, ElCol, ElIcon, ElOption, ElRow, ElSelect } from 'element-plus';
-import moment from "moment";
 import { PageMixin } from "@/pages/PageMixin.js";
 import { Common } from "@/common/common";
 import { ElMessage } from "element-plus/es";
 import { Api } from '@/network/api';
 import { STORAGE } from "@/config";
 import { STORAGE_DAY, STORAGE_IS_EDIT } from '@/const';
+import moment from 'moment';
+import momentzone from "moment-timezone";
 
 const size = ref < 'default' | 'large' | 'small' > ('default')
 const value1 = ref('')
@@ -136,6 +137,7 @@ export default defineComponent({
       baseTime: '',
       startTime: this.$t('base.startDate'),
       endTime: this.$t('base.endDate'),
+      currentTimeZone: '',
       areas: [],
       // tempNetworkAreas:[],
       meetRooms: [],
@@ -182,6 +184,9 @@ export default defineComponent({
     this.screenSize['height'] = screenHeight
     this.screenHeight = screenHeight
     console.log('Home screenSize:', this.screenSize)
+    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
+    this.currentTimeZone = timeZone
+    console.log('Home 获取当前设备的时区',timeZone)
     this.startSync()
   },
 
@@ -210,14 +215,12 @@ export default defineComponent({
         const days = this.getDaysBetween(selectStartDate, selectEndDate)
         const tempdays = this.formatDays(days)
         this.days = tempdays
-        // this.getMeetRooms()
       } else {
         this.startStamp = Common.getThreeDaysTimestamps().start
         this.endStamp = Common.getThreeDaysTimestamps().end
         if (selectDays) {
           this.dayRrangeVal = selectDays
           this.dayRrange(selectDays)
-          // this.getMeetRooms();
         } else {
           this.dayRrange(STORAGE_DAY.THREE);
         }
@@ -338,29 +341,32 @@ export default defineComponent({
       if (day == STORAGE_DAY.TODAY) {
         console.log('Home One Days:', this.getCurrenDay())
         days = this.getCurrenDay()
-        tempTime = Common.getTodayTimestamps()
-        console.log(Common.getTodayTimestamps())
+        tempTime = Common.getTodayTimestamps(this.currentTimeZone)
+        console.log(tempTime)
       } else if (day == STORAGE_DAY.THREE) {
         console.log('Home Next Three Days:', this.getThreeDays())
         days = this.getThreeDays()
-        tempTime = Common.getThreeDaysTimestamps()
-        console.log(Common.getThreeDaysTimestamps())
+        tempTime = Common.getThreeDaysTimestamps(this.currentTimeZone)
+        console.log(tempTime)
       } else if (day == STORAGE_DAY.WEEK) {
         console.log('Home Week Days:', this.getCurrenWeek())
         days = this.getCurrenWeek()
-        tempTime = Common.getThisWeekTimestamps()
-        console.log(Common.getThisWeekTimestamps())
+        tempTime = Common.getThisWeekTimestamps(this.currentTimeZone)
+        console.log(tempTime)
       } else {
         console.log('Home Next Three Days:', this.getThreeDays())
         days = this.getThreeDays()
         tempTime = Common.getThreeDaysTimestamps()
-        console.log(Common.getThreeDaysTimestamps())
+        console.log(tempTime)
       }
       localStorage.setItem(STORAGE.SELECT_DAYS, day)
       this.startStamp = tempTime.start
       this.endStamp = tempTime.end
-      this.startTime = moment(tempTime.start * 1000).format('YYYY-MM-DD')
-      this.endTime = moment(tempTime.end * 1000).format('YYYY-MM-DD')
+      // this.startTime = moment(tempTime.start * 1000).format('YYYY-MM-DD')
+      // this.endTime = moment(tempTime.end * 1000).format('YYYY-MM-DD')
+      
+      this.startTime = moment.tz(tempTime.start * 1000, this.currentTimeZone).format('YYYY-MM-DD')
+      this.endTime = moment.tz(tempTime.end * 1000, this.currentTimeZone).format('YYYY-MM-DD')
       localStorage.setItem(STORAGE.SELECT_START_DATE, this.startTime)
       localStorage.setItem(STORAGE.SELECT_END_DATE, this.endTime)
       console.log('Home dayRrange tempTime', this.startTime, this.endTime)
@@ -369,16 +375,16 @@ export default defineComponent({
       this.getMeetRooms()
     },
 
-    getCurrenDay() {
-      const today = moment()
+    getCurrenDay(timeZone) {
+      const today = momentzone().tz(timeZone)
       const oneDays = [
         Common.translateWeekDay(today.format(this.localLangFormat)),
       ];
       return oneDays
     },
 
-    getThreeDays() {
-      const today = moment();
+    getThreeDays(timeZone) {
+      const today = momentzone().tz(timeZone);
       const nextThreeDays = [
         Common.translateWeekDay(today.format(this.localLangFormat)),
         Common.translateWeekDay(today.add(1, 'days').format(this.localLangFormat)),
@@ -387,9 +393,10 @@ export default defineComponent({
       return nextThreeDays
     },
 
-    getCurrenWeek() {
-      const startOfWeek = moment().startOf('week')
-      const endOfWeek = moment().endOf('week')
+    getCurrenWeek(timeZone) {
+      const moment = momentzone().tz(timeZone)
+      const startOfWeek = moment.startOf('week')
+      const endOfWeek = moment.endOf('week')
       const weekDays = []
       let day = startOfWeek
       while (day <= endOfWeek) {
@@ -431,6 +438,8 @@ export default defineComponent({
       // console.log("Home toMeet formatTime",formatTime)
 
       Common.getTimestampForWeek(day.date,lang);
+
+      return
       // const endTime = Common.formatDate(end_time, 'Asia/Shanghai', 'zh-cn', this.localLangFormat);
 
       if (room.disabled == STORAGE_IS_EDIT.DISABLED) {
@@ -439,7 +448,7 @@ export default defineComponent({
       }
       console.log('Home toMeet time', day)
       const dayTimestamp = moment(day.date, this.localLangFormat).unix()
-      const ymd = moment(dayTimestamp * 1000).format('YYYY-MM-DD')
+      const ymd = moment(dayTimestamp * 1000,this.currentTimeZone).format('YYYY-MM-DD')
       console.log('Home toMeet ymd', ymd)
       console.log('Home toMeet time', time)
       const tempTime = Common.getTimestampFromDateAndTime(ymd, time)
@@ -538,7 +547,7 @@ export default defineComponent({
         this.itemWidth = 228
       }
       console.log('Home getMeetRooms currenArea:  start: end: ', this.currenArea, this.startStamp, this.endStamp);
-      Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp / 1000, end_time: this.endStamp / 1000 }).then(({ data, code }) => {
+      Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp / 1000, end_time: this.endStamp / 1000, timeZone: this.currentTimeZone }).then(({ data, code }) => {
         if (!data) {
           ElMessage({
             message: this.$t('base.getMeetRoomError'),
