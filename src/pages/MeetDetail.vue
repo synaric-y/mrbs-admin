@@ -270,9 +270,9 @@ export default {
             
             this.form.start_seconds = Common.getTimestampForDateAndTime(this.form.start_date,moment.tz(start_time, this.currentTimeZone).format("hh:mm"))
             this.form.end_seconds =  Common.getTimestampForDateAndTime(this.form.start_date,moment.tz(end_time, this.currentTimeZone).format("hh:mm"))
-            this.start_hour = moment.tz(start_time, this.currentTimeZone).format("hh:mm")
-            this.end_hour = moment.tz(end_time, this.currentTimeZone).format("hh:mm")
-            
+            this.start_hour = moment.tz(start_time, this.currentTimeZone).format("HH:mm")
+            this.end_hour = moment.tz(end_time, this.currentTimeZone).format("HH:mm")
+
             console.log('Meet editData start_hour',this.start_hour)
             console.log('Meet editData end_hour',this.end_hour)
             this.form.rooms = []
