@@ -150,7 +150,7 @@ export default defineComponent({
       interval: null,
       currenTimestamp: 0,
       days: [],
-      rooms: [],
+      rooms: ["A", "B", "C", "D"],
       events: [],
       timeSlots: [
         "08:00AM", "ㆍ",
@@ -164,7 +164,7 @@ export default defineComponent({
         "01:00PM", "01:30PM", "02:00PM", "02:30PM", "03:00PM", "03:30PM", "04:00PM", "04:30PM",
         "05:00PM", "05:30PM", "06:00PM", "06:30PM", "07:00PM", "07:30PM", "08:00PM", "08:30PM", "09:00PM"
       ],
-      localRooms: ["A", "B", "C", "D"],
+      // localRooms: ["A", "B", "C", "D"],
     };
   },
 
@@ -194,7 +194,7 @@ export default defineComponent({
       this.getSyncInterval()
       this.interval = setInterval(() => {
         this.getSyncInterval()
-      }, 20000)
+      }, 5000)
     },
     getSyncInterval() {
       console.log('Home getSyncInterval')
@@ -254,15 +254,6 @@ export default defineComponent({
       return allRoom
     },
 
-    insertAllArea() {
-      const firstArea = {
-        "area_id": "",
-        "area_name": this.$t('base.all'),
-        "rooms": []
-      }
-      this.areas.splice(0, 0, firstArea)
-    },
-
     getAllAreas() {
       Api.getAreaRooms({}).then(({ data, code }) => {
         if (code != 0) {
@@ -272,14 +263,20 @@ export default defineComponent({
           })
           return
         }
-        this.areas = data.areas
+        let areas = data.areas
+        const firstArea = {
+          "area_id": "",
+          "area_name": this.$t('base.all'),
+          "rooms": []
+        }
+        data.splice(0, 0, firstArea)
+        this.areas = areas
         // this.tempNetworkAreas = data.areas
-        this.insertAllArea()
       })
     },
 
     getCurrentAreaRooms(area_id) {
-      this.rooms = this.localRooms
+      // this.rooms = this.localRooms
       // console.log('Home getCurrentAreaRooms area_id', area_id)
       // console.log('Home getCurrentAreaRooms this.areas', this.areas)
       // const tempArea = this.this.tempNetworkAreas.filter(area => area.area_id == area_id)
