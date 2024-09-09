@@ -80,6 +80,16 @@ export default {
         }
       })
     },
+    pendingAddRoom() {
+      this.showAddRoomDialog = true
+      this.form = {
+        area: '',
+        name: '',
+        description: '',
+        capacity: '',
+        // room_admin_email: ''
+      }
+    },
     addRoom() {
       this.$refs.roomForm.validate((pass) => {
         if (!pass) {
@@ -127,7 +137,7 @@ export default {
           />
         </el-select>
         <div style="flex: 1"></div>
-        <el-button type="primary" size="default" @click="showAddRoomDialog = true">{{ $t("base.add") }}</el-button>
+        <el-button type="primary" size="default" @click="pendingAddRoom">{{ $t("base.add") }}</el-button>
       </el-form-item>
       <el-table
           :data="tableData"

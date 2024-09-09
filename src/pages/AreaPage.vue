@@ -44,6 +44,12 @@ export default {
         }
       })
     },
+    pendingAddArea() {
+      this.form = {
+        name: ''
+      }
+      this.showAddAreaDialog = true
+    },
     addArea() {
       this.showAddAreaDialog = false
       Api.addArea(this.form).then(({data, code, message}) => {
@@ -68,7 +74,7 @@ export default {
     <el-main class="container-sub-page-main">
       <div class="sub-title-wrapper">
         <div class="sub-title">{{ $t("base.areaManagement") }}</div>
-        <el-button type="primary" size="default" @click="showAddAreaDialog = true">{{ $t("base.add") }}</el-button>
+        <el-button type="primary" size="default" @click="pendingAddArea">{{ $t("base.add") }}</el-button>
       </div>
       <el-table
           :data="tableData"

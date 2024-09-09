@@ -17,12 +17,12 @@ export default {
   },
   methods: {
     submit() {
-      Api.login(this.form).then(({data, code}) => {
+      Api.login(this.form).then(({data, code, message}) => {
         if (code == 0) {
           this.login(data)
           this.switchTab('/')
         } else {
-          ElMessage.error(this.$t('base.loginError'))
+          ElMessage.error(message)
         }
       })
     }
