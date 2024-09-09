@@ -105,7 +105,7 @@ export class Common {
     static getTodayTimestamps() {
         const now = new Date();
         const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-        const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 23, 59, 59, 999).getTime();
+        const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59, 999).getTime();
         return {
             start: Math.floor(startOfDay / 1000),
             end: Math.floor(endOfDay / 1000)
