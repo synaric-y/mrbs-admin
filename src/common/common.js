@@ -71,7 +71,7 @@ export class Common {
             const parsedDate = moment(dateStr, 'YYYY年MM月DD日 hh:mmA');
             const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
             format = result;
-        } else if(lang == 'en') {
+        } else if(lang == 'en-US') {
             const parsedDate = moment(dateStr, 'dddd, MMMM Do YYYY hh:mmA');
             const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
             format = result;
