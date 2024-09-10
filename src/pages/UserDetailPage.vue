@@ -23,21 +23,29 @@ export default {
         display_name: [
           {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
         ],
-        // password0: [
-        //   {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
-        // ],
-        // password1: [
-        //   {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'},
-        //   {
-        //     validator: (rule, value, callback, source, options) => {
-        //       const errors = [];
-        //       if (this.form["password0"] != value) {
-        //         errors.push(new Error(this.$t('user.password1Hint')))
-        //       }
-        //       return errors;
-        //     },
-        //   },
-        // ],
+      },
+      rules2: {
+        name: [
+          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
+        ],
+        display_name: [
+          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
+        ],
+        password0: [
+          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
+        ],
+        password1: [
+          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'},
+          {
+            validator: (rule, value, callback, source, options) => {
+              const errors = [];
+              if (this.form["password0"] != value) {
+                errors.push(new Error(this.$t('user.password1Hint')))
+              }
+              return errors;
+            },
+          },
+        ],
       },
       role: [
         // {
@@ -105,10 +113,10 @@ export default {
         <div class="sub-title">{{ mode === "add" ? $t("user.addUser") : $t("user.editUser") }}</div>
       </div>
 
-      <el-form :model="form" :rules="rules" label-width="auto" ref="userForm" style="max-width: 530px">
+      <el-form :model="form" :rules="mode == 'add' ? rules2 : rules" :validate-on-rule-change="false" label-width="auto" ref="userForm" style="max-width: 530px">
 
-        <el-form-item prop="name" :label="$t('user.formUser.name')" :disabled="mode == 'update'">
-          <el-input v-model="form.name" show-word-limit maxlength="16" />
+        <el-form-item prop="name" :label="$t('user.formUser.name')" >
+          <el-input v-model="form.name" show-word-limit maxlength="16" :disabled="mode == 'update'" />
         </el-form-item>
 
         <el-form-item prop="display_name" :label="$t('user.formUser.displayName')">
