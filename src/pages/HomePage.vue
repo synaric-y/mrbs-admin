@@ -852,14 +852,14 @@ export default defineComponent({
   position: absolute;
   left: 5px;
   right: 5px;
-  background-color: #ffb3b3;
+  background-color:rgba(189,49,36,0.11);
   width: 218px;
   padding: 0px 5px;
   margin: 2px 0;
   color: #000;
   font-size: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  border-left: 10px solid #ff9999;
+  border-left: 10px solid #BD3124;
 }
 
 .room-meet-timeout-event {
