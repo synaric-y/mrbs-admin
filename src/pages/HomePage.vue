@@ -431,7 +431,7 @@ export default defineComponent({
       const formatStr = Common.getAssignFormatWithAM(appeedStr,lang)
       console.log('Home toMeet formatStr',formatStr)
       const nextTimeStamp = moment.tz(formatStr, this.currentTimeZone).unix();
-      console.log('Home toMeet nextTimeStamp',nextTimeStamp)
+      console.log('Home toMeet nextTimeStamp currenTimestamp',nextTimeStamp,this.currenTimestamp)
       // 过去的时间不可以创建会议
       if(nextTimeStamp < this.currenTimestamp) {
         return

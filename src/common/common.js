@@ -15,7 +15,7 @@ export class Common {
         let lang = navigator.language || navigator.userLanguage
         console.log('lang:', lang)
         let dateFormat = 'dddd, MMMM Do YYYY'
-        if (lang == 'en') {
+        if (lang == 'en-US' || lang == 'en') {
             dateFormat = 'dddd, MMMM Do YYYY'
         } else if (lang == 'zh-CN') {
             dateFormat = 'YYYY年MM月DD日 dddd'
@@ -30,7 +30,7 @@ export class Common {
     static getCurrenTimeZone() {
         let lang = navigator.language || navigator.userLanguage
         let timeZone = 'America/New_York'
-        if (lang == 'en') {
+        if (lang == 'en-US' || lang == 'en') {
             timeZone = 'America/New_York'
         } else if (lang == 'zh-CN') {
             timeZone = 'Asia/Shanghai'
@@ -51,7 +51,7 @@ export class Common {
             const parsedDate = moment(dateStr, 'YYYY年MM月DD日 hh:mm');
             const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
             format = result;
-        } else if(lang == 'en') {
+        } else if(lang == 'en-US' || lang == 'en') {
             const parsedDate = moment(dateStr, 'dddd, MMMM Do YYYY hh:mm');
             const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
             format = result;
@@ -59,6 +59,10 @@ export class Common {
             const parsedDate = moment(dateStr, 'YYYY년MM월DD일 h:mm');
             const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
             format = result
+        } else {
+            const parsedDate = moment(dateStr, 'YYYY年MM月DD日 hh:mm');
+            const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
+            format = result;
         }
         return format
     }
@@ -71,7 +75,7 @@ export class Common {
             const parsedDate = moment(dateStr, 'YYYY年MM月DD日 hh:mmA');
             const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
             format = result;
-        } else if(lang == 'en-US') {
+        } else if(lang == 'en-US' || lang == 'en') {
             const parsedDate = moment(dateStr, 'dddd, MMMM Do YYYY hh:mmA');
             const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
             format = result;
@@ -79,12 +83,15 @@ export class Common {
             const parsedDate = moment(dateStr, 'YYYY년MM월DD일 h:mmA');
             const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
             format = result
+        } else {
+            const parsedDate = moment(dateStr, 'YYYY年MM月DD日 hh:mmA');
+            const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
+            format = result;
         }
         return format
     }
 
     static getTimestampForWeek(weekDay, lang, timeZone) {
-
         // 获取时间对应的日期格式
         // 2024-09-09 12:00 +0800 2024-09-09 12:00 -0400 2024-09-09 12:00 +0900
         var zh = moment.tz("2024-09-09 12:00:00", "Asia/Shanghai").format('YYYY-MM-DD HH:mm ZZ');
@@ -98,16 +105,13 @@ export class Common {
         var entmp = moment.tz("2024-09-09 12:00:00", "America/New_York").unix();
         var kotmp = moment.tz("2024-09-09 12:00:00", "Asia/Seoul").unix();
         console.log('getTimestampForWeek zhtemp: entmp: kotmp:', zhtemp, entmp, kotmp)
-
         // 获取时间戳对应的日期格式
         // 2024-09-09 12:00 2024-09-09 12:00 2024-09-09 12:00
         var zhFormat = moment.tz(zhtemp * 1000, "Asia/Shanghai").format('YYYY-MM-DD HH:mm');
         var enFormat = moment.tz(entmp * 1000, "America/New_York").format('YYYY-MM-DD HH:mm');
         var koFormat = moment.tz(kotmp * 1000, "Asia/Seoul").format('YYYY-MM-DD HH:mm');
         console.log('getTimestampForWeek zhFormat: enFormat: kotmp:', zhFormat, enFormat, koFormat)
-
         return
-
 
         // 获取日期格式对应
         var zhFormat = moment.tz("Thursday, 09/05/2024", "Asia/Shanghai").unix();
