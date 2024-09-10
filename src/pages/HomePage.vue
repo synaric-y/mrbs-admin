@@ -110,7 +110,7 @@ import { Common } from "@/common/common";
 import { ElMessage } from "element-plus/es";
 import { Api } from '@/network/api';
 import { STORAGE } from "@/config";
-import { STORAGE_DAY, STORAGE_IS_EDIT } from '@/const';
+import { STORAGE_DAY, STORAGE_IS_EDIT, USER_TYPE } from '@/const';
 import moment from 'moment';
 import momentzone from "moment-timezone";
 
@@ -461,7 +461,7 @@ export default defineComponent({
     },
 
     normalUser() {
-      const userinfo = Storage.getItem(STORAGE.USER_INFO)
+      const userinfo = localStorage.getItem(STORAGE.USER_INFO)
       console.log('normalUser userinfo',userinfo)
       if(userinfo.level == USER_TYPE.NORMAL) {
         return true
