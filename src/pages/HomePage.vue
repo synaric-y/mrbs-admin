@@ -1,5 +1,5 @@
 <template>
-  <div class="toolbar">
+  <div class="toolbar" v-if="!showLoading">
     <el-row :gutter="10">
       <el-col :span="7">
         <el-icon class="home-time-icon">
@@ -34,7 +34,7 @@
     </el-row>
   </div>
 
-  <div class="table-container">
+  <div class="table-container" v-if="!showLoading">
     <el-scrollbar class="scroll-table-view" always :style="{ height: 'calc(100vh - 150px)' }">
       <div class="calendar-header">
         <div class="time-header">
@@ -99,6 +99,7 @@
     </el-scrollbar>
     <!-- <div class="empty-bottom"></div> -->
   </div>
+  <el-skeleton v-if="showLoading" :rows="15" animated />
 </template>
 
 <script>
@@ -151,6 +152,7 @@ export default defineComponent({
       localLangFormat: 'dddd, MMMM Do YYYY',
       interval: null,
       currenTimestamp: 0,
+      showLoading: true,
       days: [],
       rooms: ["A", "B", "C", "D"],
       events: [],
@@ -549,6 +551,10 @@ export default defineComponent({
         this.currenTimestamp = data.timestamp
         this.nowTime = data.time
         this.getInMeeting(data)
+
+        this.$nextTick(() => {
+          this.showLoading = false
+        })
       })
     },
 
