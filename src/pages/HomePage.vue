@@ -438,6 +438,10 @@ export default defineComponent({
       if(nextTimeStamp < this.currenTimestamp) {
         return
       }
+      // 普通用户不能创建会议
+      if (this.normalUser()) {
+        return
+      }
       if (room.disabled == STORAGE_IS_EDIT.DISABLED) {
         console.log('Home toMeet disabled', room.disabled)
         return
@@ -446,11 +450,23 @@ export default defineComponent({
     },
 
     editMeet(event) {
+      if (this.normalUser()) {
+        return
+      }
       if (event.disabled == STORAGE_IS_EDIT.DISABLED) {
         console.log('Home editMeet disabled', event.disabled)
         return
       }
       this.push(`/meet_detail/${event.entry_id}/${event.room_id}/${event.area_id}/0`)
+    },
+
+    normalUser() {
+      const userinfo = Storage.getItem(STORAGE.USER_INFO)
+      console.log('normalUser userinfo',userinfo)
+      if(userinfo.level == USER_TYPE.NORMAL) {
+        return true
+      }
+      return false
     },
 
     choseArea(e) {
