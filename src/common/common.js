@@ -46,22 +46,33 @@ export class Common {
     static getAssignFormat(dateStr,lang) {
         console.log('common getAssignFormat',lang)
         let format;
+        // 2024年09月09日 星期一 09:00AM
+        const parsedDate = moment(dateStr, 'YYYY-MM-DD HH:mm');
+        const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
+        console.log('common getAssignFormat result',result)
+        format = result;
+        return format
+
         if(lang == 'zh-cn') {
             // 2024年09月09日 星期一 09:00AM
-            const parsedDate = moment(dateStr, 'YYYY年MM月DD日 hh:mm');
+            const parsedDate = moment(dateStr, 'YYYY年MM月DD日 HH:mm');
             const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
+            console.log('common getAssignFormat result',result)
             format = result;
         } else if(lang == 'en-US' || lang == 'en') {
-            const parsedDate = moment(dateStr, 'dddd, MMMM Do YYYY hh:mm');
+            const parsedDate = moment(dateStr, 'dddd, MMMM Do YYYY HH:mm');
             const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
+            console.log('common getAssignFormat result',result)
             format = result;
         } else if(lang == 'ko') {
-            const parsedDate = moment(dateStr, 'YYYY년MM월DD일 h:mm');
+            const parsedDate = moment(dateStr, 'YYYY년MM월DD일 H:mm');
             const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
+            console.log('common getAssignFormat result',result)
             format = result
         } else {
-            const parsedDate = moment(dateStr, 'YYYY年MM月DD日 hh:mm');
+            const parsedDate = moment(dateStr, 'YYYY年MM月DD日 HH:mm');
             const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
+            console.log('common getAssignFormat result',result)
             format = result;
         }
         return format

@@ -228,14 +228,15 @@ export default {
         },
 
         choseHour(mode, str, e) {
-            console.log('Meet Detail choseHour str', str)
+            console.log('Meet Detail choseHour str e', str,e)
             // 或者指定年月日下的时间戳
             const ymd = this.form.start_date
             const lang = Common.getLocalLang()
             const appeedStr = ymd + ' ' + str
             const formatStr = Common.getAssignFormat(appeedStr,lang)
+            console.log('Meet choseHour this.currentTimeZone lang appeedStr',this.currentTimeZone,lang,appeedStr)
             const nextTimeStamp = moment.tz(formatStr, this.currentTimeZone).unix();
-            console.log('Meet choseHour appeedStr',nextTimeStamp)
+            console.log('Meet choseHour formatStr nextTimeStamp',formatStr,nextTimeStamp)
             if (mode == 0) {
                 this.form.start_seconds = nextTimeStamp;
                 return
