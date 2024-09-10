@@ -42,17 +42,9 @@ export class Common {
         return timeZone
     }
 
-
-    static getAssignFormat(dateStr,lang) {
-        console.log('common getAssignFormat',lang)
+    static getAssignFormatYearToMinute() {
+        console.log('common getAssignFormatYearToMinute',lang)
         let format;
-        // 2024年09月09日 星期一 09:00AM
-        const parsedDate = moment(dateStr, 'YYYY-MM-DD HH:mm');
-        const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
-        console.log('common getAssignFormat result',result)
-        format = result;
-        return format
-
         if(lang == 'zh-cn') {
             // 2024年09月09日 星期一 09:00AM
             const parsedDate = moment(dateStr, 'YYYY年MM月DD日 HH:mm');
@@ -76,6 +68,15 @@ export class Common {
             format = result;
         }
         return format
+    }
+
+    static getAssignFormat(dateStr,lang) {
+        console.log('common getAssignFormat',lang)
+        // 2024年09月09日 星期一 09:00AM
+        const parsedDate = moment(dateStr, 'YYYY-MM-DD HH:mm');
+        const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
+        console.log('common getAssignFormat result',result)
+        return result
     }
 
     static getAssignFormatWithAM(dateStr,lang) {
