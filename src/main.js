@@ -2,6 +2,8 @@ import ElementPlus from 'element-plus'
 import '@/assets/mytheme.scss'
 // import 'element-plus/dist/index.css'
 import en from 'element-plus/es/locale/lang/en'
+import zh from 'element-plus/es/locale/lang/zh-cn'
+import ko from 'element-plus/es/locale/lang/ko'
 import VueCookies from 'vue3-cookies';
 import {createI18n} from "vue-i18n";
 
@@ -12,6 +14,11 @@ import router from './router'
 
 import {messages} from "@/assets/language/lang.js";
 
+const eLang = {
+    en,
+    zh,
+    ko
+}
 const app = createApp(App)
 
 router.afterEach((to, from) => {
@@ -30,9 +37,6 @@ router.afterEach((to, from) => {
 app.use(createPinia())
 app.use(router)
 app.use(VueCookies)
-app.use(ElementPlus, {
-    locale: en,
-})
 
 let lang = navigator.language || navigator.userLanguage;
 if (!lang) {
@@ -51,6 +55,9 @@ const i18n = createI18n({
     locale, // set locale
     fallbackLocale: fallbackLang,
     messages, // set locale messages
+})
+app.use(ElementPlus, {
+    locale: eLang[lang],
 })
 app.use(i18n)
 
