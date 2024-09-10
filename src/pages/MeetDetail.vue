@@ -289,7 +289,7 @@ export default {
                 const starttimestamp = moment.tz(timestamp * 1000, this.currentTimeZone).format('HH:mm')
                 // const starttimestamp = moment.unix(timestamp).format('HH:mm')
                 this.start_hour = starttimestamp
-                this.form.start_seconds = starttimestamp
+                this.form.start_seconds = timestamp
                 const endstamp = Number(timestamp) + 60 * 60
                 console.log('Meet Detail mounted timestamp endstamp', endstamp)
                 // this.end_hour = moment.unix(endstamp).format('HH:mm')
