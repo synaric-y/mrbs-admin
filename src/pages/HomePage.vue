@@ -425,7 +425,6 @@ export default defineComponent({
       const lang = Common.getLocalLang()
       console.log("Home toMeet day.date timeZone lang",day.date,this.currentTimeZone,this.localLangFormat)
       console.log("Home toMeet formatTime date",day.date)
-
       // 2024年09月09日 星期一
       const appeedStr = day.date + ' ' + time
       console.log('Home toMeet appeedStr',appeedStr)
@@ -433,7 +432,10 @@ export default defineComponent({
       console.log('Home toMeet formatStr',formatStr)
       const nextTimeStamp = moment.tz(formatStr, this.currentTimeZone).unix();
       console.log('Home toMeet nextTimeStamp',nextTimeStamp)
-
+      // 过去的时间不可以创建会议
+      if(nextTimeStamp < this.currenTimestamp) {
+        return
+      }
       if (room.disabled == STORAGE_IS_EDIT.DISABLED) {
         console.log('Home toMeet disabled', room.disabled)
         return
