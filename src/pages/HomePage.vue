@@ -534,7 +534,7 @@ export default defineComponent({
         this.itemWidth = 228
       }
       console.log('Home getMeetRooms currenArea:  start: end: ', this.currenArea, this.startStamp, this.endStamp);
-      Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp, end_time: this.endStamp, timeZone: this.currentTimeZone }).then(({ data, code }) => {
+      Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp, end_time: this.endStamp, timezone: this.currentTimeZone }).then(({ data, code }) => {
         if (!data) {
           ElMessage({
             message: this.$t('base.getMeetRoomError'),
