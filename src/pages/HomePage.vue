@@ -55,6 +55,7 @@
                   :style="{ height: 60 + 'px', width: itemWidth + 'px', top: (timeIndex * 60 + 70) + 'px' }"
                   @click="toMeet(time, room, day)">
                   <text class="empty-meet-duration">{{ time }}</text>
+                  <text class="empty-meet-reason">{{getMeetStatusText(day, room, time)}}</text>
                 </div>
               </template>
               <template v-for="(event, indexeve) in events">
@@ -110,7 +111,7 @@ import { Common } from "@/common/common";
 import { ElMessage } from "element-plus/es";
 import { Api } from '@/network/api';
 import { STORAGE } from "@/config";
-import { STORAGE_DAY, STORAGE_IS_EDIT, USER_TYPE } from '@/const';
+import { SELECT_DAY, ROOM_STATUS, USER_TYPE } from '@/const';
 import moment from 'moment';
 import momentzone from "moment-timezone";
 
@@ -134,7 +135,7 @@ export default defineComponent({
       currenAreaName: this.$t('base.all'),
       customDate: null,
       hoursNumber: 24,
-      dayRrangeVal: STORAGE_DAY.THREE,
+      dayRrangeVal: SELECT_DAY.THREE,
       baseTime: '',
       startTime: this.$t('base.startDate'),
       endTime: this.$t('base.endDate'),
@@ -223,7 +224,7 @@ export default defineComponent({
           this.dayRrangeVal = selectDays
           this.dayRrange(selectDays)
         } else {
-          this.dayRrange(STORAGE_DAY.THREE);
+          this.dayRrange(SELECT_DAY.THREE);
         }
       }
       if (selectArea && selectAreaName) {
@@ -328,17 +329,17 @@ export default defineComponent({
     dayRrange(day) {
       let days = []
       let tempTime = {}
-      if (day == STORAGE_DAY.TODAY) {
+      if (day == SELECT_DAY.TODAY) {
         console.log('Home One Days:', this.getCurrenDay(this.currentTimeZone))
         days = this.getCurrenDay(this.currentTimeZone)
         tempTime = Common.getTodayTimestamps(this.currentTimeZone)
         console.log(tempTime)
-      } else if (day == STORAGE_DAY.THREE) {
+      } else if (day == SELECT_DAY.THREE) {
         console.log('Home Next Three Days:', this.getThreeDays(this.currentTimeZone))
         days = this.getThreeDays(this.currentTimeZone)
         tempTime = Common.getThreeDaysTimestamps(this.currentTimeZone)
         console.log(tempTime)
-      } else if (day == STORAGE_DAY.WEEK) {
+      } else if (day == SELECT_DAY.WEEK) {
         console.log('Home Week Days:', this.getCurrenWeek(this.currentTimeZone))
         days = this.getCurrenWeek(this.currentTimeZone)
         tempTime = Common.getThisWeekTimestamps(this.currentTimeZone)
@@ -423,6 +424,26 @@ export default defineComponent({
       return formattedDates;
     },
 
+    getMeetStatusText(dayTime,roomStatus,minuteTime) {
+      // 房间禁用
+      if(roomStatus.disabled == ROOM_STATUS.DISABLED) {
+        return '房间禁用'
+      }
+      const lang = Common.getLocalLang()
+      const appeedStr = dayTime.date + ' ' + minuteTime
+      const formatStr = Common.getAssignFormatWithAM(appeedStr,lang)
+      const nextTimeStamp = moment.tz(formatStr, this.currentTimeZone).unix();
+      // 已过时
+      if(nextTimeStamp < this.currenTimestamp) {
+        return '已过时'
+      }
+      // 普通用户
+      if (this.normalUser()) {
+        return '普通用户'
+      }
+      return '可预约会议'
+    },
+
     toMeet(time, room, day) {
       const lang = Common.getLocalLang()
       console.log("Home toMeet day.date timeZone lang",day.date,this.currentTimeZone,this.localLangFormat)
@@ -442,7 +463,7 @@ export default defineComponent({
       if (this.normalUser()) {
         return
       }
-      if (room.disabled == STORAGE_IS_EDIT.DISABLED) {
+      if (room.disabled == ROOM_STATUS.DISABLED) {
         console.log('Home toMeet disabled', room.disabled)
         return
       }
@@ -453,7 +474,7 @@ export default defineComponent({
       if (this.normalUser()) {
         return
       }
-      if (event.disabled == STORAGE_IS_EDIT.DISABLED) {
+      if (event.disabled == ROOM_STATUS.DISABLED) {
         console.log('Home editMeet disabled', event.disabled)
         return
       }
@@ -783,21 +804,31 @@ export default defineComponent({
 }
 
 .empty-meet-div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   position: absolute;
   top: 100px;
   width: 60px;
   height: 60px;
   transition: all 0.3s ease;
+  padding: 0px 10px;
 }
 
 .empty-meet-duration {
-  color: #e1e1e1;
-  font-size: 16px;
+  color:white;
+  font-size: 12px;
+}
+
+.empty-meet-reason {
+  color: white;
+  font-size: 12px;
 }
 
 .empty-meet-div:hover {
   color: white;
-  background-color: rgba(89, 27, 183, 1);
+  background-color: #CECECE;
 }
 
 .day-header {
@@ -828,7 +859,8 @@ export default defineComponent({
   padding: 10px;
   padding-bottom: 0px;
   border-right: 1px solid #9A9A9A;
-  background-color: #e1e1e1;
+  /* background-color: #e1e1e1; */
+  background-color: #FFFFFF;
 }
 
 .room-devide-line {
