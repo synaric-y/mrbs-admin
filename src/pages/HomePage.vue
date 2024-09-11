@@ -425,23 +425,20 @@ export default defineComponent({
     },
 
     getMeetStatusText(dayTime,roomStatus,minuteTime) {
-      // 房间禁用
       if(roomStatus.disabled == ROOM_STATUS.DISABLED) {
-        return '房间禁用'
+        return this.$t('base.roomDisabled')
       }
       const lang = Common.getLocalLang()
       const appeedStr = dayTime.date + ' ' + minuteTime
       const formatStr = Common.getAssignFormatWithAM(appeedStr,lang)
       const nextTimeStamp = moment.tz(formatStr, this.currentTimeZone).unix();
-      // 已过时
-      if(nextTimeStamp < this.currenTimestamp) {
-        return '已过时'
-      }
-      // 普通用户
       if (this.normalUser()) {
-        return '普通用户'
+        return this.$t('base.normalUser')
       }
-      return '可预约会议'
+      if(nextTimeStamp < this.currenTimestamp) {
+        return this.$t('base.passTime')
+      }
+      return this.$t('base.roomAbled')
     },
 
     toMeet(time, room, day) {
@@ -482,12 +479,12 @@ export default defineComponent({
     },
 
     normalUser() {
-      const userinfo = localStorage.getItem(STORAGE.USER_INFO)
-      console.log('normalUser userinfo',userinfo)
-      if(userinfo.level == USER_TYPE.NORMAL) {
-        return true
+      const userinfo = JSON.parse(localStorage.getItem(STORAGE.USER_INFO))
+      const level = {}
+      if(userinfo.level == USER_TYPE.ADMIN) {
+        return false
       }
-      return false
+      return true
     },
 
     choseArea(e) {

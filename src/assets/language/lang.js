@@ -37,6 +37,11 @@ export const messages = {
             deleteSuccess: '删除会议成功',
             deleteError: '删除会议失败',
             all: '所有',
+            roomDisabled: '房间禁用',
+            roomAbled: '可预约会议',
+            normalUser: '普通用户',
+            passTime:'已过时',
+            
         },
         meet: {
             title: '编辑会议',
@@ -182,6 +187,10 @@ export const messages = {
             deleteSuccess: '회의가 삭제되었습니다.',
             deleteError: '회의를 삭제하지 못했습니다.',
             all: '모든',
+            roomDisabled: '방이 비활성화됨',
+            roomAbled: '회의 예약 가능',
+            normalUser: '일반 사용자',
+            passTime:'구식',
         },
         meet: {
             title: '편집회의',
@@ -326,6 +335,10 @@ export const messages = {
             deleteSuccess: 'Delete meeting successfully',
             deleteError: 'Failed to delete meeting',
             all: 'All',
+            roomDisabled: 'Room disabled',
+            roomAbled: 'Meetings can be scheduled',
+            normalUser: 'Normal User',
+            passTime:'Obsolete',
         },
         meet: {
             title: 'Editing Meetings',
