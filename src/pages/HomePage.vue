@@ -58,26 +58,6 @@
                       </div>
                     </div>
                   </template>
-                  <template v-if="event.status == 1111">
-                    <div :key="indexeve" class="room-meet-in-event" @click="editMeet(event)"
-                      :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 70 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
-                      <div class="event-center">
-                        <div class="event-title" style="color: black;">{{ event.entry_name }}</div>
-                        <div class="event-time" style="color: black;">{{ event.duration }}</div>
-                        <div class="event-person" style="color: black;">{{ event.book_by }}</div>
-                      </div>
-                    </div>
-                  </template>
-                  <template v-if="event.status == 2222">
-                    <div :key="indexeve" class="room-meet-timeout-event"
-                      :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 70 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
-                      <div class="event-center">
-                        <div class="event-title">{{ event.entry_name }}</div>
-                        <div class="event-time">{{ event.duration }}</div>
-                        <div class="event-person">{{ event.book_by }}</div>
-                      </div>
-                    </div>
-                  </template>
                 </template>
               </template>
             </div>
@@ -272,7 +252,6 @@ export default defineComponent({
         }
         areas.splice(0, 0, firstArea)
         this.areas = areas
-        // this.tempNetworkAreas = data.areas
       })
     },
 
@@ -349,9 +328,6 @@ export default defineComponent({
       localStorage.setItem(STORAGE.SELECT_DAYS, day)
       this.startStamp = tempTime.start
       this.endStamp = tempTime.end
-      // this.startTime = moment(tempTime.start * 1000).format('YYYY-MM-DD')
-      // this.endTime = moment(tempTime.end * 1000).format('YYYY-MM-DD')
-
       this.startTime = moment.tz(tempTime.start * 1000, this.currentTimeZone).format('YYYY-MM-DD')
       this.endTime = moment.tz(tempTime.end * 1000, this.currentTimeZone).format('YYYY-MM-DD')
       localStorage.setItem(STORAGE.SELECT_START_DATE, this.startTime)
@@ -441,18 +417,15 @@ export default defineComponent({
       const lang = Common.getLocalLang()
       console.log("Home toMeet day.date timeZone lang", day.date, this.currentTimeZone, this.localLangFormat)
       console.log("Home toMeet formatTime date", day.date)
-      // 2024年09月09日 星期一
       const appeedStr = day.date + ' ' + time
       console.log('Home toMeet appeedStr', appeedStr)
       const formatStr = Common.getAssignFormatWithAM(appeedStr, lang)
       console.log('Home toMeet formatStr', formatStr)
       const nextTimeStamp = moment.tz(formatStr, this.currentTimeZone).unix();
       console.log('Home toMeet nextTimeStamp currenTimestamp', nextTimeStamp, this.currenTimestamp)
-      // 过去的时间不可以创建会议
       if (nextTimeStamp < this.currenTimestamp) {
         return
       }
-      // 普通用户不能创建会议
       if (this.normalUser()) {
         return
       }
@@ -550,8 +523,6 @@ export default defineComponent({
 
     getMeetRooms() {
       if (this.startStamp && this.endStamp) {
-        // this.startStamp = this.formatTime(this.startTime) || 0
-        // this.endStamp = this.formatTime(this.endTime) || 0
       } else {
         const temp = Common.getThreeDaysTimestamps()
         this.startStamp = temp.start
@@ -620,7 +591,6 @@ export default defineComponent({
     },
   },
 
-
   unmounted() {
     if (this.interval) {
       clearInterval(this.interval)
@@ -645,15 +615,6 @@ export default defineComponent({
   -ms-user-select: none;
   user-select: none;
 }
-
-/* .container-sub-page-main {
-  min-width: 930px;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
-  scrollbar-width: none;
-  scrollbar-color: transparent transparent;
-} */
 
 .toolbar {
   display: flex;
@@ -726,7 +687,7 @@ export default defineComponent({
 }
 
 .date-picker {
-  /* margin-left: 140px !important; */
+
 }
 
 
@@ -844,7 +805,6 @@ export default defineComponent({
   color: #FFFFFF;
   font-size: 12px;
   -webkit-line-clamp: 2;
-  /* height: 60px; */
 }
 
 .room-header {
@@ -866,7 +826,6 @@ export default defineComponent({
   padding: 10px;
   padding-bottom: 0px;
   border-right: 1px solid #9A9A9A;
-  /* background-color: #e1e1e1; */
   background-color: #FFFFFF;
 }
 
