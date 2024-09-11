@@ -1,45 +1,25 @@
 <template>
   <div class="toolbar" v-if="!showLoading">
-    <el-row :gutter="10">
-      <el-col :span="7">
-        <el-icon class="home-time-icon">
-        </el-icon>
-        <span class="now-time">{{ nowTime }}</span>
-      </el-col>
-      <el-col :span="3">
+    <div class="toolbar-filter">
+      <div class="now-time">
+        <el-icon class="home-time-icon"></el-icon>
+        <span class="now-time-span">{{ nowTime }}</span>
+      </div>
+      <div class="all-area">
         <el-select v-model="currenAreaName" placeholder="All Areas" @change="choseArea">
-          <el-option v-for="(area, index) in areas" :label="area.area_name" :value="area.area_id"
-            :key="index"></el-option>
+          <el-option v-for="(area, index) in areas" :label="area.area_name" :value="area.area_id" :key="index">
+          </el-option>
         </el-select>
-      </el-col>
-
-      <el-col :span="10">
-        <!-- type="primary" size="small" -->
-        <div class="buttons-margin">
-          <el-button :class="['day-button', dayRrangeVal == 1 ? '' : 'day-button-inactive']" @click="dayRrange(1)">{{
-            $t('base.today') }}</el-button>
-          <el-button  :class="['day-button', dayRrangeVal == 3 ? '' : 'day-button-inactive']" @click="dayRrange(3)">{{
-            $t('base.threeDays') }}</el-button>
-          <el-button :class="['day-button', dayRrangeVal == 7 ? '' : 'day-button-inactive']" @click="dayRrange(7)">{{
-            $t('base.week') }}</el-button>
-
-          <!-- <el-button type="primary" size="small" :class="[dayRrangeVal == 1 ? 'button-selected' : 'button-normal']" @click="dayRrange(1)">{{
-            $t('base.today') }}</el-button>
-          <el-button type="primary" size="small" :class="[dayRrangeVal == 3 ? 'button-selected' : 'button-normal']" @click="dayRrange(3)">{{
-            $t('base.threeDays') }}</el-button>
-          <el-button type="primary" size="small" :class="[dayRrangeVal == 7 ? 'button-selected' : 'button-normal']" @click="dayRrange(7)">{{
-            $t('base.week') }}</el-button> -->
-        </div>
-      </el-col>
-
-      <!-- <el-col :span="2" class="home-calendar">
-        <el-icon class="home-calendar-icon" type="text"></el-icon>
-      </el-col> -->
-      <el-col :span="6">
+      </div>
+      <div class="group-buttons">
+        <el-button v-for="(item,index) in groupButtons" type="primary" size="small" :class="['', item.day == dayRrangeVal ? 'day-button-active' : 'day-button']"
+          @click="dayRrange(item.day)">{{ item.name }}</el-button>
+      </div>
+      <div class="date-picker">
         <el-date-picker v-model="baseTime" type="daterange" :range-separator="$t('base.to')"
           :start-placeholder="startTime" :end-placeholder="endTime" @change="choseDate" clearable="false" />
-      </el-col>
-    </el-row>
+      </div>
+    </div>
   </div>
 
   <div class="table-container" v-if="!showLoading">
@@ -63,13 +43,13 @@
                   :style="{ height: 60 + 'px', width: itemWidth + 'px', top: (timeIndex * 60 + 70) + 'px' }"
                   @click="toMeet(time, room, day)">
                   <text class="empty-meet-duration">{{ time }}</text>
-                  <text class="empty-meet-reason">{{getMeetStatusText(day, room, time)}}</text>
+                  <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text>
                 </div>
               </template>
               <template v-for="(event, indexeve) in events">
                 <template v-if="day.date == event.date && room.room_id == event.room_id">
-                  <template v-if="event.status == 0">
-                    <div :key="indexeve" class="room-meet-event" @click="editMeet(event)"
+                  <template v-if="event.status == 0 || event.status == 1 || event.status == 2">
+                    <div :key="indexeve" :class="[event.status == 0 ? 'room-meet-event' : event.status == 1 ? 'room-meet-in-event':'room-meet-timeout-event']" @click="editMeet(event)"
                       :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 70 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
                       <div class="event-center">
                         <div class="event-title">{{ event.entry_name }}</div>
@@ -78,7 +58,7 @@
                       </div>
                     </div>
                   </template>
-                  <template v-if="event.status == 1">
+                  <template v-if="event.status == 1111">
                     <div :key="indexeve" class="room-meet-in-event" @click="editMeet(event)"
                       :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 70 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
                       <div class="event-center">
@@ -88,7 +68,7 @@
                       </div>
                     </div>
                   </template>
-                  <template v-if="event.status == 2">
+                  <template v-if="event.status == 2222">
                     <div :key="indexeve" class="room-meet-timeout-event"
                       :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 70 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
                       <div class="event-center">
@@ -106,7 +86,6 @@
         </div>
       </div>
     </el-scrollbar>
-    <!-- <div class="empty-bottom"></div> -->
   </div>
   <el-skeleton v-if="showLoading" :rows="15" animated />
 </template>
@@ -149,7 +128,6 @@ export default defineComponent({
       endTime: this.$t('base.endDate'),
       currentTimeZone: 'Asia/Shanghai',
       areas: [],
-      // tempNetworkAreas:[],
       meetRooms: [],
       screenSize: {},
       itemWidth: 228,
@@ -162,6 +140,20 @@ export default defineComponent({
       interval: null,
       currenTimestamp: 0,
       showLoading: true,
+      groupButtons: [
+        {
+          name: this.$t('base.today'),
+          day: 1
+        },
+        {
+          name: this.$t('base.threeDays'),
+          day: 3
+        },
+        {
+          name: this.$t('base.week'),
+          day: 7
+        },
+      ],
       days: [],
       rooms: ["A", "B", "C", "D"],
       events: [],
@@ -181,10 +173,6 @@ export default defineComponent({
   },
 
   mounted() {
-    // window.onload = window.onresize = function () {
-    //   console.log('Home  window.onload zoom')
-    //   document.body.style.zoom = 1.0
-    // };
     this.setTab('/')
     console.log('Home getBrowserLanguege:', Common.getBrowserLanguege())
     this.localLangFormat = Common.getBrowserLanguege()
@@ -432,18 +420,18 @@ export default defineComponent({
       return formattedDates;
     },
 
-    getMeetStatusText(dayTime,roomStatus,minuteTime) {
-      if(roomStatus.disabled == ROOM_STATUS.DISABLED) {
+    getMeetStatusText(dayTime, roomStatus, minuteTime) {
+      if (roomStatus.disabled == ROOM_STATUS.DISABLED) {
         return this.$t('base.roomDisabled')
       }
       const lang = Common.getLocalLang()
       const appeedStr = dayTime.date + ' ' + minuteTime
-      const formatStr = Common.getAssignFormatWithAM(appeedStr,lang)
+      const formatStr = Common.getAssignFormatWithAM(appeedStr, lang)
       const nextTimeStamp = moment.tz(formatStr, this.currentTimeZone).unix();
       if (this.normalUser()) {
         return this.$t('base.normalUser')
       }
-      if(nextTimeStamp < this.currenTimestamp) {
+      if (nextTimeStamp < this.currenTimestamp) {
         return this.$t('base.passTime')
       }
       return this.$t('base.roomAbled')
@@ -451,17 +439,17 @@ export default defineComponent({
 
     toMeet(time, room, day) {
       const lang = Common.getLocalLang()
-      console.log("Home toMeet day.date timeZone lang",day.date,this.currentTimeZone,this.localLangFormat)
-      console.log("Home toMeet formatTime date",day.date)
+      console.log("Home toMeet day.date timeZone lang", day.date, this.currentTimeZone, this.localLangFormat)
+      console.log("Home toMeet formatTime date", day.date)
       // 2024年09月09日 星期一
       const appeedStr = day.date + ' ' + time
-      console.log('Home toMeet appeedStr',appeedStr)
-      const formatStr = Common.getAssignFormatWithAM(appeedStr,lang)
-      console.log('Home toMeet formatStr',formatStr)
+      console.log('Home toMeet appeedStr', appeedStr)
+      const formatStr = Common.getAssignFormatWithAM(appeedStr, lang)
+      console.log('Home toMeet formatStr', formatStr)
       const nextTimeStamp = moment.tz(formatStr, this.currentTimeZone).unix();
-      console.log('Home toMeet nextTimeStamp currenTimestamp',nextTimeStamp,this.currenTimestamp)
+      console.log('Home toMeet nextTimeStamp currenTimestamp', nextTimeStamp, this.currenTimestamp)
       // 过去的时间不可以创建会议
-      if(nextTimeStamp < this.currenTimestamp) {
+      if (nextTimeStamp < this.currenTimestamp) {
         return
       }
       // 普通用户不能创建会议
@@ -489,7 +477,7 @@ export default defineComponent({
     normalUser() {
       const userinfo = JSON.parse(localStorage.getItem(STORAGE.USER_INFO))
       const level = {}
-      if(userinfo.level == USER_TYPE.ADMIN) {
+      if (userinfo.level == USER_TYPE.ADMIN) {
         return false
       }
       return true
@@ -571,11 +559,11 @@ export default defineComponent({
       }
       const itemNumber = this.rooms.length * this.days.length
       if (itemNumber == 1) {
-        this.itemWidth = this.screenSize['width']
+        this.itemWidth = this.screenSize['width'] + 1
       } else if (itemNumber >= 2 && itemNumber <= 6) {
-        this.itemWidth = this.screenSize['width'] / itemNumber * 2
+        this.itemWidth = this.screenSize['width'] / itemNumber * 2 + 1
       } else {
-        this.itemWidth = 228
+        this.itemWidth = 229
       }
       console.log('Home getMeetRooms currenArea:  start: end: ', this.currenArea, this.startStamp, this.endStamp);
       Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp, end_time: this.endStamp, timezone: this.currentTimeZone }).then(({ data, code }) => {
@@ -658,101 +646,92 @@ export default defineComponent({
   user-select: none;
 }
 
-.container-sub-page-main {
+/* .container-sub-page-main {
   min-width: 930px;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
   scrollbar-width: none;
   scrollbar-color: transparent transparent;
-}
+} */
 
 .toolbar {
   display: flex;
-  align-items: center;
+  width: 100vw;
   padding-top: 10px;
   padding-bottom: 10px;
   padding-left: 150px;
   padding-right: 150px;
 }
 
+.toolbar-filter {
+  display: flex;
+  align-items: center;
+  width: 100vw;
+}
+
 .now-time {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.home-time-icon {
+  width: 26px;
+  height: 26px;
+  line-height: 26px;
+  align-self: center;
+  background-image: url('/imgs/home_time_icon.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.now-time-span {
+  align-self: center;
   font-size: 16px;
   color: #333333;
 }
 
-.home-time-icon {
-  width: 20px;
-  height: 20px;
-  background-image: url('/imgs/home_time_icon.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  display: inline-block;
+.all-area {
+  margin-left: 35px;
 }
 
-.buttons-margin {
-  margin-left: 60px;
+.group-buttons {
+  margin-left: 35px;
 }
 
 .day-button {
   min-width: 80px;
   height: 30px;
   line-height: 30px;
-  box-shadow: 0px 2px 6px 0px rgba(0,0,0,0.4);
+  box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.4);
   margin-right: 22px;
   border-radius: 6px;
-  /* background-color: rgba(89,27,183,1); */
-  border: 2px solid rgba(89,27,183,1);
-  color: rgba(89,27,183,1);
+  border: 2px solid rgba(89, 27, 183, 1);
+  color: rgba(89, 27, 183, 1);
   background-color: white;
   font-size: 14px;
   text-align: center;
 }
 
-.day-button-inactive {
-  border: 1px solid var(--el-color-primary);
-  background: white;
-  color: var(--el-color-primary);
-  /* background-color: rgba(89,27,183,1); */
-  /* color: rgba(255,255,255,1); */
-}
-
-/* .button-selected {
+.day-button-active {
+  min-width: 80px;
   height: 30px;
   line-height: 30px;
+  box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.4);
+  margin-right: 22px;
+  border-radius: 6px;
   background-color: rgba(89, 27, 183, 1);
   color: rgba(255, 255, 255, 1);
-  font-size: 14px;
-  text-align: center;
-  font-family: Roboto;
 }
 
-.button-normal {
-  height: 30px;
-  line-height: 30px;
-  color: rgba(89, 27, 183, 1);
-  font-size: 14px;
-  text-align: center;
-  font-family: Roboto;
-  border: 2px solid rgba(89, 27, 183, 1);
-} */
+.date-picker {
+  /* margin-left: 140px !important; */
+}
+
 
 .el-icon {
   margin-right: 8px;
-}
-
-.el-row {
-  flex-wrap: nowrap;
-}
-
-.el-col {
-  display: flex;
-  align-items: center;
-}
-
-.el-button-group .el-button {
-  margin-right: 0px;
-  margin-left: 0px;
 }
 
 .el-select {
@@ -845,7 +824,7 @@ export default defineComponent({
 }
 
 .empty-meet-duration {
-  color:white;
+  color: white;
   font-size: 12px;
 }
 
@@ -934,7 +913,7 @@ export default defineComponent({
   position: absolute;
   left: 5px;
   right: 5px;
-  background-color:rgba(189,49,36,0.11);
+  background-color: rgba(189, 49, 36, 0.11);
   width: 218px;
   padding: 0px 5px;
   margin: 2px 0;
