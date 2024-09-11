@@ -36,7 +36,7 @@
           {{ day.date }}
           <div class="room-header">
             <div v-for="(room, roomIndex) in rooms" :key="roomIndex" class="room-name"
-              :style="{ height: timeSlots.length * 60 + 50 + 'px', width: itemWidth + 'px' }">
+              :style="{ height: timeSlots.length * 60 + 70 + 'px', width: itemWidth + 'px' }">
               {{ room.room_name }}
               <template v-for="(time, timeIndex) in localTimeSlots">
                 <div class="empty-meet-div"
