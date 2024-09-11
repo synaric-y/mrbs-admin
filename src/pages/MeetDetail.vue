@@ -13,10 +13,10 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item prop="book_by" :label="$t('meet.booker')" style="width: 400px">
-                        <el-input v-model.trim="form.book_by" maxlength="15" show-word-limit/>
+                        <el-input v-model.trim="form.book_by" maxlength="15" show-word-limit />
                     </el-form-item>
                     <el-form-item prop="name" :label="$t('meet.short_desc')" style="width: 400px">
-                        <el-input v-model.trim="form.name" maxlength="20" show-word-limit/>
+                        <el-input v-model.trim="form.name" maxlength="20" show-word-limit />
                     </el-form-item>
                     <el-form-item prop="description" :label="$t('meet.all_desc')" style="width: 400px">
                         <el-input type="textarea" maxlength="100" show-word-limit v-model.trim="form.description" />
@@ -24,20 +24,19 @@
                     <el-form-item prop="start_date" :label="$t('meet.start_meet')">
                         <div class="picker-date-container">
                             <el-date-picker v-model="form.start_date" type="date" placeholder="Pick start day"
-                                @change="choseDate(0, $event)" :disabled-date="disabledDate"/>
+                                @change="choseDate(0, $event)" :disabled-date="disabledDate" />
                             <el-time-select v-model="start_hour" style="width: 240px;margin-left: 20px" start="08:00"
                                 step="00:30" end="21:00" :placeholder="$t('base.plzSelect')"
-                                @change="choseHour(0, start_hour, $event)" 
-                                :max-time="end_hour"/>
+                                @change="choseHour(0, start_hour, $event)" :max-time="end_hour" />
                         </div>
                     </el-form-item>
                     <el-form-item prop="end_date" :label="$t('meet.end_meet')">
                         <div class="picker-date-container">
                             <el-date-picker v-model="form.end_date" type="date" placeholder="Pick end day"
-                                @change="choseDate(1, $event)"  :disabled-date="disabledDate"/>
+                                @change="choseDate(1, $event)" :disabled-date="disabledDate" />
                             <el-time-select v-model="end_hour" style="width: 240px;margin-left: 20px" start="08:00"
                                 step="00:30" end="21:00" :placeholder="$t('base.plzSelect')"
-                                @change="choseHour(1, end_hour, $event)" :min-time="start_hour"/>
+                                @change="choseHour(1, end_hour, $event)" :min-time="start_hour" />
                         </div>
                     </el-form-item>
                     <el-form-item prop="room_number" :label="$t('meet.room')">
@@ -56,7 +55,7 @@
                         <el-button type="info" size="default" @click="cancle">{{ $t("base.cancel") }}</el-button>
                         <template v-if="mode == 'update'">
                             <el-button type="danger" size="default" @click="deleteMeet">{{ $t("meet.delete_meet")
-                            }}</el-button>
+                                }}</el-button>
                         </template>
                         <el-button type="primary" size="default" @click="submit">{{ $t("base.confirm") }}</el-button>
                     </el-form-item>
@@ -64,6 +63,18 @@
             </el-main>
         </el-scrollbar>
     </el-container>
+
+    <el-dialog v-model="centerDialogVisible" title="Warning" width="500" center>
+        <span>
+            确认要删除当前会议！
+        </span>
+        <template #footer>
+            <div class="dialog-footer">
+                <el-button @click="centerDialogVisible = false">Cancel</el-button>
+                <el-button type="primary" @click="confirmDelete">Confirm</el-button>
+            </div>
+        </template>
+    </el-dialog>
 </template>
 
 <script>
@@ -85,7 +96,7 @@ export default {
             rooms: [],
             admins: [],
             meetTypes: [],
-            currenType:'',
+            currenType: '',
             oneMeet: {},
             entry_id: 0,
             start_hour: "",
@@ -93,6 +104,7 @@ export default {
             currentTimeZone: 'Asia/Shanghai',
             currentHour: new Date().getHours(),
             currentMinute: new Date().getMinutes(),
+            centerDialogVisible: false,
             form: {
                 id: 0,
                 create_by: "",
@@ -205,8 +217,12 @@ export default {
             console.log('Meet Detail cancle')
             this.back()
         },
+
         deleteMeet() {
-            console.log('Meet Detail deleteMeet')
+            this.centerDialogVisible = true
+        },
+
+        confirmDelete() {
             Api.deleteMeet({ entry_id: Number(this.entry_id) }).then(({ data, code, message }) => {
                 if (code == 0) {
                     ElMessage({
@@ -236,18 +252,18 @@ export default {
         },
 
         choseHour(mode, str, e) {
-            console.log('Meet Detail choseHour str e', str,e)
+            console.log('Meet Detail choseHour str e', str, e)
             const ymd = this.form.start_date
             const lang = Common.getLocalLang()
             const appeedStr = ymd + ' ' + str
-            const formatStr = Common.getAssignFormat(appeedStr,lang)
-            console.log('Meet choseHour this.currentTimeZone lang appeedStr',this.currentTimeZone,lang,appeedStr)
+            const formatStr = Common.getAssignFormat(appeedStr, lang)
+            console.log('Meet choseHour this.currentTimeZone lang appeedStr', this.currentTimeZone, lang, appeedStr)
             const nextTimeStamp = moment.tz(formatStr, this.currentTimeZone).unix();
-            console.log('Meet choseHour formatStr nextTimeStamp ',formatStr,nextTimeStamp)
+            console.log('Meet choseHour formatStr nextTimeStamp ', formatStr, nextTimeStamp)
             if (mode == 0) {
                 const currenDay = Common.getYearToDay()
                 const currenStamp = Common.getCurrenTimeZoneStamp(this.currentTimeZone)
-                if(currenDay == ymd && currenStamp > nextTimeStamp) {
+                if (currenDay == ymd && currenStamp > nextTimeStamp) {
                     ElMessage({
                         message: this.$t('base.passTimeError'),
                         type: 'warning',
@@ -287,8 +303,8 @@ export default {
             this.form.end_seconds = data.end_time
             this.start_hour = moment.tz(start_time, this.currentTimeZone).format("HH:mm")
             this.end_hour = moment.tz(end_time, this.currentTimeZone).format("HH:mm")
-            console.log('Meet editData start_hour',this.start_hour)
-            console.log('Meet editData end_hour',this.end_hour)
+            console.log('Meet editData start_hour', this.start_hour)
+            console.log('Meet editData end_hour', this.end_hour)
             this.form.rooms = []
             this.form.rooms.push(Number(data.room_id))
             this.form.id = data.id
@@ -296,7 +312,7 @@ export default {
         },
 
         editTime(timestamp) {
-            console.log('Meet Detail editTime timestamp',timestamp)
+            console.log('Meet Detail editTime timestamp', timestamp)
             if (timestamp > 0) {
                 console.log('Meet Detail mounted timestamp begin', timestamp)
                 const starttimestamp = moment.tz(timestamp * 1000, this.currentTimeZone).format('HH:mm')
@@ -311,32 +327,32 @@ export default {
                 this.form.end_date = moment.tz(timestamp * 1000, this.currentTimeZone).format('YYYY-MM-DD')
             }
         },
-        
+
         configMeetTypes(type) {
             const lang = Common.getLocalLang()
-            if(lang == 'en') {
+            if (lang == 'en') {
                 this.meetTypes = {
                     I: 'Internal meeting',
                     E: 'External meeting'
                 }
-            }else if(lang == 'ko') {
+            } else if (lang == 'ko') {
                 this.meetTypes = {
-                   I: '내부 회의',
-                   E: '외부 회의'
+                    I: '내부 회의',
+                    E: '외부 회의'
                 }
-            }else {
+            } else {
                 this.meetTypes = {
                     I: '内部会议',
                     E: '外部会议'
                 }
             }
             this.form.type = this.meetTypes[type];
-        },  
+        },
     },
     mounted() {
         const userinfo = JSON.parse(localStorage.getItem(STORAGE.USER_INFO))
-        if(userinfo) {
-            console.log('Meet Detail mounted  userinfo',userinfo)
+        if (userinfo) {
+            console.log('Meet Detail mounted  userinfo', userinfo)
             this.form.create_by = userinfo.username
         }
         const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
@@ -352,7 +368,7 @@ export default {
             this.form.id = id
             this.mode = 'update'
         }
-        Api.getAdmins().then(({data,code}) => {
+        Api.getAdmins().then(({ data, code }) => {
             if (!data) {
                 return
             }
@@ -360,7 +376,7 @@ export default {
         })
 
         if (area_id) {
-            Api.getAreaRooms({ id: Number(area_id) }).then(({data, code}) => {
+            Api.getAreaRooms({ id: Number(area_id) }).then(({ data, code }) => {
                 if (!data) {
                     return
                 }
@@ -372,11 +388,11 @@ export default {
         if (!id || id == 0) {
             return
         }
-        Api.getMeetDetail({ id: Number(this.entry_id) }).then(({data, code}) => {
+        Api.getMeetDetail({ id: Number(this.entry_id) }).then(({ data, code }) => {
             if (!data) {
                 return
             }
-            console.log('Meet Detail getMeetDetail data',data)
+            console.log('Meet Detail getMeetDetail data', data)
             this.editData(data)
         })
     }

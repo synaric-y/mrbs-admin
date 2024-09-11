@@ -55,7 +55,10 @@ export const messages = {
             type: '类型',
             delete_meet: '删除',
             addMeet: '添加会议',
-            editMeet: '编辑会议'
+            editMeet: '编辑会议',
+            tips: '提示',
+            deleteTips: '确认要删除当前会议！',
+
         },
         login: {
             account: '账号',
@@ -205,7 +208,9 @@ export const messages = {
             type: '유형',
             delete_meet: '삭제',
             addMeet: '회의 추가',
-            editMeet: '편집회의'
+            editMeet: '편집회의',
+            tips: '힌트',
+            deleteTips: '현재 회의 삭제 확인',
         },
         login: {
             account: '계정',
@@ -354,7 +359,9 @@ export const messages = {
             type: 'Type',
             delete_meet: 'Delete',
             addMeet: 'New Meet',
-            editMeet: 'Edit Meet'
+            editMeet: 'Edit Meet',
+            tips: 'Tips',
+            deleteTips: 'Confirm that you want to delete the current meeting',
         },
         login: {
             account: 'Account',
