@@ -27,7 +27,7 @@
                                 @change="choseDate(0, $event)" :disabled-date="disabledDate"/>
                             <el-time-select v-model="start_hour" style="width: 240px;margin-left: 20px" start="08:00"
                                 step="00:30" end="21:00" :placeholder="$t('base.plzSelect')"
-                                @change="choseHour(0, start_hour, $event)" />
+                                @change="choseHour(0, start_hour, $event)" :max-time="end_hour"/>
                         </div>
                     </el-form-item>
                     <el-form-item prop="end_date" :label="$t('meet.end_meet')">
@@ -36,7 +36,7 @@
                                 @change="choseDate(1, $event)"  :disabled-date="disabledDate"/>
                             <el-time-select v-model="end_hour" style="width: 240px;margin-left: 20px" start="08:00"
                                 step="00:30" end="21:00" :placeholder="$t('base.plzSelect')"
-                                @change="choseHour(1, end_hour, $event)" />
+                                @change="choseHour(1, end_hour, $event)" :min-time="start_hour"/>
                         </div>
                     </el-form-item>
                     <el-form-item prop="room_number" :label="$t('meet.room')">
