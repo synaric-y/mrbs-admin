@@ -81,6 +81,7 @@ import { STORAGE } from "@/const";
 import { SELECT_DAY, ROOM_STATUS, USER_TYPE } from '@/const';
 import moment from 'moment';
 import momentzone from "moment-timezone";
+import { FilterDateStore } from '@/stores/filterDateStore';
 
 const size = ref < 'default' | 'large' | 'small' > ('default')
 const value1 = ref('')
@@ -120,6 +121,7 @@ export default defineComponent({
       interval: null,
       currenTimestamp: 0,
       showLoading: true,
+      filterDateStore: null,
       groupButtons: [
         {
           name: this.$t('base.today'),
@@ -180,12 +182,23 @@ export default defineComponent({
       }, 20000)
     },
     getSyncInterval() {
-      console.log('Home getSyncInterval')
-      const selectDays = Number(localStorage.getItem(STORAGE.SELECT_DAYS))
-      const selectStartDate = localStorage.getItem(STORAGE.SELECT_START_DATE)
-      const selectEndDate = localStorage.getItem(STORAGE.SELECT_END_DATE)
-      const selectArea = localStorage.getItem(STORAGE.SELECT_AREA)
-      const selectAreaName = localStorage.getItem(STORAGE.SELECT_AREA_NAME)
+      this.filterDateStore = FilterDateStore()
+      console.log('Home getSyncInterval this.filterDateStore',this.filterDateStore.area)
+
+
+
+      const selectDays = this.filterDateStore.days
+      const selectStartDate = this.filterDateStore.startDate
+      const selectEndDate = this.filterDateStore.endDate
+      const selectArea = this.filterDateStore.area
+      const selectAreaName = this.filterDateStore.areaName
+
+
+      // const selectDays = Number(localStorage.getItem(STORAGE.SELECT_DAYS))
+      // const selectStartDate = localStorage.getItem(STORAGE.SELECT_START_DATE)
+      // const selectEndDate = localStorage.getItem(STORAGE.SELECT_END_DATE)
+      // const selectArea = localStorage.getItem(STORAGE.SELECT_AREA)
+      // const selectAreaName = localStorage.getItem(STORAGE.SELECT_AREA_NAME)
       this.getAllAreas();
       if (selectStartDate && selectEndDate) {
         this.startTime = selectStartDate
@@ -325,13 +338,18 @@ export default defineComponent({
         tempTime = Common.getThreeDaysTimestamps(this.currentTimeZone)
         console.log(tempTime)
       }
-      localStorage.setItem(STORAGE.SELECT_DAYS, day)
+
+      this.filterDateStore.setDays(day)
+      // localStorage.setItem(STORAGE.SELECT_DAYS, day)
       this.startStamp = tempTime.start
       this.endStamp = tempTime.end
       this.startTime = moment.tz(tempTime.start * 1000, this.currentTimeZone).format('YYYY-MM-DD')
       this.endTime = moment.tz(tempTime.end * 1000, this.currentTimeZone).format('YYYY-MM-DD')
-      localStorage.setItem(STORAGE.SELECT_START_DATE, this.startTime)
-      localStorage.setItem(STORAGE.SELECT_END_DATE, this.endTime)
+
+      this.filterDateStore.setStartDate(this.startTime)
+      this.filterDateStore.setEndDate(this.endTime)
+      // localStorage.setItem(STORAGE.SELECT_START_DATE, this.startTime)
+      // localStorage.setItem(STORAGE.SELECT_END_DATE, this.endTime)
       console.log('Home dayRrange tempTime', this.startTime, this.endTime)
       this.dayRrangeVal = day
       this.days = this.formatDays(days)
@@ -459,13 +477,15 @@ export default defineComponent({
     choseArea(e) {
       this.currenArea = e;
       console.log('Home choseArea e')
-      localStorage.setItem(STORAGE.SELECT_AREA, e)
       const area = this.areas.filter(area => area.area_id == e)
       console.log('Home choseArea areaName', area)
       const areaName = area[0].area_name
       this.currenAreaName = areaName
-      localStorage.setItem(STORAGE.SELECT_AREA, e)
-      localStorage.setItem(STORAGE.SELECT_AREA_NAME, areaName)
+
+      this.filterDateStore.setArea(e)
+      this.filterDateStore.setAreaName(areaName)
+      // localStorage.setItem(STORAGE.SELECT_AREA, e)
+      // localStorage.setItem(STORAGE.SELECT_AREA_NAME, areaName)
       this.getCurrentAreaRooms(this.currenArea)
       this.getAreaRooms()
       this.getMeetRooms()
@@ -502,8 +522,11 @@ export default defineComponent({
         }
         this.startTime = start_date
         this.endTime = end_date
-        localStorage.setItem(STORAGE.SELECT_START_DATE, start_date)
-        localStorage.setItem(STORAGE.SELECT_END_DATE, end_date)
+
+        this.filterDateStore.setStartDate(start_date)
+        this.filterDateStore.seteEndDate(end_date)
+        // localStorage.setItem(STORAGE.SELECT_START_DATE, start_date)
+        // localStorage.setItem(STORAGE.SELECT_END_DATE, end_date)
         this.getMeetRooms()
         const days = this.getDaysBetween(start_date, end_date)
         const tempdays = this.formatDays(days)
