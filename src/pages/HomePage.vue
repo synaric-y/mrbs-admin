@@ -529,10 +529,13 @@ export default defineComponent({
         this.endStamp = temp.end
       }
       const itemNumber = this.rooms.length * this.days.length
-      if (itemNumber == 1) {
-        this.itemWidth = this.screenSize['width'] + 1
-      } else if (itemNumber >= 2 && itemNumber <= 6) {
-        this.itemWidth = this.screenSize['width'] / itemNumber * 2 + 1
+      this.itemWidth = 229
+      if(itemNumber <= 2) {
+        this.itemWidth = 229 * 2
+      }else if (itemNumber <= 4) {
+        this.itemWidth = this.screenSize['width'] / itemNumber
+      } else if (itemNumber <= 6) {
+        this.itemWidth = this.screenSize['width'] / itemNumber
       } else {
         this.itemWidth = 229
       }
