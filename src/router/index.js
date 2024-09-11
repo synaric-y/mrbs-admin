@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
 import HomePage from '@/pages/HomePage.vue'
-import {STORAGE} from "@/config.js";
+import {STORAGE} from "@/const.js";
 
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),

@@ -1,6 +1,6 @@
 import {defineStore} from 'pinia'
 import router from "@/router/index.js";
-import {STORAGE} from "@/config.js";
+import {STORAGE} from "@/const.js";
 import {Api} from "@/network/api.js";
 
 

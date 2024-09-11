@@ -1,7 +1,7 @@
 <script>
 import {Api} from "@/network/api.js";
 import {PageMixin} from "@/pages/PageMixin.js";
-import {STORAGE} from "@/config.js";
+import {STORAGE} from "@/const.js";
 import {ElMessage} from "element-plus";
 
 export default {

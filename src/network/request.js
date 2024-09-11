@@ -1,4 +1,5 @@
-import {HOST, STORAGE} from "@/config.js";
+import {HOST} from "@/config.js";
+import {STORAGE} from "@/const.js";
 import axios from "@/network/axios.js";
 import router from "@/router/index.js";
 
