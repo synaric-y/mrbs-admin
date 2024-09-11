@@ -376,7 +376,7 @@ export default defineComponent({
       console.log('Home getDaysBetween startDate endDate', startDate, endDate)
       const start = moment(startDate)
       const end = moment(endDate)
-      this.dayRrangeVal = 0
+      // this.dayRrangeVal = 0
       const days = []
       while (start <= end) {
         days.push(Common.translateWeekDay(start.format(this.localLangFormat)))
@@ -690,7 +690,7 @@ export default defineComponent({
 }
 
 .date-picker {
-
+  margin-left: 50px;
 }
 
 
@@ -698,18 +698,12 @@ export default defineComponent({
   margin-right: 8px;
 }
 
-.el-select {
-  min-width: 150px;
+.el-button {
+  margin: 10px;
 }
 
-.home-calendar-icon {
-  width: 30px;
-  height: 30px;
-  margin-right: -70px;
-  background-image: url('/imgs/home_calendar_icon.png');
-  background-size: contain;
-  background-repeat: no-repeat;
-  display: inline-block;
+.el-select {
+  min-width: 150px;
 }
 
 .home-calendar {
