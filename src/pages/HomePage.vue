@@ -14,19 +14,27 @@
       </el-col>
 
       <el-col :span="10">
-        <el-button-group class="buttons-margin">
-          <el-button :class="[dayRrangeVal == 1 ? 'button-selected' : 'button-normal']" @click="dayRrange(1)">{{
+        <!-- type="primary" size="small" -->
+        <div class="buttons-margin">
+          <el-button :class="['day-button', dayRrangeVal == 1 ? '' : 'day-button-inactive']" @click="dayRrange(1)">{{
             $t('base.today') }}</el-button>
-          <el-button :class="[dayRrangeVal == 3 ? 'button-selected' : 'button-normal']" @click="dayRrange(3)">{{
+          <el-button  :class="['day-button', dayRrangeVal == 3 ? '' : 'day-button-inactive']" @click="dayRrange(3)">{{
             $t('base.threeDays') }}</el-button>
-          <el-button :class="[dayRrangeVal == 7 ? 'button-selected' : 'button-normal']" @click="dayRrange(7)">{{
+          <el-button :class="['day-button', dayRrangeVal == 7 ? '' : 'day-button-inactive']" @click="dayRrange(7)">{{
             $t('base.week') }}</el-button>
-        </el-button-group>
+
+          <!-- <el-button type="primary" size="small" :class="[dayRrangeVal == 1 ? 'button-selected' : 'button-normal']" @click="dayRrange(1)">{{
+            $t('base.today') }}</el-button>
+          <el-button type="primary" size="small" :class="[dayRrangeVal == 3 ? 'button-selected' : 'button-normal']" @click="dayRrange(3)">{{
+            $t('base.threeDays') }}</el-button>
+          <el-button type="primary" size="small" :class="[dayRrangeVal == 7 ? 'button-selected' : 'button-normal']" @click="dayRrange(7)">{{
+            $t('base.week') }}</el-button> -->
+        </div>
       </el-col>
 
-      <el-col :span="2" class="home-calendar">
+      <!-- <el-col :span="2" class="home-calendar">
         <el-icon class="home-calendar-icon" type="text"></el-icon>
-      </el-col>
+      </el-col> -->
       <el-col :span="6">
         <el-date-picker v-model="baseTime" type="daterange" :range-separator="$t('base.to')"
           :start-placeholder="startTime" :end-placeholder="endTime" @change="choseDate" clearable="false" />
@@ -110,7 +118,7 @@ import { PageMixin } from "@/pages/PageMixin.js";
 import { Common } from "@/common/common";
 import { ElMessage } from "element-plus/es";
 import { Api } from '@/network/api';
-import { STORAGE } from "@/config";
+import { STORAGE } from "@/const";
 import { SELECT_DAY, ROOM_STATUS, USER_TYPE } from '@/const';
 import moment from 'moment';
 import momentzone from "moment-timezone";
@@ -686,7 +694,30 @@ export default defineComponent({
   margin-left: 60px;
 }
 
-.button-selected {
+.day-button {
+  min-width: 80px;
+  height: 30px;
+  line-height: 30px;
+  box-shadow: 0px 2px 6px 0px rgba(0,0,0,0.4);
+  margin-right: 22px;
+  border-radius: 6px;
+  /* background-color: rgba(89,27,183,1); */
+  border: 2px solid rgba(89,27,183,1);
+  color: rgba(89,27,183,1);
+  background-color: white;
+  font-size: 14px;
+  text-align: center;
+}
+
+.day-button-inactive {
+  border: 1px solid var(--el-color-primary);
+  background: white;
+  color: var(--el-color-primary);
+  /* background-color: rgba(89,27,183,1); */
+  /* color: rgba(255,255,255,1); */
+}
+
+/* .button-selected {
   height: 30px;
   line-height: 30px;
   background-color: rgba(89, 27, 183, 1);
@@ -704,7 +735,7 @@ export default defineComponent({
   text-align: center;
   font-family: Roboto;
   border: 2px solid rgba(89, 27, 183, 1);
-}
+} */
 
 .el-icon {
   margin-right: 8px;
