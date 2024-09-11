@@ -193,12 +193,25 @@ export class Common {
         };
     }
 
+    static getCurrenTimeZoneStamp(timeZone) {
+        return Math.floor(moment().valueOf() / 1000);;
+    }
+
     static getTimestampForTodayWithTime(timeString) {
         const now = new Date();
         const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
         const [hours, minutes] = timeString.split(':').map(Number);
         const timeInMs = (hours * 60 * 60) + (minutes * 60);
         return timeInMs;
+    }
+
+    static getYearToDay() {
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = (now.getMonth() + 1).toString().padStart(2, '0');
+        const day = now.getDate().toString().padStart(2, '0');
+        const formattedDate = `${year}-${month}-${day}`;
+        return formattedDate
     }
 
     static getTimestampFromDateAndTime(dateString, timeString) {

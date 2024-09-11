@@ -27,7 +27,8 @@
                                 @change="choseDate(0, $event)" :disabled-date="disabledDate"/>
                             <el-time-select v-model="start_hour" style="width: 240px;margin-left: 20px" start="08:00"
                                 step="00:30" end="21:00" :placeholder="$t('base.plzSelect')"
-                                @change="choseHour(0, start_hour, $event)" :max-time="end_hour"/>
+                                @change="choseHour(0, start_hour, $event)" 
+                                :max-time="end_hour"/>
                         </div>
                     </el-form-item>
                     <el-form-item prop="end_date" :label="$t('meet.end_meet')">
@@ -90,6 +91,8 @@ export default {
             start_hour: "",
             end_hour: "",
             currentTimeZone: 'Asia/Shanghai',
+            currentHour: new Date().getHours(),
+            currentMinute: new Date().getMinutes(),
             form: {
                 id: 0,
                 create_by: "",
@@ -240,8 +243,19 @@ export default {
             const formatStr = Common.getAssignFormat(appeedStr,lang)
             console.log('Meet choseHour this.currentTimeZone lang appeedStr',this.currentTimeZone,lang,appeedStr)
             const nextTimeStamp = moment.tz(formatStr, this.currentTimeZone).unix();
-            console.log('Meet choseHour formatStr nextTimeStamp',formatStr,nextTimeStamp)
+            console.log('Meet choseHour formatStr nextTimeStamp ',formatStr,nextTimeStamp)
             if (mode == 0) {
+                const currenDay = Common.getYearToDay()
+                const currenStamp = Common.getCurrenTimeZoneStamp(this.currentTimeZone)
+                if(currenDay == ymd && currenStamp > nextTimeStamp) {
+                    ElMessage({
+                        message: this.$t('base.passTimeError'),
+                        type: 'warning',
+                    })
+                    this.form.start_seconds = 0
+                    this.start_hour = ''
+                    return
+                }
                 this.form.start_seconds = nextTimeStamp;
                 return
             }
@@ -288,7 +302,7 @@ export default {
                 const starttimestamp = moment.tz(timestamp * 1000, this.currentTimeZone).format('HH:mm')
                 this.start_hour = starttimestamp
                 this.form.start_seconds = timestamp
-                const endstamp = Number(timestamp) + 60 * 60
+                const endstamp = Number(timestamp) + 30 * 60
                 console.log('Meet Detail mounted timestamp endstamp', endstamp)
                 this.end_hour = moment.tz(endstamp * 1000, this.currentTimeZone).format('HH:mm')
                 this.form.end_seconds = endstamp
