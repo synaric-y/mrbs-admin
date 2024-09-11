@@ -24,7 +24,7 @@
                     <el-form-item prop="start_date" :label="$t('meet.start_meet')">
                         <div class="picker-date-container">
                             <el-date-picker v-model="form.start_date" type="date" placeholder="Pick start day"
-                                @change="choseDate(0, $event)" />
+                                @change="choseDate(0, $event)" :disabled-date="disabledDate"/>
                             <el-time-select v-model="start_hour" style="width: 240px;margin-left: 20px" start="08:00"
                                 step="00:30" end="21:00" :placeholder="$t('base.plzSelect')"
                                 @change="choseHour(0, start_hour, $event)" />
@@ -33,7 +33,7 @@
                     <el-form-item prop="end_date" :label="$t('meet.end_meet')">
                         <div class="picker-date-container">
                             <el-date-picker v-model="form.end_date" type="date" placeholder="Pick end day"
-                                @change="choseDate(1, $event)" />
+                                @change="choseDate(1, $event)"  :disabled-date="disabledDate"/>
                             <el-time-select v-model="end_hour" style="width: 240px;margin-left: 20px" start="08:00"
                                 step="00:30" end="21:00" :placeholder="$t('base.plzSelect')"
                                 @change="choseHour(1, end_hour, $event)" />
@@ -195,6 +195,9 @@ export default {
                 })
             })
         },
+        disabledDate(time) {
+            return time.getTime() < Date.now() - 86400000;
+        },
         cancle() {
             console.log('Meet Detail cancle')
             this.back()
@@ -219,13 +222,14 @@ export default {
 
         choseDate(mode, e) {
             console.log('Meet Detail choseDate e', e)
+            const date = moment.tz(e, this.currentTimeZone).format('YYYY-MM-DD')
             if (mode == 0) {
-                this.form.start_date = moment.tz(e, this.currentTimeZone).format('YYYY-MM-DD')
-                this.form.end_date = moment.tz(e, this.currentTimeZone).format('YYYY-MM-DD')
+                this.form.start_date = date
+                this.form.end_date = date
                 return
             }
-            this.form.start_date = moment.tz(e, this.currentTimeZone).format('YYYY-MM-DD')
-            this.form.end_date = moment.tz(e, this.currentTimeZone).format('YYYY-MM-DD');
+            this.form.start_date = date
+            this.form.end_date = date
         },
 
         choseHour(mode, str, e) {
