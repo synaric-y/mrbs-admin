@@ -39,7 +39,7 @@
               :style="{ height: timeSlots.length * 60 + 70 + 'px', width: itemWidth + 'px' }">
               {{ room.room_name }}
               <template v-for="(time, timeIndex) in localTimeSlots">
-                <div class="empty-meet-div"
+                <div :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div':'empty-meet-div']"
                   :style="{ height: 60 + 'px', width: itemWidth + 'px', top: (timeIndex * 60 + 70) + 'px' }"
                   @click="toMeet(time, room, day)">
                   <text class="empty-meet-duration">{{ time }}</text>
@@ -797,6 +797,19 @@ export default defineComponent({
   text-align: right;
 }
 
+.empty-abled-meet-div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 100px;
+  width: 60px;
+  height: 60px;
+  transition: all 0.3s ease;
+  padding: 0px 10px;
+}
+
 .empty-meet-div {
   display: flex;
   flex-direction: column;
@@ -823,6 +836,11 @@ export default defineComponent({
 .empty-meet-div:hover {
   color: white;
   background-color: #CECECE;
+}
+.empty-abled-meet-div:hover {
+  color: white;
+  /* "#0288d" */
+  background-color: #6a1b9a;
 }
 
 .day-header {
