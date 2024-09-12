@@ -409,6 +409,7 @@ export default {
 }
 
 .container-sub-page-main {
+    margin-left: 30px;
     min-width: 930px;
     display: flex;
     flex-direction: column;

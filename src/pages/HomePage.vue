@@ -200,6 +200,7 @@ export default defineComponent({
       // const selectArea = localStorage.getItem(STORAGE.SELECT_AREA)
       // const selectAreaName = localStorage.getItem(STORAGE.SELECT_AREA_NAME)
       this.getAllAreas();
+      this.dayRrangeVal = selectDays
       if (selectStartDate && selectEndDate) {
         this.startTime = selectStartDate
         this.endTime = selectEndDate
@@ -415,6 +416,13 @@ export default defineComponent({
     },
 
     getMeetStatusText(dayTime, roomStatus, minuteTime) {
+      const userinfo = JSON.parse(localStorage.getItem(STORAGE.USER_INFO))
+      if(!userinfo || userinfo.level == 0) {
+        return this.$t('base.loginoutUser')
+      }
+      if (this.normalUser()) {
+        return this.$t('base.normalUser')
+      }
       if (roomStatus.disabled == ROOM_STATUS.DISABLED) {
         return this.$t('base.roomDisabled')
       }
@@ -422,9 +430,6 @@ export default defineComponent({
       const appeedStr = dayTime.date + ' ' + minuteTime
       const formatStr = Common.getAssignFormatWithAM(appeedStr, lang)
       const nextTimeStamp = moment.tz(formatStr, this.currentTimeZone).unix();
-      if (this.normalUser()) {
-        return this.$t('base.normalUser')
-      }
       if (nextTimeStamp < this.currenTimestamp) {
         return this.$t('base.passTime')
       }
@@ -468,7 +473,7 @@ export default defineComponent({
     normalUser() {
       const userinfo = JSON.parse(localStorage.getItem(STORAGE.USER_INFO))
       const level = {}
-      if (userinfo.level == USER_TYPE.ADMIN) {
+      if (userinfo && userinfo.level == USER_TYPE.ADMIN) {
         return false
       }
       return true
