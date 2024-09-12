@@ -188,21 +188,11 @@ export default defineComponent({
     getSyncInterval() {
       this.filterDateStore = FilterDateStore()
       console.log('Home getSyncInterval this.filterDateStore', this.filterDateStore.area)
-
-
-
       const selectDays = this.filterDateStore.days
       const selectStartDate = this.filterDateStore.startDate
       const selectEndDate = this.filterDateStore.endDate
       const selectArea = this.filterDateStore.area
       const selectAreaName = this.filterDateStore.areaName
-
-
-      // const selectDays = Number(localStorage.getItem(STORAGE.SELECT_DAYS))
-      // const selectStartDate = localStorage.getItem(STORAGE.SELECT_START_DATE)
-      // const selectEndDate = localStorage.getItem(STORAGE.SELECT_END_DATE)
-      // const selectArea = localStorage.getItem(STORAGE.SELECT_AREA)
-      // const selectAreaName = localStorage.getItem(STORAGE.SELECT_AREA_NAME)
       this.getAllAreas();
       this.dayRrangeVal = selectDays
       if (selectStartDate && selectEndDate) {
@@ -343,18 +333,13 @@ export default defineComponent({
         tempTime = Common.getThreeDaysTimestamps(this.currentTimeZone)
         console.log(tempTime)
       }
-
       this.filterDateStore.setDays(day)
-      // localStorage.setItem(STORAGE.SELECT_DAYS, day)
       this.startStamp = tempTime.start
       this.endStamp = tempTime.end
       this.startTime = moment.tz(tempTime.start * 1000, this.currentTimeZone).format('YYYY-MM-DD')
       this.endTime = moment.tz(tempTime.end * 1000, this.currentTimeZone).format('YYYY-MM-DD')
-
       this.filterDateStore.setStartDate(this.startTime)
       this.filterDateStore.setEndDate(this.endTime)
-      // localStorage.setItem(STORAGE.SELECT_START_DATE, this.startTime)
-      // localStorage.setItem(STORAGE.SELECT_END_DATE, this.endTime)
       console.log('Home dayRrange tempTime', this.startTime, this.endTime)
       this.dayRrangeVal = day
       this.days = this.formatDays(days)
@@ -399,7 +384,6 @@ export default defineComponent({
       console.log('Home getDaysBetween startDate endDate', startDate, endDate)
       const start = moment(startDate)
       const end = moment(endDate)
-      // this.dayRrangeVal = 0
       const days = []
       while (start <= end) {
         days.push(Common.translateWeekDay(start.format(this.localLangFormat)))
@@ -490,11 +474,8 @@ export default defineComponent({
       console.log('Home choseArea areaName', area)
       const areaName = area[0].area_name
       this.currenAreaName = areaName
-
       this.filterDateStore.setArea(e)
       this.filterDateStore.setAreaName(areaName)
-      // localStorage.setItem(STORAGE.SELECT_AREA, e)
-      // localStorage.setItem(STORAGE.SELECT_AREA_NAME, areaName)
       this.getCurrentAreaRooms(this.currenArea)
       this.getAreaRooms()
       this.getMeetRooms()
@@ -534,8 +515,6 @@ export default defineComponent({
 
         this.filterDateStore.setStartDate(start_date)
         this.filterDateStore.seteEndDate(end_date)
-        // localStorage.setItem(STORAGE.SELECT_START_DATE, start_date)
-        // localStorage.setItem(STORAGE.SELECT_END_DATE, end_date)
         this.getMeetRooms()
         const days = this.getDaysBetween(start_date, end_date)
         const tempdays = this.formatDays(days)
@@ -563,7 +542,6 @@ export default defineComponent({
       const itemNumber = this.rooms.length * this.days.length
       this.itemWidth = 229
       if (itemNumber <= 2) {
-        // this.itemWidth = this.screenSize['width'] / itemNumber
         this.itemWidth = 229
       } else if (itemNumber <= 4) {
         this.itemWidth = this.screenSize['width'] / itemNumber
@@ -751,7 +729,6 @@ export default defineComponent({
 }
 
 .scroll-table-view {
-  /* height: 420px; */
   height: 550px;
   width: 100%;
 }
@@ -787,7 +764,6 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   padding-right: 10px;
-  /* font-weight: bold; */
   z-index: 1000;
 }
 
@@ -823,9 +799,7 @@ export default defineComponent({
   top: 100px;
   width: 60px;
   height: 60px;
-  /* transition: all 0.3s ease; */
   transition: background-color 0.3s ease, color 0.3s ease;
-  /* 添加平滑过渡效果 */
   padding: 0px 10px;
 }
 
