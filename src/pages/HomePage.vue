@@ -554,7 +554,7 @@ export default defineComponent({
       const itemNumber = this.rooms.length * this.days.length
       this.itemWidth = 229
       if(itemNumber <= 2) {
-        this.itemWidth = 229 * 2
+        this.itemWidth = this.screenSize['width'] / itemNumber
       }else if (itemNumber <= 4) {
         this.itemWidth = this.screenSize['width'] / itemNumber
       } else if (itemNumber <= 6) {

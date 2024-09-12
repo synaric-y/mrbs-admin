@@ -3,7 +3,7 @@ import router from "@/router/index.js";
 
 
 export const FilterDateStore = defineStore('filterDate', {
-  state: () => ({ days: '1', startDate: '', endDate: '', area: 'all-TEST', areaName: 'all' }),
+  state: () => ({ days: '1', startDate: '', endDate: '', area: '', areaName: 'all' }),
   getters: {
     daysFn: (state) => state.days,
     startDateFn: (state) => state.startDate,
