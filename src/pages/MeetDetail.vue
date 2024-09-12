@@ -51,7 +51,7 @@
                             <el-option v-for="(meet,index) in meetTypes" :key="index" :label="meet" :value="index" />
                         </el-select>
                     </el-form-item> -->
-                    <el-form-item style="margin-top: 30px;margin-left: 135px">
+                    <el-form-item style="margin-top: 30px;margin-left: 75px">
                         <el-button type="info" size="default" @click="cancle">{{ $t("base.cancel") }}</el-button>
                         <template v-if="mode == 'update'">
                             <el-button type="danger" size="default" @click="deleteMeet">{{ $t("meet.delete_meet")

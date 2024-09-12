@@ -783,14 +783,14 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   padding-right: 10px;
-  font-weight: bold;
+  /* font-weight: bold; */
   z-index: 1000;
 }
 
 .time-slot {
   height: 60px;
   color: #000;
-  font-size: 16px;
+  font-size: 12px;
   color: #000000;
   font-weight: normal;
   font-family: PingFangSC-regular;
