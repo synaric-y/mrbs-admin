@@ -39,7 +39,7 @@
               :style="{ height: timeSlots.length * 60 + 70 + 'px', width: itemWidth + 'px' }">
               {{ room.room_name }}
               <template v-for="(time, timeIndex) in localTimeSlots">
-                <div class="empty-meet-div"
+                <div :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div':'empty-meet-div']"
                   :style="{ height: 60 + 'px', width: itemWidth + 'px', top: (timeIndex * 60 + 70) + 'px' }"
                   @click="toMeet(time, room, day)">
                   <text class="empty-meet-duration">{{ time }}</text>
@@ -81,6 +81,7 @@ import { STORAGE } from "@/const";
 import { SELECT_DAY, ROOM_STATUS, USER_TYPE } from '@/const';
 import moment from 'moment';
 import momentzone from "moment-timezone";
+import { FilterDateStore } from '@/stores/filterDateStore';
 
 const size = ref < 'default' | 'large' | 'small' > ('default')
 const value1 = ref('')
@@ -120,6 +121,7 @@ export default defineComponent({
       interval: null,
       currenTimestamp: 0,
       showLoading: true,
+      filterDateStore: null,
       groupButtons: [
         {
           name: this.$t('base.today'),
@@ -180,13 +182,25 @@ export default defineComponent({
       }, 20000)
     },
     getSyncInterval() {
-      console.log('Home getSyncInterval')
-      const selectDays = Number(localStorage.getItem(STORAGE.SELECT_DAYS))
-      const selectStartDate = localStorage.getItem(STORAGE.SELECT_START_DATE)
-      const selectEndDate = localStorage.getItem(STORAGE.SELECT_END_DATE)
-      const selectArea = localStorage.getItem(STORAGE.SELECT_AREA)
-      const selectAreaName = localStorage.getItem(STORAGE.SELECT_AREA_NAME)
+      this.filterDateStore = FilterDateStore()
+      console.log('Home getSyncInterval this.filterDateStore',this.filterDateStore.area)
+
+
+
+      const selectDays = this.filterDateStore.days
+      const selectStartDate = this.filterDateStore.startDate
+      const selectEndDate = this.filterDateStore.endDate
+      const selectArea = this.filterDateStore.area
+      const selectAreaName = this.filterDateStore.areaName
+
+
+      // const selectDays = Number(localStorage.getItem(STORAGE.SELECT_DAYS))
+      // const selectStartDate = localStorage.getItem(STORAGE.SELECT_START_DATE)
+      // const selectEndDate = localStorage.getItem(STORAGE.SELECT_END_DATE)
+      // const selectArea = localStorage.getItem(STORAGE.SELECT_AREA)
+      // const selectAreaName = localStorage.getItem(STORAGE.SELECT_AREA_NAME)
       this.getAllAreas();
+      this.dayRrangeVal = selectDays
       if (selectStartDate && selectEndDate) {
         this.startTime = selectStartDate
         this.endTime = selectEndDate
@@ -325,13 +339,18 @@ export default defineComponent({
         tempTime = Common.getThreeDaysTimestamps(this.currentTimeZone)
         console.log(tempTime)
       }
-      localStorage.setItem(STORAGE.SELECT_DAYS, day)
+
+      this.filterDateStore.setDays(day)
+      // localStorage.setItem(STORAGE.SELECT_DAYS, day)
       this.startStamp = tempTime.start
       this.endStamp = tempTime.end
       this.startTime = moment.tz(tempTime.start * 1000, this.currentTimeZone).format('YYYY-MM-DD')
       this.endTime = moment.tz(tempTime.end * 1000, this.currentTimeZone).format('YYYY-MM-DD')
-      localStorage.setItem(STORAGE.SELECT_START_DATE, this.startTime)
-      localStorage.setItem(STORAGE.SELECT_END_DATE, this.endTime)
+
+      this.filterDateStore.setStartDate(this.startTime)
+      this.filterDateStore.setEndDate(this.endTime)
+      // localStorage.setItem(STORAGE.SELECT_START_DATE, this.startTime)
+      // localStorage.setItem(STORAGE.SELECT_END_DATE, this.endTime)
       console.log('Home dayRrange tempTime', this.startTime, this.endTime)
       this.dayRrangeVal = day
       this.days = this.formatDays(days)
@@ -397,6 +416,13 @@ export default defineComponent({
     },
 
     getMeetStatusText(dayTime, roomStatus, minuteTime) {
+      const userinfo = JSON.parse(localStorage.getItem(STORAGE.USER_INFO))
+      if(!userinfo || userinfo.level == 0) {
+        return this.$t('base.loginoutUser')
+      }
+      if (this.normalUser()) {
+        return this.$t('base.normalUser')
+      }
       if (roomStatus.disabled == ROOM_STATUS.DISABLED) {
         return this.$t('base.roomDisabled')
       }
@@ -404,9 +430,6 @@ export default defineComponent({
       const appeedStr = dayTime.date + ' ' + minuteTime
       const formatStr = Common.getAssignFormatWithAM(appeedStr, lang)
       const nextTimeStamp = moment.tz(formatStr, this.currentTimeZone).unix();
-      if (this.normalUser()) {
-        return this.$t('base.normalUser')
-      }
       if (nextTimeStamp < this.currenTimestamp) {
         return this.$t('base.passTime')
       }
@@ -450,7 +473,7 @@ export default defineComponent({
     normalUser() {
       const userinfo = JSON.parse(localStorage.getItem(STORAGE.USER_INFO))
       const level = {}
-      if (userinfo.level == USER_TYPE.ADMIN) {
+      if (userinfo && userinfo.level == USER_TYPE.ADMIN) {
         return false
       }
       return true
@@ -459,13 +482,15 @@ export default defineComponent({
     choseArea(e) {
       this.currenArea = e;
       console.log('Home choseArea e')
-      localStorage.setItem(STORAGE.SELECT_AREA, e)
       const area = this.areas.filter(area => area.area_id == e)
       console.log('Home choseArea areaName', area)
       const areaName = area[0].area_name
       this.currenAreaName = areaName
-      localStorage.setItem(STORAGE.SELECT_AREA, e)
-      localStorage.setItem(STORAGE.SELECT_AREA_NAME, areaName)
+
+      this.filterDateStore.setArea(e)
+      this.filterDateStore.setAreaName(areaName)
+      // localStorage.setItem(STORAGE.SELECT_AREA, e)
+      // localStorage.setItem(STORAGE.SELECT_AREA_NAME, areaName)
       this.getCurrentAreaRooms(this.currenArea)
       this.getAreaRooms()
       this.getMeetRooms()
@@ -502,8 +527,11 @@ export default defineComponent({
         }
         this.startTime = start_date
         this.endTime = end_date
-        localStorage.setItem(STORAGE.SELECT_START_DATE, start_date)
-        localStorage.setItem(STORAGE.SELECT_END_DATE, end_date)
+
+        this.filterDateStore.setStartDate(start_date)
+        this.filterDateStore.seteEndDate(end_date)
+        // localStorage.setItem(STORAGE.SELECT_START_DATE, start_date)
+        // localStorage.setItem(STORAGE.SELECT_END_DATE, end_date)
         this.getMeetRooms()
         const days = this.getDaysBetween(start_date, end_date)
         const tempdays = this.formatDays(days)
@@ -531,7 +559,8 @@ export default defineComponent({
       const itemNumber = this.rooms.length * this.days.length
       this.itemWidth = 229
       if(itemNumber <= 2) {
-        this.itemWidth = 229 * 2
+        // this.itemWidth = this.screenSize['width'] / itemNumber
+        this.itemWidth = 229
       }else if (itemNumber <= 4) {
         this.itemWidth = this.screenSize['width'] / itemNumber
       } else if (itemNumber <= 6) {
@@ -754,18 +783,31 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   padding-right: 10px;
-  font-weight: bold;
+  /* font-weight: bold; */
   z-index: 1000;
 }
 
 .time-slot {
   height: 60px;
   color: #000;
-  font-size: 16px;
+  font-size: 12px;
   color: #000000;
   font-weight: normal;
   font-family: PingFangSC-regular;
   text-align: right;
+}
+
+.empty-abled-meet-div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  top: 100px;
+  width: 60px;
+  height: 60px;
+  transition: all 0.3s ease;
+  padding: 0px 10px;
 }
 
 .empty-meet-div {
@@ -794,6 +836,11 @@ export default defineComponent({
 .empty-meet-div:hover {
   color: white;
   background-color: #CECECE;
+}
+.empty-abled-meet-div:hover {
+  color: white;
+  /* "#0288d" */
+  background-color: #6a1b9a;
 }
 
 .day-header {

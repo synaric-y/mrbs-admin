@@ -42,6 +42,7 @@ export const messages = {
             normalUser: '普通用户',
             passTime:'已过时',
             passTimeError: '不能选择已过去的时间',
+            loginoutUser: '未登录状态',
         },
         meet: {
             title: '编辑会议',
@@ -195,6 +196,7 @@ export const messages = {
             normalUser: '일반 사용자',
             passTime:'구식',
             passTimeError: '과거 시간은 선택할 수 없습니다.',
+            loginoutUser: '로그인되지 않은 상태',
         },
         meet: {
             title: '편집회의',
@@ -346,6 +348,7 @@ export const messages = {
             normalUser: 'Normal User',
             passTime:'Obsolete',
             passTimeError: 'Cannot select a time that has passed',
+            loginoutUser: 'Not logged in',
         },
         meet: {
             title: 'Editing Meetings',
