@@ -46,11 +46,6 @@
                                 :key="index"></el-option>
                         </el-select>
                     </el-form-item>
-                    <!-- <el-form-item prop="type" :label="$t('meet.type')">
-                        <el-select v-model="form.type" style="width: 240px" :placeholder="$t('base.plzSelect')">
-                            <el-option v-for="(meet,index) in meetTypes" :key="index" :label="meet" :value="index" />
-                        </el-select>
-                    </el-form-item> -->
                     <el-form-item style="margin-top: 30px;margin-left: 75px">
                         <el-button type="info" size="default" @click="cancle">{{ $t("base.cancel") }}</el-button>
                         <template v-if="mode == 'update'">

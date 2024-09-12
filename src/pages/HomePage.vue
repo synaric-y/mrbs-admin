@@ -12,8 +12,9 @@
         </el-select>
       </div>
       <div class="group-buttons">
-        <el-button v-for="(item,index) in groupButtons" type="primary" size="small" :class="['', item.day == dayRrangeVal ? 'day-button-active' : 'day-button']"
-          @click="dayRrange(item.day)">{{ item.name }}</el-button>
+        <el-button v-for="(item, index) in groupButtons" type="primary" size="small"
+          :class="['', item.day == dayRrangeVal ? 'day-button-active' : 'day-button']" @click="dayRrange(item.day)">{{
+            item.name }}</el-button>
       </div>
       <div class="date-picker">
         <el-date-picker v-model="baseTime" type="daterange" :range-separator="$t('base.to')"
@@ -39,7 +40,8 @@
               :style="{ height: timeSlots.length * 60 + 70 + 'px', width: itemWidth + 'px' }">
               {{ room.room_name }}
               <template v-for="(time, timeIndex) in localTimeSlots">
-                <div :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div':'empty-meet-div']"
+                <div
+                  :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div' : 'empty-meet-div']"
                   :style="{ height: 60 + 'px', width: itemWidth + 'px', top: (timeIndex * 60 + 70) + 'px' }"
                   @click="toMeet(time, room, day)">
                   <text class="empty-meet-duration">{{ time }}</text>
@@ -49,7 +51,9 @@
               <template v-for="(event, indexeve) in events">
                 <template v-if="day.date == event.date && room.room_id == event.room_id">
                   <template v-if="event.status == 0 || event.status == 1 || event.status == 2">
-                    <div :key="indexeve" :class="[event.status == 0 ? 'room-meet-event' : event.status == 1 ? 'room-meet-in-event':'room-meet-timeout-event']" @click="editMeet(event)"
+                    <div :key="indexeve"
+                      :class="[event.status == 0 ? 'room-meet-event' : event.status == 1 ? 'room-meet-in-event' : 'room-meet-timeout-event']"
+                      @click="editMeet(event)"
                       :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 70 + 'px', left: ((itemWidth + 20) * roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
                       <div class="event-center">
                         <div class="event-title">{{ event.entry_name }}</div>
@@ -183,7 +187,7 @@ export default defineComponent({
     },
     getSyncInterval() {
       this.filterDateStore = FilterDateStore()
-      console.log('Home getSyncInterval this.filterDateStore',this.filterDateStore.area)
+      console.log('Home getSyncInterval this.filterDateStore', this.filterDateStore.area)
 
 
 
@@ -417,7 +421,7 @@ export default defineComponent({
 
     getMeetStatusText(dayTime, roomStatus, minuteTime) {
       const userinfo = JSON.parse(localStorage.getItem(STORAGE.USER_INFO))
-      if(!userinfo || userinfo.level == 0) {
+      if (!userinfo || userinfo.level == 0) {
         return this.$t('base.loginoutUser')
       }
       if (this.normalUser()) {
@@ -558,10 +562,10 @@ export default defineComponent({
       }
       const itemNumber = this.rooms.length * this.days.length
       this.itemWidth = 229
-      if(itemNumber <= 2) {
+      if (itemNumber <= 2) {
         // this.itemWidth = this.screenSize['width'] / itemNumber
         this.itemWidth = 229
-      }else if (itemNumber <= 4) {
+      } else if (itemNumber <= 4) {
         this.itemWidth = this.screenSize['width'] / itemNumber
       } else if (itemNumber <= 6) {
         this.itemWidth = this.screenSize['width'] / itemNumber
@@ -819,7 +823,9 @@ export default defineComponent({
   top: 100px;
   width: 60px;
   height: 60px;
-  transition: all 0.3s ease;
+  /* transition: all 0.3s ease; */
+  transition: background-color 0.3s ease, color 0.3s ease;
+  /* 添加平滑过渡效果 */
   padding: 0px 10px;
 }
 
@@ -835,8 +841,18 @@ export default defineComponent({
 
 .empty-meet-div:hover {
   color: white;
+  /* background:
+    linear-gradient(to bottom right,
+      transparent 0%,
+      transparent calc(50% - 1px),
+      white 50%,
+      transparent calc(50% + 1px),
+      transparent 100%);
+  background-size: 100% 100%;
+  background-blend-mode: normal; */
   background-color: #CECECE;
 }
+
 .empty-abled-meet-div:hover {
   color: white;
   /* "#0288d" */
