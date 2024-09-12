@@ -51,7 +51,7 @@
                             <el-option v-for="(meet,index) in meetTypes" :key="index" :label="meet" :value="index" />
                         </el-select>
                     </el-form-item> -->
-                    <el-form-item style="margin-top: 20px">
+                    <el-form-item style="margin-top: 30px;margin-left: 135px">
                         <el-button type="info" size="default" @click="cancle">{{ $t("base.cancel") }}</el-button>
                         <template v-if="mode == 'update'">
                             <el-button type="danger" size="default" @click="deleteMeet">{{ $t("meet.delete_meet")
@@ -66,12 +66,12 @@
 
     <el-dialog v-model="centerDialogVisible" title="Warning" width="500" center>
         <span>
-            确认要删除当前会议！
+            {{ $t('base.deleteTips') }}
         </span>
         <template #footer>
             <div class="dialog-footer">
-                <el-button @click="centerDialogVisible = false">Cancel</el-button>
-                <el-button type="primary" @click="confirmDelete">Confirm</el-button>
+                <el-button @click="centerDialogVisible = false">{{ $t('base.cancel') }}</el-button>
+                <el-button type="primary" @click="confirmDelete">{{ $t('base.confirm') }}</el-button>
             </div>
         </template>
     </el-dialog>
@@ -414,6 +414,10 @@ export default {
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
+}
+
+.sub-title-wrapper {
+    margin-left: 30px;
 }
 
 .picker-date-container {
