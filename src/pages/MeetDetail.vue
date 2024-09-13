@@ -100,6 +100,7 @@ export default {
             currentHour: new Date().getHours(),
             currentMinute: new Date().getMinutes(),
             centerDialogVisible: false,
+            currentHourM: '21:00',
             form: {
                 id: 0,
                 create_by: "",
