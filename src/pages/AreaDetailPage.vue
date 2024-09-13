@@ -197,19 +197,19 @@ export default {
             </el-form-item>
           </el-collapse-item>
 
-          <el-collapse-item :title="$t('base.wxwork')" name="2">
-            <el-form-item prop="use_wxwork" :label="$t('area.formArea.useWxwork')">
-              <el-switch active-value="1" inactive-value="0" v-model="form.area_use_wxwork"/>
-            </el-form-item>
+<!--          <el-collapse-item :title="$t('base.wxwork')" name="2">-->
+<!--            <el-form-item prop="use_wxwork" :label="$t('area.formArea.useWxwork')">-->
+<!--              <el-switch active-value="1" inactive-value="0" v-model="form.area_use_wxwork"/>-->
+<!--            </el-form-item>-->
 
-            <el-form-item prop="wxwork_corpid" :label="$t('area.formArea.wxworkCorpId')">
-              <el-input v-model="form.area_wxwork_corpid" show-word-limit maxlength="255" />
-            </el-form-item>
+<!--            <el-form-item prop="wxwork_corpid" :label="$t('area.formArea.wxworkCorpId')">-->
+<!--              <el-input v-model="form.area_wxwork_corpid" show-word-limit maxlength="255" />-->
+<!--            </el-form-item>-->
 
-            <el-form-item prop="wxwork_secret" :label="$t('area.formArea.wxworkSecret')">
-              <el-input v-model="form.area_wxwork_secret" show-word-limit maxlength="255" />
-            </el-form-item>
-          </el-collapse-item>
+<!--            <el-form-item prop="wxwork_secret" :label="$t('area.formArea.wxworkSecret')">-->
+<!--              <el-input v-model="form.area_wxwork_secret" show-word-limit maxlength="255" />-->
+<!--            </el-form-item>-->
+<!--          </el-collapse-item>-->
         </el-collapse>
 
         <el-form-item style="margin-top: 60px">
