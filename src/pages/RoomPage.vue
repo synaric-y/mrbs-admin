@@ -168,7 +168,7 @@ export default {
         </el-table-column>
         <el-table-column
             prop="capacity"
-            :label="$t('room.tableRoom.galleryful')"
+            :label="$t('room.tableRoom.capacity')"
             width="120">
         </el-table-column>
         <el-table-column
@@ -213,7 +213,7 @@ export default {
           <el-form-item prop="description" :label="$t('room.formRoom.description')" label-position="right">
             <el-input v-model="form.description" autocomplete="off"/>
           </el-form-item>
-          <el-form-item prop="capacity" :label="$t('room.formRoom.galleryful')" label-position="right">
+          <el-form-item prop="capacity" :label="$t('room.formRoom.capacity')" label-position="right">
             <el-input v-model="form.capacity" autocomplete="off"/>
           </el-form-item>
         </el-form>

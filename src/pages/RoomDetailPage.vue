@@ -146,7 +146,7 @@ export default {
           </el-select>
         </el-form-item>
 
-        <el-form-item prop="capacity" :label="$t('room.formRoom.galleryful')">
+        <el-form-item prop="capacity" :label="$t('room.formRoom.capacity')">
           <el-input v-model="form.capacity"/>
         </el-form-item>
 
@@ -169,15 +169,15 @@ export default {
             </el-form-item>
           </el-collapse-item>
 
-          <el-collapse-item :title="$t('base.wxwork')" name="2">
-            <el-form-item prop="use_wxwork" :label="$t('room.formRoom.useWxwork')">
-              <el-switch active-value="1" inactive-value="0" v-model="area.use_wxwork" disabled />
-            </el-form-item>
+<!--          <el-collapse-item :title="$t('base.wxwork')" name="2">-->
+<!--            <el-form-item prop="use_wxwork" :label="$t('room.formRoom.useWxwork')">-->
+<!--              <el-switch active-value="1" inactive-value="0" v-model="area.use_wxwork" disabled />-->
+<!--            </el-form-item>-->
 
-            <el-form-item prop="wxwork_mr_id" :label="$t('room.formRoom.wxworkMRiD')">
-              <el-input v-model="form.wxwork_mr_id" show-word-limit maxlength="20" />
-            </el-form-item>
-          </el-collapse-item>
+<!--            <el-form-item prop="wxwork_mr_id" :label="$t('room.formRoom.wxworkMRiD')">-->
+<!--              <el-input v-model="form.wxwork_mr_id" show-word-limit maxlength="20" />-->
+<!--            </el-form-item>-->
+<!--          </el-collapse-item>-->
         </el-collapse>
 
         <el-form-item style="margin-top: 60px">
