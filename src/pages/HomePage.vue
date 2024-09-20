@@ -76,7 +76,6 @@
 
 <script>
 import { defineComponent, ref } from 'vue';
-import { ElButton, ElButtonGroup, ElCol, ElIcon, ElOption, ElRow, ElSelect } from 'element-plus';
 import { PageMixin } from "@/pages/PageMixin.js";
 import { Common } from "@/common/common";
 import { ElMessage } from "element-plus/es";
@@ -84,23 +83,10 @@ import { Api } from '@/network/api';
 import { STORAGE } from "@/const";
 import { SELECT_DAY, ROOM_STATUS, USER_TYPE } from '@/const';
 import moment from 'moment';
-import momentzone from "moment-timezone";
 import { FilterDateStore } from '@/stores/filterDateStore';
-
-const size = ref < 'default' | 'large' | 'small' > ('default')
-const value1 = ref('')
 
 export default defineComponent({
   mixins: [PageMixin],
-  components: {
-    ElRow,
-    ElCol,
-    ElSelect,
-    ElOption,
-    ElButton,
-    ElIcon,
-    ElButtonGroup,
-  },
   data() {
     return {
       currenArea: '',
