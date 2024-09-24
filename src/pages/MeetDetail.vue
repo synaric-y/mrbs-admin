@@ -26,8 +26,8 @@
                             <el-date-picker v-model="form.start_date" type="date" placeholder="Pick start day"
                                 @change="choseDate(0, $event)" :disabled-date="disabledDate" />
                             <el-time-select v-model="start_hour" style="width: 240px;margin-left: 20px" start="08:00"
-                                step="00:30" end="21:00" :placeholder="$t('base.plzSelect')"
-                                @change="choseHour(0, start_hour, $event)" :max-time="end_hour" />
+                                step="00:15" end="21:00" :placeholder="$t('base.plzSelect')"
+                                @change="choseHour(0, start_hour, $event)" :min-time="currentHourMinute"/>
                         </div>
                     </el-form-item>
                     <el-form-item prop="end_date" :label="$t('meet.end_meet')">
@@ -35,8 +35,8 @@
                             <el-date-picker v-model="form.end_date" type="date" placeholder="Pick end day"
                                 @change="choseDate(1, $event)" :disabled-date="disabledDate" />
                             <el-time-select v-model="end_hour" style="width: 240px;margin-left: 20px" start="08:00"
-                                step="00:30" end="21:00" :placeholder="$t('base.plzSelect')"
-                                @change="choseHour(1, end_hour, $event)" :min-time="start_hour" />
+                                step="00:15" end="21:00" :placeholder="$t('base.plzSelect')"
+                                @change="choseHour(1, end_hour, $event)" :min-time="currentHourMinute" />
                         </div>
                     </el-form-item>
                     <el-form-item prop="room_number" :label="$t('meet.room')">
@@ -97,8 +97,8 @@ export default {
             start_hour: "",
             end_hour: "",
             currentTimeZone: 'Asia/Shanghai',
-            currentHour: new Date().getHours(),
-            currentMinute: new Date().getMinutes(),
+            currentHourMinute: '',
+            currentMinute: '',
             centerDialogVisible: false,
             currentHourM: '21:00',
             form: {
@@ -206,6 +206,27 @@ export default {
                 })
             })
         },
+
+        getNearestHalfHour() {
+            const now = new Date();
+            let currentHour = now.getHours();
+            let currentMinute = now.getMinutes();
+            if (currentMinute < 15) {
+                currentMinute = '00';
+            } else if (currentMinute < 30) {
+                currentMinute = '15';
+            } else if (currentMinute <= 45) {
+                currentMinute = '30';
+            } else if (currentMinute <= 59) {
+                currentMinute = '45';
+            } else {
+                currentMinute = '00';
+            }
+            const formattedHour = String(currentHour).padStart(2, '0');
+            const formattedMinute = currentMinute;
+            return `${formattedHour}:${formattedMinute}`;
+        },
+
         disabledDate(time) {
             return time.getTime() < Date.now() - 86400000;
         },
@@ -238,6 +259,10 @@ export default {
         choseDate(mode, e) {
             console.log('Meet Detail choseDate e', e)
             const date = moment.tz(e, this.currentTimeZone).format('YYYY-MM-DD')
+            // console.log('Meet Detail choseDate date', date,this.form.start_date )
+            // if (date != this.form.start_date) {
+                this.currentHourMinute = '21:30'
+            // }
             if (mode == 0) {
                 this.form.start_date = date
                 this.form.end_date = date
@@ -381,6 +406,9 @@ export default {
                 this.form.room_number = roomName[0].room_name
             })
         }
+
+        this.currentHourMinute = this.getNearestHalfHour()
+        console.log('Meet Detail currentHourMinute',this.currentHourMinute)
         if (!id || id == 0) {
             return
         }

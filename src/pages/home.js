@@ -17,7 +17,7 @@ export const meetData = {
         "entry_type": "1",
         "repeat_id": "20",
         "room_id": "3",
-        "room_name" : "Room A",
+        "room_name": "Room A",
         "timestamp": "2024-08-30 12:23:41",
         "create_by": "admin",
         "modified_by": "",
@@ -49,42 +49,19 @@ export const meetData = {
 }
 
 
-export const areaData = {
-    "code": 0,
-    "message": "success",
-    "data": {
-        "areas": [
-            {
-                "area_id": "2",
-                "area_name": "Shanghai",
-                "rooms": [
-                    {
-                        "room_id": "1",
-                        "room_name": "Room A"
-                    },
-                    {
-                        "room_id": "2",
-                        "room_name": "Room B"
-                    }
-                ]
-            },
-            {
-                "area_id": "3",
-                "area_name": "Beijing",
-                "rooms": [
-                    {
-                        "room_id": "3",
-                        "room_name": "Room C"
-                    },
-                    {
-                        "room_id": "4",
-                        "room_name": "Room D"
-                    }
-                ]
-            }
-        ]
-    }
-}
+
+
+export const areaData = { "code": 0, "msg": "success", "data": 
+    { "areas": 
+        [
+            { "area_id": "1", "area_name": "BCC-\u4e0a\u6d77\u529e\u516c\u5ba4", "resolution":"900","disabled": 0, "start_time": "08:00 AM", "end_time": "09:30 PM", 
+                "rooms": [{ "room_id": "1", "room_name": "A", "description": "", "status": "\u53ef\u9884\u7ea6", "disabled": "0" }, 
+                    { "room_id": "2", "room_name": "B", "description": "", "status": "\u53ef\u9884\u7ea6", "disabled": "0" }, 
+                    { "room_id": "3", "room_name": "C", "description": "", "status": "\u53ef\u9884\u7ea6", "disabled": "0" }, 
+                    { "room_id": "4", "room_name": "D", "description": "", "status": "\u53ef\u9884\u7ea6", "disabled": "0" }] 
+                }] 
+            } 
+        }
 
 export const homeData = {
     "code": 0,
@@ -92,43 +69,61 @@ export const homeData = {
     "data": {
         "min_time": "08:00 AM",
         "max_time": "09:00 PM",
-        "time": "02:55 PM September 02, 2024",
-        "area_room": [
+        "time": "02:55 PM September 24, 2024",
+        "timestamp": 1727085600,
+        "areas": [
             {
                 "area_id": 1,
                 "area_name": "area1",
+                "disabled": 1,
+                "resolution": 900,
                 "rooms": [
                     {
                         "room_id": 1,
                         "room_name": "room A",
+                        "disabled": 1,
                         "entries": [
                             {
                                 "entry_id": 1,
                                 "room_name": "room A",
-                                "start_time": 1725249600,
-                                "end_time": 1725253200,
-                                "entry_name": "entry1",
-                                "book_by": "zhang",
-                                "status": 0, //0表示未开始，1表示进行中，2表示已结束
+                                "start_time": 1727144100,
+                                "end_time": 1727147700,
+                                "entry_name": "测试15分钟需求",
+                                "book_by": "张小三",
+                                "status": 2, //0表示未开始，1表示进行中，2表示已结束
                                 "year": "2024",
                                 "month": "09",
-                                "day": "03",
-                                "week": "Thursday",
-                                "duration": "12:00 PM-01:00 PM"
+                                "day": "24",
+                                "week": "Tuesday",
+                                "duration": "10:15AM-11:15AM"
                             },
                             {
                                 "entry_id": 2,
                                 "room_name": "room A",
-                                "start_time": 1725271200,
-                                "end_time": 1725276600,
-                                "entry_name": "entry1",
-                                "book_by": "zhang",
+                                "start_time": 1727150400,
+                                "end_time": 1727154000,
+                                "entry_name": "it需求",
+                                "book_by": "张小三",
+                                "status": 2, //0表示未开始，1表示进行中，2表示已结束
+                                "year": "2024",
+                                "month": "09",
+                                "day": "24",
+                                "week": "Tuesday",
+                                "duration": "12:00PM-01:00PM"
+                            },
+                            {
+                                "entry_id": 3,
+                                "room_name": "room A",
+                                "start_time": 1727172000,
+                                "end_time": 1727177400,
+                                "entry_name": "销售会议",
+                                "book_by": "李四",
                                 "status": 0, //0表示未开始，1表示进行中，2表示已结束
                                 "year": "2024",
                                 "month": "09",
-                                "day": "03",
-                                "week": "Thursday",
-                                "duration": "18:00 PM-19:30 PM"
+                                "day": "24",
+                                "week": "Tuesday",
+                                "duration": "06:00PM-07:30PM"
                             }
                         ]
                     },
@@ -136,34 +131,35 @@ export const homeData = {
                     {
                         "room_id": 2,
                         "room_name": "room B",
+                        "disabled": 1,
                         "entries": [
                             {
-                                "entry_id": 1,
+                                "entry_id": 10,
                                 "room_name": "room B",
-                                "start_time": 1725258600,
-                                "end_time": 1725262200,
-                                "entry_name": "entry1",
-                                "book_by": "zhang",
+                                "start_time": 1727159400,
+                                "end_time": 1727163000,
+                                "entry_name": "季度会议",
+                                "book_by": "王四",
                                 "status": 0, //0表示未开始，1表示进行中，2表示已结束
                                 "year": "2024",
                                 "month": "09",
-                                "day": "12",
-                                "week": "Monday",
-                                "duration": "02:30 PM-03:30 PM"
+                                "day": "24",
+                                "week": "Tuesday",
+                                "duration": "02:30PM-03:30PM"
                             },
                             {
-                                "entry_id": 2,
+                                "entry_id": 11,
                                 "room_name": "room B",
-                                "start_time": 1725264000,
-                                "end_time": 1725265800,
-                                "entry_name": "entry1",
-                                "book_by": "zhang",
+                                "start_time": 1727164800,
+                                "end_time": 1727166600,
+                                "entry_name": "张三",
+                                "book_by": "张小儿",
                                 "status": 0, //0表示未开始，1表示进行中，2表示已结束
                                 "year": "2024",
                                 "month": "09",
-                                "day": "02",
-                                "week": "Monday",
-                                "duration": "04:00 PM-04:30 PM"
+                                "day": "24",
+                                "week": "Tuesday",
+                                "duration": "04:00PM-04:30PM"
                             }
                         ]
                     }

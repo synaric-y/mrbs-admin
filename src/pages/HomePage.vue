@@ -54,7 +54,7 @@
                     <div :key="indexeve"
                       :class="[event.status == 0 ? 'room-meet-event' : event.status == 1 ? 'room-meet-in-event' : 'room-meet-timeout-event']"
                       @click="editMeet(event)"
-                      :style="{ top: 60 * getTimeSlotIndex(event.startTime) + 70 + 'px', left: ((itemWidth + 20) * roomIndex) + roomIndex * 0.5 + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * 60 + 'px' }">
+                      :style="{ top: minItemHeight * getTimeSlotIndex(event.startTime) + 70 + 'px', left: ((itemWidth + 20) * roomIndex) + roomIndex * 0.5 + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * minItemHeight + 'px' }">
                       <div class="event-center">
                         <div class="event-title">{{ event.entry_name }}</div>
                         <div class="event-time">{{ event.duration }}</div>
@@ -80,10 +80,11 @@ import { PageMixin } from "@/pages/PageMixin.js";
 import { Common } from "@/common/common";
 import { ElMessage } from "element-plus/es";
 import { Api } from '@/network/api';
-import { STORAGE } from "@/const";
+import { MEETING_STATUS, STORAGE } from "@/const";
 import { SELECT_DAY, ROOM_STATUS, USER_TYPE } from '@/const';
 import moment from 'moment';
 import { FilterDateStore } from '@/stores/filterDateStore';
+import { areaData, homeData } from './home';
 
 export default defineComponent({
   mixins: [PageMixin],
@@ -112,6 +113,8 @@ export default defineComponent({
       currenTimestamp: 0,
       showLoading: true,
       filterDateStore: null,
+      minDuration: 1800,
+      minItemHeight: 60,
       groupButtons: [
         {
           name: this.$t('base.today'),
@@ -238,12 +241,24 @@ export default defineComponent({
           })
           return
         }
-        let areas = data.areas
+        // 网络数据
+        // let areas = data.areas
+        // 本地测试数据
+        let areas = areaData.areas
+        // 获取最小的值
+        const minResolution = data.areas.reduce((min, area) => {
+          const resolution = parseInt(area.resolution, 10)
+          return resolution < min ? resolution : min
+        }, 900);
+        this.minDuration = minResolution
         const firstArea = {
           "area_id": "",
           "area_name": this.$t('base.all'),
+          "resolution": '1800',
           "rooms": []
         }
+        this.minItemHeight = 60 / (1800 / parseInt(minResolution))
+        console.log('Minimum resolution: this.minItemHeight', minResolution,this.minItemHeight)
         areas.splice(0, 0, firstArea)
         this.areas = areas
       })
@@ -267,31 +282,25 @@ export default defineComponent({
       })
     },
 
-    getEventStyle(event) {
-      const startHour = parseInt(event.startTime.split(':')[0])
-      const endHour = parseInt(event.endTime.split(':')[0])
-      const startMin = parseInt(event.startTime.split(':')[1].replace('AM', '').replace('PM', ''))
-      const endMin = parseInt(event.endTime.split(':')[1].replace('AM', '').replace('PM', ''))
-      const startPosition = ((startHour - 9) * 60 + startMin) / 60 * 60
-      const endPosition = ((endHour - 9) * 60 + endMin) / 60 * 60
-      const duration = endPosition - startPosition
-      return {
-        top: `${startPosition}px`,
-        height: `${duration}px`,
-      };
-    },
-
     getTimeSlotIndex(time) {
       const [hour, minutePeriod] = time.split(":")
       const [minute, period] = [minutePeriod.slice(0, -2), minutePeriod.slice(-2)]
       const baseTime = `${hour.padStart(2, '0')}:00${period.toUpperCase()}`
-      const baseIndex = this.timeSlots.indexOf(baseTime)
+      const multiple = (1800 / this.minDuration)
+      let baseIndex = this.timeSlots.indexOf(baseTime) * multiple
       if (baseIndex === -1) {
+        console.log('getTimeSlotIndex time baseTime',time,baseTime)
         return -1
       }
-      if (minute === "30") {
-        return baseIndex + 1
+      // 适配5、10、15、20、25、30分钟
+      const divideItems = 60 / (multiple * 2)
+      for (let i = 0; i < (multiple * 2); i++) {
+        if (minute == divideItems * i) {
+          baseIndex = baseIndex + i
+          break
+        }
       }
+      console.log('getTimeSlotIndex time baseTime baseIndex',time,baseTime,baseIndex)
       return baseIndex
     },
 
@@ -437,6 +446,9 @@ export default defineComponent({
       if (this.normalUser()) {
         return
       }
+      if(event.status == MEETING_STATUS.END) {
+        return
+      }
       if (event.disabled == ROOM_STATUS.DISABLED) {
         console.log('Home editMeet disabled', event.disabled)
         return
@@ -536,6 +548,17 @@ export default defineComponent({
       } else {
         this.itemWidth = 229
       }
+
+
+      // 本地测试数据
+      this.currenTimestamp = homeData.data.timestamp
+      this.nowTime = homeData.data.time
+      this.getInMeeting(homeData.data)
+      this.$nextTick(() => {
+          this.showLoading = false
+        })
+      return
+
       console.log('Home getMeetRooms currenArea:  start: end: ', this.currenArea, this.startStamp, this.endStamp);
       Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp, end_time: this.endStamp, timezone: this.currentTimeZone }).then(({ data, code }) => {
         if (!data) {

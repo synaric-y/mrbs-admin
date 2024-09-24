@@ -71,7 +71,7 @@ export class Common {
     }
 
     static getAssignFormat(dateStr,lang) {
-        console.log('common getAssignFormat',lang)
+        // console.log('common getAssignFormat',lang)
         // 2024年09月09日 星期一 09:00AM
         const parsedDate = moment(dateStr, 'YYYY-MM-DD HH:mm');
         const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
@@ -80,7 +80,7 @@ export class Common {
     }
 
     static getAssignFormatWithAM(dateStr,lang) {
-        console.log('common getAssignFormat',lang)
+        // console.log('common getAssignFormat',lang)
         let format;
         if(lang == 'zh-cn') {
             // 2024年09月09日 星期一 09:00AM
