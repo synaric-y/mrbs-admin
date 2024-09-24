@@ -259,10 +259,13 @@ export default {
         choseDate(mode, e) {
             console.log('Meet Detail choseDate e', e)
             const date = moment.tz(e, this.currentTimeZone).format('YYYY-MM-DD')
-            // console.log('Meet Detail choseDate date', date,this.form.start_date )
-            // if (date != this.form.start_date) {
-                this.currentHourMinute = '21:30'
-            // }
+            const newDate = moment.tz(this.form.start_date, this.currentTimeZone).format('YYYY-MM-DD')
+            console.log('Meet Detail choseDate date', date,newDate )
+            if (date != newDate) {
+                this.currentHourMinute = '03:00'
+            } else {
+                this.currentHourMinute = this.getNearestHalfHour()
+            }
             if (mode == 0) {
                 this.form.start_date = date
                 this.form.end_date = date
