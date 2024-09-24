@@ -27,7 +27,7 @@ export default {
     },
     deleteUser() {
       this.showDeleteUserDialog = false
-      Api.deleteUser({name: this.pendingDeleteName}).then(({data, code, message}) => {
+      Api.deleteUser({name: this.pendingDeleteName}).then(({data, code, msg}) => {
         if (code == 0) {
           this.getUserList()
         } else {

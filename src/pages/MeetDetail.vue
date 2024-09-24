@@ -188,7 +188,7 @@ export default {
                 if (!pass) {
                     return
                 }
-                Api.editMeet(this.form).then(({ data, code, message }) => {
+                Api.editMeet(this.form).then(({ data, code, msg }) => {
                     if (code == 0) {
                         ElMessage({
                             message: this.$t('base.editSuccess'),
@@ -240,7 +240,7 @@ export default {
         },
 
         confirmDelete() {
-            Api.deleteMeet({ entry_id: Number(this.entry_id) }).then(({ data, code, message }) => {
+            Api.deleteMeet({ entry_id: Number(this.entry_id) }).then(({ data, code, msg }) => {
                 if (code == 0) {
                     ElMessage({
                         message: this.$t('base.deleteSuccess'),

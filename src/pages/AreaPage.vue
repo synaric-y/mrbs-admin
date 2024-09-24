@@ -61,7 +61,7 @@ export default {
           return
         }
         this.showAddAreaDialog = false
-        Api.addArea(this.form).then(({data, code, message}) => {
+        Api.addArea(this.form).then(({data, code, msg}) => {
           if (code == 0) {
             this.getAreaList()
           } else {
