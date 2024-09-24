@@ -84,7 +84,7 @@ import { MEETING_STATUS, STORAGE } from "@/const";
 import { SELECT_DAY, ROOM_STATUS, USER_TYPE } from '@/const';
 import moment from 'moment';
 import { FilterDateStore } from '@/stores/filterDateStore';
-import { areaData, homeData } from './home';
+import { areaData, homeData, testAreas } from './home';
 
 export default defineComponent({
   mixins: [PageMixin],
@@ -249,7 +249,7 @@ export default defineComponent({
         const minResolution = data.areas.reduce((min, area) => {
           const resolution = parseInt(area.resolution, 10)
           return resolution < min ? resolution : min
-        }, 900);
+        }, 300);
         this.minDuration = minResolution
         const firstArea = {
           "area_id": "",
@@ -282,6 +282,32 @@ export default defineComponent({
       })
     },
 
+    getMaxAreaDuration() {
+      if(testAreas && testAreas.data && testAreas.data.areas) {
+        const localAreas = testAreas.data.areas
+        let minStart = localAreas[0].start_time
+        let [startTime, amstr] = minStart.split(' ')
+        let maxEnd = localAreas[0].end_time
+        let [endTime, pmstr] = maxEnd.split(' ')
+        for (let i = 1; i < localAreas.length; i++) {
+          const otherStart = localAreas[i].start_time
+          const [otherStartTime, otherAMstr] = minStart.split(' ');
+          const otherEnd = localAreas[i].end_time
+          const [otherEndTime, otherPMstr] = maxEnd.split(' ');
+          if (parseInt(otherStartTime) < parseInt(startTime)) {
+            minStart = otherStart
+            startTime = otherStartTime
+            amstr = otherAMstr
+          }
+          if (parseInt(otherEndTime) > parseInt(endTime)) {
+            maxEnd = otherEnd
+            endTime = ''
+            pmstr = ''
+          }
+        }
+      }
+    },
+
     getTimeSlotIndex(time) {
       const [hour, minutePeriod] = time.split(":")
       const [minute, period] = [minutePeriod.slice(0, -2), minutePeriod.slice(-2)]
@@ -300,7 +326,7 @@ export default defineComponent({
           break
         }
       }
-      console.log('getTimeSlotIndex time baseTime baseIndex',time,baseTime,baseIndex)
+      console.log('getTimeSlotIndex time baseTime baseIndex',time,baseTime,baseIndex,minute)
       return baseIndex
     },
 

@@ -49,19 +49,39 @@ export const meetData = {
 }
 
 
-
-
-export const areaData = { "code": 0, "msg": "success", "data": 
-    { "areas": 
-        [
-            { "area_id": "1", "area_name": "BCC-\u4e0a\u6d77\u529e\u516c\u5ba4", "resolution":"900","disabled": 0, "start_time": "08:00 AM", "end_time": "09:30 PM", 
-                "rooms": [{ "room_id": "1", "room_name": "A", "description": "", "status": "\u53ef\u9884\u7ea6", "disabled": "0" }, 
-                    { "room_id": "2", "room_name": "B", "description": "", "status": "\u53ef\u9884\u7ea6", "disabled": "0" }, 
-                    { "room_id": "3", "room_name": "C", "description": "", "status": "\u53ef\u9884\u7ea6", "disabled": "0" }, 
-                    { "room_id": "4", "room_name": "D", "description": "", "status": "\u53ef\u9884\u7ea6", "disabled": "0" }] 
-                }] 
-            } 
+export const testAreas = {
+    "code": 0, "msg": "success", "data":
+    {
+        "areas":
+            [
+                {
+                    "area_id": "1", "area_name": "area1", "resolution": "300", "disabled": 0, "start_time": "08:00 AM", "end_time": "09:30 PM",
+                    "rooms": []
+                },
+                {
+                    "area_id": "2", "area_name": "area2", "resolution": "900", "disabled": 0, "start_time": "06:30 AM", "end_time": "10:30 PM",
+                    "rooms": []
+                },
+            ]
         }
+}
+
+
+
+export const areaData = {
+    "code": 0, "msg": "success", "data":
+    {
+        "areas":
+            [
+                {
+                    "area_id": "1", "area_name": "BCC-\u4e0a\u6d77\u529e\u516c\u5ba4", "resolution": "300", "disabled": 0, "start_time": "08:00 AM", "end_time": "09:30 PM",
+                    "rooms": [{ "room_id": "1", "room_name": "A", "description": "", "status": "\u53ef\u9884\u7ea6", "disabled": "0" },
+                    { "room_id": "2", "room_name": "B", "description": "", "status": "\u53ef\u9884\u7ea6", "disabled": "0" },
+                    { "room_id": "3", "room_name": "C", "description": "", "status": "\u53ef\u9884\u7ea6", "disabled": "0" },
+                    { "room_id": "4", "room_name": "D", "description": "", "status": "\u53ef\u9884\u7ea6", "disabled": "0" }]
+                }]
+    }
+}
 
 export const homeData = {
     "code": 0,
@@ -133,6 +153,20 @@ export const homeData = {
                         "room_name": "room B",
                         "disabled": 1,
                         "entries": [
+                            {
+                                "entry_id": 1,
+                                "room_name": "room B",
+                                "start_time": 1727143800,
+                                "end_time": 1727147400,
+                                "entry_name": "测试10分钟需求",
+                                "book_by": "张测试",
+                                "status": 2, //0表示未开始，1表示进行中，2表示已结束
+                                "year": "2024",
+                                "month": "09",
+                                "day": "24",
+                                "week": "Tuesday",
+                                "duration": "10:10AM-11:10AM"
+                            },
                             {
                                 "entry_id": 10,
                                 "room_name": "room B",
