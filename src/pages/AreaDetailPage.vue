@@ -50,6 +50,9 @@ export default {
         area_timezone: [
           {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
         ],
+        area_res_mins: [
+          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
+        ],
         area_exchange_server: [
           {
             validator: (rule, value, callback, source, options) => {
@@ -136,6 +139,7 @@ export default {
       this.form["area_use_wxwork"] = data["use_wxwork"]
       this.form["area_wxwork_corpid"] = data["wxwork_corpid"]
       this.form["area_wxwork_secret"] = data["wxwork_secret"]
+      this.form['area_res_mins'] = data['area_res_mins']
     })
     this.timezoneList = TIMEZONE_LIST
   }
@@ -182,6 +186,17 @@ export default {
               start="06:00"
               step="00:30"
               end="18:30"
+              :placeholder="$t('base.plzSelect')"
+          />
+        </el-form-item>
+
+        <el-form-item prop="area_res_mins" :label="$t('area.formArea.timeDuration')">
+          <el-time-select
+              v-model="form.area_res_mins"
+              style="width: 240px"
+              start="15"
+              step="15"
+              end="30"
               :placeholder="$t('base.plzSelect')"
           />
         </el-form-item>

@@ -222,6 +222,9 @@ export default defineComponent({
           allRoom.push({
             area_id: areaId,
             area_name: areaName,
+            resolution: area.resolution,
+            start_time: area.start_time,
+            end_time: area.end_time,
             disabled: room.disabled,
             room_id: roomId,
             room_name: `${areaName} ${roomName}`,
