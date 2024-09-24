@@ -17,7 +17,7 @@ export default {
   },
   methods: {
     submit() {
-      Api.login(this.form).then(({data, code, message}) => {
+      Api.login(this.form).then(({data, code, msg}) => {
         if (code == 0) {
           this.login(data)
           this.switchTab('/')

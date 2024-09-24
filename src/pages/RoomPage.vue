@@ -45,7 +45,7 @@ export default {
     },
     deleteRoom() {
       this.showDeleteRoomDialog = false
-      Api.deleteRoom({room: Number(this.pendingDeleteId)}).then(({data, code, message}) => {
+      Api.deleteRoom({room: Number(this.pendingDeleteId)}).then(({data, code, msg}) => {
         if (code == 0) {
           this.getRoomList()
         } else {
@@ -98,7 +98,7 @@ export default {
           return
         }
         this.showAddRoomDialog = false
-        Api.addRoom(this.form).then(({data, code, message}) => {
+        Api.addRoom(this.form).then(({data, code, msg}) => {
           if (code == 0) {
             this.getRoomList()
           } else {

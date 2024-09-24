@@ -74,7 +74,7 @@ export default {
           return;
         }
         let callAPi = this.mode == 'add' ? Api.addUser : Api.updateUser
-        callAPi(this.form).then(({data, code, message}) => {
+        callAPi(this.form).then(({data, code, msg}) => {
           if (code == 0) {
             ElMessage({
               message: this.$t('base.editSuccess'),
