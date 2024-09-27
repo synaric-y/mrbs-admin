@@ -290,11 +290,30 @@ export class Common {
         const minutes = date.getMinutes();
         const ampm = hours >= 12 ? 'PM' : 'AM';
         hours = hours % 12;
-        hours = hours ? hours : 12; // The hour '0' should be '12'
+        hours = hours ? hours : 12;
         if (hours < 10) {
             hours = '0' + hours
         }
         const minutesStr = minutes < 10 ? '0' + minutes : minutes;
         return hours + ':' + minutesStr + ampm;
+    }
+
+    static formatAMPMTo24(str) {
+        const [times, amstr] = str.split(' ')
+        if (times) {
+            let [hours, minutes] = times.split(':')
+            let numberHour = Number(hours)
+            let numberMinute = Number(minutes)
+            let hoursStr = ''
+            if (amstr == 'PM' && numberHour != 12) {
+                numberHour += 12
+                hoursStr = `${numberHour}`
+            }
+            if (numberHour < 10) {
+                hoursStr = '0' + hours
+            }
+            return hoursStr + ':' + minutes;
+        }
+        
     }
 }

@@ -43,6 +43,7 @@ export const messages = {
             passTime:'已过时',
             passTimeError: '不能选择已过去的时间',
             loginoutUser: '未登录状态',
+            minMinuteTitle: '(15分钟)',
         },
         meet: {
             title: '编辑会议',
@@ -198,6 +199,7 @@ export const messages = {
             passTime:'구식',
             passTimeError: '과거 시간은 선택할 수 없습니다.',
             loginoutUser: '로그인되지 않은 상태',
+            minMinuteTitle: '(15분)',
         },
         meet: {
             title: '편집회의',
@@ -351,6 +353,7 @@ export const messages = {
             passTime:'Obsolete',
             passTimeError: 'Cannot select a time that has passed',
             loginoutUser: 'Not logged in',
+            minMinuteTitle: '(15 minutes)',
         },
         meet: {
             title: 'Editing Meetings',

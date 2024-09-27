@@ -25,8 +25,8 @@
                         <div class="picker-date-container">
                             <el-date-picker v-model="form.start_date" type="date" placeholder="Pick start day"
                                 @change="choseDate(0, $event)" :disabled-date="disabledDate" />
-                            <el-time-select v-model="start_hour" style="width: 240px;margin-left: 20px" start="08:00"
-                                step="00:15" end="21:00" :placeholder="$t('base.plzSelect')"
+                            <el-time-select v-model="start_hour" style="width: 240px;margin-left: 20px" :start="minStartTime"
+                                :step="minStep" :end="maxEndTime" :placeholder="$t('base.plzSelect')"
                                 @change="choseHour(0, start_hour, $event)" :min-time="currentHourMinute"/>
                         </div>
                     </el-form-item>
@@ -34,8 +34,8 @@
                         <div class="picker-date-container">
                             <el-date-picker v-model="form.end_date" type="date" placeholder="Pick end day"
                                 @change="choseDate(1, $event)" :disabled-date="disabledDate" />
-                            <el-time-select v-model="end_hour" style="width: 240px;margin-left: 20px" start="08:00"
-                                step="00:15" end="21:00" :placeholder="$t('base.plzSelect')"
+                            <el-time-select v-model="end_hour" style="width: 240px;margin-left: 20px" :start="minStartTime"
+                                :step="minStep" :end="maxEndTime" :placeholder="$t('base.plzSelect')"
                                 @change="choseHour(1, end_hour, $event)" :min-time="currentHourMinute" />
                         </div>
                     </el-form-item>
@@ -101,6 +101,9 @@ export default {
             currentMinute: '',
             centerDialogVisible: false,
             currentHourM: '21:00',
+            minStartTime: '06:00',
+            maxEndTime: '21:00',
+            minStep: '00:30',
             form: {
                 id: 0,
                 create_by: "",
@@ -408,6 +411,22 @@ export default {
                 this.rooms = data.areas.rooms
                 const roomName = data.areas.rooms.filter(room => room.room_id == room_id)
                 this.form.room_number = roomName[0].room_name
+                if (data.areas.resolution == '900') {
+                    this.minStep = '00:15'
+                }
+
+                if (data.areas.end_time) {
+                    const result = Common.formatAMPMTo24(data.areas.end_time)
+                    console.log('Meet Detail formatAMPMTo24 result',result)
+                    this.maxEndTime = result
+                }
+
+                if (data.areas.start_time) {
+                    const startTime = data.areas.start_time
+                    const [hourstr, amstr] = startTime.split(' ')
+                    console.log('Meet Detail formatAMPMTo24 startTime hourstr amstr',startTime,hourstr,amstr)
+                    this.minStartTime = hourstr
+                }
             })
         }
 

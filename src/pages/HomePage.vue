@@ -56,9 +56,15 @@
                       @click="editMeet(event)"
                       :style="{ top: minItemHeight * getTimeSlotIndex(event.startTime) + 70 + 'px', left: ((itemWidth + 20) * roomIndex) + roomIndex * 0.5 + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * minItemHeight + 'px' }">
                       <div class="event-center">
-                        <div class="event-title">{{ event.entry_name }}</div>
-                        <div class="event-time">{{ event.duration }}</div>
-                        <div class="event-person">{{ event.book_by }}</div>
+                        <template v-if="(getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) == 3">
+                          <div class="event-title">{{ event.entry_name }}{{$t('base.minMinuteTitle')}}</div>
+                          <div class="event-person" :style="{margin: 2 + 'px'}">{{ event.book_by }}</div>
+                        </template>
+                        <template v-else>
+                          <div class="event-title">{{ event.entry_name }}</div>
+                          <div class="event-time">{{ event.duration }}</div>
+                          <div class="event-person">{{ event.book_by }}</div>
+                        </template>
                       </div>
                     </div>
                   </template>
@@ -332,7 +338,7 @@ export default defineComponent({
       const multiple = (1800 / this.minDuration)
       let baseIndex = this.timeSlots.indexOf(baseTime) * multiple
       if (baseIndex === -1) {
-        console.log('getTimeSlotIndex time baseTime',time,baseTime)
+        // console.log('getTimeSlotIndex time baseTime',time,baseTime)
         return -1
       }
       // 适配5、10、15、20、25、30分钟
@@ -343,7 +349,7 @@ export default defineComponent({
           break
         }
       }
-      console.log('getTimeSlotIndex time baseTime baseIndex',time,baseTime,baseIndex,minute)
+      // console.log('getTimeSlotIndex time baseTime baseIndex',time,baseTime,baseIndex,minute)
       return baseIndex
     },
 
@@ -463,6 +469,7 @@ export default defineComponent({
     },
 
     toMeet(time, room, day) {
+      console.log("Home toMeet room", room)
       const lang = Common.getLocalLang()
       console.log("Home toMeet day.date timeZone lang", day.date, this.currentTimeZone, this.localLangFormat)
       console.log("Home toMeet formatTime date", day.date)
