@@ -40,7 +40,7 @@
               :style="{ height: timeSlots.length * 60 + 70 + 'px', width: itemWidth + 'px' }">
               {{ room.room_name }}
               <template v-for="(time, timeIndex) in localTimeSlots">
-                <div
+                <div v-if="timeIndex != localTimeSlots.length - 1"
                   :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div' : 'empty-meet-div']"
                   :style="{ height: 60 + 'px', width: itemWidth + 'px', top: (timeIndex * 60 + 70) + 'px' }"
                   @click="toMeet(time, room, day)">
