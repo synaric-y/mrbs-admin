@@ -405,8 +405,8 @@ export default {
                     return
                 }
                 console.log('Meet Detail getAreaRooms data',data)
-                this.rooms = data.areas[0].rooms
-                const roomName = data.areas[0].rooms.filter(room => room.room_id == room_id)
+                this.rooms = data.areas.rooms
+                const roomName = data.areas.rooms.filter(room => room.room_id == room_id)
                 this.form.room_number = roomName[0].room_name
             })
         }

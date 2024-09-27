@@ -262,7 +262,13 @@ export default defineComponent({
         }
         this.minItemHeight = 60 / (1800 / parseInt(minResolution))
         console.log('Minimum resolution: this.minItemHeight', minResolution,this.minItemHeight)
-        areas.splice(0, 0, firstArea)
+
+        // 获取开始、结束时间
+        const {minStart,maxEnd} = this.getMaxAreaDuration()
+        console.log('Minimum minStart  maxEnd', minStart,maxEnd)
+        if(areas.length > 0) {
+          areas.splice(0, 0, firstArea)
+        }
         this.areas = areas
       })
     },
@@ -308,7 +314,9 @@ export default defineComponent({
             pmstr = ''
           }
         }
+        return {minStart,maxEnd}
       }
+      return {}
     },
 
     getTimeSlotIndex(time) {
