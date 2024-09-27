@@ -43,55 +43,55 @@ export class Common {
     }
 
     static getAssignFormatYearToMinute() {
-        console.log('common getAssignFormatYearToMinute',lang)
+        console.log('common getAssignFormatYearToMinute', lang)
         let format;
-        if(lang == 'zh-cn') {
+        if (lang == 'zh-cn') {
             // 2024年09月09日 星期一 09:00AM
             const parsedDate = moment(dateStr, 'YYYY年MM月DD日 HH:mm');
             const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
-            console.log('common getAssignFormat result',result)
+            console.log('common getAssignFormat result', result)
             format = result;
-        } else if(lang == 'en-US' || lang == 'en') {
+        } else if (lang == 'en-US' || lang == 'en') {
             const parsedDate = moment(dateStr, 'dddd, MMMM Do YYYY HH:mm');
             const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
-            console.log('common getAssignFormat result',result)
+            console.log('common getAssignFormat result', result)
             format = result;
-        } else if(lang == 'ko') {
+        } else if (lang == 'ko') {
             const parsedDate = moment(dateStr, 'YYYY년MM월DD일 H:mm');
             const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
-            console.log('common getAssignFormat result',result)
+            console.log('common getAssignFormat result', result)
             format = result
         } else {
             const parsedDate = moment(dateStr, 'YYYY年MM月DD日 HH:mm');
             const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
-            console.log('common getAssignFormat result',result)
+            console.log('common getAssignFormat result', result)
             format = result;
         }
         return format
     }
 
-    static getAssignFormat(dateStr,lang) {
+    static getAssignFormat(dateStr, lang) {
         // console.log('common getAssignFormat',lang)
         // 2024年09月09日 星期一 09:00AM
         const parsedDate = moment(dateStr, 'YYYY-MM-DD HH:mm');
         const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
-        console.log('common getAssignFormat result',result)
+        console.log('common getAssignFormat result', result)
         return result
     }
 
-    static getAssignFormatWithAM(dateStr,lang) {
+    static getAssignFormatWithAM(dateStr, lang) {
         // console.log('common getAssignFormat',lang)
         let format;
-        if(lang == 'zh-cn') {
+        if (lang == 'zh-cn') {
             // 2024年09月09日 星期一 09:00AM
             const parsedDate = moment(dateStr, 'YYYY年MM月DD日 hh:mmA');
             const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
             format = result;
-        } else if(lang == 'en-US' || lang == 'en') {
+        } else if (lang == 'en-US' || lang == 'en') {
             const parsedDate = moment(dateStr, 'dddd, MMMM Do YYYY hh:mmA');
             const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
             format = result;
-        } else if(lang == 'ko') {
+        } else if (lang == 'ko') {
             const parsedDate = moment(dateStr, 'YYYY년MM월DD일 h:mmA');
             const result = parsedDate.format('YYYY-MM-DD HH:mm:ss');
             format = result
@@ -246,4 +246,55 @@ export class Common {
         });
         return Math.floor(combined.valueOf() / 1000);
     }
-} 
+
+    static generateTimeSlots(startTime, endTime) {
+        const timeSlots = [];
+        const localTimeSlots = [];
+        let currentTime = Common.parseTime(startTime);
+        const endTimeDate = Common.parseTime(endTime);
+        while (currentTime <= endTimeDate) {
+            const formattedTime = Common.formatTime(currentTime);
+            // Add to timeSlots (full hour only with separator "ㆍ")
+            if (currentTime.getMinutes() === 0) {
+                timeSlots.push(formattedTime);
+                if (currentTime.getTime() !== endTimeDate.getTime()) {
+                    timeSlots.push("ㆍ");
+                }
+            }
+            // Add to localTimeSlots (every 30 minutes)
+            localTimeSlots.push(formattedTime);
+            // Increment by 30 minutes
+            currentTime.setMinutes(currentTime.getMinutes() + 30);
+        }
+        return { timeSlots, localTimeSlots };
+    }
+
+    static parseTime(timeStr) {
+        const [time, modifier] = timeStr.split(/(AM|PM)/);
+        let [hours, minutes] = time.split(':').map(Number);
+        if (modifier === 'PM' && hours !== 12) {
+            hours += 12;
+        } else if (modifier === 'AM' && hours === 12) {
+            hours = 0;
+        }
+        const date = new Date();
+        date.setHours(hours);
+        date.setMinutes(minutes || 0);
+        date.setSeconds(0);
+        date.setMilliseconds(0);
+        return date;
+    }
+
+    static formatTime(date) {
+        let hours = date.getHours();
+        const minutes = date.getMinutes();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // The hour '0' should be '12'
+        if (hours < 10) {
+            hours = '0' + hours
+        }
+        const minutesStr = minutes < 10 ? '0' + minutes : minutes;
+        return hours + ':' + minutesStr + ampm;
+    }
+}

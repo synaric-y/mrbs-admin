@@ -55,7 +55,7 @@ export const testAreas = {
         "areas":
             [
                 {
-                    "area_id": "1", "area_name": "area1", "resolution": "300", "disabled": 0, "start_time": "08:00 AM", "end_time": "09:30 PM",
+                    "area_id": "1", "area_name": "area1", "resolution": "300", "disabled": 0, "start_time": "06:00 AM", "end_time": "09:30 PM",
                     "rooms": []
                 },
                 {

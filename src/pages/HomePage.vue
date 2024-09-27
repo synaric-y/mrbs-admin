@@ -245,9 +245,9 @@ export default defineComponent({
           return
         }
         // 网络数据
-        // let areas = data.areas
+        let areas = data.areas
         // 本地测试数据
-        let areas = areaData.areas
+        // let areas = areaData.areas
         // 获取最小的值
         const minResolution = data.areas.reduce((min, area) => {
           const resolution = parseInt(area.resolution, 10)
@@ -261,12 +261,16 @@ export default defineComponent({
           "rooms": []
         }
         this.minItemHeight = 60 / (1800 / parseInt(minResolution))
-        console.log('Minimum resolution: this.minItemHeight', minResolution,this.minItemHeight)
+        console.log('Home Minimum resolution: this.minItemHeight', minResolution,this.minItemHeight)
 
         // 获取开始、结束时间
         const {minStart,maxEnd} = this.getMaxAreaDuration()
-        console.log('Minimum minStart  maxEnd', minStart,maxEnd)
-        if(areas.length > 0) {
+        console.log('Home Minimum minStart  maxEnd', minStart,maxEnd)
+        const {timeSlots, localTimeSlots} = Common.generateTimeSlots(minStart,maxEnd)
+        this.timeSlots = timeSlots
+        this.localTimeSlots = localTimeSlots
+        console.log('Home timeSlots localTimeSlots', timeSlots,localTimeSlots)
+        if(areas) {
           areas.splice(0, 0, firstArea)
         }
         this.areas = areas
@@ -298,11 +302,13 @@ export default defineComponent({
         let [startTime, amstr] = minStart.split(' ')
         let maxEnd = localAreas[0].end_time
         let [endTime, pmstr] = maxEnd.split(' ')
+        console.log('Home getMaxAreaDuration startTime amstr',startTime,amstr)
+        console.log('Home getMaxAreaDuration endTime pmstr',endTime,pmstr)
         for (let i = 1; i < localAreas.length; i++) {
           const otherStart = localAreas[i].start_time
-          const [otherStartTime, otherAMstr] = minStart.split(' ');
+          const [otherStartTime, otherAMstr] = otherStart.split(' ');
           const otherEnd = localAreas[i].end_time
-          const [otherEndTime, otherPMstr] = maxEnd.split(' ');
+          const [otherEndTime, otherPMstr] = otherEnd.split(' ');
           if (parseInt(otherStartTime) < parseInt(startTime)) {
             minStart = otherStart
             startTime = otherStartTime
@@ -310,8 +316,8 @@ export default defineComponent({
           }
           if (parseInt(otherEndTime) > parseInt(endTime)) {
             maxEnd = otherEnd
-            endTime = ''
-            pmstr = ''
+            endTime = otherEndTime
+            pmstr = otherPMstr
           }
         }
         return {minStart,maxEnd}
@@ -588,13 +594,13 @@ export default defineComponent({
 
 
       // 本地测试数据
-      this.currenTimestamp = homeData.data.timestamp
-      this.nowTime = homeData.data.time
-      this.getInMeeting(homeData.data)
-      this.$nextTick(() => {
-          this.showLoading = false
-        })
-      return
+      // this.currenTimestamp = homeData.data.timestamp
+      // this.nowTime = homeData.data.time
+      // this.getInMeeting(homeData.data)
+      // this.$nextTick(() => {
+      //     this.showLoading = false
+      //   })
+      // return
 
       console.log('Home getMeetRooms currenArea:  start: end: ', this.currenArea, this.startStamp, this.endStamp);
       Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp, end_time: this.endStamp, timezone: this.currentTimeZone }).then(({ data, code }) => {
