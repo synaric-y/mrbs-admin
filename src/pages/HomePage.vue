@@ -44,8 +44,10 @@
                   :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div' : 'empty-meet-div']"
                   :style="{ height: 60 + 'px', width: itemWidth + 'px', top: (timeIndex * 60 + 70) + 'px' }"
                   @click="toMeet(time, room, day)">
-                  <text class="empty-meet-duration">{{ time }}</text>
-                  <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text>
+                  <template v-if="canHoverDiv(time,room)">
+                    <text class="empty-meet-duration">{{ time }}</text>
+                    <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text>
+                  </template>
                 </div>
               </template>
               <template v-for="(event, indexeve) in events">
@@ -57,7 +59,7 @@
                       :style="{ top: minItemHeight * getTimeSlotIndex(event.startTime) + 70 + 'px', left: ((itemWidth + 20) * roomIndex) + roomIndex * 0.5 + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * minItemHeight + 'px' }">
                       <div class="event-center">
                         <template v-if="(getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) == 3">
-                          <div class="event-title">{{ event.entry_name }}{{$t('base.minMinuteTitle')}}</div>
+                          <div class="event-title" :style="{margin: 1 + 'px'}">{{ event.entry_name }}{{$t('base.minMinuteTitle')}}</div>
                           <div class="event-person" :style="{margin: 2 + 'px'}">{{ event.book_by }}</div>
                         </template>
                         <template v-else>
@@ -445,6 +447,21 @@ export default defineComponent({
         };
       });
       return formattedDates;
+    },
+
+    canHoverDiv(hoverTime,room) {
+      // this.events
+      // console.log('Home canHoverDiv hoverTime',hoverTime)
+      let canHover = true
+      this.events.forEach(event => {
+        if (event.startTime === hoverTime && room.room_id === event.room_id) {
+          console.log('Home canHoverDiv hoverTime event.startTime',hoverTime,event.startTime)
+          console.log('Home canHoverDiv event',event.room_id,event.room_name)
+          console.log('Home canHoverDiv room',room.room_id,room.room_name)
+          canHover = false
+        }
+      });
+      return canHover
     },
 
     getMeetStatusText(dayTime, roomStatus, minuteTime) {
