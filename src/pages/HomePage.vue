@@ -44,9 +44,13 @@
                   :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div' : 'empty-meet-div']"
                   :style="{ height: 60 + 'px', width: itemWidth + 'px', top: (timeIndex * 60 + 70) + 'px' }"
                   @click="toMeet(time, room, day)">
-                  <template v-if="canHoverDiv(time,room)">
+                  <template v-if="canHoverDiv(day,time,room)">
                     <text class="empty-meet-duration">{{ time }}</text>
                     <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text>
+                  </template>
+                  <template>
+                    <text class="empty-meet-duration">测试实施</text>
+                    <text class="empty-meet-reason">不可hover</text>
                   </template>
                 </div>
               </template>
@@ -169,6 +173,7 @@ export default defineComponent({
     this.currentTimeZone = timeZone
     console.log('Home 获取当前设备的时区', timeZone)
     this.startSync()
+    this.getAllAreas()
   },
 
   methods: {
@@ -190,7 +195,7 @@ export default defineComponent({
       const selectEndDate = this.filterDateStore.endDate
       const selectArea = this.filterDateStore.area
       const selectAreaName = this.filterDateStore.areaName
-      this.getAllAreas();
+      // this.getAllAreas()
       this.dayRrangeVal = selectDays
       if (selectStartDate && selectEndDate) {
         this.startTime = selectStartDate
@@ -299,7 +304,7 @@ export default defineComponent({
         }
         console.log('Home getCurrentAreaRooms data', data)
         this.rooms = this.getAllRoom(data)
-        this.getMeetRooms()
+        // this.getMeetRooms()
       })
     },
 
@@ -449,18 +454,18 @@ export default defineComponent({
       return formattedDates;
     },
 
-    canHoverDiv(hoverTime,room) {
-      // this.events
-      // console.log('Home canHoverDiv hoverTime',hoverTime)
+    canHoverDiv(day,hoverTime,room) {
       let canHover = true
-      this.events.forEach(event => {
-        if (event.startTime === hoverTime && room.room_id === event.room_id) {
+      for (let i = 0; i < this.events.length; i++) {
+        const event = this.events[i]
+        if (day.date === event.date && event.startTime === hoverTime && room.room_id === event.room_id) {
           console.log('Home canHoverDiv hoverTime event.startTime',hoverTime,event.startTime)
           console.log('Home canHoverDiv event',event.room_id,event.room_name)
           console.log('Home canHoverDiv room',room.room_id,room.room_name)
           canHover = false
+          break
         }
-      });
+      }
       return canHover
     },
 
