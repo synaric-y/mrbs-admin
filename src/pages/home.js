@@ -55,11 +55,11 @@ export const testAreas = {
         "areas":
             [
                 {
-                    "area_id": "1", "area_name": "area1", "resolution": "300", "disabled": 0, "start_time": "06:00 AM", "end_time": "09:30 PM",
+                    "area_id": "20", "area_name": "shanghai", "resolution": "900", "disabled": 0, "start_time": "06:00 AM", "end_time": "09:30 PM",
                     "rooms": []
                 },
                 {
-                    "area_id": "2", "area_name": "area2", "resolution": "900", "disabled": 0, "start_time": "06:30 AM", "end_time": "10:30 PM",
+                    "area_id": "2", "area_name": "area2", "resolution": "1800", "disabled": 0, "start_time": "06:30 AM", "end_time": "10:30 PM",
                     "rooms": []
                 },
             ]
@@ -74,11 +74,11 @@ export const areaData = {
         "areas":
             [
                 {
-                    "area_id": "1", "area_name": "BCC-\u4e0a\u6d77\u529e\u516c\u5ba4", "resolution": "300", "disabled": 0, "start_time": "08:00 AM", "end_time": "09:30 PM",
-                    "rooms": [{ "room_id": "1", "room_name": "A", "description": "", "status": "\u53ef\u9884\u7ea6", "disabled": "0" },
-                    { "room_id": "2", "room_name": "B", "description": "", "status": "\u53ef\u9884\u7ea6", "disabled": "0" },
-                    { "room_id": "3", "room_name": "C", "description": "", "status": "\u53ef\u9884\u7ea6", "disabled": "0" },
-                    { "room_id": "4", "room_name": "D", "description": "", "status": "\u53ef\u9884\u7ea6", "disabled": "0" }]
+                    "area_id": "20", "area_name": "shanghai", "resolution": "900", "disabled": 0, "start_time": "08:00 AM", "end_time": "09:30 PM",
+                    "rooms": [{ "room_id": "1", "room_name": "room A", "description": "", "status": "\u53ef\u9884\u7ea6", "disabled": "0" },
+                    { "room_id": "2", "room_name": "room B", "description": "", "status": "\u53ef\u9884\u7ea6", "disabled": "0" },
+                    { "room_id": "3", "room_name": "room C", "description": "", "status": "\u53ef\u9884\u7ea6", "disabled": "0" },
+                    { "room_id": "4", "room_name": "room D", "description": "", "status": "\u53ef\u9884\u7ea6", "disabled": "0" }]
                 }]
     }
 }
@@ -89,12 +89,12 @@ export const homeData = {
     "data": {
         "min_time": "08:00 AM",
         "max_time": "09:00 PM",
-        "time": "01:55 PM September 26, 2024",
+        "time": "01:55 PM October 08, 2024",
         "timestamp": 1727085600,
         "areas": [
             {
-                "area_id": 1,
-                "area_name": "area1",
+                "area_id": 20,
+                "area_name": "shanghai",
                 "disabled": 1,
                 "resolution": 900,
                 "rooms": [
@@ -106,86 +106,86 @@ export const homeData = {
                             {
                                 "entry_id": 1,
                                 "room_name": "room A",
-                                "start_time": 1727312400,
-                                "end_time": 1727316000,
+                                "start_time": 1728349200,
+                                "end_time": 1728352800,
                                 "entry_name": "IT需求",
                                 "book_by": "张三",
                                 "status": 2, //0表示未开始，1表示进行中，2表示已结束
                                 "year": "2024",
-                                "month": "09",
-                                "day": "26",
-                                "week": "星期四",
+                                "month": "10",
+                                "day": "08",
+                                "week": "星期二",
                                 "duration": "09:00AM-10:00AM"
                             },
 
                             {
                                 "entry_id": 1,
                                 "room_name": "room A",
-                                "start_time": 1727326800,
-                                "end_time": 1727330400,
+                                "start_time": 1728363600,
+                                "end_time": 1728367200,
                                 "entry_name": "IT需求",
                                 "book_by": "张三",
                                 "status": 1, //0表示未开始，1表示进行中，2表示已结束
                                 "year": "2024",
-                                "month": "09",
-                                "day": "26",
-                                "week": "星期四",
+                                "month": "10",
+                                "day": "08",
+                                "week": "星期二",
                                 "duration": "01:00PM-02:00PM"
                             },
 
                             {
                                 "entry_id": 1,
                                 "room_name": "room A",
-                                "start_time": 1727330400,
-                                "end_time": 1727334000,
+                                "start_time": 1728367200,
+                                "end_time": 1728370800,
                                 "entry_name": "IT需求",
                                 "book_by": "张三",
                                 "status": 0, //0表示未开始，1表示进行中，2表示已结束
                                 "year": "2024",
-                                "month": "09",
-                                "day": "26",
-                                "week": "星期四",
+                                "month": "10",
+                                "day": "08",
+                                "week": "星期二",
                                 "duration": "02:00PM-03:00PM"
                             },
                             {
                                 "entry_id": 1,
                                 "room_name": "room A",
-                                "start_time": 1727144100,
-                                "end_time": 1727147700,
+                                "start_time": 1728353700,
+                                "end_time": 1728357300,
                                 "entry_name": "测试15分钟需求",
                                 "book_by": "张小三",
                                 "status": 2, //0表示未开始，1表示进行中，2表示已结束
                                 "year": "2024",
-                                "month": "09",
-                                "day": "24",
+                                "month": "10",
+                                "day": "08",
                                 "week": "Tuesday",
                                 "duration": "10:15AM-11:15AM"
                             },
                             {
                                 "entry_id": 2,
                                 "room_name": "room A",
-                                "start_time": 1727150400,
-                                "end_time": 1727154000,
+                                "start_time": 1728360000,
+                                "end_time": 1728363600,
                                 "entry_name": "it需求",
                                 "book_by": "张小三",
                                 "status": 2, //0表示未开始，1表示进行中，2表示已结束
                                 "year": "2024",
-                                "month": "09",
-                                "day": "24",
+                                "month": "10",
+                                "day": "08",
                                 "week": "Tuesday",
                                 "duration": "12:00PM-01:00PM"
                             },
                             {
                                 "entry_id": 3,
                                 "room_name": "room A",
-                                "start_time": 1727172000,
-                                "end_time": 1727177400,
+                                "start_time": 1728381600,
+                                "end_time": 1728387000,
                                 "entry_name": "销售会议",
                                 "book_by": "李四",
                                 "status": 0, //0表示未开始，1表示进行中，2表示已结束
                                 "year": "2024",
-                                "month": "09",
-                                "day": "24",
+                                "month": "10",
+                                "day": "08",
                                 "week": "Tuesday",
                                 "duration": "06:00PM-07:30PM"
                             }
@@ -200,42 +200,42 @@ export const homeData = {
                             {
                                 "entry_id": 1,
                                 "room_name": "room B",
-                                "start_time": 1727143800,
-                                "end_time": 1727147400,
-                                "entry_name": "测试10分钟需求",
+                                "start_time": 1728354600,
+                                "end_time": 1728358200,
+                                "entry_name": "测试30分钟需求",
                                 "book_by": "张测试",
                                 "status": 2, //0表示未开始，1表示进行中，2表示已结束
                                 "year": "2024",
-                                "month": "09",
-                                "day": "24",
+                                "month": "10",
+                                "day": "08",
                                 "week": "Tuesday",
-                                "duration": "10:10AM-11:10AM"
+                                "duration": "10:30AM-11:30AM"
                             },
                             {
                                 "entry_id": 10,
                                 "room_name": "room B",
-                                "start_time": 1727159400,
-                                "end_time": 1727163000,
+                                "start_time": 1728369000,
+                                "end_time": 1728372600,
                                 "entry_name": "季度会议",
                                 "book_by": "王四",
                                 "status": 0, //0表示未开始，1表示进行中，2表示已结束
                                 "year": "2024",
-                                "month": "09",
-                                "day": "24",
+                                "month": "10",
+                                "day": "08",
                                 "week": "Tuesday",
                                 "duration": "02:30PM-03:30PM"
                             },
                             {
                                 "entry_id": 11,
                                 "room_name": "room B",
-                                "start_time": 1727164800,
-                                "end_time": 1727166600,
+                                "start_time": 1728374400,
+                                "end_time": 1728376200,
                                 "entry_name": "张三",
                                 "book_by": "张小儿",
                                 "status": 0, //0表示未开始，1表示进行中，2表示已结束
                                 "year": "2024",
-                                "month": "09",
-                                "day": "24",
+                                "month": "10",
+                                "day": "08",
                                 "week": "Tuesday",
                                 "duration": "04:00PM-04:30PM"
                             }

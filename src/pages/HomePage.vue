@@ -42,16 +42,21 @@
               <template v-for="(time, timeIndex) in localTimeSlots">
                 <div v-if="timeIndex != localTimeSlots.length - 1"
                   :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div' : 'empty-meet-div']"
-                  :style="{ height: 60 + 'px', width: itemWidth + 'px', top: (timeIndex * 60 + 70) + 'px' }"
+                  :style="{ height: minItemHeight + 'px', width: itemWidth + 'px', top: (timeIndex * minItemHeight + 70) + 'px' }"
                   @click="toMeet(time, room, day)">
-                  <template v-if="canHoverDiv(day,time,room)">
+                  <!-- <template> -->
                     <text class="empty-meet-duration">{{ time }}</text>
                     <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text>
-                  </template>
-                  <template>
+                  <!-- </template> -->
+
+                   <!-- <template v-if="canHoverDiv(day, time, room)">
+                    <text class="empty-meet-duration">{{ time }}</text>
+                    <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text>
+                  </template> -->
+                  <!-- <template>
                     <text class="empty-meet-duration">测试实施</text>
                     <text class="empty-meet-reason">不可hover</text>
-                  </template>
+                  </template> -->
                 </div>
               </template>
               <template v-for="(event, indexeve) in events">
@@ -63,8 +68,9 @@
                       :style="{ top: minItemHeight * getTimeSlotIndex(event.startTime) + 70 + 'px', left: ((itemWidth + 20) * roomIndex) + roomIndex * 0.5 + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * minItemHeight + 'px' }">
                       <div class="event-center">
                         <template v-if="(getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) == 3">
-                          <div class="event-title" :style="{margin: 1 + 'px'}">{{ event.entry_name }}{{$t('base.minMinuteTitle')}}</div>
-                          <div class="event-person" :style="{margin: 2 + 'px'}">{{ event.book_by }}</div>
+                          <div class="event-title" :style="{ margin: 1 + 'px' }">{{ event.entry_name
+                            }}{{ $t('base.minMinuteTitle') }}</div>
+                          <div class="event-person" :style="{ margin: 2 + 'px' }">{{ event.book_by }}</div>
                         </template>
                         <template v-else>
                           <div class="event-title">{{ event.entry_name }}</div>
@@ -249,6 +255,39 @@ export default defineComponent({
     },
 
     getAllAreas() {
+      const areas = testAreas.data.areas
+      console.log('home getAllAreas local areas',areas)
+      // 获取最小的值
+      if (areas) {
+        const minResolution = areas.reduce((min, area) => {
+          const resolution = parseInt(area.resolution, 10)
+          return resolution < min ? resolution : min
+        }, 900);
+        this.minDuration = minResolution
+        const firstArea = {
+          "area_id": "",
+          "area_name": this.$t('base.all'),
+          "resolution": '1800',
+          "rooms": []
+        }
+        this.minItemHeight = 60 / (1800 / parseInt(minResolution))
+        console.log('Home Minimum resolution: this.minItemHeight', minResolution, this.minItemHeight)
+        // 获取开始、结束时间
+        const { minStart, maxEnd } = this.getMaxAreaDuration()
+        console.log('Home Minimum minStart  maxEnd', minStart, maxEnd)
+        const { timeSlots, localTimeSlots } = Common.generateTimeSlots(minStart, maxEnd)
+        console.log('Home timeSlots localTimeSlots', timeSlots, localTimeSlots)
+        this.timeSlots = timeSlots
+        this.localTimeSlots = localTimeSlots
+        if (areas) {
+          areas.splice(0, 0, firstArea)
+        }
+        this.areas = areas
+      }
+
+      return
+
+
       Api.getAreaRooms({}).then(({ data, code }) => {
         if (code != 0) {
           ElMessage({
@@ -258,14 +297,14 @@ export default defineComponent({
           return
         }
         // 网络数据
-        let areas = data.areas
+        // let areas = data.areas
         // 本地测试数据
-        // let areas = areaData.areas
+        let areas = areaData.data.areas
         // 获取最小的值
-        const minResolution = data.areas.reduce((min, area) => {
+        const minResolution = areas.reduce((min, area) => {
           const resolution = parseInt(area.resolution, 10)
           return resolution < min ? resolution : min
-        }, 300);
+        }, 900);
         this.minDuration = minResolution
         const firstArea = {
           "area_id": "",
@@ -274,16 +313,16 @@ export default defineComponent({
           "rooms": []
         }
         this.minItemHeight = 60 / (1800 / parseInt(minResolution))
-        console.log('Home Minimum resolution: this.minItemHeight', minResolution,this.minItemHeight)
+        console.log('Home Minimum resolution: this.minItemHeight', minResolution, this.minItemHeight)
 
         // 获取开始、结束时间
-        const {minStart,maxEnd} = this.getMaxAreaDuration()
-        console.log('Home Minimum minStart  maxEnd', minStart,maxEnd)
-        const {timeSlots, localTimeSlots} = Common.generateTimeSlots(minStart,maxEnd)
+        const { minStart, maxEnd } = this.getMaxAreaDuration()
+        console.log('Home Minimum minStart  maxEnd', minStart, maxEnd)
+        const { timeSlots, localTimeSlots } = Common.generateTimeSlots(minStart, maxEnd)
+        console.log('Home timeSlots localTimeSlots', timeSlots, localTimeSlots)
         this.timeSlots = timeSlots
         this.localTimeSlots = localTimeSlots
-        console.log('Home timeSlots localTimeSlots', timeSlots,localTimeSlots)
-        if(areas) {
+        if (areas) {
           areas.splice(0, 0, firstArea)
         }
         this.areas = areas
@@ -291,6 +330,9 @@ export default defineComponent({
     },
 
     getCurrentAreaRooms(area_id) {
+      this.rooms = areaData.data.areas[0].rooms
+      return
+
       Api.getAreaRooms({ id: area_id }).then(({ data, code }) => {
         if (code != 0) {
           ElMessage({
@@ -309,14 +351,14 @@ export default defineComponent({
     },
 
     getMaxAreaDuration() {
-      if(testAreas && testAreas.data && testAreas.data.areas) {
+      if (testAreas && testAreas.data && testAreas.data.areas) {
         const localAreas = testAreas.data.areas
         let minStart = localAreas[0].start_time
         let [startTime, amstr] = minStart.split(' ')
         let maxEnd = localAreas[0].end_time
         let [endTime, pmstr] = maxEnd.split(' ')
-        console.log('Home getMaxAreaDuration startTime amstr',startTime,amstr)
-        console.log('Home getMaxAreaDuration endTime pmstr',endTime,pmstr)
+        console.log('Home getMaxAreaDuration startTime amstr', startTime, amstr)
+        console.log('Home getMaxAreaDuration endTime pmstr', endTime, pmstr)
         for (let i = 1; i < localAreas.length; i++) {
           const otherStart = localAreas[i].start_time
           const [otherStartTime, otherAMstr] = otherStart.split(' ');
@@ -333,7 +375,7 @@ export default defineComponent({
             pmstr = otherPMstr
           }
         }
-        return {minStart,maxEnd}
+        return { minStart, maxEnd }
       }
       return {}
     },
@@ -454,14 +496,14 @@ export default defineComponent({
       return formattedDates;
     },
 
-    canHoverDiv(day,hoverTime,room) {
+    canHoverDiv(day, hoverTime, room) {
       let canHover = true
       for (let i = 0; i < this.events.length; i++) {
         const event = this.events[i]
         if (day.date === event.date && event.startTime === hoverTime && room.room_id === event.room_id) {
-          console.log('Home canHoverDiv hoverTime event.startTime',hoverTime,event.startTime)
-          console.log('Home canHoverDiv event',event.room_id,event.room_name)
-          console.log('Home canHoverDiv room',room.room_id,room.room_name)
+          console.log('Home canHoverDiv hoverTime event.startTime', hoverTime, event.startTime)
+          console.log('Home canHoverDiv event', event.room_id, event.room_name)
+          console.log('Home canHoverDiv room', room.room_id, room.room_name)
           canHover = false
           break
         }
@@ -518,7 +560,7 @@ export default defineComponent({
       if (this.normalUser()) {
         return
       }
-      if(event.status == MEETING_STATUS.END) {
+      if (event.status == MEETING_STATUS.END) {
         return
       }
       if (event.disabled == ROOM_STATUS.DISABLED) {
@@ -584,7 +626,7 @@ export default defineComponent({
         this.endTime = end_date
 
         this.filterDateStore.setStartDate(start_date)
-        this.filterDateStore.seteEndDate(end_date)
+        this.filterDateStore.setEndDate(end_date)
         this.getMeetRooms()
         const days = this.getDaysBetween(start_date, end_date)
         const tempdays = this.formatDays(days)
@@ -623,13 +665,13 @@ export default defineComponent({
 
 
       // 本地测试数据
-      // this.currenTimestamp = homeData.data.timestamp
-      // this.nowTime = homeData.data.time
-      // this.getInMeeting(homeData.data)
-      // this.$nextTick(() => {
-      //     this.showLoading = false
-      //   })
-      // return
+      this.currenTimestamp = homeData.data.timestamp
+      this.nowTime = homeData.data.time
+      this.getInMeeting(homeData.data)
+      this.$nextTick(() => {
+        this.showLoading = false
+      })
+      return
 
       console.log('Home getMeetRooms currenArea:  start: end: ', this.currenArea, this.startStamp, this.endStamp);
       Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp, end_time: this.endStamp, timezone: this.currentTimeZone }).then(({ data, code }) => {
