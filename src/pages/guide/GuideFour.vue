@@ -1,7 +1,8 @@
 <template>
   <el-container class="container-sub-page">
     <el-main class="container-sub-page-main">
-      <div class="page-title">会议系统配置向导</div>
+      <div class="sub-page-content">
+        <div class="page-title">会议系统配置向导</div>
       <div class="guide-progress">
         <div class="guide-item">
           <img src="../../../public/imgs/checked.png" alt="">
@@ -21,13 +22,11 @@
         </div>
       </div>
       <div class="guide-tips">添加您的第一个会议室</div>
-
-      <div class="sub-page-content">
         <div class="form-item">
           <span class="form-item-tip">会议室名称</span>
           <input class="form-item-input" placeholder="请输入会议室名称" />
         </div>
-        <div class="form-item" style="margin-top: 40px;">
+        <div class="form-item" style="margin-top: 20px;">
           <span class="form-item-tip">容纳人数</span>
           <input class="form-item-input" placeholder="请输入会议室容纳人数" />
         </div>
@@ -43,7 +42,7 @@
             <input class="form-item-input" placeholder="请输入三方账号" />
           </div>
 
-          <div class="form-calendar-item" style="margin-top: 49px;">
+          <div class="form-calendar-item" style="margin-top: 29px;">
             <span class="form-item-tip">密码</span>
             <input class="form-item-input" placeholder="请输入三方账号密码" />
           </div>
@@ -91,16 +90,30 @@ export default {
 </script>
 
 <style scoped>
-.page-title {
-  font-size: 20px;
+.sub-page-content {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+  width: calc(100vw - 169px);
+  height: calc(100vh - 95px);
+  background-color: white;
+  padding: 0;
+  margin: 0;
   margin-top: 20px;
-  margin-left: 20px;
+  position: relative;
+}
+.page-title {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  font-size: 20px;
 }
 .guide-progress {
   display: flex;
   flex-direction: row;
   margin-left: 72px;
-  margin-top: 25px;
+  margin-top: 60px;
 }
 .guide-item {
   display: flex;
@@ -156,18 +169,7 @@ export default {
   margin-left: -160px;
   align-self: center;
 }
-.sub-page-content {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  flex-direction: column;
-  width: calc(100vw - 200px);
-  height: auto;
-  background-color: white;
-  padding: 0;
-  margin: 0;
-  margin-top: 20px;
-}
+
 .form-item {
   display: flex;
   flex-direction: row;
@@ -175,7 +177,7 @@ export default {
   align-items: center;
 }
 .form-line {
-  margin-top: 49px;
+  margin-top: 29px;
   margin-left: 330px;
   background: #A8ABB2;
   height: 1px;
@@ -255,7 +257,7 @@ export default {
   flex-direction: row;
   justify-content: space-evenly;
   width: 100%;
-  margin-top: 215px;
+  margin-top: 185px;
   padding-bottom: 15px;
 }
 .buttons-wrapper {

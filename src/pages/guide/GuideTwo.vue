@@ -1,32 +1,33 @@
 <template>
   <el-container class="container-sub-page">
     <el-main class="container-sub-page-main">
-      <div class="page-title">会议系统配置向导</div>
-      <div class="guide-progress">
-        <div class="guide-item">
-          <span class="guide-number-active">1</span>
-          <span class="guide-title-active" style="margin-left: 12px;">用户同步配置</span>
-        </div>
-
-        <div class="guide-item">
-          <span class="guide-number">2</span>
-          <span class="guide-title" style="margin-left: 12px;">日历同步配置</span>
-        </div>
-
-        <div class="guide-item">
-          <span class="guide-number">3</span>
-          <span class="guide-title" style="margin-left: 12px;">添加会议室</span>
-        </div>
-
-        <div class="guide-item">
-          <span class="guide-number">4</span>
-          <span class="guide-title" style="margin-left: 12px;">完成</span>
-        </div>
-      </div>
-      <div class="guide-tips">此配置允许您正在使用的第三方服务同步用户数据到本系统，您可以自定义同步行为与同步的范围。</div>
-
-
       <div class="sub-page-content">
+        <div class="page-title">会议系统配置向导</div>
+        <div class="guide-progress">
+          <div class="guide-item">
+            <span class="guide-number-active">1</span>
+            <span class="guide-title-active" style="margin-left: 12px;">用户同步配置</span>
+          </div>
+
+          <div class="guide-item">
+            <span class="guide-number">2</span>
+            <span class="guide-title" style="margin-left: 12px;">日历同步配置</span>
+          </div>
+
+          <div class="guide-item">
+            <span class="guide-number">3</span>
+            <span class="guide-title" style="margin-left: 12px;">添加会议室</span>
+          </div>
+
+          <div class="guide-item">
+            <span class="guide-number">4</span>
+            <span class="guide-title" style="margin-left: 12px;">完成</span>
+          </div>
+        </div>
+        <div class="guide-tips">此配置允许您正在使用的第三方服务同步用户数据到本系统，您可以自定义同步行为与同步的范围。</div>
+
+
+
         <div class="form-item">
           <span class="form-item-tip">选择服务</span>
           <img class="form-item-img" src="../../../public/imgs/ad.png" alt="#">
@@ -266,22 +267,37 @@ export default {
 </script>
 
 <style scoped>
+.sub-page-content {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+  width: calc(100vw - 169px);
+  height: calc(100vh - 95px);
+  background-color: white;
+  padding: 0;
+  margin: 0;
+}
+
 .page-title {
   font-size: 20px;
   margin-top: 20px;
   margin-left: 20px;
 }
+
 .guide-progress {
   display: flex;
   flex-direction: row;
   margin-left: 72px;
   margin-top: 25px;
 }
+
 .guide-item {
   display: flex;
   flex-direction: row;
   margin-left: 72px;
 }
+
 .guide-number-active {
   width: 29px;
   height: 28px;
@@ -292,6 +308,7 @@ export default {
   background: #591BB7;
   color: #FFFFFF;
 }
+
 .guide-number {
   width: 28px;
   height: 28px;
@@ -302,6 +319,7 @@ export default {
   background: #F2F3F5;
   color: #4E5969;
 }
+
 .guide-title-active {
   font-family: PingFang SC;
   font-size: 16px;
@@ -311,6 +329,7 @@ export default {
   font-variation-settings: "opsz" auto;
   color: #591BB7;
 }
+
 .guide-title {
   font-family: PingFang SC;
   font-size: 16px;
@@ -319,6 +338,7 @@ export default {
   letter-spacing: 0px;
   color: #4E5969;
 }
+
 .guide-tips {
   font-family: PingFang SC;
   font-size: 16px;
@@ -327,33 +347,25 @@ export default {
   letter-spacing: 0px;
   font-variation-settings: "opsz" auto;
   color: #3D3D3D;
-  margin-top: 32px;
+  margin-top: 20px;
+  margin-bottom: 10px;
   align-self: center;
 }
-.sub-page-content {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  flex-direction: column;
-  width: calc(100vw - 200px);
-  height: auto;
-  background-color: white;
-  padding: 0;
-  margin: 0;
-  margin-top: 20px;
-}
+
 .form-item {
   display: flex;
   flex-direction: row;
   height: 50px;
   align-items: center;
 }
+
 .form-ad {
   display: flex;
   flex-direction: row;
   height: 50px;
   align-items: center;
 }
+
 .form-item-tip {
   font-family: PingFang SC;
   font-size: 14px;
@@ -366,13 +378,16 @@ export default {
   width: 400px;
   /* background-color: red; */
 }
+
 .form-item-img {
   width: 153px;
   height: 43px;
 }
+
 .form-item-input {
   width: 400px;
 }
+
 .form-item-btn {
   border-radius: 2px;
   opacity: 1;
@@ -392,6 +407,7 @@ export default {
   color: #FFFFFF;
   margin-left: 20px;
 }
+
 .sub-buttons {
   display: flex;
   flex-direction: row;
@@ -400,6 +416,7 @@ export default {
   margin-top: 15px;
   padding-bottom: 15px;
 }
+
 .buttons-wrapper {
   width: 500px;
   display: flex;
@@ -407,6 +424,7 @@ export default {
   justify-content: space-evenly;
   margin-left: -280px;
 }
+
 .jump-btn {
   padding: 0 15px;
   border-radius: 2px;
@@ -416,6 +434,7 @@ export default {
   height: 36px;
   line-height: 36px;
 }
+
 .pre-btn {
   padding: 0 15px;
   border-radius: 2px;
@@ -425,6 +444,7 @@ export default {
   height: 36px;
   line-height: 36px;
 }
+
 .next-btn {
   padding: 0 15px;
   border-radius: 2px;
@@ -434,6 +454,7 @@ export default {
   height: 36px;
   line-height: 36px;
 }
+
 .not-btn {
   padding: 0 15px;
   border-radius: 2px;

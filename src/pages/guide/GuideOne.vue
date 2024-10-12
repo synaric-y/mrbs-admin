@@ -1,8 +1,10 @@
 <template>
   <el-container class="container-sub-page">
     <el-main class="container-sub-page-main">
-      <div class="page-title">会议系统配置向导</div>
+      
       <div class="sub-page-content">
+
+        <div class="page-title">会议系统配置向导</div>
         <div class="sub-content">
           <div class="sub-text">
                   欢迎使用XXX会议系统。<br>
@@ -54,22 +56,26 @@ export default {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  width: calc(100vw - 200px);
-  height: calc(100vh - 70px);
+  width: calc(100vw - 169px);
+  height: calc(100vh - 95px);
   background-color: white;
   padding: 0;
   margin: 0;
+  position: relative;
 }
 .page-title {
+  position: absolute;
+  top: 20px;
+  left: 20px;
   font-size: 20px;
-  margin-top: 20px;
-  margin-left: 20px;
+  
 }
 .sub-content {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  /* background-color: #591BB7; */
 }
 .sub-text {
   width: 456px;

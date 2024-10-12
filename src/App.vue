@@ -105,7 +105,7 @@
       </div>
       
       <div class="menu-content">
-        <el-main>
+        <!-- <el-main> -->
         <router-view v-slot="{ Component, route }">
           <transition name="el-fade-in" mode="out-in">
             <keep-alive>
@@ -115,7 +115,7 @@
             </keep-alive>
           </transition>
         </router-view>
-      </el-main>
+      <!-- </el-main> -->
       </div>
     </div>
 
@@ -205,41 +205,54 @@ export default {
 body {
   display: block;
   margin: 0 !important;
+  padding: 0 !important;
+  background: #EFEFEF;
 }
 
 
 /*总容器*/
 .container {
+  margin: 0;
+  padding: 0;
   width: 100vw;
+  /* height: auto; */
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   background: #EFEFEF;
-  background-color: white;
-  box-sizing: border-box;
+  /* background-color: white; */
+  /* box-sizing: border-box; */
 }
 
 /*内容页容器*/
 .container-sub-page {
-  width: calc(100vw - 200px);
+  width: calc(100vw - 189px - 30px);
+  /* width: auto; */
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
   align-items: center;
-  padding: 0;
+  padding: 0px;
   margin: 0;
+  background: #EFEFEF;
+  /* background-color: red; */
 }
 
 /*内容页main部分*/
 .container-sub-page-main {
-  min-width: 930px;
-  max-width: calc(100vw - 200px);
+  /* min-width: 930px; */
+  padding: 30px;
+  width: calc(100vw - 189px - 30px);
+
+  height: calc(100vh - 95px);
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
   overflow-y: scroll;
   scrollbar-width: none;
   scrollbar-color: transparent transparent;
+  /* background-color: red; */
 }
 
 /*隐藏滚动条*/
@@ -262,7 +275,7 @@ body {
 
 .nav_wrapper {
   width: 100%;
-  background: red;
+  /* background: red; */
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -274,8 +287,8 @@ body {
 }
 
 .nav-block {
-  height: 75px;
-  padding: 0 75px 0 75px;
+  /* height: 75px;
+  padding: 0 75px 0 75px; */
 }
 
 .nav-inner {
@@ -287,7 +300,7 @@ body {
 }
 
 .nav-left {
-  margin-left: -60px;
+  /* margin-left: -60px; */
   font-size: 20px;
   line-height: 75px;
 }
@@ -311,22 +324,25 @@ body {
 .el-main {
   /* background-color: aqua; */
   /* width: calc(100vw - 200px); */
-  width: 100%;
-  padding: 10px;
-  margin: 0px;
+  /* width: 100%; */
+  /* padding: 10px;
+  padding: 10px; */
+  /* margin: 0px; */
 }
 
 .menu-content-wrapper {
   display: flex;
   margin-top: 70px;
-  width: calc(100vw - 200px);
-  height: calc(100vh - 145px);
+  width: calc(100vw - 189px - 30px);
+  height: calc(100vh - 65px);
   background-color: white
 }
 
 .left-menu {
-  width: 200px;
-  height: calc(100vh - 100px);
+  margin: 0;
+  padding: 0;
+  width: 189px;
+  height: calc(100vh - 75px);
   background-color: white
 }
 
@@ -338,10 +354,8 @@ body {
 
 .menu-content {
   display: flex;
-  /* flex: 1; */
-  width: calc(100vw - 200px);
-  height: calc(100vh - 100px);
-  /* background-color: rebeccapurple; */
+  width: calc(100vw - 189px - 30px);
+  height: calc(100vh - 75px);
 }
 
 /*顶部导航按钮*/
@@ -368,14 +382,14 @@ body {
   font-size: 18px;
 }
 
-/*内容页标题的容器*/
+/*公共代码----内容页标题的容器*/
 .sub-title-wrapper {
   width: 100%;
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-top: 40px;
-  margin-bottom: 40px;
+  /* margin-top: 40px;
+  margin-bottom: 40px; */
 }
 
 /*内容页标题*/

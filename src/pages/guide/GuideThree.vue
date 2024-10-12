@@ -1,50 +1,51 @@
 <template>
   <el-container class="container-sub-page">
     <el-main class="container-sub-page-main">
-      <div class="page-title">会议系统配置向导</div>
-      <div class="guide-progress">
-        <div class="guide-item">
-          <img src="../../../public/imgs/checked.png" alt="">
-          <span class="guide-title" style="margin-left: 12px;">用户同步配置</span>
-        </div>
-        <div class="guide-item">
-          <span class="guide-number-active">2</span>
-          <span class="guide-title-active" style="margin-left: 12px;">日历同步配置</span>
-        </div>
-        <div class="guide-item">
-          <span class="guide-number">3</span>
-          <span class="guide-title" style="margin-left: 12px;">添加会议室</span>
-        </div>
-        <div class="guide-item">
-          <span class="guide-number">4</span>
-          <span class="guide-title" style="margin-left: 12px;">完成</span>
-        </div>
-      </div>
-      <div class="guide-tips">此配置允许您正在使用的第三方服务同步用户数据到本系统，您可以自定义同步行为与同步的范围。</div>
-
       <div class="sub-page-content">
+
+        <div class="page-title">会议系统配置向导</div>
+        <div class="guide-progress">
+          <div class="guide-item">
+            <img src="../../../public/imgs/checked.png" alt="">
+            <span class="guide-title" style="margin-left: 12px;">用户同步配置</span>
+          </div>
+          <div class="guide-item">
+            <span class="guide-number-active">2</span>
+            <span class="guide-title-active" style="margin-left: 12px;">日历同步配置</span>
+          </div>
+          <div class="guide-item">
+            <span class="guide-number">3</span>
+            <span class="guide-title" style="margin-left: 12px;">添加会议室</span>
+          </div>
+          <div class="guide-item">
+            <span class="guide-number">4</span>
+            <span class="guide-title" style="margin-left: 12px;">完成</span>
+          </div>
+        </div>
+        <div class="guide-tips">此配置允许您正在使用的第三方服务同步用户数据到本系统，您可以自定义同步行为与同步的范围。</div>
+
         <div class="form-item">
           <span class="form-item-tip">选择服务</span>
           <img class="form-item-img" src="../../../public/imgs/exchange.png" alt="#">
         </div>
 
-        <div class="form-item">
+        <div class="form-item" style="margin-top: 46px;">
           <span class="form-item-tip">服务器地址</span>
           <input class="form-item-input" placeholder="示例:172.16.88.180" />
           <span class="form-item-btn">测试</span>
         </div>
-        <div class="form-ad">
+        <div class="form-ad" style="margin-top: 46px;">
           <span class="form-item-tip">同步方式</span>
           <el-select v-model="groupVal" placeholder="Select" size="large" style="width: 340px">
             <el-option v-for="item in groupOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </div>
-        <div class="form-ad">
+        <div class="form-ad" style="margin-top: 46px;">
           <span class="form-item-tip">同步间隔</span>
           <el-select v-model="everySecondVal" placeholder="Select" size="large"
-              style="width: 200px;margin-right: 10px;">
-              <el-option v-for="item in everySecondOptions" :key="item.value" :label="item.label" :value="item.value" />
-            </el-select>
+            style="width: 200px;margin-right: 10px;">
+            <el-option v-for="item in everySecondOptions" :key="item.value" :label="item.label" :value="item.value" />
+          </el-select>
         </div>
         <div class="sub-buttons">
           <div class="buttons-wrapper">
@@ -121,16 +122,29 @@ export default {
 </script>
 
 <style scoped>
+.sub-page-content {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+  width: calc(100vw - 169px);
+  height: calc(100vh - 95px);
+  background-color: white;
+  padding: 0;
+  margin: 0;
+  position: relative;
+}
 .page-title {
+  position: absolute;
+  top: 20px;
+  left: 20px;
   font-size: 20px;
-  margin-top: 20px;
-  margin-left: 20px;
 }
 .guide-progress {
   display: flex;
   flex-direction: row;
   margin-left: 72px;
-  margin-top: 25px;
+  margin-top: 60px;
 }
 .guide-item {
   display: flex;
@@ -182,20 +196,9 @@ export default {
   letter-spacing: 0px;
   font-variation-settings: "opsz" auto;
   color: #3D3D3D;
-  margin-top: 32px;
+  margin-top: 72px;
+  margin-bottom: 60px;
   align-self: center;
-}
-.sub-page-content {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  flex-direction: column;
-  width: calc(100vw - 200px);
-  height: auto;
-  background-color: white;
-  padding: 0;
-  margin: 0;
-  margin-top: 20px;
 }
 .form-item {
   display: flex;
@@ -254,8 +257,9 @@ export default {
   flex-direction: row;
   justify-content: space-evenly;
   width: 100%;
-  margin-top: 215px;
+  margin-top: 15px;
   padding-bottom: 15px;
+  /* background-color: red; */
 }
 .buttons-wrapper {
   width: 500px;
