@@ -1,100 +1,94 @@
 <template>
-  <div class="menu-content-wrapper">
-      <div class="toolbar" v-if="!showLoading">
-        <div class="toolbar-filter">
-          <div class="now-time">
-            <el-icon class="home-time-icon"></el-icon>
-            <span class="now-time-span">{{ nowTime }}</span>
-          </div>
-          <div class="all-area">
-            <el-select v-model="currenAreaName" placeholder="All Areas" @change="choseArea">
-              <el-option v-for="(area, index) in areas" :label="area.area_name" :value="area.area_id" :key="index">
-              </el-option>
-            </el-select>
-          </div>
-          <div class="group-buttons">
-            <el-button v-for="(item, index) in groupButtons" type="primary" size="small"
-              :class="['', item.day == dayRrangeVal ? 'day-button-active' : 'day-button']"
-              @click="dayRrange(item.day)">{{
-                item.name }}</el-button>
-          </div>
-          <div class="date-picker">
-            <el-date-picker v-model="baseTime" type="daterange" :range-separator="$t('base.to')"
-              :start-placeholder="startTime" :end-placeholder="endTime" @change="choseDate" clearable="false" />
+  <div class="toolbar" v-if="!showLoading">
+    <div class="toolbar-filter">
+      <div class="now-time">
+        <el-icon class="home-time-icon"></el-icon>
+        <span class="now-time-span">{{ nowTime }}</span>
+      </div>
+      <div class="all-area">
+        <el-select v-model="currenAreaName" placeholder="All Areas" @change="choseArea">
+          <el-option v-for="(area, index) in areas" :label="area.area_name" :value="area.area_id" :key="index">
+          </el-option>
+        </el-select>
+      </div>
+      <div class="group-buttons">
+        <el-button v-for="(item, index) in groupButtons" type="primary" size="small"
+          :class="['', item.day == dayRrangeVal ? 'day-button-active' : 'day-button']" @click="dayRrange(item.day)">{{
+            item.name }}</el-button>
+      </div>
+      <div class="date-picker">
+        <el-date-picker v-model="baseTime" type="daterange" :range-separator="$t('base.to')"
+          :start-placeholder="startTime" :end-placeholder="endTime" @change="choseDate" clearable="false" />
+      </div>
+    </div>
+  </div>
+
+  <div class="table-container" v-if="!showLoading">
+    <el-scrollbar class="scroll-table-view" always :style="{ height: 'calc(100vh - 150px)' }">
+      <div class="calendar-header">
+        <div class="time-header">
+          <div class="time-slots">
+            <div v-for="(time, timeIndex) in timeSlots" :key="time" class="time-slot">
+              {{ time }}
+            </div>
           </div>
         </div>
-      </div>
-      <div class="table-container" v-if="!showLoading">
-        <el-scrollbar class="scroll-table-view" always :style="{ height: 'calc(100vh - 150px)' }">
-          <div class="calendar-header">
-            <div class="time-header">
-              <div class="time-slots">
-                <div v-for="(time, timeIndex) in timeSlots" :key="time" class="time-slot">
-                  {{ time }}
-                </div>
-              </div>
-            </div>
-            <div v-for="(day, indexday) in days" :key="indexday" class="day-header"
-              :style="{ backgroundColor: day.color }">
-              {{ day.date }}
-              <div class="room-header">
-                <div v-for="(room, roomIndex) in rooms" :key="roomIndex" class="room-name"
-                  :style="{ height: timeSlots.length * 60 + 70 + 'px', width: itemWidth + 'px' }">
-                  {{ room.room_name }}
-                  <template v-for="(time, timeIndex) in localTimeSlots">
-                    <div v-if="timeIndex != localTimeSlots.length - 1"
-                      :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div' : 'empty-meet-div']"
-                      :style="{ height: minItemHeight + 'px', width: itemWidth + 'px', top: (timeIndex * minItemHeight + 70) + 'px' }"
-                      @click="toMeet(time, room, day)">
-                      <!-- <template> -->
-                      <text class="empty-meet-duration">{{ time }}</text>
-                      <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text>
-                      <!-- </template> -->
+        <div v-for="(day, indexday) in days" :key="indexday" class="day-header" :style="{ backgroundColor: day.color }">
+          {{ day.date }}
+          <div class="room-header">
+            <div v-for="(room, roomIndex) in rooms" :key="roomIndex" class="room-name"
+              :style="{ height: timeSlots.length * 60 + 70 + 'px', width: itemWidth + 'px' }">
+              {{ room.room_name }}
+              <template v-for="(time, timeIndex) in localTimeSlots">
+                <div v-if="timeIndex != localTimeSlots.length - 1"
+                  :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div' : 'empty-meet-div']"
+                  :style="{ height: minItemHeight + 'px', width: itemWidth + 'px', top: (timeIndex * minItemHeight + 70) + 'px' }"
+                  @click="toMeet(time, room, day)">
+                  <!-- <template> -->
+                    <text class="empty-meet-duration">{{ time }}</text>
+                    <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text>
+                  <!-- </template> -->
 
-                      <!-- <template v-if="canHoverDiv(day, time, room)">
+                   <!-- <template v-if="canHoverDiv(day, time, room)">
                     <text class="empty-meet-duration">{{ time }}</text>
                     <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text>
                   </template> -->
-                      <!-- <template>
+                  <!-- <template>
                     <text class="empty-meet-duration">测试实施</text>
                     <text class="empty-meet-reason">不可hover</text>
                   </template> -->
+                </div>
+              </template>
+              <template v-for="(event, indexeve) in events">
+                <template v-if="day.date == event.date && room.room_id == event.room_id">
+                  <template v-if="event.status == 0 || event.status == 1 || event.status == 2">
+                    <div :key="indexeve"
+                      :class="[event.status == 0 ? 'room-meet-event' : event.status == 1 ? 'room-meet-in-event' : 'room-meet-timeout-event']"
+                      @click="editMeet(event)"
+                      :style="{ top: minItemHeight * getTimeSlotIndex(event.startTime) + 70 + 'px', left: ((itemWidth + 20) * roomIndex) + roomIndex * 0.5 + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * minItemHeight + 'px' }">
+                      <div class="event-center">
+                        <template v-if="(getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) == 3">
+                          <div class="event-title" :style="{ margin: 1 + 'px' }">{{ event.entry_name
+                            }}{{ $t('base.minMinuteTitle') }}</div>
+                          <div class="event-person" :style="{ margin: 2 + 'px' }">{{ event.book_by }}</div>
+                        </template>
+                        <template v-else>
+                          <div class="event-title">{{ event.entry_name }}</div>
+                          <div class="event-time">{{ event.duration }}</div>
+                          <div class="event-person">{{ event.book_by }}</div>
+                        </template>
+                      </div>
                     </div>
                   </template>
-                  <template v-for="(event, indexeve) in events">
-                    <template v-if="day.date == event.date && room.room_id == event.room_id">
-                      <template v-if="event.status == 0 || event.status == 1 || event.status == 2">
-                        <div :key="indexeve"
-                          :class="[event.status == 0 ? 'room-meet-event' : event.status == 1 ? 'room-meet-in-event' : 'room-meet-timeout-event']"
-                          @click="editMeet(event)"
-                          :style="{ top: minItemHeight * getTimeSlotIndex(event.startTime) + 70 + 'px', left: ((itemWidth + 20) * roomIndex) + roomIndex * 0.5 + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * minItemHeight + 'px' }">
-                          <div class="event-center">
-                            <template v-if="(getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) == 3">
-                              <div class="event-title" :style="{ margin: 1 + 'px' }">{{ event.entry_name
-                                }}{{ $t('base.minMinuteTitle') }}</div>
-                              <div class="event-person" :style="{ margin: 2 + 'px' }">{{ event.book_by }}</div>
-                            </template>
-                            <template v-else>
-                              <div class="event-title">{{ event.entry_name }}</div>
-                              <div class="event-time">{{ event.duration }}</div>
-                              <div class="event-person">{{ event.book_by }}</div>
-                            </template>
-                          </div>
-                        </div>
-                      </template>
-                    </template>
-                  </template>
-                </div>
-                <div class="room-devide-line"></div>
-              </div>
+                </template>
+              </template>
             </div>
+            <div class="room-devide-line"></div>
           </div>
-        </el-scrollbar>
+        </div>
       </div>
-    </div>
-
-
-
+    </el-scrollbar>
+  </div>
   <el-skeleton v-if="showLoading" :rows="15" animated />
 </template>
 
@@ -262,7 +256,7 @@ export default defineComponent({
 
     getAllAreas() {
       const areas = testAreas.data.areas
-      console.log('home getAllAreas local areas', areas)
+      console.log('home getAllAreas local areas',areas)
       // 获取最小的值
       if (areas) {
         const minResolution = areas.reduce((min, area) => {
@@ -759,25 +753,9 @@ export default defineComponent({
   user-select: none;
 }
 
-.menu-content-wrapper {
-  /* margin-top: 100px; */
-  /* margin-left: 200px; */
-  margin-top: 30px;
-  display: flex;
-  width: 100%;
-  height: 100%;
-  /* width: calc(100vw - 100px); */
-  /* height: calc(100vh - 85px); */
-  /* background-color: red; */
-  /* flex: 1; */
-  z-index: 3000;
-}
-
 .toolbar {
   display: flex;
-  /* width: 100vw; */
-  width: 100%;
-  height: 100px;
+  width: 100vw;
   padding-top: 10px;
   padding-bottom: 10px;
   padding-left: 150px;
@@ -870,9 +848,6 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   position: relative;
-  background-color: red;
-  width: 100%;
-  height: 600px;
   flex: 1;
 }
 
