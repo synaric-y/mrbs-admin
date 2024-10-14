@@ -28,7 +28,7 @@
 
 
 
-        <div class="form-item">
+        <div class="form-item" style="margin-top: 20px;">
           <span class="form-item-tip">选择服务</span>
           <img class="form-item-img" src="../../../public/imgs/ad.png" alt="#">
         </div>
@@ -273,7 +273,7 @@ export default {
   align-items: flex-start;
   flex-direction: column;
   width: calc(100vw - 169px);
-  height: calc(100vh - 95px);
+  height: calc(100vh - 15px);
   background-color: white;
   padding: 0;
   margin: 0;
@@ -347,7 +347,7 @@ export default {
   letter-spacing: 0px;
   font-variation-settings: "opsz" auto;
   color: #3D3D3D;
-  margin-top: 20px;
+  margin-top: 50px;
   margin-bottom: 10px;
   align-self: center;
 }

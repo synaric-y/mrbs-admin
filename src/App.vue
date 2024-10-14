@@ -209,7 +209,6 @@ body {
   background: #EFEFEF;
 }
 
-
 /*总容器*/
 .container {
   margin: 0;
@@ -226,7 +225,7 @@ body {
 
 /*内容页容器*/
 .container-sub-page {
-  width: calc(100vw - 189px - 30px);
+  width: calc(100vw - 189px - 20px);
   /* width: auto; */
   min-height: 100vh;
   display: flex;
@@ -242,8 +241,8 @@ body {
 /*内容页main部分*/
 .container-sub-page-main {
   /* min-width: 930px; */
-  padding: 30px;
-  width: calc(100vw - 189px - 30px);
+  padding: 20px;
+  width: calc(100vw - 189px - 20px);
 
   height: calc(100vh - 95px);
   display: flex;
@@ -333,7 +332,7 @@ body {
 .menu-content-wrapper {
   display: flex;
   margin-top: 70px;
-  width: calc(100vw - 189px - 30px);
+  width: calc(100vw - 189px - 20px);
   height: calc(100vh - 65px);
   background-color: white
 }
@@ -354,7 +353,7 @@ body {
 
 .menu-content {
   display: flex;
-  width: calc(100vw - 189px - 30px);
+  width: calc(100vw - 189px - 20px);
   height: calc(100vh - 75px);
 }
 
