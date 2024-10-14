@@ -16,7 +16,7 @@
               <img src="/imgs/button-search.png" alt="Search Icon" class="el-button-img" />
               查询
             </el-button>
-            <el-button size="large" class="el-button-content" @click="dialogFormVisible = true">
+            <el-button size="large" class="el-button-content" @click="addUser(1)">
               <img src="/imgs/button-add.png" alt="Search Icon" class="el-button-img" />
               添加
             </el-button>
@@ -73,9 +73,9 @@
                 @click="toUserDetail('update', scope.row.id)">
               <img class="tb-op-icon" src="/imgs/delete.png" @click="pendingDeleteUser(scope.row.name)"> -->
                 <div class="operate-wrapper">
-                  <span class="operate-item">重置密码</span>
-                  <span class="operate-item">查看</span>
-                  <span class="operate-item">删除</span>
+                  <span class="operate-item" @click="dialogResetPasswordForm = true">重置密码</span>
+                  <span class="operate-item" @click="addUser(0)">查看</span>
+                  <span class="operate-item" @click="dialogDeleteVisible = true">删除</span>
                 </div>
 
               </template>
@@ -101,40 +101,80 @@
           </template>
         </el-dialog>
 
-
-        <el-dialog v-model="dialogFormVisible" title="添加用户" width="550">
+        <!-- <template v-if="dialogFormVisible||dialogUserDetailForm"> -->
+        <el-dialog v-model="dialogFormVisible" :title="userDetailTitle" width="550">
           <el-form :model="userForm">
             <el-form-item label="用户名称" label-width="140px" style="margin-right: 50px;">
-              <el-input v-model="userForm.name" autocomplete="off" />
+              <el-input v-model="userForm.name" autocomplete="off" :readonly="dialogUserDetailForm" />
             </el-form-item>
-
             <el-form-item label="账号" label-width="140px" style="margin-right: 50px;">
-              <el-input v-model="userForm.account" autocomplete="off" />
+              <el-input v-model="userForm.account" autocomplete="off" :readonly="dialogUserDetailForm" />
             </el-form-item>
-
             <el-form-item label="密码" label-width="140px" style="margin-right: 50px;">
-              <el-input v-model="userForm.password" autocomplete="off" />
+              <el-input v-model="userForm.password" autocomplete="off" :readonly="dialogUserDetailForm" />
             </el-form-item>
-
             <el-form-item label="邮箱" label-width="140px" style="margin-right: 50px;">
-              <el-input v-model="userForm.email" autocomplete="off" />
+              <el-input v-model="userForm.email" autocomplete="off" :readonly="dialogUserDetailForm" />
             </el-form-item>
             <el-form-item label="账号权限" label-width="140px" style="margin-right: 50px;">
-              <el-select v-model="userForm.region" placeholder="请选择账号权限">
+              <el-select v-model="userForm.region" placeholder="请选择账号权限" :disabled="dialogUserDetailForm">
                 <el-option label="普通用户" value="普通用户" />
                 <el-option label="管理员" value="管理员" />
               </el-select>
             </el-form-item>
-
             <el-form-item label="备注" label-width="140px" style="margin-right: 50px;">
-              <el-input v-model="textarea" maxlength="30" style="width: 310px" placeholder="Please input"
-                show-word-limit type="textarea" />
+              <el-input v-model="userForm.remark" maxlength="100" style="width: 310px" placeholder="Please input"
+                show-word-limit type="textarea" :readonly="dialogUserDetailForm" />
             </el-form-item>
           </el-form>
           <template #footer>
             <div class="dialog-footer">
-              <el-button @click="dialogFormVisible = false">Cancel</el-button>
-              <el-button style="margin-left: 50px" type="primary" @click="dialogFormVisible = false">
+              <el-button @click="closedAlert">Cancel</el-button>
+              <el-button style="margin-left: 50px" type="primary" @click="closedAlert">
+                Confirm
+              </el-button>
+            </div>
+          </template>
+        </el-dialog>
+        <!-- </template> -->
+
+
+
+        <el-dialog v-model="dialogResetPasswordForm" title="重置密码" width="550">
+          <el-form :model="passwordForm">
+            <el-form-item label="用户名称" label-width="90px" style="margin-right: 140px;">
+              <el-input v-model="passwordForm.name" autocomplete="off" readonly  />
+            </el-form-item>
+            <el-form-item label="密码" label-width="90px" style="margin-right: 50px;">
+              <div class="reset-password">
+                <el-input v-model="passwordForm.newPassword" autocomplete="off" />
+                <el-button style="margin-left: 20px">生成</el-button>
+                <el-button>复制</el-button>
+              </div>
+            </el-form-item>
+            <el-form-item label="确认密码" label-width="90px" style="margin-right: 140px;">
+              <el-input v-model="passwordForm.againPassword" autocomplete="off" />
+            </el-form-item>
+          </el-form>
+          <template #footer>
+            <div class="dialog-footer">
+              <el-button @click="dialogResetPasswordForm = false">Cancel</el-button>
+              <el-button style="margin-left: 50px" type="primary" @click="dialogResetPasswordForm = false">
+                Confirm
+              </el-button>
+            </div>
+          </template>
+        </el-dialog>
+
+
+        <el-dialog v-model="dialogDeleteVisible" title="删除用户" width="550">
+          <div class="">
+            是否删除xxx用户？
+          </div>
+          <template #footer>
+            <div class="dialog-footer">
+              <el-button @click="dialogDeleteVisible = false">Cancel</el-button>
+              <el-button style="margin-left: 50px" type="primary" @click="dialogDeleteVisible = false">
                 Confirm
               </el-button>
             </div>
@@ -194,18 +234,53 @@ export default {
         this.$t('user.role.level2'),
       ],
       dialogFormVisible: false,
+      dialogUserDetailForm: false,
+      userDetailTitle: '添加用户',
+      dialogResetPasswordForm: false,
+      dialogDeleteVisible: false,
       userForm: {
         name: '',
         region: '',
         account: '',
         password: '',
         email: '',
-      }
+        remark: '',
+      },
+      passwordForm: {
+        name: '',
+        newPassword: '',
+        againPassword: ''
+      },
     }
   },
   methods: {
-    addUser() {
+    addUser(val) {
+      // console.log('addUser val', val)
+      // if (val) {
+      //   console.log('addUser add val', val)
+      //   this.dialogFormVisible = true
+      //   this.userDetailTitle = '添加用户'
+      //   return
+      // }
+      // this.dialogUserDetailForm = true
+      // this.userDetailTitle = '查看用户'
 
+
+      this.dialogFormVisible = true;
+      if (val === 1) {
+        this.dialogUserDetailForm = false; // Editable for adding a user
+        this.userDetailTitle = '添加用户';
+      } else {
+        this.dialogUserDetailForm = true; // Read-only for viewing user details
+        this.userDetailTitle = '查看用户';
+      }
+    },
+    closedAlert() {
+      this.dialogFormVisible = false
+      this.dialogUserDetailForm = false
+    },
+    deleteUser() {
+      this.dialogDeleteVisible = true
     },
     toUserDetail(mode, id) {
       this.push(`/user_detail/${mode}/${id}`)
@@ -390,5 +465,10 @@ export default {
   flex-direction: row;
   justify-content: center;
   align-items: center;
+}
+
+.reset-password {
+  display: flex;
+  flex-direction: row;
 }
 </style>
