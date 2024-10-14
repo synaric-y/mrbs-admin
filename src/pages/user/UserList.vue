@@ -209,6 +209,7 @@ export default {
   justify-content: flex-start;
   align-items: flex-start;
   margin-left: 20px;
+  padding: 0 5px;
 }
 
 .el-main {
@@ -235,14 +236,14 @@ export default {
   margin: 0;
 }
 
-.account-status-select .el-input {
-  height: 30px;
-  line-height: 30px;
+::v-deep .el-input {
+  height: 40px;
+  line-height: 40px;
 }
 
-.account-status-select .el-input__inner {
-  height: 30px;
-  line-height: 30px;
+::v-deep .el-input__inner {
+  height: 40px;
+  line-height: 40px;
 }
 
 // .el-select--large .el-select__wrapper {
@@ -259,7 +260,7 @@ export default {
 
 .el-button-content {
   width: 84px;
-  height: 32px;
+  height: 42px;
   background: #591BB7;
   font-family: PingFang SC;
   font-size: 14px;
@@ -268,6 +269,7 @@ export default {
   letter-spacing: 0px;
   color: #FFFFFF;
   margin-left: 20px;
+  padding: 4px 0;
 }
 
 .operate-wrapper {
