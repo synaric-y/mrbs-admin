@@ -16,7 +16,7 @@
               <img src="/imgs/button-search.png" alt="Search Icon" class="el-button-img" />
               查询
             </el-button>
-            <el-button size="large" class="el-button-content">
+            <el-button size="large" class="el-button-content" @click="dialogFormVisible = true">
               <img src="/imgs/button-add.png" alt="Search Icon" class="el-button-img" />
               添加
             </el-button>
@@ -100,6 +100,46 @@
             </div>
           </template>
         </el-dialog>
+
+
+        <el-dialog v-model="dialogFormVisible" title="添加用户" width="550">
+          <el-form :model="userForm">
+            <el-form-item label="用户名称" label-width="140px" style="margin-right: 50px;">
+              <el-input v-model="userForm.name" autocomplete="off" />
+            </el-form-item>
+
+            <el-form-item label="账号" label-width="140px" style="margin-right: 50px;">
+              <el-input v-model="userForm.account" autocomplete="off" />
+            </el-form-item>
+
+            <el-form-item label="密码" label-width="140px" style="margin-right: 50px;">
+              <el-input v-model="userForm.password" autocomplete="off" />
+            </el-form-item>
+
+            <el-form-item label="邮箱" label-width="140px" style="margin-right: 50px;">
+              <el-input v-model="userForm.email" autocomplete="off" />
+            </el-form-item>
+            <el-form-item label="账号权限" label-width="140px" style="margin-right: 50px;">
+              <el-select v-model="userForm.region" placeholder="请选择账号权限">
+                <el-option label="普通用户" value="普通用户" />
+                <el-option label="管理员" value="管理员" />
+              </el-select>
+            </el-form-item>
+
+            <el-form-item label="备注" label-width="140px" style="margin-right: 50px;">
+              <el-input v-model="textarea" maxlength="30" style="width: 310px" placeholder="Please input"
+                show-word-limit type="textarea" />
+            </el-form-item>
+          </el-form>
+          <template #footer>
+            <div class="dialog-footer">
+              <el-button @click="dialogFormVisible = false">Cancel</el-button>
+              <el-button style="margin-left: 50px" type="primary" @click="dialogFormVisible = false">
+                Confirm
+              </el-button>
+            </div>
+          </template>
+        </el-dialog>
       </div>
     </el-main>
   </el-container>
@@ -152,10 +192,21 @@ export default {
         this.$t('user.role.level0'),
         this.$t('user.role.level1'),
         this.$t('user.role.level2'),
-      ]
+      ],
+      dialogFormVisible: false,
+      userForm: {
+        name: '',
+        region: '',
+        account: '',
+        password: '',
+        email: '',
+      }
     }
   },
   methods: {
+    addUser() {
+
+    },
     toUserDetail(mode, id) {
       this.push(`/user_detail/${mode}/${id}`)
     },
@@ -328,8 +379,16 @@ export default {
   justify-content: center;
   // background-color: rebeccapurple;
 }
+
 .table-demonstration {
   line-height: 50px;
   margin-right: 30px;
+}
+
+.dialog-footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
 }
 </style>
