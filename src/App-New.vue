@@ -214,7 +214,7 @@ body {
 
 /*表头*/
 .tb-header {
-  color: #333333;
+  /* color: #333333; */
   font-size: 18px;
 }
 

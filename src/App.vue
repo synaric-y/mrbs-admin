@@ -377,8 +377,8 @@ body {
 
 /*表头*/
 .tb-header {
-  color: #333333;
-  font-size: 18px;
+  /* color: #333333; */
+  font-size: 14px;
 }
 
 /*公共代码----内容页标题的容器*/
