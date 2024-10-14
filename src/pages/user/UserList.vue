@@ -9,8 +9,8 @@
             <el-input v-model="searchName" style="width: 140px" placeholder="请输入用户名称" />
             <el-select class="account-status-select" v-model="accountStatusVal" placeholder="Select" size="large"
               style="width: 140px;margin-left: 25px;min-height: 30px;">
-              <el-option style="height: 30px;" v-for="item in accountStatusOptions" :key="item.value" :label="item.label"
-                :value="item.value" />
+              <el-option style="height: 30px;" v-for="item in accountStatusOptions" :key="item.value"
+                :label="item.label" :value="item.value" />
             </el-select>
             <el-button size="large" class="el-button-content">
               <img src="/imgs/button-search.png" alt="Search Icon" class="el-button-img" />
@@ -33,57 +33,61 @@
           </div>
         </div>
 
-        <div class="table-wrapper">
-          <el-table :data="tableData" style="margin-top: 56px;" header-cell-class-name="tb-header"
- max-height="1000">
-          <el-table-column prop="number" label="序号" width="120">
-          </el-table-column>
-          <el-table-column prop="name" label="用户名" width="130">
-          </el-table-column>
-          <el-table-column prop="account" label="登录账号" width="130">
-          </el-table-column>
-          <el-table-column prop="email" label="邮箱" width="130">
-          </el-table-column>
+        <div class="table-wrapper" style="height: auto;">
+          <el-table :data="tableData" style="margin-top: 56px;" header-cell-class-name="tb-header" max-height="450">
+            <el-table-column prop="number" label="序号" width="120">
+            </el-table-column>
+            <el-table-column prop="name" label="用户名" width="130">
+            </el-table-column>
+            <el-table-column prop="account" label="登录账号" width="130">
+            </el-table-column>
+            <el-table-column prop="email" label="邮箱" width="130">
+            </el-table-column>
 
-          <!-- <el-table-column
+            <!-- <el-table-column
             prop="display_name"
             :label="$t('user.tableUser.displayName')"
             width="160">
         </el-table-column> -->
 
-          <!-- <el-table-column
+            <!-- <el-table-column
             prop="level"
             :label="$t('user.tableUser.level')"
             width="100">
         </el-table-column> -->
 
-          <el-table-column prop="status" label="状态" width="100">
-            <!-- :v-model="status" -->
-            <el-switch v-model="accountSwitch" style="--el-switch-on-color: #591BB7; --el-switch-off-color: #A8ABB2"
-              active-value="100" inactive-value="0" />
-          </el-table-column>
+            <el-table-column prop="status" label="状态" width="100">
+              <!-- :v-model="status" -->
+              <el-switch v-model="accountSwitch" style="--el-switch-on-color: #591BB7; --el-switch-off-color: #A8ABB2"
+                active-value="100" inactive-value="0" />
+            </el-table-column>
 
-          <el-table-column prop="permissions" label="账号权限" width="150">
-          </el-table-column>
+            <el-table-column prop="permissions" label="账号权限" width="150">
+            </el-table-column>
 
-          <el-table-column prop="last_login" :label="$t('user.tableUser.loginTime')" width="200">
-          </el-table-column>
-          <el-table-column prop="id" :label="$t('user.tableUser.operate')" width="300">
-            <template #default="scope">
-              <!-- <img class="tb-op-icon tb-op-icon-span" src="/imgs/edit.png"
+            <el-table-column prop="last_login" :label="$t('user.tableUser.loginTime')" width="200">
+            </el-table-column>
+            <el-table-column prop="id" :label="$t('user.tableUser.operate')" width="300">
+              <template #default="scope">
+                <!-- <img class="tb-op-icon tb-op-icon-span" src="/imgs/edit.png"
                 @click="toUserDetail('update', scope.row.id)">
               <img class="tb-op-icon" src="/imgs/delete.png" @click="pendingDeleteUser(scope.row.name)"> -->
-              <div class="operate-wrapper">
-                <span class="operate-item">重置密码</span>
-              <span class="operate-item">查看</span>
-              <span class="operate-item">删除</span>
-              </div>
-              
-            </template>
-          </el-table-column>
-        </el-table>
+                <div class="operate-wrapper">
+                  <span class="operate-item">重置密码</span>
+                  <span class="operate-item">查看</span>
+                  <span class="operate-item">删除</span>
+                </div>
+
+              </template>
+            </el-table-column>
+          </el-table>
         </div>
-        
+
+        <div class="table-pagination-block">
+          <div class="table-demonstration">共200条</div>
+          <el-pagination layout="prev, pager, next" :total="200" />
+        </div>
+
 
         <el-dialog v-model="showDeleteUserDialog" title="Tips" width="500">
           <span>{{ $t('user.deleteUserHint') }}</span>
@@ -111,6 +115,24 @@ export default {
     return {
       tableData: [
         { "number": 1, "name": 'zhangsan', "account": 'jack.chen', "email": '123@163.com', "display_name": "zs", "status": 1, "level": '2', "id": 2, "permissions": '管理员', "last_login": '2024-10-14 10:30:01' },
+        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
+        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
+        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
+        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
+        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
+        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
+        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
+        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
+        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
+        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
+        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
+        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
+        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
+        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
+        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
+        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
+        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
+        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
         { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' }
       ],
       searchName: '',
@@ -213,21 +235,16 @@ export default {
 }
 
 .el-main {
-  // padding: 0;
   margin: 0;
 }
 
 .table-wrapper {
   margin: 0;
   padding: 0;
-  // padding: 0 10px;
 }
 
 .tb-header {
-  // background-color: white;
   font-size: 14px !important;
-  // margin-left: 20px;
-  // padding: 20px;
 }
 
 .el-table {
@@ -245,18 +262,6 @@ export default {
   height: 40px;
   line-height: 40px;
 }
-
-// .el-select--large .el-select__wrapper {
-//   gap: 6px;
-//   // padding: 8px 16px;
-//   min-height: 30px !important;
-//   line-height: 24px;
-//   font-size: 14px;
-// }
-
-// .account-status-select {
-//   min-height: 30px !important;
-// }
 
 .el-button-content {
   width: 84px;
@@ -315,5 +320,16 @@ export default {
 
 .tb-state-disable {
   background: red;
+}
+
+.table-pagination-block {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  // background-color: rebeccapurple;
+}
+.table-demonstration {
+  line-height: 50px;
+  margin-right: 30px;
 }
 </style>
