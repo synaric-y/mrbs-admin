@@ -6,22 +6,22 @@
           <!-- <div class="sub-title">{{ $t("base.userManagement") }}</div> -->
           <div class="page-title">用户列表</div>
           <div class="filter-wrapper" style="margin-top: 20px;height: 30px;">
-            <el-input v-model="searchName" style="width: 140px" placeholder="请输入用户名称" />
+            <el-input v-model="keyword" style="width: 140px" placeholder="请输入用户名称" />
             <el-select class="account-status-select" v-model="accountStatusVal" placeholder="Select" size="large"
               style="width: 140px;margin-left: 25px;min-height: 30px;">
               <el-option style="height: 30px;" v-for="item in accountStatusOptions" :key="item.value"
                 :label="item.label" :value="item.value" />
             </el-select>
-            <el-button size="large" class="el-button-content">
-              <img src="/imgs/button-search.png" alt="Search Icon" class="el-button-img" />
+            <el-button size="large" class="el-button-content" @click="searchUser">
+              <img src="/imgs/button_search.png" alt="Search Icon" class="el-button-img" />
               查询
             </el-button>
-            <el-button size="large" class="el-button-content" @click="addUser(1)">
-              <img src="/imgs/button-add.png" alt="Search Icon" class="el-button-img" />
+            <el-button size="large" class="el-button-content" @click="addUser(1,null)">
+              <img src="/imgs/button_add.png" alt="Search Icon" class="el-button-img" />
               添加
             </el-button>
             <el-button size="large" class="el-button-content" style="width: 112px;">
-              <img src="/imgs/button-reflesh.png" alt="Search Icon" class="el-button-img" />
+              <img src="/imgs/button_reflesh.png" alt="Search Icon" class="el-button-img" />
               用户同步
             </el-button>
             <!-- <el-button style="margin-left: 25px;" type="primary" size="default" @click="toUserDetail('add', 0)">{{
@@ -37,9 +37,9 @@
           <el-table :data="tableData" style="margin-top: 56px;" header-cell-class-name="tb-header" max-height="450">
             <el-table-column prop="number" label="序号" width="120">
             </el-table-column>
-            <el-table-column prop="name" label="用户名" width="130">
+            <el-table-column prop="name" label="用户名称" width="130">
             </el-table-column>
-            <el-table-column prop="account" label="登录账号" width="130">
+            <el-table-column prop="account" label="账号" width="130">
             </el-table-column>
             <el-table-column prop="email" label="邮箱" width="130">
             </el-table-column>
@@ -58,13 +58,14 @@
 
             <el-table-column prop="status" label="状态" width="100">
               <!-- :v-model="status" -->
-              <el-switch v-model="accountSwitch" style="--el-switch-on-color: #591BB7; --el-switch-off-color: #A8ABB2"
-                active-value="100" inactive-value="0" />
+               <template #default="scope">
+                <el-switch v-model="scope.row.status" style="--el-switch-on-color: #591BB7; --el-switch-off-color: #A8ABB2"
+                active-value="100" inactive-value="0" @change="handleSwitchChange(scope.row)" />
+               </template>
+              
             </el-table-column>
-
             <el-table-column prop="permissions" label="账号权限" width="150">
             </el-table-column>
-
             <el-table-column prop="last_login" :label="$t('user.tableUser.loginTime')" width="200">
             </el-table-column>
             <el-table-column prop="id" :label="$t('user.tableUser.operate')" width="300">
@@ -73,9 +74,9 @@
                 @click="toUserDetail('update', scope.row.id)">
               <img class="tb-op-icon" src="/imgs/delete.png" @click="pendingDeleteUser(scope.row.name)"> -->
                 <div class="operate-wrapper">
-                  <span class="operate-item" @click="dialogResetPasswordForm = true">重置密码</span>
-                  <span class="operate-item" @click="addUser(0)">查看</span>
-                  <span class="operate-item" @click="dialogDeleteVisible = true">删除</span>
+                  <span class="operate-item" @click="resetPassword(scope.row)">重置密码</span>
+                  <span class="operate-item" @click="addUser(0,scope.row)">查看</span>
+                  <span class="operate-item" @click="deleteUserPop(scope.row)">删除</span>
                 </div>
 
               </template>
@@ -85,52 +86,38 @@
 
         <div class="table-pagination-block">
           <div class="table-demonstration">共200条</div>
-          <el-pagination layout="prev, pager, next" :total="200" />
+          <el-pagination @current-change="handleCurrentChange" layout="prev, pager, next" :total="200" />
         </div>
-
-
-        <el-dialog v-model="showDeleteUserDialog" title="Tips" width="500">
-          <span>{{ $t('user.deleteUserHint') }}</span>
-          <template #footer>
-            <div class="dialog-footer">
-              <el-button @click="showDeleteUserDialog = false">{{ $t('base.cancel') }}</el-button>
-              <el-button type="primary" @click="deleteUser">
-                {{ $t('base.confirm') }}
-              </el-button>
-            </div>
-          </template>
-        </el-dialog>
-
         <!-- <template v-if="dialogFormVisible||dialogUserDetailForm"> -->
         <el-dialog v-model="dialogFormVisible" :title="userDetailTitle" width="550">
           <el-form :model="userForm">
             <el-form-item label="用户名称" label-width="140px" style="margin-right: 50px;">
-              <el-input v-model="userForm.name" autocomplete="off" :readonly="dialogUserDetailForm" />
+              <el-input v-model="userForm.name" autocomplete="off"/>
             </el-form-item>
             <el-form-item label="账号" label-width="140px" style="margin-right: 50px;">
               <el-input v-model="userForm.account" autocomplete="off" :readonly="dialogUserDetailForm" />
             </el-form-item>
             <el-form-item label="密码" label-width="140px" style="margin-right: 50px;">
-              <el-input v-model="userForm.password" autocomplete="off" :readonly="dialogUserDetailForm" />
+              <el-input v-model="userForm.password" autocomplete="off"/>
             </el-form-item>
             <el-form-item label="邮箱" label-width="140px" style="margin-right: 50px;">
-              <el-input v-model="userForm.email" autocomplete="off" :readonly="dialogUserDetailForm" />
+              <el-input v-model="userForm.email" autocomplete="off"/>
             </el-form-item>
             <el-form-item label="账号权限" label-width="140px" style="margin-right: 50px;">
-              <el-select v-model="userForm.region" placeholder="请选择账号权限" :disabled="dialogUserDetailForm">
+              <el-select v-model="userForm.permissions" placeholder="请选择账号权限" :disabled="dialogUserDetailForm">
                 <el-option label="普通用户" value="普通用户" />
                 <el-option label="管理员" value="管理员" />
               </el-select>
             </el-form-item>
             <el-form-item label="备注" label-width="140px" style="margin-right: 50px;">
               <el-input v-model="userForm.remark" maxlength="100" style="width: 310px" placeholder="Please input"
-                show-word-limit type="textarea" :readonly="dialogUserDetailForm" />
+                show-word-limit type="textarea"/>
             </el-form-item>
           </el-form>
           <template #footer>
             <div class="dialog-footer">
               <el-button @click="closedAlert">Cancel</el-button>
-              <el-button style="margin-left: 50px" type="primary" @click="closedAlert">
+              <el-button style="margin-left: 50px" type="primary" @click="commitAddForm">
                 Confirm
               </el-button>
             </div>
@@ -148,8 +135,8 @@
             <el-form-item label="密码" label-width="90px" style="margin-right: 50px;">
               <div class="reset-password">
                 <el-input v-model="passwordForm.newPassword" autocomplete="off" />
-                <el-button style="margin-left: 20px">生成</el-button>
-                <el-button>复制</el-button>
+                <el-button style="margin-left: 20px" @click="creatPassword">生成</el-button>
+                <el-button @click="copyPassword">复制</el-button>
               </div>
             </el-form-item>
             <el-form-item label="确认密码" label-width="90px" style="margin-right: 140px;">
@@ -169,12 +156,12 @@
 
         <el-dialog v-model="dialogDeleteVisible" title="删除用户" width="550">
           <div class="">
-            是否删除xxx用户？
+            是否删除当前用户？
           </div>
           <template #footer>
             <div class="dialog-footer">
               <el-button @click="dialogDeleteVisible = false">Cancel</el-button>
-              <el-button style="margin-left: 50px" type="primary" @click="dialogDeleteVisible = false">
+              <el-button style="margin-left: 50px" type="primary" @click="deleteUser">
                 Confirm
               </el-button>
             </div>
@@ -194,39 +181,37 @@ export default {
   data() {
     return {
       tableData: [
-        { "number": 1, "name": 'zhangsan', "account": 'jack.chen', "email": '123@163.com', "display_name": "zs", "status": 1, "level": '2', "id": 2, "permissions": '管理员', "last_login": '2024-10-14 10:30:01' },
-        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
-        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
-        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
-        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
-        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
-        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
-        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
-        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
-        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
-        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
-        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
-        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
-        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
-        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
-        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
-        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
-        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
-        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' },
-        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01' }
+        { "number": 1, "name": 'zhangsan', "account": 'jack.chen', "email": '123@163.com', "display_name": "zs", "status": 1, "level": '2', "id": 2, "permissions": '管理员', "last_login": '2024-10-14 10:30:01',"password":'zhangsan' },
+        { "number": 2, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01',"password":'lisi'  },
+        { "number": 3, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 1, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01',"password":'lisi' },
+        { "number": 4, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01',"password":'lisi' },
+        { "number": 5, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01',"password":'lisi' },
+        { "number": 6, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01',"password":'lisi' },
+        { "number": 7, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01',"password":'lisi' },
+        { "number": 8, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01',"password":'lisi' },
+        { "number": 9, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01',"password":'lisi' },
+        { "number": 10, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01',"password":'lisi' },
+        { "number": 11, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01',"password":'lisi' },
+        { "number": 12, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01',"password":'lisi' },
+        { "number": 13, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01',"password":'lisi' },
+        { "number": 14, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01',"password":'lisi' },
+        { "number": 15, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01',"password":'lisi' },
+        { "number": 16, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01',"password":'lisi' },
+        { "number": 17, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01',"password":'lisi' },
+        { "number": 18, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01',"password":'lisi' },
+        { "number": 19, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01',"password":'lisi' },
+        { "number": 20, "name": 'lisi', "account": 'roce.zhang', "email": '456@163.com', "display_name": "ls", "status": 0, "level": '2', "id": 3, "permissions": '普通用户', "last_login": '2024-10-12 15:30:01',"password":'lisi' }
       ],
-      searchName: '',
-      accountStatusVal: '正常',
+      accountStatusVal: '0',
       accountSwitch: 1,
       accountStatusOptions: [
         {
-          value: '正常',
+          value: '0',
           label: '正常',
         }, {
-          value: '禁用',
+          value: '1',
           label: '禁用',
         }],
-      showDeleteUserDialog: false,
       pendingDeleteName: null,
       role: [
         this.$t('user.role.level0'),
@@ -240,7 +225,6 @@ export default {
       dialogDeleteVisible: false,
       userForm: {
         name: '',
-        region: '',
         account: '',
         password: '',
         email: '',
@@ -251,11 +235,16 @@ export default {
         newPassword: '',
         againPassword: ''
       },
+      keyword: '',
+      page_number: 0,
+      resetPasswordRow: null,
+      userRow: null,
+      deleteRow: null
     }
   },
   methods: {
-    addUser(val) {
-      // console.log('addUser val', val)
+    addUser(val,row) {
+      
       // if (val) {
       //   console.log('addUser add val', val)
       //   this.dialogFormVisible = true
@@ -266,32 +255,91 @@ export default {
       // this.userDetailTitle = '查看用户'
 
 
-      this.dialogFormVisible = true;
+      this.dialogFormVisible = true
       if (val === 1) {
-        this.dialogUserDetailForm = false; // Editable for adding a user
-        this.userDetailTitle = '添加用户';
+        this.dialogUserDetailForm = false// Editable for adding a user
+        this.userDetailTitle = '添加用户'
+        this.userForm.name = ''
+        this.userForm.region = ''
+        this.userForm.account = ''
+        this.userForm.password = ''
+        this.userForm.email = ''
+        this.userForm.remark = ''
       } else {
-        this.dialogUserDetailForm = true; // Read-only for viewing user details
-        this.userDetailTitle = '查看用户';
+        this.dialogUserDetailForm = true // Read-only for viewing user details
+        this.userDetailTitle = '查看用户'
+        this.userForm.name = row.name
+        this.userForm.account = row.account
+        this.userForm.password = ''
+        this.userForm.email = row.email
+        this.userForm.remark = row.remark
+        this.userForm.permissions = row.permissions
+        this.userForm.password = row.password
       }
+      console.log('addUser val - row', val,row)
     },
     closedAlert() {
       this.dialogFormVisible = false
       this.dialogUserDetailForm = false
     },
-    deleteUser() {
+    commitAddForm() {
+      console.log('UserList commitAddForm',this.userForm)
+      let params = {}
+      params['action'] = this.dialogUserDetailForm?'edit':'add'
+      params['id'] = row.number
+      params['name'] = row.name
+      params['display_name'] = row.account
+      params['email'] = row.email
+      params['password'] = row.password
+      params['remark'] = row.remark
+      this.editUser(params)
+    },
+    resetPassword(row) {
+      this.dialogResetPasswordForm = true
+      this.passwordForm.name = row.name
+    },
+    deleteUserPop(row) {
       this.dialogDeleteVisible = true
-    },
-    toUserDetail(mode, id) {
-      this.push(`/user_detail/${mode}/${id}`)
-    },
-    pendingDeleteUser(name) {
-      this.showDeleteUserDialog = true
-      this.pendingDeleteName = name
+      this.deleteRow = row
     },
     deleteUser() {
-      this.showDeleteUserDialog = false
-      Api.deleteUser({ name: this.pendingDeleteName }).then(({ data, code, msg }) => {
+      let params = {}
+      params['action'] = 'delete'
+      params['name'] = this.deleteRow.name
+      this.dialogDeleteVisible = false 
+      this.editUser(params)
+    },
+    searchUser() {
+      this.getUserList()
+    },
+    handleCurrentChange(num) {
+      console.log('UserList handleCurrentChange num:',num)
+      this.page_number = num
+    },
+    handleSwitchChange(row) {
+      console.log('UserList handleCurrentChange id: status',row.number,row.status)
+      this.updateUserDisabled(row)
+    },
+    
+    updateUserDisabled(row) {
+      let params = {}
+      params['userid'] = row.number
+      params['disabled'] = row.status != '100'?1:0
+      console.log('UserList updateUserStatus params',params)
+      return
+      Api.updateAccount({params}).then(({data, code, msg}) => {
+        if (code == 0) {
+
+        } else {
+
+        }
+      })
+    },
+
+    editUser(params) {
+      console.log('UserList editUser params',params)
+      return
+      Api.editUser({params}).then(({ data, code, msg }) => {
         if (code == 0) {
           this.getUserList()
         } else {
@@ -300,7 +348,15 @@ export default {
       })
     },
     getUserList() {
-      Api.getUserList({}).then(({ data }) => {
+      let params = {}
+      params['keyword'] = this.keyword
+      params['pagesize'] = 20
+      params['pagenum'] = this.page_number
+      const selectedItem = this.accountStatusOptions.filter(item => item.value === this.accountStatusVal)
+      const disabled = selectedItem[0].value
+      params['disabled'] = disabled
+      // Api.getAllUsers
+      Api.getAllUsers({params}).then(({ data }) => {
         if (data) {
           data.forEach(it => {
             it["level"] = this.role[it["level"]]
@@ -308,7 +364,10 @@ export default {
           this.tableData = data
         }
       })
-    }
+    },
+    toUserDetail(mode, id) {
+      this.push(`/user_detail/${mode}/${id}`)
+    },
   },
   mounted() {
     this.setTab('/user')

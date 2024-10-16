@@ -14,7 +14,7 @@
             <div class="nav-setting" style="margin-left: 20px;margin-top: 5px;">
               <img style="width: 20px; height: 20px" src="../public/imgs/setting.png"/>
             </div>
-            <div class="nav-user" style="margin-left: 20px;margin-top: 5px;">
+            <div class="nav-user" style="margin-left: 20px;margin-top: 5px;" @click="toProfile">
               <img style="width: 20px; height: 20px" src="../public/imgs/setting.png" />
             </div>
           </div>
@@ -26,7 +26,7 @@
         <el-col>
           <el-menu default-active="1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
             <el-menu-item index="1">
-              <img class="menu_icon" src="../public/imgs/check-circle.png" alt="#">
+              <img class="menu_icon" src="../public/imgs/check_circle.png" alt="#">
               <span @click="switchTab('/guide_one')">Dashboard</span>
             </el-menu-item>
 
@@ -35,7 +35,7 @@
                 <!-- <el-icon>
                   <location  />
                 </el-icon> -->
-                <img class="menu_icon" src="../public/imgs/check-circle.png" alt="#">
+                <img class="menu_icon" src="../public/imgs/check_circle.png" alt="#">
                 <span>用户管理</span>
               </template>
               <el-menu-item index="2-1" @click="switchTab('/user_list')">用户列表</el-menu-item>
@@ -47,7 +47,7 @@
                 <!-- <el-icon>
                   <location />
                 </el-icon> -->
-                <img class="menu_icon" src="../public/imgs/check-circle.png" alt="#">
+                <img class="menu_icon" src="../public/imgs/check_circle.png" alt="#">
                 <span>会议预定</span>
               </template>
               <el-menu-item index="3-1" @click="switchTab('/single_meet')">单次会议预定</el-menu-item>
@@ -60,7 +60,7 @@
                 <!-- <el-icon>
                   <location />
                 </el-icon> -->
-                <img class="menu_icon" src="../public/imgs/check-circle.png" alt="#">
+                <img class="menu_icon" src="../public/imgs/check_circle.png" alt="#">
                 <span>区域&会议管理</span>
               </template>
               <el-menu-item index="4-1" @click="switchTab('/edit_area')">编辑区域</el-menu-item>
@@ -70,7 +70,7 @@
 
             <el-menu-item index="5">
               <!-- <el-icon><icon-menu /></el-icon> -->
-              <img class="menu_icon" src="../public/imgs/check-circle.png" alt="#">
+              <img class="menu_icon" src="../public/imgs/check_circle.png" alt="#">
               <span @click="switchTab('/terminal_manager')">终端设备管理</span>
             </el-menu-item>
 
@@ -79,7 +79,7 @@
                 <!-- <el-icon>
                   <location />
                 </el-icon> -->
-                <img class="menu_icon" src="../public/imgs/check-circle.png" alt="#">
+                <img class="menu_icon" src="../public/imgs/check_circle.png" alt="#">
                 <span>系统设置</span>
               </template>
               <el-menu-item index="6-1" @click="switchTab('/meet_rule')">会议规则设置</el-menu-item>
@@ -93,7 +93,7 @@
                 <!-- <el-icon>
                   <location />
                 </el-icon> -->
-                <img class="menu_icon" src="../public/imgs/check-circle.png" alt="#">
+                <img class="menu_icon" src="../public/imgs/check_circle.png" alt="#">
                 <span>帮助中心</span>
               </template>
               <el-menu-item index="7-1" @click="switchTab('/manual')">操作手册下载</el-menu-item>
@@ -166,7 +166,9 @@ export default {
   },
   methods: {
     toProfile() {
+      console.log('App toProfile Enter')
       let user = this.userInfo
+      console.log('App toProfile Enter:user',user)
       if (!user.display_name) {
         router.replace("/login")
       } else {

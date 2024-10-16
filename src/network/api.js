@@ -112,4 +112,17 @@ export class Api {
     static async getUserById(params) {
         return Request.post('get_user_by_id', params)
     }
+
+    // 2024-10-16 预约会议2.0开发
+    static async getAllUsers(params) {
+        return Request.post('get_info/get_all_users',params)
+    }
+
+    static async updateAccount(params) {
+        return Request.post('user/disable_user',params)
+    }
+
+    static async editUser(params) {
+        return Request.post('user/edit_users',params)
+    }
 }
