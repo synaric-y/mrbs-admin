@@ -365,8 +365,9 @@ export default {
 }
 
 .table-wrapper {
-  margin: 0;
+  margin-left: -100px;
   padding: 0;
+  width: auto;
 }
 
 .tb-header {
