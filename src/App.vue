@@ -414,4 +414,22 @@ body {
   color: var(--el-color-primary);
   margin-left: 10px;
 }
+
+/* .form-wrapper {
+  position: relative;
+} */
+
+.request-wrapper {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+}
+
+.request-tag {
+  width: 12px;
+  height: 12px;
+  position: absolute;
+  left: 55px;
+  top: 10px;
+}
 </style>
