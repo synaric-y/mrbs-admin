@@ -132,9 +132,9 @@
           </el-form>
           <template #footer>
             <div class="dialog-footer">
-              <el-button @click="closedAlert">Cancel</el-button>
-              <el-button style="margin-left: 50px" type="primary" @click="commitAddForm">
-                Confirm
+              <el-button @click="commitAddForm">提交</el-button>
+              <el-button style="margin-left: 50px" type="primary" @click="closedAlert">
+                取消
               </el-button>
             </div>
           </template>
@@ -162,10 +162,10 @@
           </el-form>
           <template #footer>
             <div class="dialog-footer">
-              <el-button @click="dialogResetPasswordForm = false">Cancel</el-button>
               <el-button style="margin-left: 50px" type="primary" @click="dialogResetPasswordForm = false">
                 Confirm
               </el-button>
+              <el-button @click="dialogResetPasswordForm = false">Cancel</el-button>
             </div>
           </template>
         </el-dialog>
@@ -177,10 +177,10 @@
           </div>
           <template #footer>
             <div class="dialog-footer">
-              <el-button @click="dialogDeleteVisible = false">Cancel</el-button>
               <el-button style="margin-left: 50px" type="primary" @click="deleteUser">
                 Confirm
               </el-button>
+              <el-button @click="dialogDeleteVisible = false">Cancel</el-button>
             </div>
           </template>
         </el-dialog>
