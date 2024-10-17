@@ -34,17 +34,17 @@
                 <div v-if="scope.row.btns.length != 0">
                   <!-- <span class="group-btn" v-for="(item,func) in scope.row.btns" @click="func">{{ item }}</span> -->
                   <template v-if="scope.row.istop">
-                    <span class="group-btn" @click="editGroup(1,scope.row)">组编辑</span>
-                    <span class="group-btn" @click="editGroup(0,scope.row)">新增组</span>
+                    <span class="group-btn" @click="editGroup(1, scope.row)">组编辑</span>
+                    <span class="group-btn" @click="editGroup(0, scope.row)">新增组</span>
                     <span class="group-btn" @click="deleteGroup(scope.row)">删除</span>
                   </template>
                   <template v-else>
-                    <span class="group-btn" @click="editGroup(1,scope.row)">组编辑</span>
-                    <span class="group-btn" @click="editGroup(0,scope.row)">新增组</span>
+                    <span class="group-btn" @click="editGroup(1, scope.row)">组编辑</span>
+                    <span class="group-btn" @click="editGroup(0, scope.row)">新增组</span>
                     <span class="group-btn" @click="editGroupMember(scope.row)">组成员编辑</span>
                     <span class="group-btn" @click="deleteGroup(scope.row)">删除</span>
                   </template>
-                  
+
                 </div>
                 <div v-else>
                   <span class="default-group-btn">无</span>
@@ -54,11 +54,11 @@
           </el-table>
         </div>
 
-        <el-dialog v-model="dialogGroupMember" title="查看组成员" width="550">
+        <el-dialog v-model="dialogGroupMember" title="查看组成员" width="650">
           <el-form :model="groupMemberForm">
             <div class="search-wrapper" style="margin-top: 20px;height: 30px;">
               <el-input v-model="groupMemberForm.keyword" style="width: 140px" placeholder="请输入用户名称" />
-              <el-select class="account-status-select" v-model="sourceVal" placeholder="来源" 
+              <el-select class="account-status-select" v-model="sourceVal" placeholder="来源"
                 style="width: 140px;margin-left: 25px;max-height: 30px;">
                 <el-option style="height: 30px;" v-for="item in sourceOptions" :key="item.value" :label="item.label"
                   :value="item.value" />
@@ -69,30 +69,28 @@
               </el-button>
             </div>
           </el-form>
-          <div class="group-member-wrapper" >
-            <el-table :data="groupMembers"  max-height="250" style="width: 100%;height: auto; margin-bottom: 20px;" row-key="id"
-              default-expand-all>
-              <template v-if="dialogGroupMember">
+          <div class="group-member-wrapper">
+            <el-table :data="groupMembers" max-height="250" style="width: 100%;height: auto; margin-bottom: 20px;"
+              row-key="id" default-expand-all>
+              <template v-if="dialogEditGroup">
+                <el-table-column prop="id" label="序号" label-width="40px" />
+                <el-table-column prop="group" label="组名" label-width="80px" />
+                <el-table-column prop="name" label="用户名" label-width="200px" />
+                <el-table-column prop="source" label="来源" label-width="80px" />
+                <el-table-column prop="status" label="操作" label-width="80px">
+                  <template #default="scope">
+                    <el-switch v-model="scope.row.status"
+                      style="--el-switch-on-color: #591BB7; --el-switch-off-color: #A8ABB2" active-value="100"
+                      inactive-value="0" @change="handleSwitchChange(scope.row)" />
+                  </template>
+                </el-table-column>
+              </template>
+              <template v-else-if="dialogGroupMember">
                 <el-table-column prop="id" label="序号" label-width="100px" />
                 <el-table-column prop="group" label="组名" label-width="120px" />
                 <el-table-column prop="name" label="用户名" label-width="120px" />
                 <el-table-column prop="source" label="来源" label-width="100px" />
               </template>
-
-              <template v-else-if="dialogEditGroup">
-                <el-table-column prop="id" label="序号" label-width="40px" />
-                <el-table-column prop="group" label="组名" label-width="80px" />
-                <el-table-column prop="name" label="用户名" label-width="100px" />
-                <el-table-column prop="source" label="来源" label-width="80px" />
-                <el-table-column prop="status" label="操作" label-width="100px">
-                  <template #default="scope">
-                    <el-switch v-model="scope.row.status"
-                  style="--el-switch-on-color: #591BB7; --el-switch-off-color: #A8ABB2" active-value="100"
-                  inactive-value="0" @change="handleSwitchChange(scope.row)" />
-                  </template>
-                </el-table-column>
-              </template>
-              
             </el-table>
             <div class="table-pagination-block">
               <div class="table-demonstration">共200条</div>
@@ -106,9 +104,6 @@
           </template>
         </el-dialog>
 
-
-
-
         <el-dialog v-model="dialogDeleteVisible" title="删除用户" width="550">
           <div class="">
             是否删除当前选中的用户/用户组？
@@ -119,6 +114,33 @@
                 确定
               </el-button>
               <el-button @click="dialogDeleteVisible = false">取消</el-button>
+            </div>
+          </template>
+        </el-dialog>
+
+
+        <el-dialog v-model="dialogAddGroup" title="编辑组" width="550">
+          <el-form :model="addGroupForm">
+            <div class="request-wrapper">
+              <img class="request-tag" style="left: 44px;" src="../../../public/imgs/request_icon.png" alt="">
+              <el-form-item label="用户组名称" label-width="140px">
+                <el-input v-model="addGroupForm.name" autocomplete="off" />
+              </el-form-item>
+            </div>
+
+            <el-form-item label="同步用户组" label-width="140px" style="margin-right: 50px;">
+              <el-cascader :options="groupOptions" props="false" clearable />
+            </el-form-item>
+
+          </el-form>
+
+
+          <template #footer>
+            <div class="dialog-footer">
+              <el-button style="margin-left: 50px" type="primary" @click="commitGroupForm">
+                确定
+              </el-button>
+              <el-button @click="dialogAddGroup = false">取消</el-button>
             </div>
           </template>
         </el-dialog>
@@ -262,8 +284,8 @@ export default {
               btns: [],
             },
           ],
-        }, 
-        
+        },
+
       ],
 
       groupMembers: [
@@ -294,7 +316,7 @@ export default {
           name: '李xx（职位）',
           source: '系统创建',
           status: false,
-        },{
+        }, {
           id: 5,
           group: 'EN组',
           name: '王xx（职位）',
@@ -321,7 +343,7 @@ export default {
           name: '李xx（职位）',
           source: '系统创建',
           status: true,
-        },{
+        }, {
           id: 9,
           group: 'EN组',
           name: '王xx（职位）',
@@ -395,6 +417,110 @@ export default {
       },
       dialogEditGroup: false,
 
+      dialogAddGroup: false,
+      addGroupForm: {
+        name: '',
+        group_info: {},
+      },
+      groupOptions: [
+        {
+          value: 1,
+          label: 'Asia',
+          children: [
+            {
+              value: 2,
+              label: 'China',
+              children: [
+                { value: 3, label: 'Beijing' },
+                { value: 4, label: 'Shanghai' },
+                { value: 5, label: 'Hangzhou' },
+                { value: 3, label: 'Beijing' },
+                { value: 4, label: 'Shanghai' },
+                { value: 5, label: 'Hangzhou' },
+                { value: 3, label: 'Beijing' },
+                { value: 4, label: 'Shanghai' },
+                { value: 5, label: 'Hangzhou' },
+                { value: 3, label: 'Beijing' },
+                { value: 4, label: 'Shanghai' },
+                { value: 5, label: 'Hangzhou' },
+                { value: 3, label: 'Beijing' },
+                { value: 4, label: 'Shanghai' },
+                { value: 5, label: 'Hangzhou' },
+                { value: 3, label: 'Beijing' },
+                { value: 4, label: 'Shanghai' },
+                { value: 5, label: 'Hangzhou' },
+              ],
+            },
+            {
+              value: 6,
+              label: 'Japan',
+              children: [
+                { value: 7, label: 'Tokyo' },
+                { value: 8, label: 'Osaka' },
+                { value: 9, label: 'Kyoto' },
+              ],
+            },
+            {
+              value: 10,
+              label: 'Korea',
+              children: [
+                { value: 11, label: 'Seoul' },
+                { value: 12, label: 'Busan' },
+                { value: 13, label: 'Taegu' },
+              ],
+            },
+          ],
+        },
+        {
+          value: 14,
+          label: 'Europe',
+          children: [
+            {
+              value: 15,
+              label: 'France',
+              children: [
+                { value: 16, label: 'Paris' },
+                { value: 17, label: 'Marseille' },
+                { value: 18, label: 'Lyon' },
+              ],
+            },
+            {
+              value: 19,
+              label: 'UK',
+              children: [
+                { value: 20, label: 'London' },
+                { value: 21, label: 'Birmingham' },
+                { value: 22, label: 'Manchester' },
+              ],
+            },
+          ],
+        },
+        {
+          value: 23,
+          label: 'North America',
+          children: [
+            {
+              value: 24,
+              label: 'US',
+              children: [
+                { value: 25, label: 'New York' },
+                { value: 26, label: 'Los Angeles' },
+                { value: 27, label: 'Washington' },
+              ],
+            },
+            {
+              value: 28,
+              label: 'Canada',
+              children: [
+                { value: 29, label: 'Toronto' },
+                { value: 30, label: 'Montreal' },
+                { value: 31, label: 'Ottawa' },
+              ],
+            },
+          ],
+        },
+      ],
+
       userRow: null,
       deleteRow: null
     }
@@ -463,8 +589,9 @@ export default {
       this.updateUserDisabled(row)
     },
 
-    editGroup(mode,row) {
+    editGroup(mode, row) {
       // 0新增、1编辑
+      this.dialogAddGroup = true
 
     },
 
@@ -483,6 +610,10 @@ export default {
     closeGroupMember() {
       this.dialogEditGroup = false
       this.dialogGroupMember = false
+    },
+
+    commitGroupForm() {
+
     },
 
     updateUserDisabled(row) {
