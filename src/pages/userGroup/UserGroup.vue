@@ -70,7 +70,7 @@
             </div>
           </el-form>
           <div class="group-member-wrapper">
-            <el-table :data="groupMembers" max-height="250" style="width: 100%;height: auto; margin-bottom: 20px;"
+            <el-table :data="groupMembers" max-height="250"  style="width: 100%;height: auto; margin-bottom: 20px;"
               row-key="id" default-expand-all>
               <template v-if="dialogEditGroup">
                 <el-table-column prop="id" label="序号" label-width="40px" />

@@ -64,7 +64,7 @@
         </div>
         <div class="table-pagination-block">
           <div class="table-demonstration">共{{ total_num }}条</div>
-          <el-pagination @current-change="handleCurrentChange" layout="prev, pager, next" :default-page-size="20" :total="total_num" />
+          <el-pagination  v-model:current-page="page_number" @current-change="handleCurrentChange" layout="prev, pager, next" :default-page-size="20" :total="total_num" />
         </div>
 
         <el-dialog v-model="dialogFormVisible" :title="userDetailTitle" width="550">
@@ -132,7 +132,7 @@
           </el-form>
           <template #footer>
             <div class="dialog-footer">
-              <el-button style="margin-left: 50px" type="primary" @click="dialogResetPasswordForm = false">
+              <el-button style="margin-left: 50px" type="primary" @click="commitNewPassword">
                 Confirm
               </el-button>
               <el-button @click="dialogResetPasswordForm = false">Cancel</el-button>
@@ -290,9 +290,12 @@ export default {
     searchUser() {
       this.getUserList()
     },
-    handleCurrentChange(num) {
-      console.log('UserList handleCurrentChange num:', num)
-      this.page_number = num
+    handleCurrentChange(newPage) {
+      console.log('UserList handleCurrentChange newPage:', newPage,this.page_number)
+      // if (newPage != this.page_number) {
+        // this.page_number = newPage
+        this.getUserList()
+      // }
     },
     handleSwitchChange(row) {
       if (!this.initialized) {
@@ -304,15 +307,23 @@ export default {
 
     creatPassword() {
       this.passwordForm.newPassword = Common.generateRandomString(20)
-      console.log('UserList creatPassword', this.passwordForm.password)
+      console.log('UserList creatPassword', this.passwordForm.newPassword)
     },
     copyPassword() {
-      if (this.passwordForm.password) {
-        navigator.clipboard.writeText(this.passwordForm.password).then(function () {
+      console.log('UserList copyPassword:',this.passwordForm.newPassword)
+      if (this.passwordForm.newPassword) {
+        navigator.clipboard.writeText(this.passwordForm.newPassword).then(function () {
           ElMessage('复制粘贴板成功')
         }, function (error) {
           ElMessage('复制粘贴板失败')
         })
+      }
+    },
+
+    commitNewPassword() {
+      if (this.passwordForm.newPassword != this.passwordForm.againPassword) {
+        ElMessage.error('二次输入密码不一致')
+        return
       }
     },
 
@@ -349,6 +360,7 @@ export default {
       const selectedItem = this.accountStatusOptions.filter(item => item.value === this.accountStatusVal)
       const disabled = selectedItem[0].value
       params['disabled'] = disabled
+      console.log('UserList getUserList params:',params)
       // Api.getAllUsers
       Api.getAllUsers(params).then(({code,msg,data }) => {
         this.initialized = true

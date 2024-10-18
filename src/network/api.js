@@ -12,41 +12,43 @@ export class Api {
 
     static async getAreaList(params) {
         params["type"] = "area"
-        return Request.post('admin', params)
+        // return Request.post('area_room/admin', params)
+        return Request.post('get_info%2Fadmin', params)
+        // return Request.post('area_room%2Fadmin', params)
     }
 
     static async addArea(params) {
         params["type"] = "area"
-        return Request.post('add', params)
+        return Request.post('area_room%2Fadd', params)
     }
 
     static async deleteArea(params) {
         params["type"] = "area"
-        return Request.post('del', params)
+        return Request.post('area_room%2Fdel', params)
     }
 
     static async editArea(params) {
-        return Request.post('edit_area_handler', params)
+        return Request.post('area_room%2Fedit_area_handler', params)
     }
 
     static async getArea(params) {
         params["type"] = "area"
-        return Request.post('detail', params)
+        return Request.post('get_info%2Fdetail', params)
     }
 
     static async getRoomList(params) {
         params["type"] = "room"
-        return Request.post('admin', params)
+        return Request.post('get_info%2Fadmin', params)
     }
 
     static async addRoom(params) {
         params["type"] = "room"
-        return Request.post('add', params)
+        return Request.post('area_room%2Fadd', params)
     }
 
     static async deleteRoom(params) {
         params["type"] = "room"
-        return Request.post('del', params)
+        return Request.post('area_room%2Fdel', params)
     }
 
     static async getAreaRooms(params) {
@@ -67,11 +69,11 @@ export class Api {
 
     static async getRoom(params) {
         params["type"] = "room"
-        return Request.post('detail', params)
+        return Request.post('get_info%2Fdetail', params)
     }
 
     static async editRoom(params) {
-        return Request.post('edit_room_handler', params)
+        return Request.post('area_room%2Fedit_room_handler', params)
     }
 
     static async getAdmins(params) {
