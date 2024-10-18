@@ -115,14 +115,14 @@ export class Api {
 
     // 2024-10-16 预约会议2.0开发
     static async getAllUsers(params) {
-        return Request.post('get_info/get_all_users',params)
+        return Request.post('get_info%2Fget_all_users',params)
     }
 
     static async updateAccount(params) {
-        return Request.post('user/disable_user',params)
+        return Request.post('user%2Fdisable_user',params)
     }
 
     static async editUser(params) {
-        return Request.post('user/edit_users',params)
+        return Request.post('user%2Fedit_users',params)
     }
 }

@@ -391,9 +391,6 @@ export default {
       dialogFormVisible: false,
       dialogUserDetailForm: false,
       userDetailTitle: '添加用户',
-
-
-
       dialogDeleteVisible: false,
       userForm: {
         name: '',
@@ -431,21 +428,6 @@ export default {
               value: 2,
               label: 'China',
               children: [
-                { value: 3, label: 'Beijing' },
-                { value: 4, label: 'Shanghai' },
-                { value: 5, label: 'Hangzhou' },
-                { value: 3, label: 'Beijing' },
-                { value: 4, label: 'Shanghai' },
-                { value: 5, label: 'Hangzhou' },
-                { value: 3, label: 'Beijing' },
-                { value: 4, label: 'Shanghai' },
-                { value: 5, label: 'Hangzhou' },
-                { value: 3, label: 'Beijing' },
-                { value: 4, label: 'Shanghai' },
-                { value: 5, label: 'Hangzhou' },
-                { value: 3, label: 'Beijing' },
-                { value: 4, label: 'Shanghai' },
-                { value: 5, label: 'Hangzhou' },
                 { value: 3, label: 'Beijing' },
                 { value: 4, label: 'Shanghai' },
                 { value: 5, label: 'Hangzhou' },

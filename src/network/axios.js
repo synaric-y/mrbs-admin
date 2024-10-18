@@ -9,8 +9,9 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
     config => {
-        // config.headers['Access-Control-Allow-Origin'] = 'http://localhost:5173'
-        // config.headers['Access-Control-Allow-Credentials'] = true
+        // 
+        config.headers['Access-Control-Allow-Origin'] = '*'
+        config.headers['Access-Control-Allow-Credentials'] = true
         config.headers['Content-Type'] = 'application/json'
         return config
     }
