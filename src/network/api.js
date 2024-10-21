@@ -127,4 +127,17 @@ export class Api {
     static async editUser(params) {
         return Request.post('user%2Fedit_users',params)
     }
+
+    // 用户组
+    static async getAdGroupTree(params){
+        return Request.post('user_group%2Fget_ad_group_tree',params)
+    }
+
+    static async getSystemGroupTree(params){
+        return Request.post('user_group%2Fget_group_tree',params)
+    }
+
+    static async getGroupMember(params){
+        return Request.post('user_group%2Fget_group_member',params)
+    }
 }
