@@ -6,98 +6,181 @@
       </div>
 
       <div class="menu-content-wrapper">
-      <div class="toolbar" v-if="!showLoading">
-        <div class="toolbar-filter">
-          <div class="now-time">
-            <el-icon class="home-time-icon"></el-icon>
-            <span class="now-time-span">{{ nowTime }}</span>
-          </div>
-          <div class="all-area">
-            <el-select v-model="currenAreaName" placeholder="All Areas" @change="choseArea">
-              <el-option v-for="(area, index) in areas" :label="area.area_name" :value="area.area_id" :key="index">
-              </el-option>
-            </el-select>
-          </div>
-          <div class="group-buttons">
-            <el-button v-for="(item, index) in groupButtons" type="primary" size="small"
-              :class="['', item.day == dayRrangeVal ? 'day-button-active' : 'day-button']"
-              @click="dayRrange(item.day)">{{
-                item.name }}</el-button>
-          </div>
-          <div class="date-picker">
-            <el-date-picker v-model="baseTime" type="daterange" :range-separator="$t('base.to')"
-              :start-placeholder="startTime" :end-placeholder="endTime" @change="choseDate" clearable="false" />
+        <div class="toolbar" v-if="!showLoading">
+          <div class="toolbar-filter">
+            <div class="now-time">
+              <el-icon class="home-time-icon"></el-icon>
+              <span class="now-time-span">{{ nowTime }}</span>
+            </div>
+            <div class="all-area">
+              <el-select v-model="currenAreaName" placeholder="All Areas" @change="choseArea">
+                <el-option v-for="(area, index) in areas" :label="area.area_name" :value="area.area_id" :key="index">
+                </el-option>
+              </el-select>
+            </div>
+            <div class="group-buttons">
+              <el-button v-for="(item, index) in groupButtons" type="primary" size="small"
+                :class="['', item.day == dayRrangeVal ? 'day-button-active' : 'day-button']"
+                @click="dayRrange(item.day)">{{
+                  item.name }}</el-button>
+            </div>
+            <div class="date-picker">
+              <el-date-picker v-model="baseTime" type="daterange" :range-separator="$t('base.to')"
+                :start-placeholder="startTime" :end-placeholder="endTime" @change="choseDate" clearable="false" />
+            </div>
           </div>
         </div>
-      </div>
-      <div class="table-container" v-if="!showLoading">
-        <el-scrollbar class="scroll-table-view" always :style="{ height: 'calc(100vh - 150px)' }">
-          <div class="calendar-header">
-            <div class="time-header">
-              <div class="time-slots">
-                <div v-for="(time, timeIndex) in timeSlots" :key="time" class="time-slot">
-                  {{ time }}
+        <div class="table-container" v-if="!showLoading">
+          <el-scrollbar class="scroll-table-view" always :style="{ height: 'calc(100vh - 150px)' }">
+            <div class="calendar-header">
+              <div class="time-header">
+                <div class="time-slots">
+                  <div v-for="(time, timeIndex) in timeSlots" :key="time" class="time-slot">
+                    {{ time }}
+                  </div>
                 </div>
               </div>
-            </div>
-            <div v-for="(day, indexday) in days" :key="indexday" class="day-header"
-              :style="{ backgroundColor: day.color }">
-              {{ day.date }}
-              <div class="room-header">
-                <div v-for="(room, roomIndex) in rooms" :key="roomIndex" class="room-name"
-                  :style="{ height: timeSlots.length * 60 + 70 + 'px', width: itemWidth + 'px' }">
-                  {{ room.room_name }}
-                  <template v-for="(time, timeIndex) in localTimeSlots">
-                    <div v-if="timeIndex != localTimeSlots.length - 1"
-                      :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div' : 'empty-meet-div']"
-                      :style="{ height: minItemHeight + 'px', width: itemWidth + 'px', top: (timeIndex * minItemHeight + 70) + 'px' }"
-                      @click="toMeet(time, room, day)">
-                      <!-- <template> -->
-                      <text class="empty-meet-duration">{{ time }}</text>
-                      <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text>
-                      <!-- </template> -->
+              <div v-for="(day, indexday) in days" :key="indexday" class="day-header"
+                :style="{ backgroundColor: day.color }">
+                {{ day.date }}
+                <div class="room-header">
+                  <div v-for="(room, roomIndex) in rooms" :key="roomIndex" class="room-name"
+                    :style="{ height: timeSlots.length * 60 + 70 + 'px', width: itemWidth + 'px' }">
+                    {{ room.room_name }}
+                    <template v-for="(time, timeIndex) in localTimeSlots">
+                      <div v-if="timeIndex != localTimeSlots.length - 1"
+                        :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div' : 'empty-meet-div']"
+                        :style="{ height: minItemHeight + 'px', width: itemWidth + 'px', top: (timeIndex * minItemHeight + 70) + 'px' }"
+                        @click="toMeet(time, room, day)">
+                        <!-- <template> -->
+                        <text class="empty-meet-duration">{{ time }}</text>
+                        <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text>
+                        <!-- </template> -->
 
-                      <!-- <template v-if="canHoverDiv(day, time, room)">
+                        <!-- <template v-if="canHoverDiv(day, time, room)">
                     <text class="empty-meet-duration">{{ time }}</text>
                     <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text>
                   </template> -->
-                      <!-- <template>
+                        <!-- <template>
                     <text class="empty-meet-duration">测试实施</text>
                     <text class="empty-meet-reason">不可hover</text>
                   </template> -->
-                    </div>
-                  </template>
-                  <template v-for="(event, indexeve) in events">
-                    <template v-if="day.date == event.date && room.room_id == event.room_id">
-                      <template v-if="event.status == 0 || event.status == 1 || event.status == 2">
-                        <div :key="indexeve"
-                          :class="[event.status == 0 ? 'room-meet-event' : event.status == 1 ? 'room-meet-in-event' : 'room-meet-timeout-event']"
-                          @click="editMeet(event)"
-                          :style="{ top: minItemHeight * getTimeSlotIndex(event.startTime) + 70 + 'px', left: ((itemWidth + 20) * roomIndex) + roomIndex * 0.5 + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * minItemHeight + 'px' }">
-                          <div class="event-center">
-                            <template v-if="(getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) == 3">
-                              <div class="event-title" :style="{ margin: 1 + 'px' }">{{ event.entry_name
-                                }}{{ $t('base.minMinuteTitle') }}</div>
-                              <div class="event-person" :style="{ margin: 2 + 'px' }">{{ event.book_by }}</div>
-                            </template>
-                            <template v-else>
-                              <div class="event-title">{{ event.entry_name }}</div>
-                              <div class="event-time">{{ event.duration }}</div>
-                              <div class="event-person">{{ event.book_by }}</div>
-                            </template>
+                      </div>
+                    </template>
+                    <template v-for="(event, indexeve) in events">
+                      <template v-if="day.date == event.date && room.room_id == event.room_id">
+                        <template v-if="event.status == 0 || event.status == 1 || event.status == 2">
+                          <div :key="indexeve"
+                            :class="[event.status == 0 ? 'room-meet-event' : event.status == 1 ? 'room-meet-in-event' : 'room-meet-timeout-event']"
+                            @click="editMeet(event)"
+                            :style="{ top: minItemHeight * getTimeSlotIndex(event.startTime) + 70 + 'px', left: ((itemWidth + 20) * roomIndex) + roomIndex * 0.5 + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * minItemHeight + 'px' }">
+                            <div class="event-center">
+                              <template
+                                v-if="(getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) == 3">
+                                <div class="event-title" :style="{ margin: 1 + 'px' }">{{ event.entry_name
+                                  }}{{ $t('base.minMinuteTitle') }}</div>
+                                <div class="event-person" :style="{ margin: 2 + 'px' }">{{ event.book_by }}</div>
+                              </template>
+                              <template v-else>
+                                <div class="event-title">{{ event.entry_name }}</div>
+                                <div class="event-time">{{ event.duration }}</div>
+                                <div class="event-person">{{ event.book_by }}</div>
+                              </template>
+                            </div>
                           </div>
-                        </div>
+                        </template>
                       </template>
                     </template>
-                  </template>
+                  </div>
+                  <div class="room-devide-line"></div>
                 </div>
-                <div class="room-devide-line"></div>
               </div>
             </div>
-          </div>
-        </el-scrollbar>
+          </el-scrollbar>
+        </div>
+
+        <el-dialog v-model="dialogFormVisible" title="单次会议预定" width="550">
+          <el-form :model="meetForm" :rules="rules">
+            <div class="request-wrapper">
+              <el-form-item prop="area" label="区域" label-width="100px" style="margin-right: 50px;">
+                <!-- :disabled="dialogUserDetailForm" -->
+                <el-select v-model="meetForm.area" placeholder="请选择区域">
+                  <el-option label="上海" value="1" />
+                  <el-option label="北京" value="2" />
+                </el-select>
+              </el-form-item>
+            </div>
+
+            <div class="request-wrapper">
+              <el-form-item prop="room" label="会议室" label-width="100px" style="margin-right: 50px;">
+                <el-select v-model="meetForm.room" placeholder="请选择会议室">
+                  <el-option label="Room A" value="1" />
+                  <el-option label="Room B" value="2" />
+                </el-select>
+              </el-form-item>
+            </div>
+            <div class="request-wrapper">
+              <el-form-item prop="title" label="会议室标题" label-width="100px" style="margin-right: 50px;">
+                <el-input v-model="meetForm.title" autocomplete="off" />
+              </el-form-item>
+            </div>
+
+            <el-form-item prop="start_day" label="开始时间" style="margin-left: 20px" required>
+              <el-col :span="11">
+                <el-form-item prop="start_day">
+                  <el-date-picker v-model="meetForm.start_day" type="date" aria-label="Pick start day"
+                    placeholder="Pick start day" style="width: 100%" />
+                </el-form-item>
+              </el-col>
+              <el-col class="text-center" :span="1">
+                <span class="text-gray-500"></span>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item prop="start_hour">
+                  <el-time-select v-model="start_hour" style="width: 140px;margin-left: 20px" :start="minStartTime"
+                    :step="minStep" :end="maxEndTime" :placeholder="$t('base.plzSelect')"
+                    @change="choseDialogHour(0, start_hour, $event)" :min-time="currentHourMinute" />
+                </el-form-item>
+              </el-col>
+            </el-form-item>
+
+            <el-form-item prop="end_day" label="结束时间" style="margin-left: 20px" required>
+              <el-col :span="11">
+                <el-form-item prop="end_day">
+                  <el-date-picker v-model="meetForm.start_day" type="date" aria-label="Pick end day"
+                    placeholder="Pick end day" style="width: 100%" />
+                </el-form-item>
+              </el-col>
+              <el-col class="text-center" :span="1">
+                <span class="text-gray-500"></span>
+              </el-col>
+              <el-col :span="11">
+                <el-form-item prop="end_hour">
+                  <el-time-select v-model="end_hour" style="width: 140px;margin-left: 20px" :start="minStartTime"
+                    :step="minStep" :end="maxEndTime" :placeholder="$t('base.plzSelect')"
+                    @change="choseDialogHour(1, end_hour, $event)" :min-time="currentHourMinute" />
+                </el-form-item>
+              </el-col>
+            </el-form-item>
+
+            <el-form-item label="备注" label-width="100px" style="margin-right: 50px;">
+              <el-input v-model="meetForm.remark" maxlength="100" style="width: 310px" placeholder="Please input"
+                show-word-limit type="textarea" />
+            </el-form-item>
+          </el-form>
+          <template #footer>
+            <div class="dialog-footer" style="text-align: center;">
+              <el-button type="primary" @click="commitAddForm">提交</el-button>
+              <el-button style="margin-left: 50px" @click="deleteMeet">
+                删除
+              </el-button>
+              <el-button style="margin-left: 50px" @click="dialogFormVisible = false">
+                取消
+              </el-button>
+            </div>
+          </template>
+        </el-dialog>
       </div>
-    </div>
     </el-main>
     <el-skeleton v-if="showLoading" :rows="15" animated />
   </el-container>
@@ -173,6 +256,48 @@ export default defineComponent({
         "01:00PM", "01:30PM", "02:00PM", "02:30PM", "03:00PM", "03:30PM", "04:00PM", "04:30PM",
         "05:00PM", "05:30PM", "06:00PM", "06:30PM", "07:00PM", "07:30PM", "08:00PM", "08:30PM", "09:00PM"
       ],
+      meetForm: {
+        area: '',
+        room: '',
+        title: '',
+        start_day: '',
+        start_hour: '',
+        end_day: '',
+        end_hour: '',
+        remark: '',
+      },
+      rules: {
+        area: [
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
+        ],
+        room: [
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
+        ],
+        title: [
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
+        ],
+        start_day: [
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
+        ],
+        start_hour: [
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
+        ],
+        end_day: [
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
+        ],
+        end_hour: [
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
+        ],
+        remark: [
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
+        ],
+      },
+
+      dialogFormVisible: false,
+      currentHourMinute: '',
+      minStartTime: '06:00',
+      maxEndTime: '21:00',
+      currentTimeZone: 'Asia/Shanghai'
     };
   },
 
@@ -194,6 +319,61 @@ export default defineComponent({
   },
 
   methods: {
+    commitAddForm() {
+      this.$refs.meetForm.validate((pass) => {
+        if (!pass) {
+          return
+        }
+      })
+    },
+    disabledDate(time) {
+      return time.getTime() < Date.now() - 86400000;
+    },
+    choseDialogDate(mode, e) {
+      console.log('Meet Detail Dialog e', e)
+      const date = moment.tz(e, this.currentTimeZone).format('YYYY-MM-DD')
+      const newDate = moment.tz(this.form.start_day, this.currentTimeZone).format('YYYY-MM-DD')
+      console.log('Meet Detail choseDate date', date, newDate)
+      if (date != newDate) {
+        this.currentHourMinute = '03:00'
+      } else {
+        this.currentHourMinute = this.getNearestHalfHour()
+      }
+      if (mode == 0) {
+        this.form.start_date = date
+        this.form.end_date = date
+        return
+      }
+      this.form.start_date = date
+      this.form.end_date = date
+    },
+
+    choseDialogHour(mode, str, e) {
+      console.log('Meet Detail choseHour str e', str, e)
+      const ymd = this.form.start_date
+      const lang = Common.getLocalLang()
+      const appeedStr = ymd + ' ' + str
+      const formatStr = Common.getAssignFormat(appeedStr, lang)
+      console.log('Meet choseHour this.currentTimeZone lang appeedStr', this.currentTimeZone, lang, appeedStr)
+      const nextTimeStamp = moment.tz(formatStr, this.currentTimeZone).unix();
+      console.log('Meet choseHour formatStr nextTimeStamp ', formatStr, nextTimeStamp)
+      if (mode == 0) {
+        const currenDay = Common.getYearToDay()
+        const currenStamp = Common.getCurrenTimeZoneStamp(this.currentTimeZone)
+        if (currenDay == ymd && currenStamp > nextTimeStamp) {
+          ElMessage({
+            message: this.$t('base.passTimeError'),
+            type: 'warning',
+          })
+          this.form.start_seconds = 0
+          this.start_hour = ''
+          return
+        }
+        this.form.start_seconds = nextTimeStamp;
+        return
+      }
+      this.form.end_seconds = nextTimeStamp;
+    },
     startSync() {
       if (this.interval) {
         clearInterval(this.interval)
@@ -544,6 +724,8 @@ export default defineComponent({
     },
 
     toMeet(time, room, day) {
+      this.dialogFormVisible = true
+      return
       console.log("Home toMeet room", room)
       const lang = Common.getLocalLang()
       console.log("Home toMeet day.date timeZone lang", day.date, this.currentTimeZone, this.localLangFormat)
@@ -762,7 +944,7 @@ export default defineComponent({
 
 .el-table {
   --el-table-tr-bg-color: white;
-  --el-table-header-bg-color:white;
+  --el-table-header-bg-color: white;
 }
 
 ::-webkit-scrollbar {
@@ -900,7 +1082,7 @@ export default defineComponent({
 .calendar-header {
   display: flex;
   flex-direction: row;
-  background-color: #f0f0f0;
+  // background-color: #f0f0f0;
   text-align: center;
   width: 150px;
   // padding: 5px;
@@ -917,6 +1099,7 @@ export default defineComponent({
   padding-right: 10px;
   padding-left: 10px;
   z-index: 2000;
+  // border-right: 1px solid #9A9A9A;
 }
 
 .time-slot {
@@ -1002,6 +1185,8 @@ export default defineComponent({
   padding-bottom: 0px;
   font-weight: bold;
   position: relative;
+  border-left: 1px solid #9A9A9A;
+  // background-color: #29591BB7;
 }
 
 .room-name {
