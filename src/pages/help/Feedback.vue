@@ -1,79 +1,63 @@
 <template>
   <el-container class="container-sub-page">
     <el-main class="container-sub-page-main">
-      <div class="sub-title-wrapper">
-        <div class="sub-title">问题反馈</div>
-      </div>
-      <el-form-item>
-        <el-select
-            v-model="areaId"
-            style="width: 240px;margin-top: 30px;"
-            :empty-values="[null, undefined]"
-            @change="getRoomList"
-        >
-          <el-option
-              v-for="item in areaList"
-              :key="item.id"
-              :label="item.area_name"
-              :value="item.id"
-          />
-        </el-select>
-        <!-- <div style="flex: 1"></div> -->
-        <el-button style="margin-top: 30px;margin-left: 30px;" type="primary" size="default" @click="pendingAddRoom">{{ $t("base.add") }}</el-button>
-      </el-form-item>
-      
+      <div class="sub-page-content">
+        <div class="title">问题反馈提交</div>
 
-      <el-dialog v-model="showAddRoomDialog" :title="$t('area.addArea')" width="500">
-        <el-form :model="form"
-                 :rules="rules"
-                 ref="roomForm"
-                 label-width="auto">
-          <el-form-item prop="name" :label="$t('room.formRoom.name')" label-position="right">
-            <el-input v-model="form.name" />
-          </el-form-item>
-          <el-form-item prop="area" :label="$t('room.formRoom.area')" label-position="right">
-            <el-select
-                v-model="form.area"
-                :empty-values="[null, undefined]"
-            >
-              <el-option
-                  v-for="item in areaListNoAll"
-                  :key="item.id"
-                  :label="item.area_name"
-                  :value="item.id"
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item prop="description" :label="$t('room.formRoom.description')" label-position="right">
-            <el-input v-model="form.description" autocomplete="off"/>
-          </el-form-item>
-          <el-form-item prop="capacity" :label="$t('room.formRoom.capacity')" label-position="right">
-            <el-input v-model="form.capacity" autocomplete="off"/>
-          </el-form-item>
-        </el-form>
-        <template #footer>
-          <div class="dialog-footer">
-            <el-button @click="showAddRoomDialog = false">{{ $t('base.cancel') }}</el-button>
-            <el-button type="primary" @click="addRoom">
-              {{ $t('base.confirm') }}
-            </el-button>
-          </div>
-        </template>
-      </el-dialog>
-      <el-dialog
-          v-model="showDeleteRoomDialog"
-          title="Tips"
-          width="500">
-        <span>{{ $t('room.deleteRoomHint') }}</span>
-        <template #footer>
-          <div class="dialog-footer">
-            <el-button @click="showDeleteRoomDialog = false">{{ $t('base.cancel') }}</el-button>
-            <el-button type="primary" @click="deleteRoom">
-              {{ $t('base.confirm') }}
-            </el-button>
-          </div>
-        </template>
-      </el-dialog>
+
+
+        <div class="section">
+          <el-form :model="form" :rules="rules" ref="formRef" label-width="200px">
+
+            <el-form-item prop="question" label="问题">
+              <el-input v-model="form.question" class="form-item-input" placeholder="请简要输入你在使用此平台时遇到的问题" />
+            </el-form-item>
+
+            <el-form-item prop="desc" label="详细描述" style="height: auto;">
+              <el-input :maxlength="200" :autosize="{ minRows: 3, maxRows: 6 }" show-word-limit type="textarea" v-model="form.desc" style="width: 400px" placeholder="请输入" />
+            </el-form-item>
+
+            <el-form-item prop="email" label="邮箱">
+              <el-input v-model="form.email" class="form-item-input" placeholder="请输入您的邮箱" />
+            </el-form-item>
+
+            <el-form-item prop="attachment" label="附件（jpg/png）限制2张">
+              <el-upload
+                  :class="{ hide: (form.attachment && form.attachment.length>=2) }"
+                  v-model:file-list="form.attachment"
+                  ref="attachment"
+                  action="#"
+                  list-type="picture-card"
+                  :auto-upload="false"
+                  :limit="2"
+                  :max-size="1024"
+                  :accept="'.jpg, .jpeg, .png'"
+              >
+                <el-icon class="el-icon--upload">
+                  <Plus/>
+                </el-icon>
+
+                <template #file="{ file }">
+                  <div class="image-wrapper">
+                    <img class="el-upload-list__item-thumbnail" :src="file.url" alt=""/>
+                    <div class="remove-btn" @click="removeImage(file)">
+                      <el-icon><SemiSelect /></el-icon>
+                    </div>
+                  </div>
+                </template>
+              </el-upload>
+            </el-form-item>
+
+
+          </el-form>
+        </div>
+
+
+        <div class="btns">
+          <el-button>取消</el-button>
+          <el-button type="primary" @click="submit">提交</el-button>
+        </div>
+      </div>
     </el-main>
   </el-container>
 </template>
@@ -83,73 +67,65 @@ import {PageMixin} from "@/pages/PageMixin.js";
 import {Api} from "@/network/api.js";
 import router from "@/router/index.js";
 import {ElMessage} from "element-plus/es";
+import {Plus, SemiSelect} from "@element-plus/icons-vue";
 
 export default {
+  components: {SemiSelect, Plus},
   mixins: [PageMixin],
   data() {
     return {
-      tableData: [],
-      showAddRoomDialog: false,
-      showDeleteRoomDialog: false,
-      form: {
-        area: '',
-        name: '',
-        description: '',
-        capacity: '',
-        // room_admin_email: ''
+      form:{
+        question: '',
+        desc: '',
+        email: '',
+        attachment: []
       },
-      rules: {
-        name: [
-          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
-        ],
-        area: [
-          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
-        ],
-        capacity: [
-          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
+      rules:{
+        question: [{ required:true, message: '问题不能为空', trigger: 'blur' },
+                  { max: 50, message: '问题字符数不能超过50', trigger: 'blur' }],
+        desc: [{ required:true, message: '详细描述不能为空', trigger: 'blur' },
+              { max: 200, message: '详细描述字符数不能超过200', trigger: 'blur' }],
+        email: [{ required:true, type:'email', message: '请填写有效的邮箱地址',trigger: 'blur' }],
+        attachment: [
+          { type:'array', validator: this.attachmentValidator, message: '图片总大小不得超过2M', trigger: 'blur' },
         ],
       },
-      areaList: [],
-      areaListNoAll: [],
-      areaId: '',
-      pendingDeleteId: null
     }
   },
   methods: {
-    getRoomList() {
-      Api.getRoomList({area: this.areaId}).then(({data}) => {
-        if (data) {
-          data.forEach(item => {
-            if (item["battery_level"]) {
-              item["battery_level"] = item["battery_level"] + "%"
-            } else {
-              item["battery_level"] = "/"
-            }
-          })
-          console.log('MeetList getRoomList areaId: data',this.areaId,data)
-          this.tableData = data
+    attachmentValidator(rule,value,callback){
+      console.log(value)
+
+      const totalByte = value.reduce(
+          (accumulator, currentValue) => accumulator + currentValue.size,
+          0,
+      );
+
+      console.log(totalByte)
+
+      if((totalByte / 1024 / 1024) > 2){
+        callback(new Error('图片总大小不得超过2M'))
+      }else{
+        callback()
+      }
+
+
+    },
+    removeImage(file){
+      this.$refs.attachment.handleRemove(file)
+    },
+    submit(){
+      console.log(this.form)
+      this.$refs.formRef.validate((valid) => {
+        if (valid) {
+          console.log('submit!')
         } else {
-          this.tableData = []
+          console.log('error submit!')
         }
       })
-    },
-    getAreaList() {
-      Api.getAreaList({}).then(({data}) => {
-        if (data) {
-          this.areaListNoAll = JSON.parse(JSON.stringify(data))
-          data.unshift({
-            id: '',
-            area_name: this.$t("area.allArea")
-          })
-          this.areaList = data
-        }
-      })
-    },
+    }
   },
   mounted() {
-    this.setTab('/room')
-    this.getRoomList()
-    this.getAreaList()
 
   }
 }
@@ -159,36 +135,129 @@ export default {
 
 <style lang="scss" scoped>
 
-.container-sub-page-main {
-  background-color: white;
-  margin-left: 20px;
-  margin-top: 20px;
-  margin-bottom: 20px;
+::v-deep .hide .el-upload--picture-card {
+  display: none;
 }
 
-.el-table {
-  --el-table-tr-bg-color: white;
-  --el-table-header-bg-color:white;
+.image-wrapper{
+  position: relative;
+  width: 100%;
+  height: 100%;
+
+  .remove-btn{
+    position: absolute;
+    top:0;
+    right:0;
+    background-color: red;
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .remove-btn:hover{
+    background-color: #e40707;
+  }
 }
 
-.tb-op-icon {
-  width: 25px;
-  height: 25px;
+::v-deep .el-upload-list--picture-card{
+  --el-upload-list-picture-card-size: 90px;
 }
 
-.tb-op-icon-span {
-  margin-right: 10px;
+::v-deep .el-upload--picture-card{
+  --el-upload-picture-card-size: 90px;
 }
 
-.tb-state {
-  width: 18px;
-  height: 18px;
-  border-radius: 20px;
-  background: #08D50A;
-  margin-left: 15px;
-}
+.sub-page-content{
+  width: 100%;
+  height: auto;
+  padding: 20px;
+  box-sizing: border-box;
+  margin: 0;
+  position: relative;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  background-color: #fff;
 
-.tb-state-disable {
-  background: red;
+  .title{
+    font-family: PingFang SC;
+    font-size: 20px;
+    font-weight: 500;
+  }
+
+
+  .section{
+    padding-left: 50px;
+  }
+
+  .form-item {
+    display: flex;
+    flex-direction: row;
+    height: 50px;
+    align-items: center;
+    gap: 10px;
+  }
+  .form-ad {
+    display: flex;
+    flex-direction: row;
+    height: 50px;
+    align-items: center;
+  }
+  .form-item-tip {
+    font-family: PingFang SC;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 22px;
+    text-align: right;
+    letter-spacing: 0px;
+    color: #4E5969;
+    margin-right: 28px;
+    width: 400px;
+    /* background-color: red; */
+  }
+  .form-item-img {
+    width: 153px;
+    height: 53px;
+  }
+  .form-item-input {
+    width: 400px;
+    height: 40px;
+  }
+  .form-item-btn {
+    border-radius: 2px;
+    opacity: 1;
+    background: #591BB7;
+    box-sizing: border-box;
+    padding: 0 15px;
+    border: 1px solid #000000;
+    font-family: PingFang SC;
+    font-size: 14px;
+    font-weight: normal;
+    height: 33px;
+    line-height: 33px;
+    text-align: right;
+    display: flex;
+    align-items: center;
+    letter-spacing: 0px;
+    font-variation-settings: "opsz" auto;
+    color: #FFFFFF;
+    margin-left: 20px;
+  }
+
+  .btns{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 15px;
+    padding-bottom: 15px;
+  }
 }
 </style>
