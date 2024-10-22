@@ -96,7 +96,8 @@ export default {
   align-items: flex-start;
   flex-direction: column;
   width: calc(100vw - 169px);
-  height: calc(100vh - 95px);
+  height: auto;
+  min-height: calc(100vh - 95px);
   background-color: white;
   padding: 0;
   margin: 0;
@@ -112,7 +113,7 @@ export default {
   display: flex;
   flex-direction: row;
   margin-left: 72px;
-  margin-top: 60px;
+  margin-top: 80px;
 }
 .guide-item {
   display: flex;
@@ -164,7 +165,8 @@ export default {
   letter-spacing: 0px;
   font-variation-settings: "opsz" auto;
   color: #3D3D3D;
-  margin-top: 32px;
+  margin-top: 40px;
+  margin-bottom: 40px;
   margin-left: -160px;
   align-self: center;
 }

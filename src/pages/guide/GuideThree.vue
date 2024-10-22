@@ -144,7 +144,7 @@ export default {
   display: flex;
   flex-direction: row;
   margin-left: 72px;
-  margin-top: 60px;
+  margin-top: 80px;
 }
 .guide-item {
   display: flex;

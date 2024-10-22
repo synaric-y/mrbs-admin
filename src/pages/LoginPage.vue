@@ -22,7 +22,7 @@ export default {
           this.login(data)
           this.switchTab('/')
         } else {
-          ElMessage.error(message)
+          ElMessage.error('登录失败！')
         }
       })
     }

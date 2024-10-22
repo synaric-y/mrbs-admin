@@ -17,7 +17,10 @@ export const PageMixin = {
         ...mapActions(SettingStore, ['setLang']),
         switchTab(path) {
             console.log('switchTab path',path)
-            this.$router.replace(path)
+            if (this.$router && path) {
+                this.$router.push(path);  // 或者 replace(path) 取决于你的需求
+            }
+            // this.$router.replace(path)
         },
         push(path) {
             this.$router.push(path)
