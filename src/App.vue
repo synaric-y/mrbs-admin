@@ -3,27 +3,38 @@
     <div class="nav_wrapper">
       <div class="nav" v-if="!isLoginPage">
         <div class="nav-inner">
-
           <div class="nav-left">XX公司 会议预约平台管理</div>
           <div class="nav-right">
             <div class="nav-time">2024年9月10日 12:23</div>
             <div class="nav-alert" style="margin-left: 20px;margin-top: 5px;">
-              <img style="width: 20px; height: 20px" src="../public/imgs/notification.png"/>
+              <img style="width: 20px; height: 20px" src="../public/imgs/notification.png" />
             </div>
             <div class="nav-setting" style="margin-left: 20px;margin-top: 5px;">
-              <img style="width: 20px; height: 20px" src="../public/imgs/setting.png"/>
+              <img style="width: 20px; height: 20px" src="../public/imgs/setting.png" />
             </div>
             <template v-if="userInfo && userInfo.display_name">
-              <div  class="nav-user" style="margin-left: 20px;margin-top: 0px;" @click="toProfile">
+              <!-- <div class="nav-user" style="margin-left: 20px;margin-top: 0px;" @click="toProfile">
                 {{userInfo.username}}
-              </div>
+              </div> -->
+            </template>
+            <template v-else>
+              <!-- <div class="nav-user" style="margin-left: 20px;margin-top: 0px;" @click="toLogout">
+                login
+              </div> -->
             </template>
 
-            <template v-else>
-              <div  class="nav-user" style="margin-left: 20px;margin-top: 0px;" @click="toLogout">
-                login
-              </div>
-            </template>
+            <el-popover :visible="showPop" placement="bottom" :width="160">
+              <el-button style="width: 135px" size="small" type="primary" @click="toLogout">
+                {{ $t('base.logout') }}
+              </el-button>
+              <template #reference>
+                <div class="username-wrapper" @click="toProfile">
+                  <img style="width: 30px; height: 30px" src="/imgs/profile.png"
+                    v-if="!userInfo || !userInfo.display_name" />
+                  <div class="username">{{ userInfo ? userInfo.display_name : '' }}</div>
+                </div>
+              </template>
+            </el-popover>
 
           </div>
         </div>
@@ -111,7 +122,7 @@
           </el-menu>
         </el-col>
       </div>
-      
+
       <div class="menu-content">
         <!-- <el-main> -->
         <router-view v-slot="{ Component, route }">
@@ -123,7 +134,7 @@
             </keep-alive>
           </transition>
         </router-view>
-      <!-- </el-main> -->
+        <!-- </el-main> -->
       </div>
     </div>
 
@@ -174,16 +185,16 @@ export default {
   },
   methods: {
 
-    handleOpen(key,path) {
-      console.log('App handleOpen',key,path)
+    handleOpen(key, path) {
+      console.log('App handleOpen', key, path)
     },
-    handleClose(key,path) {
-      console.log('App handleClose',key,path)
+    handleClose(key, path) {
+      console.log('App handleClose', key, path)
     },
     toProfile() {
       console.log('App toProfile Enter')
       let user = this.userInfo
-      console.log('App toProfile Enter:user',user)
+      console.log('App toProfile Enter:user', user)
       if (!user.display_name) {
         router.replace("/login")
       } else {
@@ -213,7 +224,7 @@ export default {
     },
   },
   mounted() {
-    console.log('App mounted user:',this.userInfo.username)
+    console.log('App mounted user:', this.userInfo.username)
     this.$forceUpdate()
   }
 }
