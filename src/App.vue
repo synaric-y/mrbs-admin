@@ -3,20 +3,39 @@
     <div class="nav_wrapper">
       <div class="nav" v-if="!isLoginPage">
         <div class="nav-inner">
-
           <div class="nav-left">XX公司 会议预约平台管理</div>
           <div class="nav-right">
             <div class="nav-time">2024年9月10日 12:23</div>
             <div class="nav-alert" style="margin-left: 20px;margin-top: 5px;">
-              <img style="width: 20px; height: 20px" src="../public/imgs/setting.png"
-                v-if="!userInfo || !userInfo.display_name" />
+              <img style="width: 20px; height: 20px" src="../public/imgs/notification.png" />
             </div>
             <div class="nav-setting" style="margin-left: 20px;margin-top: 5px;">
-              <img style="width: 20px; height: 20px" src="../public/imgs/setting.png"/>
-            </div>
-            <div class="nav-user" style="margin-left: 20px;margin-top: 5px;" @click="toProfile">
               <img style="width: 20px; height: 20px" src="../public/imgs/setting.png" />
             </div>
+            <template v-if="userInfo && userInfo.display_name">
+              <!-- <div class="nav-user" style="margin-left: 20px;margin-top: 0px;" @click="toProfile">
+                {{userInfo.username}}
+              </div> -->
+            </template>
+            <template v-else>
+              <!-- <div class="nav-user" style="margin-left: 20px;margin-top: 0px;" @click="toLogout">
+                login
+              </div> -->
+            </template>
+
+            <el-popover :visible="showPop" placement="bottom" :width="160">
+              <el-button style="width: 135px" size="small" type="primary" @click="toLogout">
+                {{ $t('base.logout') }}
+              </el-button>
+              <template #reference>
+                <div class="username-wrapper" @click="toProfile">
+                  <img style="width: 30px; height: 30px" src="/imgs/profile.png"
+                    v-if="!userInfo || !userInfo.display_name" />
+                  <div class="username">{{ userInfo ? userInfo.display_name : '' }}</div>
+                </div>
+              </template>
+            </el-popover>
+
           </div>
         </div>
       </div>
@@ -26,7 +45,7 @@
         <el-col>
           <el-menu default-active="1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
             <el-menu-item index="1">
-              <img class="menu_icon" src="../public/imgs/check_circle.png" alt="#">
+              <img class="menu_icon" src="../public/imgs/dashboard_manager.png" alt="#">
               <span @click="switchTab('/guide_one')">Dashboard</span>
             </el-menu-item>
 
@@ -35,7 +54,7 @@
                 <!-- <el-icon>
                   <location  />
                 </el-icon> -->
-                <img class="menu_icon" src="../public/imgs/check_circle.png" alt="#">
+                <img class="menu_icon" src="../public/imgs/user_manager.png" alt="#">
                 <span>用户管理</span>
               </template>
               <el-menu-item index="2-1" @click="switchTab('/user_list')">用户列表</el-menu-item>
@@ -47,7 +66,7 @@
                 <!-- <el-icon>
                   <location />
                 </el-icon> -->
-                <img class="menu_icon" src="../public/imgs/check_circle.png" alt="#">
+                <img class="menu_icon" src="../public/imgs/meet_manager.png" alt="#">
                 <span>会议预定</span>
               </template>
               <el-menu-item index="3-1" @click="switchTab('/single_meet')">单次会议预定</el-menu-item>
@@ -60,7 +79,7 @@
                 <!-- <el-icon>
                   <location />
                 </el-icon> -->
-                <img class="menu_icon" src="../public/imgs/check_circle.png" alt="#">
+                <img class="menu_icon" src="../public/imgs/area_manager.png" alt="#">
                 <span>区域&会议管理</span>
               </template>
               <el-menu-item index="4-1" @click="switchTab('/edit_area')">编辑区域</el-menu-item>
@@ -70,7 +89,7 @@
 
             <el-menu-item index="5">
               <!-- <el-icon><icon-menu /></el-icon> -->
-              <img class="menu_icon" src="../public/imgs/check_circle.png" alt="#">
+              <img class="menu_icon" src="../public/imgs/terminal_manager.png" alt="#">
               <span @click="switchTab('/terminal_manager')">终端设备管理</span>
             </el-menu-item>
 
@@ -93,7 +112,7 @@
                 <!-- <el-icon>
                   <location />
                 </el-icon> -->
-                <img class="menu_icon" src="../public/imgs/check_circle.png" alt="#">
+                <img class="menu_icon" src="../public/imgs/help_manager.png" alt="#">
                 <span>帮助中心</span>
               </template>
               <el-menu-item index="7-1" @click="switchTab('/manual')">操作手册下载</el-menu-item>
@@ -103,7 +122,7 @@
           </el-menu>
         </el-col>
       </div>
-      
+
       <div class="menu-content">
         <!-- <el-main> -->
         <router-view v-slot="{ Component, route }">
@@ -115,7 +134,7 @@
             </keep-alive>
           </transition>
         </router-view>
-      <!-- </el-main> -->
+        <!-- </el-main> -->
       </div>
     </div>
 
@@ -165,10 +184,17 @@ export default {
     }
   },
   methods: {
+
+    handleOpen(key, path) {
+      console.log('App handleOpen', key, path)
+    },
+    handleClose(key, path) {
+      console.log('App handleClose', key, path)
+    },
     toProfile() {
       console.log('App toProfile Enter')
       let user = this.userInfo
-      console.log('App toProfile Enter:user',user)
+      console.log('App toProfile Enter:user', user)
       if (!user.display_name) {
         router.replace("/login")
       } else {
@@ -198,6 +224,7 @@ export default {
     },
   },
   mounted() {
+    console.log('App mounted user:', this.userInfo.username)
     this.$forceUpdate()
   }
 }
@@ -246,7 +273,7 @@ body {
   padding: 20px;
   width: calc(100vw - 189px - 20px);
 
-  height: calc(100vh - 95px);
+  /* height: calc(100vh - 95px); */
   display: flex;
   flex-direction: column;
   box-sizing: border-box;

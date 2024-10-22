@@ -90,7 +90,7 @@
             </div>
 
             <el-form-item label="同步用户组" label-width="140px" style="margin-right: 50px;">
-              <el-cascader :options="groupOptions" props="false" clearable />
+              <el-cascader :options="groupOptions" props="false" />
             </el-form-item>
 
           </el-form>

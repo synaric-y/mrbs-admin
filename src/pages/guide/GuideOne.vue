@@ -12,7 +12,7 @@
             仅需数分钟，您将迅速熟悉系统，并完成配置。</div>
           <div class="sub-buttons">
             <span class="begin-btn" @click="switchTab('/guide_two')">开始</span>
-            <span class="next-btn">下次再说</span>
+            <span class="next-btn" @click="switchTab('/')">下次再说</span>
           </div>
         </div>
       </div>
