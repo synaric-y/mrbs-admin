@@ -1,4 +1,5 @@
 import ElementPlus from 'element-plus'
+import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import '@/assets/mytheme.scss'
 // import 'element-plus/dist/index.css'
 import en from 'element-plus/es/locale/lang/en'
@@ -13,6 +14,7 @@ import App from './App.vue'
 import router from './router'
 
 import {messages} from "@/assets/language/lang.js";
+
 
 const eLang = {
     en,
@@ -33,6 +35,12 @@ router.afterEach((to, from) => {
     }
     setRem()
 })
+
+
+
+for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
+    app.component(key, component)
+}
 
 app.use(createPinia())
 app.use(router)

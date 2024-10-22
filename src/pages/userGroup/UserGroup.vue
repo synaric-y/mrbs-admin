@@ -14,26 +14,35 @@
           </div>
         </div>
 
-        <div class="table-wrapper" style="height: auto;">
+        <div class="table-wrapper" style="height: auto">
           <el-table :data="tableData" style="width: 100%;height: auto; margin-bottom: 20px;" row-key="id"
             default-expand-all>
             <el-table-column prop="group" label="用户组/用户" label-width="400px">
               <template #default="scope">
                 <!-- <div class="group-title-wrapper"> -->
-                <span class="group-title" :style="{ 'font-weight': scope.row.istop ? 'bold' : 'normal' }">{{
-                  scope.row.group }}</span>
+                <span class="group-title" :style="{ 'font-weight': scope.row.children ? 'bold' : 'normal' }">{{
+                  scope.row.name }}</span>
                 <!-- <template v-if="scope.row.isself"> -->
                 <span class="group-more" @click="moreGroupMember(scope.row)">查看更多</span>
                 <!-- </template> -->
                 <!-- </div> -->
               </template>
             </el-table-column>
-            <el-table-column prop="source" label="来源" label-width="200px" />
+            <el-table-column prop="source" label="来源" label-width="200px">
+              <template #default="scope">
+                <div v-if="scope.row.source==='System'">
+                  系统创建
+                </div>
+                <div v-else>
+                  AD导入
+                </div>
+              </template>
+            </el-table-column>
             <el-table-column prop="name" label="操作" label-width="400px">
               <template #default="scope">
-                <div v-if="scope.row.btns.length != 0">
+                <div v-if="scope.row.source==='System'">
                   <!-- <span class="group-btn" v-for="(item,func) in scope.row.btns" @click="func">{{ item }}</span> -->
-                  <template v-if="scope.row.istop">
+                  <template v-if="scope.row.children">
                     <span class="group-btn" @click="editGroup(1, scope.row)">组编辑</span>
                     <span class="group-btn" @click="editGroup(0, scope.row)">新增组</span>
                     <span class="group-btn" @click="deleteGroup(scope.row)">删除</span>
@@ -54,55 +63,7 @@
           </el-table>
         </div>
 
-        <el-dialog v-model="dialogGroupMember" title="查看组成员" width="650">
-          <el-form :model="groupMemberForm">
-            <div class="search-wrapper" style="margin-top: 20px;height: 30px;">
-              <el-input v-model="groupMemberForm.keyword" style="width: 140px" placeholder="请输入用户名称" />
-              <el-select class="account-status-select" v-model="sourceVal" placeholder="来源"
-                style="width: 140px;margin-left: 25px;max-height: 30px;">
-                <el-option style="height: 30px;" v-for="item in sourceOptions" :key="item.value" :label="item.label"
-                  :value="item.value" />
-              </el-select>
-              <el-button size="large" class="el-button-content" @click="searchUser">
-                <img src="/imgs/button_search.png" alt="Search Icon" class="el-button-img" />
-                搜索
-              </el-button>
-            </div>
-          </el-form>
-          <div class="group-member-wrapper">
-            <el-table :data="groupMembers" max-height="250"  style="width: 100%;height: auto; margin-bottom: 20px;"
-              row-key="id" default-expand-all>
-              <template v-if="dialogEditGroup">
-                <el-table-column prop="id" label="序号" label-width="40px" />
-                <el-table-column prop="group" label="组名" label-width="80px" />
-                <el-table-column prop="name" label="用户名" label-width="200px" />
-                <el-table-column prop="source" label="来源" label-width="80px" />
-                <el-table-column prop="status" label="操作" label-width="80px">
-                  <template #default="scope">
-                    <el-switch v-model="scope.row.status"
-                      style="--el-switch-on-color: #591BB7; --el-switch-off-color: #A8ABB2" active-value="100"
-                      inactive-value="0" @change="handleSwitchChange(scope.row)" />
-                  </template>
-                </el-table-column>
-              </template>
-              <template v-else-if="dialogGroupMember">
-                <el-table-column prop="id" label="序号" label-width="100px" />
-                <el-table-column prop="group" label="组名" label-width="120px" />
-                <el-table-column prop="name" label="用户名" label-width="120px" />
-                <el-table-column prop="source" label="来源" label-width="100px" />
-              </template>
-            </el-table>
-            <div class="table-pagination-block">
-              <div class="table-demonstration">共200条</div>
-              <el-pagination @current-change="handleCurrentChange" layout="prev, pager, next" :total="200" />
-            </div>
-          </div>
-          <template #footer>
-            <div class="dialog-footer">
-              <el-button type="primary" @click="closeGroupMember">关闭</el-button>
-            </div>
-          </template>
-        </el-dialog>
+        <GroupDetail v-if="dialogGroupMember" :groupId="selectedGroupId" :groupName="selectedGroupName" @close="dialogGroupMember=false"/>
 
         <el-dialog v-model="dialogDeleteVisible" title="删除用户" width="550">
           <div class="">
@@ -154,139 +115,16 @@ import { PageMixin } from "@/pages/PageMixin.js";
 import { Api } from "@/network/api.js";
 import { ElMessage } from "element-plus/es";
 import { Common } from "@/common/common";
+import { MockApi } from "@/network/mockApi.js";
+import { v4 as uuidv4 } from "uuid";
+import GroupDetail from "@/pages/userGroup/GroupDetail.vue";
+
 export default {
+  components: {GroupDetail},
   mixins: [PageMixin],
   data() {
     return {
-      tableData: [
-        {
-          id: 1,
-          date: '2016-05-02',
-          name: 'wangxiaohu',
-          group: '我的分组',
-          source: '系统创建',
-          istop: true,
-          isself: true,
-          btns: ['组编辑', '新增组', '删除'],
-          children: [
-            {
-              id: 31,
-              date: '2016-05-01',
-              name: 'wangxiaohu',
-              group: 'IT组(总数1人)',
-              source: '系统创建',
-              isself: true,
-              istop: false,
-              btns: ['组编辑', '新增组', '删除', '组成员编辑'],
-            },
-            {
-              id: 32,
-              date: '2016-05-04',
-              name: 'wangxiaohu',
-              group: 'EN组(总数5人)',
-              source: '系统创建',
-              isself: true,
-              istop: false,
-              btns: ['组编辑', '新增组', '删除', '组成员编辑'],
-            },
-            {
-              id: 33,
-              date: '2016-05-01',
-              name: 'wangxiaohu',
-              group: '行政组(总数1人)',
-              source: '系统创建',
-              isself: true,
-              istop: false,
-              btns: ['组编辑', '新增组', '删除', '组成员编辑'],
-            }
-          ]
-        },
-        {
-          id: 2,
-          date: '2016-05-04',
-          name: 'wangxiaohu',
-          group: 'AD组',
-          source: 'AD',
-          istop: true,
-          isself: false,
-          btns: [],
-          children: [
-            {
-              id: 61,
-              date: '2016-05-01',
-              name: 'wangxiaohu',
-              group: 'IT组(总数1人)',
-              source: 'AD',
-              istop: false,
-              isself: false,
-              btns: [],
-            },
-            {
-              id: 62,
-              date: '2016-05-02',
-              name: 'wangxiaohu',
-              group: 'EN组(总数5人)',
-              source: 'AD',
-              istop: false,
-              isself: false,
-              btns: [],
-            },
-            {
-              id: 63,
-              date: '2016-05-03',
-              name: 'wangxiaohu',
-              group: 'Sales组(总数5人)',
-              source: 'AD',
-              istop: false,
-              isself: false,
-              btns: [],
-            },
-          ],
-        },
-        {
-          id: 3,
-          date: '2016-05-04',
-          name: 'wangxiaohu',
-          group: 'AD组新',
-          source: 'AD',
-          istop: true,
-          isself: false,
-          btns: [],
-          children: [
-            {
-              id: 61,
-              date: '2016-05-01',
-              name: 'wangxiaohu',
-              group: 'IT组(总数1人)',
-              source: 'AD',
-              istop: false,
-              isself: false,
-              btns: [],
-            },
-            {
-              id: 62,
-              date: '2016-05-02',
-              name: 'wangxiaohu',
-              group: 'EN组(总数5人)',
-              source: 'AD',
-              istop: false,
-              isself: false,
-              btns: [],
-            },
-            {
-              id: 63,
-              date: '2016-05-03',
-              name: 'wangxiaohu',
-              group: 'Sales组(总数5人)',
-              source: 'AD',
-              istop: false,
-              isself: false,
-              btns: [],
-            },
-          ],
-        },
-
-      ],
+      tableData: [],
 
       groupMembers: [
         {
@@ -504,7 +342,10 @@ export default {
       ],
 
       userRow: null,
-      deleteRow: null
+      deleteRow: null,
+
+      selectedGroupId: -1,
+      selectedGroupName: ''
     }
   },
   methods: {
@@ -585,8 +426,14 @@ export default {
       this.dialogGroupMember = true
     },
     moreGroupMember(row) {
-      this.dialogEditGroup = false
+
+      console.log(430)
+
+      this.selectedGroupId = row.id
+      this.selectedGroupName = row.name
       this.dialogGroupMember = true
+
+      console.log(435)
     },
 
     closeGroupMember() {
@@ -645,10 +492,66 @@ export default {
     toUserDetail(mode, id) {
       this.push(`/user_detail/${mode}/${id}`)
     },
+    getTableData(){
+      const that = this
+      Api.getSystemGroupTree({
+        "group_id": -1,
+        "page": 1,
+      })
+          .then(({data, code, msg}) => {
+            if (code == 0) {
+              let groups = data.group.child_groups
+
+              groups.forEach(item => {
+                item['source'] = 'System'
+              })
+
+              const res = {
+                id: uuidv4(),
+                date: '2016-05-04',
+                name: '我的分组',
+                source: 'System',
+                children: groups
+              }
+              that.tableData.push(res)
+
+              Api.getAdGroupTree({
+                "group_id": -1,
+                "page": 1,
+                "search": ""
+              })
+                  .then(({data, code, msg}) => {
+                    if (code == 0) {
+                      let groups = data.group.child_groups
+
+                      groups.forEach(item => {
+                        item['source'] = 'AD'
+                      })
+
+                      const res = {
+                        id: uuidv4(),
+                        date: '2016-05-04',
+                        name: 'AD分组',
+                        source: 'AD',
+                        children: groups
+                      }
+                      that.tableData.push(res)
+                    } else {
+                      ElMessage.error(msg)
+                    }
+                  })
+            } else {
+              ElMessage.error(msg)
+            }
+          })
+
+
+    }
   },
   mounted() {
     this.setTab('/user')
     this.getUserList()
+    this.getTableData()
   }
 }
 </script>
@@ -706,10 +609,9 @@ export default {
 }
 
 .table-wrapper {
-  margin-left: -130px;
   margin-top: 50px;
   padding: 0;
-  width: 1200px;
+  width: 100%;
 }
 
 .el-table {
@@ -752,6 +654,11 @@ export default {
   align-items: center;
   letter-spacing: -0.07px;
   color: #591BB7;
+}
+
+.group-more:hover{
+  cursor: pointer;
+  color: #320b6e;
 }
 
 .group-btn {
