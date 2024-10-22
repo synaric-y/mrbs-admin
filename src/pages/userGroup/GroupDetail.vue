@@ -112,7 +112,7 @@ export default {
 
 
 
-<style scoped>
+<style lang="scss" scoped>
 .logo {
   width: 207px;
   height: 51px;
