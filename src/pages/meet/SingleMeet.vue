@@ -26,7 +26,7 @@
             </div>
             <div class="date-picker">
               <el-date-picker v-model="baseTime" type="daterange" :range-separator="$t('base.to')"
-                :start-placeholder="startTime" :end-placeholder="endTime" @change="choseDate" clearable="false" />
+                :start-placeholder="startTime" :end-placeholder="endTime" @change="choseDate" />
             </div>
           </div>
         </div>

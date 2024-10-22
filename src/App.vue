@@ -165,6 +165,13 @@ export default {
     }
   },
   methods: {
+
+    handleOpen(key,path) {
+      console.log('App handleOpen',key,path)
+    },
+    handleClose(key,path) {
+      console.log('App handleClose',key,path)
+    },
     toProfile() {
       console.log('App toProfile Enter')
       let user = this.userInfo

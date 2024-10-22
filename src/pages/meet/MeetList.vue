@@ -26,7 +26,7 @@
             </el-select>
 
             <el-date-picker style="margin-left: 20px;" v-model="baseTime" type="daterange" :range-separator="$t('base.to')"
-              :start-placeholder="startTime" :end-placeholder="endTime" @change="choseDate" clearable="false" />
+              :start-placeholder="startTime" :end-placeholder="endTime" @change="choseDate" />
 
             <el-button size="large" class="el-button-content" @click="searchUser">
               <img src="/imgs/button_search.png" alt="Search Icon" class="el-button-img" />
