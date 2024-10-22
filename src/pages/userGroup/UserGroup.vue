@@ -10,7 +10,7 @@
               <img src="/imgs/button_reflesh.png" alt="Search Icon" class="el-button-img" />
               用户同步
             </el-button>
-            <span class="async-last-time">上次同步时间：2024年9月9日 10:00</span>
+            <span class="async-last-time">{{syncTime}}</span>
           </div>
         </div>
 
@@ -118,6 +118,7 @@ import { Common } from "@/common/common";
 import { MockApi } from "@/network/mockApi.js";
 import { v4 as uuidv4 } from "uuid";
 import GroupDetail from "@/pages/userGroup/GroupDetail.vue";
+import moment from "moment";
 
 export default {
   components: {GroupDetail},
@@ -125,6 +126,7 @@ export default {
   data() {
     return {
       tableData: [],
+      syncTime: '上次同步时间：',
 
       groupMembers: [
         {
@@ -400,9 +402,7 @@ export default {
       this.dialogDeleteVisible = false
       this.editUser(params)
     },
-    searchUser() {
-      this.getUserList()
-    },
+
     handleCurrentChange(num) {
       console.log('UserList handleCurrentChange num:', num)
       this.page_number = num
@@ -471,21 +471,17 @@ export default {
         }
       })
     },
-    getUserList() {
-      let params = {}
-      params['keyword'] = this.keyword
-      params['pagesize'] = 20
-      params['pagenum'] = this.page_number
-      const selectedItem = this.sourceOptions.filter(item => item.value === this.sourceVal)
-      const disabled = selectedItem[0].value
-      params['disabled'] = disabled
-      // Api.getAllUsers
-      Api.getAllUsers({ params }).then(({ data }) => {
-        if (data) {
-          data.forEach(it => {
-            it["level"] = this.role[it["level"]]
-          })
-          this.tableData = data
+    getADStatus() {
+      Api.getADSyncStatus().then(({ data, code, msg }) => {
+        if (code == 0) {
+          console.log('UserGroup getADStatus:',data)
+          if(data.sync_time == 0) {
+            this.syncTime = `上次同步时间：未进行过同步操作`
+          } else {
+            // 时间戳转化当前时间
+            const time = moment(parseInt(data.sync_time)).format('YYYY/MM/DD hh:mm:ss')
+            this.syncTime = `上次同步时间：${time}`
+          }
         }
       })
     },
@@ -550,7 +546,7 @@ export default {
   },
   mounted() {
     this.setTab('/user')
-    this.getUserList()
+    this.getADStatus()
     this.getTableData()
   }
 }

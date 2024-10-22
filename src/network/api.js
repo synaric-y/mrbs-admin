@@ -140,4 +140,8 @@ export class Api {
     static async getGroupMember(params){
         return Request.post('user_group%2Fget_group_member',params)
     }
+    
+    static async getADSyncStatus(params){
+        return Request.post('user_group/get_sync_ad_state',params)
+    }
 }

@@ -45,7 +45,7 @@
         <el-col>
           <el-menu default-active="1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
             <el-menu-item index="1">
-              <img class="menu_icon" src="../public/imgs/dashboard_manager.png" alt="#">
+              <img class="menu_icon" src="../public/imgs/dashboard_manager_default.png" alt="#">
               <span @click="switchTab('/guide_one')">Dashboard</span>
             </el-menu-item>
 
