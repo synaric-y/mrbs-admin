@@ -246,7 +246,7 @@ body {
   padding: 20px;
   width: calc(100vw - 189px - 20px);
 
-  height: calc(100vh - 95px);
+  /* height: calc(100vh - 95px); */
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
