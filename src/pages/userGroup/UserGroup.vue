@@ -63,7 +63,7 @@
         </div>
 
         <GroupDetail v-if="dialogGroupMember" :groupId="selectedGroupId" :groupName="selectedGroupName"
-          @close="dialogGroupMember = false" />
+          :is-edit="isEdit" @close="dialogGroupMember = false" />
         <el-dialog v-model="dialogDeleteVisible" title="删除用户" width="550">
           <div class="">
             是否删除当前选中的用户/用户组？
@@ -265,6 +265,7 @@ export default {
 
       selectedGroupId: -1,
       selectedGroupName: '',
+      isEdit: false,
       groupVal: null,
     }
   },
@@ -371,6 +372,7 @@ export default {
     editGroupMember(row) {
       this.dialogEditGroup = true
       this.dialogGroupMember = true
+      this.isEdit = true
     },
     moreGroupMember(row) {
 
@@ -379,6 +381,7 @@ export default {
       this.selectedGroupId = row.id
       this.selectedGroupName = row.name
       this.dialogGroupMember = true
+      this.isEdit = false
 
       console.log(435)
     },
