@@ -31,7 +31,7 @@
             </el-table-column>
             <el-table-column prop="source" label="来源" label-width="200px">
               <template #default="scope">
-                <div v-if="scope.row.source === 'System'">
+                <div v-if="scope.row.source === 'system'">
                   系统创建
                 </div>
                 <div v-else>
@@ -41,18 +41,18 @@
             </el-table-column>
             <el-table-column prop="name" label="操作" label-width="400px">
               <template #default="scope">
-                <div v-if="scope.row.source === 'System'">
+                <div v-if="scope.row.source === 'system'">
                   <!-- <span class="group-btn" v-for="(item,func) in scope.row.btns" @click="func">{{ item }}</span> -->
                   <template v-if="scope.row.children">
                     <span class="group-btn" @click="editGroup(1, scope.row)">组编辑</span>
                     <span class="group-btn" @click="editGroup(0, scope.row)">新增组</span>
-                    <span class="group-btn" @click="deleteGroup(scope.row)">删除</span>
+                    <span class="group-btn" @click="deleteGroupDialog(scope.row)">删除</span>
                   </template>
                   <template v-else>
                     <span class="group-btn" @click="editGroup(1, scope.row)">组编辑</span>
                     <span class="group-btn" @click="editGroup(0, scope.row)">新增组</span>
                     <span class="group-btn" @click="editGroupMember(scope.row)">组成员编辑</span>
-                    <span class="group-btn" @click="deleteGroup(scope.row)">删除</span>
+                    <span class="group-btn" @click="deleteGroupDialog(scope.row)">删除</span>
                   </template>
                 </div>
                 <div v-else>
@@ -71,7 +71,7 @@
           </div>
           <template #footer>
             <div class="dialog-footer">
-              <el-button style="margin-left: 50px" type="primary" @click="deleteUser">
+              <el-button style="margin-left: 50px" type="primary" @click="sureDeleteUser">
                 确定
               </el-button>
               <el-button @click="dialogDeleteVisible = false">取消</el-button>
@@ -122,91 +122,6 @@ export default {
     return {
       tableData: [],
       syncTime: '上次同步时间：',
-
-      groupMembers: [
-        {
-          id: 1,
-          group: 'EN组',
-          name: '王xx（职位）',
-          source: '系统创建',
-          status: false,
-        },
-        {
-          id: 2,
-          group: 'EN组',
-          name: '王xx（职位）',
-          source: '系统创建',
-          status: true,
-        },
-        {
-          id: 3,
-          group: 'IT组',
-          name: '张xx（职位）',
-          source: '系统创建',
-          status: true,
-        },
-        {
-          id: 4,
-          group: 'IT组',
-          name: '李xx（职位）',
-          source: '系统创建',
-          status: false,
-        }, {
-          id: 5,
-          group: 'EN组',
-          name: '王xx（职位）',
-          source: '系统创建',
-          status: true,
-        },
-        {
-          id: 6,
-          group: 'EN组',
-          name: '王xx（职位）',
-          source: '系统创建',
-          status: false,
-        },
-        {
-          id: 7,
-          group: 'IT组',
-          name: '张xx（职位）',
-          source: '系统创建',
-          status: true,
-        },
-        {
-          id: 8,
-          group: 'IT组',
-          name: '李xx（职位）',
-          source: '系统创建',
-          status: true,
-        }, {
-          id: 9,
-          group: 'EN组',
-          name: '王xx（职位）',
-          source: '系统创建',
-          status: false,
-        },
-        {
-          id: 10,
-          group: 'EN组',
-          name: '王xx（职位）',
-          source: '系统创建',
-          status: true,
-        },
-        {
-          id: 11,
-          group: 'IT组',
-          name: '张xx（职位）',
-          source: '系统创建',
-          status: false,
-        },
-        {
-          id: 12,
-          group: 'IT组',
-          name: '李xx（职位）',
-          source: '系统创建',
-          status: true,
-        }
-      ],
       sourceVal: '0',
       accountSwitch: 1,
       sourceOptions: [
@@ -357,25 +272,16 @@ export default {
       params['remark'] = row.remark
       this.editUser(params)
     },
-    deleteUserPop(row) {
-      this.dialogDeleteVisible = true
-      this.deleteRow = row
-    },
-    deleteUser() {
+    sureDeleteUser() {
       let params = {}
-      params['action'] = 'delete'
-      params['name'] = this.deleteRow.name
+      params['group_id'] = this.deleteRow.id
       this.dialogDeleteVisible = false
-      this.editUser(params)
+      this.deleteUser(params)
     },
 
     handleCurrentChange(num) {
       console.log('UserList handleCurrentChange num:', num)
       this.page_number = num
-    },
-    handleSwitchChange(row) {
-      console.log('UserList handleCurrentChange id: status', row.number, row.status)
-      this.updateUserDisabled(row)
     },
 
     editGroup(mode, row) {
@@ -384,8 +290,9 @@ export default {
 
     },
 
-    deleteGroup(row) {
+    deleteGroupDialog(row) {
       this.dialogDeleteVisible = true
+      this.deleteRow = row
     },
     editGroupMember(row) {
       this.dialogEditGroup = true
@@ -428,17 +335,17 @@ export default {
       })
     },
 
-    editUser(params) {
+    deleteUser(params) {
       console.log('UserList editUser params', params)
-      return
-      Api.editUser({ params }).then(({ data, code, msg }) => {
+      Api.deleteGroup(params).then(({ data, code, msg }) => {
         if (code == 0) {
-          this.getUserList()
+          this.getTableData()
         } else {
-          ElMessage.error(message)
+          ElMessage.error(msg)
         }
       })
     },
+
     getADStatus() {
       Api.getADSyncStatus().then(({ data, code, msg }) => {
         if (code == 0) {
@@ -470,7 +377,7 @@ export default {
                 id: uuidv4(),
                 date: '2016-05-04',
                 name: '我的分组',
-                source: 'System',
+                source: 'system',
                 children: groups
               }
               this.tableData.push(res)
@@ -523,6 +430,7 @@ export default {
       this.push(`/user_detail/${mode}/${id}`)
     },
     async getTableData() {
+      this.tableData = []
       await this.getSystemGroupTreeWithId(-1)
       this.getAdGroupTreeWithId(-1)
     }

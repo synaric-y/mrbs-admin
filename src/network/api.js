@@ -144,4 +144,16 @@ export class Api {
     static async getADSyncStatus(params){
         return Request.post('user_group/get_sync_ad_state',params)
     }
+    
+    static async deleteGroup(params){
+        return Request.post('user_group/del_group',params)
+    }
+
+    static async bindUserToGoup(params){
+        return Request.post('user_group/bind_user_to_group',params)
+    }
+
+    static async unbindUserToGoup(params){
+        return Request.post('user_group/unbind_user_to_group',params)
+    }
 }

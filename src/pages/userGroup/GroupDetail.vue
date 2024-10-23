@@ -22,9 +22,9 @@
             <el-table-column prop="id" label="序号" label-width="100px" />
             <el-table-column prop="display_name" label="用户名" label-width="120px" />
             <el-table-column prop="source" label="来源" label-width="100px" />
-            <el-table-column prop="disabled" label="状态" width="100">
+            <el-table-column prop="is_bind" label="状态" width="100">
               <template #default="scope">
-                <el-switch v-model="scope.row.disabled"
+                <el-switch v-model="scope.row.is_bind"
                   style="--el-switch-on-color: #591BB7; --el-switch-off-color: #A8ABB2" active-value="1"
                   inactive-value="0" @change="handleSwitchChange(scope.row)" />
               </template>
@@ -53,7 +53,6 @@
 </template>
 
 
-
 <script>
 import { Api } from "@/network/api.js";
 import { PageMixin } from "@/pages/PageMixin.js";
@@ -74,11 +73,9 @@ export default {
   data() {
     return {
       groupMembers: [],
-
       keyword: '',
       pageNumber: 1,
       total_num: 0,
-
       sourceVal: 'ad',
       sourceOptions: [
         {
@@ -88,40 +85,75 @@ export default {
           value: 'ad',
           label: 'AD绑定',
         }],
-
-
-
+      initialized: false,
+      selectRow: null,
     }
   },
   methods: {
+
     handleCurrentChange(num) {
       console.log('UserList handleCurrentChange num:', num)
       this.pageNumber = num
-
       this.getGroupMember() // 查询新页
     },
+
+    searchGroupMember() {
+      this.pageNumber = 1
+      this.getGroupMember()
+    },
+
+    handleSwitchChange(row) {
+      if (this.initialized) {
+        this.selectRow = row
+        console.log('UserList handleCurrentChange id: status', row)
+        this.bindUserToGroup()
+      }
+      // this.updateUserDisabled(row)
+    },
+    bindUserToGroup() {
+      let params = {}
+      const user_ids = []
+      user_ids.push(parseInt(this.selectRow.id))
+      params['user_ids'] = user_ids
+      params['group_id'] = this.groupId
+      Api.bindUserToGoup(params).then(({ data, code, msg }) => {
+        if (code == 0) {
+          this.getGroupMember()
+        } else {
+          ElMessage.error(msg)
+        }
+      })
+    },
+
+    unbindUserToGroup() {
+      Api.unbindUserToGoup({}).then(({ data, code, msg }) => {
+        if (code == 0) {
+          this.getGroupMember()
+        } else {
+          ElMessage.error(msg)
+        }
+      })
+    },
+
     getGroupMember() {
       Api.getGroupMember({
-        group_id: this.isEdit?-1:parseInt(this.groupId),
+        group_id: this.isEdit ? -1 : parseInt(this.groupId),
         search: this.keyword || '',
         page: this.pageNumber,
-        source: this.sourceVal
-      }).then(({ data }) => {
-        if (data) {
+        // source: this.sourceVal
+      }).then(({ data, code, msg }) => {
+        this.initialized = true
+        if (code == 0) {
           this.groupMembers = data.users
           this.total_num = data.total_num
         }
       })
     },
-    searchGroupMember() {
-      this.pageNumber = 1 // 复位页码
-
-      this.getGroupMember()
-    }
   },
   created() {
     console.log(this.groupId)
     this.getGroupMember()
+    this.initialized = false
   },
   unmounted() {
 
