@@ -1,7 +1,7 @@
 <template>
   <div class="container">
-    <div class="nav_wrapper">
-      <div class="nav" v-if="!isLoginPage">
+    <div class="nav_wrapper" v-if="!isLoginPage">
+      <div class="nav" >
         <div class="nav-inner">
           <div class="nav-left">XX公司 会议预约平台管理</div>
           <div class="nav-right">
@@ -40,89 +40,97 @@
         </div>
       </div>
     </div>
-    <div class="menu-content-wrapper">
+    <!-- <div class="menu-content-wrapper">
       <div class="left-menu">
         <el-col>
           <el-menu default-active="1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
             <el-menu-item index="1">
               <img class="menu_icon" src="../public/imgs/dashboard_manager_default.png" alt="#">
               <span @click="switchTab('/guide_one')">Dashboard</span>
-            </el-menu-item>
+            </el-menu-item> -->
+    <div class="nav-placeholder" v-if="!isLoginPage"></div>
+    <div class="menu-content-wrapper" >
+      <div class="left-menu" v-if="!isLoginPage">
+        <el-scrollbar height="100%">
+          <el-col>
+            <el-menu default-active="1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
+              <el-menu-item index="1">
+                <img class="menu_icon" src="../public/imgs/dashboard_manager_default.png" alt="#">
+                <span @click="switchTab('/guide_one')">Dashboard</span>
+              </el-menu-item>
+              <el-sub-menu index="2">
+                <template #title>
+                  <!-- <el-icon>
+                    <location  />
+                  </el-icon> -->
+                  <img class="menu_icon" src="../public/imgs/user_manager.png" alt="#">
+                  <span>用户管理</span>
+                </template>
+                <el-menu-item index="2-1" @click="switchTab('/user_list')">用户列表</el-menu-item>
+                <el-menu-item index="2-2" @click="switchTab('/user_group')">用户组配置</el-menu-item>
+              </el-sub-menu>
 
-            <el-sub-menu index="2">
-              <template #title>
-                <!-- <el-icon>
-                  <location  />
-                </el-icon> -->
-                <img class="menu_icon" src="../public/imgs/user_manager.png" alt="#">
-                <span>用户管理</span>
-              </template>
-              <el-menu-item index="2-1" @click="switchTab('/user_list')">用户列表</el-menu-item>
-              <el-menu-item index="2-2" @click="switchTab('/user_group')">用户组配置</el-menu-item>
-            </el-sub-menu>
+              <el-sub-menu index="3">
+                <template #title>
+                  <!-- <el-icon>
+                    <location />
+                  </el-icon> -->
+                  <img class="menu_icon" src="../public/imgs/meet_manager.png" alt="#">
+                  <span>会议预定</span>
+                </template>
+                <el-menu-item index="3-1" @click="switchTab('/single_meet')">单次会议预定</el-menu-item>
+                <el-menu-item index="3-2" @click="switchTab('/cycle_meet')">循环会议预定</el-menu-item>
+                <el-menu-item index="3-3" @click="switchTab('/meet_list')">历史会议</el-menu-item>
+              </el-sub-menu>
+              <el-sub-menu index="4">
+                <template #title>
+                  <!-- <el-icon>
+                    <location />
+                  </el-icon> -->
+                  <img class="menu_icon" src="../public/imgs/area_manager.png" alt="#">
+                  <span>区域&会议管理</span>
+                </template>
+                <el-menu-item index="4-1" @click="switchTab('/edit_area')">编辑区域</el-menu-item>
+                <el-menu-item index="4-2" @click="switchTab('/edit_meet')">编辑会议室</el-menu-item>
+                <el-menu-item index="4-3" @click="switchTab('/bind_terminal')">终端绑定</el-menu-item>
+              </el-sub-menu>
 
-            <el-sub-menu index="3">
-              <template #title>
-                <!-- <el-icon>
-                  <location />
-                </el-icon> -->
-                <img class="menu_icon" src="../public/imgs/meet_manager.png" alt="#">
-                <span>会议预定</span>
-              </template>
-              <el-menu-item index="3-1" @click="switchTab('/single_meet')">单次会议预定</el-menu-item>
-              <el-menu-item index="3-2" @click="switchTab('/cycle_meet')">循环会议预定</el-menu-item>
-              <el-menu-item index="3-3" @click="switchTab('/meet_list')">历史会议</el-menu-item>
-            </el-sub-menu>
+              <el-menu-item index="5">
+                <!-- <el-icon><icon-menu /></el-icon> -->
+                <img class="menu_icon" src="../public/imgs/terminal_manager.png" alt="#">
+                <span @click="switchTab('/terminal_manager')">终端设备管理</span>
+              </el-menu-item>
 
-            <el-sub-menu index="4">
-              <template #title>
-                <!-- <el-icon>
-                  <location />
-                </el-icon> -->
-                <img class="menu_icon" src="../public/imgs/area_manager.png" alt="#">
-                <span>区域&会议管理</span>
-              </template>
-              <el-menu-item index="4-1" @click="switchTab('/edit_area')">编辑区域</el-menu-item>
-              <el-menu-item index="4-2" @click="switchTab('/edit_meet')">编辑会议室</el-menu-item>
-              <el-menu-item index="4-3" @click="switchTab('/bind_terminal')">终端绑定</el-menu-item>
-            </el-sub-menu>
-
-            <el-menu-item index="5">
-              <!-- <el-icon><icon-menu /></el-icon> -->
-              <img class="menu_icon" src="../public/imgs/terminal_manager.png" alt="#">
-              <span @click="switchTab('/terminal_manager')">终端设备管理</span>
-            </el-menu-item>
-
-            <el-sub-menu index="6">
-              <template #title>
-                <!-- <el-icon>
-                  <location />
-                </el-icon> -->
-                <img class="menu_icon" src="../public/imgs/check_circle.png" alt="#">
-                <span>系统设置</span>
-              </template>
-              <el-menu-item index="6-1" @click="switchTab('/meet_rule')">会议规则设置</el-menu-item>
-              <el-menu-item index="6-2" @click="switchTab('/application_seeting')">应用设置</el-menu-item>
-              <el-menu-item index="6-3" @click="switchTab('/sync_user')">用户同步</el-menu-item>
-              <el-menu-item index="6-4" @click="switchTab('/sync_calendar')">日历同步</el-menu-item>
-            </el-sub-menu>
-
-            <el-sub-menu index="7">
-              <template #title>
-                <!-- <el-icon>
-                  <location />
-                </el-icon> -->
-                <img class="menu_icon" src="../public/imgs/help_manager.png" alt="#">
-                <span>帮助中心</span>
-              </template>
-              <el-menu-item index="7-1" @click="switchTab('/manual')">操作手册下载</el-menu-item>
-              <el-menu-item index="7-2" @click="switchTab('/questions')">常见问题</el-menu-item>
-              <el-menu-item index="7-3" @click="switchTab('/feedback')">问题反馈</el-menu-item>
-            </el-sub-menu>
-          </el-menu>
-        </el-col>
+              <el-sub-menu index="6">
+                <template #title>
+                  <!-- <el-icon>
+                    <location />
+                  </el-icon> -->
+                  <img class="menu_icon" src="../public/imgs/check_circle.png" alt="#">
+                  <span>系统设置</span>
+                </template>
+                <el-menu-item index="6-1" @click="switchTab('/meet_rule')">会议规则设置</el-menu-item>
+                <el-menu-item index="6-2" @click="switchTab('/application_seeting')">应用设置</el-menu-item>
+                <el-menu-item index="6-3" @click="switchTab('/sync_user')">用户同步</el-menu-item>
+                <el-menu-item index="6-4" @click="switchTab('/sync_calendar')">日历同步</el-menu-item>
+              </el-sub-menu>
+              <el-sub-menu index="7">
+                <template #title>
+                  <!-- <el-icon>
+                    <location />
+                  </el-icon> -->
+                  <img class="menu_icon" src="../public/imgs/help_manager.png" alt="#">
+                  <span>帮助中心</span>
+                </template>
+                <el-menu-item index="7-1" @click="switchTab('/manual')">操作手册下载</el-menu-item>
+                <el-menu-item index="7-2" @click="switchTab('/questions')">常见问题</el-menu-item>
+                <el-menu-item index="7-3" @click="switchTab('/feedback')">问题反馈</el-menu-item>
+              </el-sub-menu>
+            </el-menu>
+          </el-col>
+        </el-scrollbar>
       </div>
-
+      <div class="left-menu-placeholder" v-if="!isLoginPage"></div>
       <div class="menu-content">
         <!-- <el-main> -->
         <router-view v-slot="{ Component, route }">
@@ -137,15 +145,12 @@
         <!-- </el-main> -->
       </div>
     </div>
-
     <!-- <div class="nav-block"></div> -->
     <!--    <transition name="el-fade-in" mode="out-in">-->
     <!--      <keep-alive>-->
     <!--        <router-view></router-view>-->
     <!--      </keep-alive>-->
     <!--    </transition>-->
-
-
   </div>
 </template>
 
@@ -158,33 +163,10 @@ export default {
   mixins: [PageMixin],
   data() {
     return {
-      tabs: [
-        {
-          path: "/",
-          name: "base.home",
-          level: 0
-        },
-        {
-          path: "/area",
-          name: "base.area",
-          level: 2
-        },
-        {
-          path: "/room",
-          name: "base.room",
-          level: 2
-        },
-        {
-          path: "/user",
-          name: "base.user",
-          level: 2
-        },
-      ],
       showPop: false
     }
   },
   methods: {
-
     handleOpen(key, path) {
       console.log('App handleOpen', key, path)
     },
@@ -254,14 +236,14 @@ body {
 
 /*内容页容器*/
 .container-sub-page {
-  width: calc(100vw - 189px - 20px);
+  width: calc(100vw - 189px);
   /* width: auto; */
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
   align-items: center;
-  padding: 0px;
+  padding: 0;
   margin: 0;
   background: #EFEFEF;
   /* background-color: red; */
@@ -271,7 +253,7 @@ body {
 .container-sub-page-main {
   /* min-width: 930px; */
   padding: 20px;
-  width: calc(100vw - 189px - 20px);
+  width:100%;
 
   /* height: calc(100vh - 95px); */
   display: flex;
@@ -312,6 +294,10 @@ body {
   z-index: 2003;
   top: 0;
   border-bottom: 0.06rem solid rgba(187, 187, 187, 1);
+}
+
+.nav-placeholder{
+  height: 75px;
 }
 
 .nav-block {
@@ -360,18 +346,27 @@ body {
 
 .menu-content-wrapper {
   display: flex;
-  margin-top: 70px;
-  width: calc(100vw - 189px - 20px);
-  height: calc(100vh - 65px);
-  background-color: white
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  height: 100%;
 }
 
 .left-menu {
   margin: 0;
   padding: 0;
   width: 189px;
+  background-color: white;
   height: calc(100vh - 75px);
-  background-color: white
+  position: fixed;
+  left: 0;
+  top: 75px;
+}
+
+.left-menu-placeholder{
+  flex-shrink: 0;
+  width: 189px;
+  height: calc(100vh - 75px);
 }
 
 .menu_icon {
@@ -382,8 +377,8 @@ body {
 
 .menu-content {
   display: flex;
-  width: calc(100vw - 189px - 20px);
-  height: calc(100vh - 75px);
+  width: 100%;
+  height: 100%;
 }
 
 /*顶部导航按钮*/

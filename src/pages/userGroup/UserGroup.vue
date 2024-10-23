@@ -10,7 +10,7 @@
               <img src="/imgs/button_reflesh.png" alt="Search Icon" class="el-button-img" />
               用户同步
             </el-button>
-            <span class="async-last-time">{{syncTime}}</span>
+            <span class="async-last-time">{{ syncTime }}</span>
           </div>
         </div>
 
@@ -30,7 +30,7 @@
             </el-table-column>
             <el-table-column prop="source" label="来源" label-width="200px">
               <template #default="scope">
-                <div v-if="scope.row.source==='System'">
+                <div v-if="scope.row.source === 'System'">
                   系统创建
                 </div>
                 <div v-else>
@@ -40,7 +40,7 @@
             </el-table-column>
             <el-table-column prop="name" label="操作" label-width="400px">
               <template #default="scope">
-                <div v-if="scope.row.source==='System'">
+                <div v-if="scope.row.source === 'System'">
                   <!-- <span class="group-btn" v-for="(item,func) in scope.row.btns" @click="func">{{ item }}</span> -->
                   <template v-if="scope.row.children">
                     <span class="group-btn" @click="editGroup(1, scope.row)">组编辑</span>
@@ -53,7 +53,6 @@
                     <span class="group-btn" @click="editGroupMember(scope.row)">组成员编辑</span>
                     <span class="group-btn" @click="deleteGroup(scope.row)">删除</span>
                   </template>
-
                 </div>
                 <div v-else>
                   <span class="default-group-btn">无</span>
@@ -63,8 +62,8 @@
           </el-table>
         </div>
 
-        <GroupDetail v-if="dialogGroupMember" :groupId="selectedGroupId" :groupName="selectedGroupName" @close="dialogGroupMember=false"/>
-
+        <GroupDetail v-if="dialogGroupMember" :groupId="selectedGroupId" :groupName="selectedGroupName"
+          @close="dialogGroupMember = false" />
         <el-dialog v-model="dialogDeleteVisible" title="删除用户" width="550">
           <div class="">
             是否删除当前选中的用户/用户组？
@@ -79,7 +78,6 @@
           </template>
         </el-dialog>
 
-
         <el-dialog v-model="dialogAddGroup" title="编辑组" width="550">
           <el-form :model="addGroupForm">
             <div class="request-wrapper">
@@ -88,14 +86,10 @@
                 <el-input v-model="addGroupForm.name" autocomplete="off" />
               </el-form-item>
             </div>
-
             <el-form-item label="同步用户组" label-width="140px" style="margin-right: 50px;">
-              <el-cascader :options="groupOptions" props="false" />
+              <el-tree-select lazy v-model="groupVal" :load="loadGroup" :props="groupProps" />
             </el-form-item>
-
           </el-form>
-
-
           <template #footer>
             <div class="dialog-footer">
               <el-button style="margin-left: 50px" type="primary" @click="commitGroupForm">
@@ -121,7 +115,7 @@ import GroupDetail from "@/pages/userGroup/GroupDetail.vue";
 import moment from "moment";
 
 export default {
-  components: {GroupDetail},
+  components: { GroupDetail },
   mixins: [PageMixin],
   data() {
     return {
@@ -259,98 +253,51 @@ export default {
         name: '',
         group_info: {},
       },
-      groupOptions: [
+      groupProps: 
         {
-          value: 1,
-          label: 'Asia',
-          children: [
-            {
-              value: 2,
-              label: 'China',
-              children: [
-                { value: 3, label: 'Beijing' },
-                { value: 4, label: 'Shanghai' },
-                { value: 5, label: 'Hangzhou' },
-              ],
-            },
-            {
-              value: 6,
-              label: 'Japan',
-              children: [
-                { value: 7, label: 'Tokyo' },
-                { value: 8, label: 'Osaka' },
-                { value: 9, label: 'Kyoto' },
-              ],
-            },
-            {
-              value: 10,
-              label: 'Korea',
-              children: [
-                { value: 11, label: 'Seoul' },
-                { value: 12, label: 'Busan' },
-                { value: 13, label: 'Taegu' },
-              ],
-            },
-          ],
+          label: 'label',
+          children: 'children', // 子节点的字段
+          isLeaf: 'isLeaf', // 用于判断是否是叶子节点
         },
-        {
-          value: 14,
-          label: 'Europe',
-          children: [
-            {
-              value: 15,
-              label: 'France',
-              children: [
-                { value: 16, label: 'Paris' },
-                { value: 17, label: 'Marseille' },
-                { value: 18, label: 'Lyon' },
-              ],
-            },
-            {
-              value: 19,
-              label: 'UK',
-              children: [
-                { value: 20, label: 'London' },
-                { value: 21, label: 'Birmingham' },
-                { value: 22, label: 'Manchester' },
-              ],
-            },
-          ],
-        },
-        {
-          value: 23,
-          label: 'North America',
-          children: [
-            {
-              value: 24,
-              label: 'US',
-              children: [
-                { value: 25, label: 'New York' },
-                { value: 26, label: 'Los Angeles' },
-                { value: 27, label: 'Washington' },
-              ],
-            },
-            {
-              value: 28,
-              label: 'Canada',
-              children: [
-                { value: 29, label: 'Toronto' },
-                { value: 30, label: 'Montreal' },
-                { value: 31, label: 'Ottawa' },
-              ],
-            },
-          ],
-        },
-      ],
-
+        
       userRow: null,
       deleteRow: null,
 
       selectedGroupId: -1,
-      selectedGroupName: ''
+      selectedGroupName: '',
+      groupVal: null,
     }
   },
   methods: {
+
+    loadGroup(node, resolve) {
+      console.log('loadGroup node', node)
+      if (node.level === 0) {
+        // 根节点，加载顶级数据
+        setTimeout(() => {
+          resolve([
+            { label: '顶级节点1', id: 1, isLeaf: false },
+            { label: '顶级节点2', id: 2, isLeaf: false },
+          ]);
+        }, 500);
+      } else if (node.data.id === 1) {
+        // 顶级节点1的子节点
+        setTimeout(() => {
+          resolve([
+            { label: '子节点1-1', id: 3, isLeaf: true },
+            { label: '子节点1-2', id: 4, isLeaf: true },
+          ]);
+        }, 500);
+      } else if (node.data.id === 2) {
+        // 顶级节点2的子节点
+        setTimeout(() => {
+          resolve([
+            { label: '子节点2-1', id: 5, isLeaf: true },
+            { label: '子节点2-2', id: 6, isLeaf: true },
+          ]);
+        }, 500);
+      }
+    },
     addUser(val, row) {
       this.dialogFormVisible = true
       if (val === 1) {
@@ -474,8 +421,8 @@ export default {
     getADStatus() {
       Api.getADSyncStatus().then(({ data, code, msg }) => {
         if (code == 0) {
-          console.log('UserGroup getADStatus:',data)
-          if(data.sync_time == 0) {
+          console.log('UserGroup getADStatus:', data)
+          if (data.sync_time == 0) {
             this.syncTime = `上次同步时间：未进行过同步操作`
           } else {
             // 时间戳转化当前时间
@@ -488,58 +435,58 @@ export default {
     toUserDetail(mode, id) {
       this.push(`/user_detail/${mode}/${id}`)
     },
-    getTableData(){
+    getTableData() {
       const that = this
       Api.getSystemGroupTree({
         "group_id": -1,
         "page": 1,
       })
-          .then(({data, code, msg}) => {
-            if (code == 0) {
-              let groups = data.group.child_groups
+        .then(({ data, code, msg }) => {
+          if (code == 0) {
+            let groups = data.group.child_groups
 
-              groups.forEach(item => {
-                item['source'] = 'System'
-              })
+            groups.forEach(item => {
+              item['source'] = 'System'
+            })
 
-              const res = {
-                id: uuidv4(),
-                date: '2016-05-04',
-                name: '我的分组',
-                source: 'System',
-                children: groups
-              }
-              that.tableData.push(res)
-
-              Api.getAdGroupTree({
-                "group_id": -1,
-                "page": 1,
-                "search": ""
-              })
-                  .then(({data, code, msg}) => {
-                    if (code == 0) {
-                      let groups = data.group.child_groups
-
-                      groups.forEach(item => {
-                        item['source'] = 'AD'
-                      })
-
-                      const res = {
-                        id: uuidv4(),
-                        date: '2016-05-04',
-                        name: 'AD分组',
-                        source: 'AD',
-                        children: groups
-                      }
-                      that.tableData.push(res)
-                    } else {
-                      ElMessage.error(msg)
-                    }
-                  })
-            } else {
-              ElMessage.error(msg)
+            const res = {
+              id: uuidv4(),
+              date: '2016-05-04',
+              name: '我的分组',
+              source: 'System',
+              children: groups
             }
-          })
+            that.tableData.push(res)
+
+            Api.getAdGroupTree({
+              "group_id": -1,
+              "page": 1,
+              "search": ""
+            })
+              .then(({ data, code, msg }) => {
+                if (code == 0) {
+                  let groups = data.group.child_groups
+
+                  groups.forEach(item => {
+                    item['source'] = 'AD'
+                  })
+
+                  const res = {
+                    id: uuidv4(),
+                    date: '2016-05-04',
+                    name: 'AD分组',
+                    source: 'AD',
+                    children: groups
+                  }
+                  that.tableData.push(res)
+                } else {
+                  ElMessage.error(msg)
+                }
+              })
+          } else {
+            ElMessage.error(msg)
+          }
+        })
 
 
     }
@@ -652,7 +599,7 @@ export default {
   color: #591BB7;
 }
 
-.group-more:hover{
+.group-more:hover {
   cursor: pointer;
   color: #320b6e;
 }
