@@ -40,9 +40,9 @@
           </template>
         </el-table>
         <div class="table-pagination-block">
-          <div class="table-demonstration">共200条</div>
+          <div class="table-demonstration">共{{ total_num }}条</div>
           <el-pagination :current-page="pageNumber" background @current-change="handleCurrentChange"
-            layout="prev, pager, next" :total="200" />
+            layout="prev, pager, next" :default-page-size="20" :total="total_num" />
         </div>
       </div>
       <div class="dialog-footer">
@@ -77,6 +77,7 @@ export default {
 
       keyword: '',
       pageNumber: 1,
+      total_num: 0,
 
       sourceVal: 'ad',
       sourceOptions: [
@@ -101,13 +102,14 @@ export default {
     },
     getGroupMember() {
       Api.getGroupMember({
-        group_id: parseInt(this.groupId),
+        group_id: this.isEdit?-1:parseInt(this.groupId),
         search: this.keyword || '',
         page: this.pageNumber,
         source: this.sourceVal
       }).then(({ data }) => {
         if (data) {
           this.groupMembers = data.users
+          this.total_num = data.total_num
         }
       })
     },

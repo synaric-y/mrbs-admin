@@ -15,8 +15,9 @@
         </div>
 
         <div class="table-wrapper" style="height: auto">
-          <el-table :data="tableData" style="width: 100%;height: auto; margin-bottom: 20px;" row-key="id"
-            default-expand-all>
+          <!-- default-expand-all -->
+          <el-table :data="tableData" lazy style="width: 100%;height: auto; margin-bottom: 20px;" row-key="id"
+            :tree-props="{ children: 'children', hasChildren: 'has_child' }" :load="loadSubGroup">
             <el-table-column prop="group" label="用户组/用户" label-width="400px">
               <template #default="scope">
                 <!-- <div class="group-title-wrapper"> -->
@@ -253,13 +254,12 @@ export default {
         name: '',
         group_info: {},
       },
-      groupProps: 
-        {
-          label: 'label',
-          children: 'children', // 子节点的字段
-          isLeaf: 'isLeaf', // 用于判断是否是叶子节点
-        },
-        
+      groupProps:
+      {
+        label: 'label',
+        children: 'children', // 子节点的字段
+        isLeaf: 'isLeaf', // 用于判断是否是叶子节点
+      },
       userRow: null,
       deleteRow: null,
 
@@ -270,6 +270,24 @@ export default {
     }
   },
   methods: {
+
+    loadSubGroup(row, treeNode, resolve) {
+      let childrenData = []
+      if (row.source === "system") {
+        this.getSystemGroupTreeWithId(row.id).then(childrenData => {
+          resolve(childrenData);
+        }).catch(() => {
+          resolve([]);
+        });
+        return
+      }
+      console.log('Loading children ad for:', row, treeNode);
+      this.getAdGroupTreeWithId(row.id).then(childrenData => {
+        resolve(childrenData);
+      }).catch(() => {
+        resolve([]);
+      });
+    },
 
     loadGroup(node, resolve) {
       console.log('loadGroup node', node)
@@ -435,63 +453,78 @@ export default {
         }
       })
     },
+
+    getSystemGroupTreeWithId(group_id) {
+      return new Promise((resolve, reject) => {
+        Api.getSystemGroupTree({
+          "group_id": group_id,
+          "page": 1,
+        }).then(({ data, code, msg }) => {
+          if (code == 0) {
+            let groups = data.group.child_groups
+            groups.forEach(item => {
+              item['source'] = 'system'
+            })
+            if (group_id == -1) {
+              const res = {
+                id: uuidv4(),
+                date: '2016-05-04',
+                name: '我的分组',
+                source: 'System',
+                children: groups
+              }
+              this.tableData.push(res)
+              resolve(res)
+              return
+            }
+            resolve(groups)
+          } else {
+            ElMessage.error(msg)
+            reject(msg);
+          }
+        })
+      })
+    },
+
+    getAdGroupTreeWithId(group_id) {
+      return new Promise((resolve, reject) => {
+        Api.getAdGroupTree({
+          "group_id": group_id,
+          "page": 1,
+          // "search": ""
+        }).then(({ data, code, msg }) => {
+          if (code == 0) {
+            let groups = data.group.child_groups
+            groups.forEach(item => {
+              item['source'] = 'AD'
+            })
+            if (group_id == -1) {
+              const res = {
+                id: uuidv4(),
+                date: '2016-05-04',
+                name: 'AD分组',
+                source: 'AD',
+                children: groups
+              }
+              this.tableData.push(res)
+              resolve(res)
+              return
+            }
+            resolve(groups)
+            console.log('UserGroup tableData', this.tableData)
+          } else {
+            ElMessage.error(msg)
+            reject(msg)
+          }
+        })
+      })
+    },
     toUserDetail(mode, id) {
       this.push(`/user_detail/${mode}/${id}`)
     },
-    getTableData() {
-      const that = this
-      Api.getSystemGroupTree({
-        "group_id": -1,
-        "page": 1,
-      })
-        .then(({ data, code, msg }) => {
-          if (code == 0) {
-            let groups = data.group.child_groups
-
-            groups.forEach(item => {
-              item['source'] = 'System'
-            })
-
-            const res = {
-              id: uuidv4(),
-              date: '2016-05-04',
-              name: '我的分组',
-              source: 'System',
-              children: groups
-            }
-            that.tableData.push(res)
-
-            Api.getAdGroupTree({
-              "group_id": -1,
-              "page": 1,
-              "search": ""
-            })
-              .then(({ data, code, msg }) => {
-                if (code == 0) {
-                  let groups = data.group.child_groups
-
-                  groups.forEach(item => {
-                    item['source'] = 'AD'
-                  })
-
-                  const res = {
-                    id: uuidv4(),
-                    date: '2016-05-04',
-                    name: 'AD分组',
-                    source: 'AD',
-                    children: groups
-                  }
-                  that.tableData.push(res)
-                } else {
-                  ElMessage.error(msg)
-                }
-              })
-          } else {
-            ElMessage.error(msg)
-          }
-        })
-
-
+    async getTableData() {
+      await this.getSystemGroupTreeWithId(-1)
+      this.getAdGroupTreeWithId(-1)
     }
   },
   mounted() {
