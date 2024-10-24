@@ -50,7 +50,7 @@
                   </template>
                   <template v-else>
                     <span class="group-btn" @click="editGroupBtn(1, scope.row)">组编辑</span>
-                    <span class="group-btn" @click="editGroupBtn(0, scope.row)">新增组</span>
+                    <!-- <span class="group-btn" @click="editGroupBtn(0, scope.row)">新增组</span> -->
                     <span class="group-btn" @click="editGroupMember(scope.row)">组成员编辑</span>
                     <span class="group-btn" @click="deleteGroupDialog(scope.row)">删除</span>
                   </template>
@@ -419,7 +419,8 @@ export default {
                 date: '2016-05-04',
                 name: '我的分组',
                 source: 'system',
-                children: groups
+                children: groups,
+                top_level: true,
               }
               this.tableData.push(res)
               resolve(res)
