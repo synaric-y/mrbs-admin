@@ -80,10 +80,9 @@
         </el-dialog>
 
         <el-dialog v-model="dialogAddGroup" title="编辑组" width="550">
-          <el-form :model="addGroupForm">
+          <el-form :model="addGroupForm" :rules="rules">
             <div class="request-wrapper">
-              <img class="request-tag" style="left: 44px;" src="../../../public/imgs/request_icon.png" alt="">
-              <el-form-item label="用户组名称" label-width="140px">
+              <el-form-item label="用户组名称" label-width="140px" required>
                 <el-input v-model="addGroupForm.name" autocomplete="off" />
               </el-form-item>
             </div>
@@ -169,19 +168,41 @@ export default {
         name: '',
         group_info: {},
       },
-      groupProps:
-      {
-        label: 'label',
-        children: 'children', // 子节点的字段
-        isLeaf: 'isLeaf', // 用于判断是否是叶子节点
-      },
+
       userRow: null,
       deleteRow: null,
 
       selectedGroupId: -1,
       selectedGroupName: '',
       isEdit: false,
-      groupVal: null,
+      groupVal: '请选择',
+      groupProps:
+      {
+        // label: 'name',
+        // children: 'children',
+        // isLeaf: 'isLeaf',
+
+        value: 'id',
+        label: 'name',
+        children: 'children',
+        // isLeaf: (data) => !data.has_child,
+        isLeaf: 'isLeaf',
+        disabled: 'disabled',
+
+        // id: 'id',
+        // name: 'name',
+        // third_id: 'third_id',
+        // disabled: 'disabled',
+        // user_count: 'user_count',
+        // source: 'source',
+        // sync_state: 'sync_state',
+        // has_child: 'has_child'
+      },
+      rules: {
+        name: [
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
+        ]
+      },
     }
   },
   methods: {
@@ -205,31 +226,37 @@ export default {
     },
 
     loadGroup(node, resolve) {
-      console.log('loadGroup node', node)
+      console.log('loadGroup sync node', node)
       if (node.level === 0) {
-        // 根节点，加载顶级数据
-        setTimeout(() => {
-          resolve([
-            { label: '顶级节点1', id: 1, isLeaf: false },
-            { label: '顶级节点2', id: 2, isLeaf: false },
-          ]);
-        }, 500);
-      } else if (node.data.id === 1) {
+        console.log('loadGroup sync level0', node.level)
+        resolve([
+          { name: 'AD组', id: '-1', isLeaf: false, third_id: 0, disabled: 0, user_count: 0, sync_state: 0, has_child: 1 },
+        ]);
+      } else if (node.level === 1) {
+        console.log('loadGroup sync level1', node.level)
+        this.getAdTreeWithId(-1).then(childrenData => {
+          console.log('getAdTreeWithId 1 groups',childrenData)
+          resolve(childrenData);
+        }).catch(() => {
+          resolve([]);
+        });
+      } else {
+        console.log('loadGroup sync level2', node.level)
         // 顶级节点1的子节点
-        setTimeout(() => {
-          resolve([
-            { label: '子节点1-1', id: 3, isLeaf: true },
-            { label: '子节点1-2', id: 4, isLeaf: true },
-          ]);
-        }, 500);
-      } else if (node.data.id === 2) {
-        // 顶级节点2的子节点
-        setTimeout(() => {
-          resolve([
-            { label: '子节点2-1', id: 5, isLeaf: true },
-            { label: '子节点2-2', id: 6, isLeaf: true },
-          ]);
-        }, 500);
+        // setTimeout(() => {
+        //   resolve([
+        //     { label: '子节点1-1', id: 3, has_child: false },
+        //     { label: '子节点1-2', id: 4, has_child: true },
+        //   ]);
+        // }, 50);
+
+        this.getAdTreeWithId(node.data.id).then(childrenData => {
+          
+          console.log('getAdTreeWithId 3 childrenData',childrenData)
+          resolve(childrenData);
+        }).catch(() => {
+          resolve([]);
+        });
       }
     },
     addUser(val, row) {
@@ -389,6 +416,30 @@ export default {
           } else {
             ElMessage.error(msg)
             reject(msg);
+          }
+        })
+      })
+    },
+
+    getAdTreeWithId(group_id) {
+      return new Promise((resolve, reject) => {
+        Api.getAdGroupTree({
+          "group_id": group_id,
+          "page": 1,
+        }).then(({ data, code, msg }) => {
+          if (code == 0) {
+            let groups = data.group.child_groups
+            groups.forEach(item => {
+              item['source'] = 'ad'
+              item['isLeaf'] = item['has_child'] == 1?false:true
+              item['lable'] = item['name']
+              item['children'] = []
+            })
+            resolve(groups)
+            console.log('getAdTreeWithId groups', groups)
+          } else {
+            ElMessage.error(msg)
+            reject(msg)
           }
         })
       })
