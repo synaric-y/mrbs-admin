@@ -22,11 +22,12 @@
             <el-table-column prop="id" label="序号" label-width="100px" />
             <el-table-column prop="display_name" label="用户名" label-width="120px" />
             <el-table-column prop="source" label="来源" label-width="100px" />
-            <el-table-column prop="is_bind" label="状态" width="100">
+            <el-table-column prop="is_bind" label="状态" width="100"  v-if="!isLoading">
               <template #default="scope">
+                {{ scope.row.is_bind }}
                 <el-switch v-model="scope.row.is_bind"
-                  style="--el-switch-on-color: #591BB7; --el-switch-off-color: #A8ABB2" active-value="1"
-                  inactive-value="0" @change="handleSwitchChange(scope.row)" />
+                  style="--el-switch-on-color: #591BB7; --el-switch-off-color: #A8ABB2"
+                   @change="handleSwitchChange(scope.row)" />
               </template>
             </el-table-column>
           </template>
@@ -85,7 +86,7 @@ export default {
           value: 'ad',
           label: 'AD绑定',
         }],
-      initialized: false,
+        isLoading: true,
       selectRow: null,
     }
   },
@@ -103,11 +104,12 @@ export default {
     },
 
     handleSwitchChange(row) {
-      if (this.initialized) {
-        this.selectRow = row
-        console.log('UserList handleCurrentChange id: status', row)
-        this.bindUserToGroup()
+      if (this.isLoading) {
+        return
       }
+      this.selectRow = row
+      console.log('UserList handleCurrentChange id: status', row)
+      // this.bindUserToGroup()
       // this.updateUserDisabled(row)
     },
     bindUserToGroup() {
@@ -115,7 +117,7 @@ export default {
       const user_ids = []
       user_ids.push(parseInt(this.selectRow.id))
       params['user_ids'] = user_ids
-      params['group_id'] = this.groupId
+      params['group_id'] = parseInt(this.groupId)
       Api.bindUserToGoup(params).then(({ data, code, msg }) => {
         if (code == 0) {
           this.getGroupMember()
@@ -126,7 +128,12 @@ export default {
     },
 
     unbindUserToGroup() {
-      Api.unbindUserToGoup({}).then(({ data, code, msg }) => {
+      let params = {}
+      const user_ids = []
+      user_ids.push(parseInt(this.selectRow.id))
+      params['user_ids'] = user_ids
+      params['group_id'] = parseInt(this.groupId)
+      Api.unbindUserToGoup(params).then(({ data, code, msg }) => {
         if (code == 0) {
           this.getGroupMember()
         } else {
@@ -137,13 +144,21 @@ export default {
 
     getGroupMember() {
       Api.getGroupMember({
-        group_id: this.isEdit ? -1 : parseInt(this.groupId),
+        group_id: parseInt(this.groupId),
         search: this.keyword || '',
         page: this.pageNumber,
         // source: this.sourceVal
       }).then(({ data, code, msg }) => {
-        this.initialized = true
-        if (code == 0) {
+        this.isLoading = false
+        if (code == 0 && data && data.users) {
+          data.users.forEach(it => {
+            // if (it['is_bind']) {
+            //   it['is_binded'] = true
+            // } else {
+            //   it['is_binded'] = false
+            // }
+          })
+          console.log('UserList getUserList data.users:',data.users)
           this.groupMembers = data.users
           this.total_num = data.total_num
         }
@@ -151,10 +166,15 @@ export default {
     },
   },
   created() {
-    console.log(this.groupId)
-    this.getGroupMember()
-    this.initialized = false
+    console.log('created:',this.groupId)
+    // this.getGroupMember()
   },
+
+  mounted() {
+    console.log('mounted:',this.groupId)
+    this.getGroupMember()
+  },
+
   unmounted() {
 
   }

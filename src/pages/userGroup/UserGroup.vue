@@ -287,7 +287,7 @@ export default {
     editGroup(mode, row) {
       // 0新增、1编辑
       this.dialogAddGroup = true
-
+      this.selectedGroupId = row.id
     },
 
     deleteGroupDialog(row) {
@@ -298,6 +298,7 @@ export default {
       this.dialogEditGroup = true
       this.dialogGroupMember = true
       this.isEdit = true
+      this.selectedGroupId = row.id
     },
     moreGroupMember(row) {
 

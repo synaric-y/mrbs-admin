@@ -40,11 +40,11 @@
             </el-table-column>
             <el-table-column prop="email" label="邮箱" width="130">
             </el-table-column>
-            <el-table-column prop="disabled" label="状态" width="100">
+            <el-table-column prop="status" label="状态" width="100" v-if="!isLoading">
               <template #default="scope">
-                <el-switch v-model="scope.row.disabled"
-                  style="--el-switch-on-color: #591BB7; --el-switch-off-color: #A8ABB2" active-value="1"
-                  inactive-value="0" @change="handleSwitchChange(scope.row)" />
+                <el-switch v-model="scope.row.status"
+                  style="--el-switch-on-color: #591BB7; --el-switch-off-color: #A8ABB2" :active-value="true"
+                  :inactive-value="false" @change="handleSwitchChange(scope.row)" />
               </template>
             </el-table-column>
             <el-table-column prop="permissions" label="账号权限" width="150">
@@ -218,7 +218,7 @@ export default {
       resetPasswordRow: null,
       userRow: null,
       deleteRow: null,
-      initialized: false,
+      isLoading: true,
     }
   },
   methods: {
@@ -298,7 +298,7 @@ export default {
       // }
     },
     handleSwitchChange(row) {
-      if (!this.initialized) {
+      if (this.isLoading) {
         return
       }
       console.log('UserList handleCurrentChange id: status', row)
@@ -330,7 +330,7 @@ export default {
     updateUserDisabled(row) {
       let params = {}
       params['userid'] = row.id
-      params['disabled'] = row.disabled == '1' ? 1 : 0
+      params['disabled'] = row.status == true?1:0
       console.log('UserList updateUserStatus params', params)
       Api.updateAccount(params).then(({ data, code, msg }) => {
         if (code == 0) {
@@ -363,7 +363,7 @@ export default {
       console.log('UserList getUserList params:',params)
       // Api.getAllUsers
       Api.getAllUsers(params).then(({code,msg,data }) => {
-        this.initialized = true
+        this.isLoading = false
         if (code == 0 && data && data.users) {
           data.users.forEach(it => {
             if(!it['email']) {
@@ -374,7 +374,8 @@ export default {
             }
             it['levelname'] = (it['level'] == '1' ? '普通用户':'管理员')
             it["permissions"] = (it['level'] == '1' ? '普通用户':'管理员')
-            // it['disabled'] = !parseInt(it['disabled'])
+            it['disabled'] = !parseInt(it['disabled'])
+            it['status'] = it['disabled']?false:true
           })
           console.log('UserList getUserList data.users:',data.users)
           this.userListData = data.users
