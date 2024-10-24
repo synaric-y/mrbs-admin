@@ -17,7 +17,7 @@
         <div class="table-wrapper" style="height: auto">
           <!-- default-expand-all -->
           <el-table :data="tableData" lazy style="width: 100%;height: auto; margin-bottom: 20px;" row-key="id"
-            :tree-props="{ children: 'children', hasChildren: 'has_child' }" :load="loadSubGroup">
+            :tree-props="{ children: 'children', hasChildren: 'has_child' }" :load="loadSubGroup" max-height="550">
             <el-table-column prop="group" label="用户组/用户" label-width="400px">
               <template #default="scope">
                 <!-- <div class="group-title-wrapper"> -->
