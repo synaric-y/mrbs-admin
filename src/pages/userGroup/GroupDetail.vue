@@ -22,11 +22,11 @@
             <el-table-column prop="id" label="序号" label-width="100px" />
             <el-table-column prop="display_name" label="用户名" label-width="120px" />
             <el-table-column prop="source" label="来源" label-width="100px" />
-            <el-table-column prop="is_bind" label="状态" width="100"  v-if="!isLoading">
+            <el-table-column prop="status" label="状态" width="100"  v-if="!isLoading">
               <template #default="scope">
-                {{ scope.row.is_bind }}
-                <el-switch v-model="scope.row.is_bind"
-                  style="--el-switch-on-color: #591BB7; --el-switch-off-color: #A8ABB2"
+                <el-switch v-model="scope.row.status"
+                  style="--el-switch-on-color: #591BB7; --el-switch-off-color: #A8ABB2" :active-value="true"
+                  :inactive-value="false"
                    @change="handleSwitchChange(scope.row)" />
               </template>
             </el-table-column>
@@ -109,8 +109,11 @@ export default {
       }
       this.selectRow = row
       console.log('UserList handleCurrentChange id: status', row)
-      // this.bindUserToGroup()
-      // this.updateUserDisabled(row)
+      if (row.status) {
+        this.bindUserToGroup()
+        return
+      }
+      this.unbindUserToGroup()
     },
     bindUserToGroup() {
       let params = {}
@@ -122,6 +125,7 @@ export default {
         if (code == 0) {
           this.getGroupMember()
         } else {
+          this.getGroupMember()
           ElMessage.error(msg)
         }
       })
@@ -152,11 +156,11 @@ export default {
         this.isLoading = false
         if (code == 0 && data && data.users) {
           data.users.forEach(it => {
-            // if (it['is_bind']) {
-            //   it['is_binded'] = true
-            // } else {
-            //   it['is_binded'] = false
-            // }
+            if (it['is_bind']) {
+              it['status'] = true
+            } else {
+              it['status'] = false
+            }
           })
           console.log('UserList getUserList data.users:',data.users)
           this.groupMembers = data.users
