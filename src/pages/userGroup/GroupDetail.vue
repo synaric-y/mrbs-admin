@@ -68,7 +68,7 @@ export default {
     }
   },
   mixins: [PageMixin],
-  props: ['groupId', 'groupName', 'isEdit'],
+  props: ['groupId', 'groupName', 'isEdit','adMore'],
   emits: ['close'],
   name: 'GroupDetail',
   data() {
@@ -151,6 +151,7 @@ export default {
         group_id: parseInt(this.groupId),
         search: this.keyword || '',
         page: this.pageNumber,
+        in_group: this.adMore?1:0,
         // source: this.sourceVal
       }).then(({ data, code, msg }) => {
         this.isLoading = false

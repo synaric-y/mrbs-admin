@@ -23,9 +23,9 @@
                 <!-- <div class="group-title-wrapper"> -->
                 <span class="group-title" :style="{ 'font-weight': scope.row.children ? 'bold' : 'normal' }">{{
                   scope.row.name }}</span>
-                <!-- <template v-if="scope.row.isself"> -->
+                <template v-if="scope.row.source !== 'system'">
                 <span class="group-more" @click="moreGroupMember(scope.row)">查看更多</span>
-                <!-- </template> -->
+                </template>
                 <!-- </div> -->
               </template>
             </el-table-column>
@@ -64,7 +64,7 @@
         </div>
 
         <GroupDetail v-if="dialogGroupMember" :groupId="selectedGroupId" :groupName="selectedGroupName"
-          :is-edit="isEdit" @close="dialogGroupMember = false" />
+          :is-edit="isEdit" :ad-more="ad_more_member" @close="dialogGroupMember = false" />
         <el-dialog v-model="dialogDeleteVisible" title="删除用户" width="550">
           <div class="">
             是否删除当前选中的用户/用户组？
@@ -188,6 +188,7 @@ export default {
       // mode=0为新增 1为编辑
       mode:0,
       selectedItem: null,
+      ad_more_member: false,
     }
   },
   methods: {
@@ -328,6 +329,7 @@ export default {
       this.selectedGroupName = row.name
       this.dialogGroupMember = true
       this.isEdit = false
+      this.ad_more_member = true
       console.log(435)
     },
 
