@@ -330,7 +330,7 @@ export default {
     updateUserDisabled(row) {
       let params = {}
       params['userid'] = row.id
-      params['disabled'] = row.status == true?1:0
+      params['disabled'] = row.status?0:1
       console.log('UserList updateUserStatus params', params)
       Api.updateAccount(params).then(({ data, code, msg }) => {
         if (code == 0) {
