@@ -375,7 +375,7 @@ export default {
             it['levelname'] = (it['level'] == '1' ? '普通用户':'管理员')
             it["permissions"] = (it['level'] == '1' ? '普通用户':'管理员')
             it['disabled'] = !parseInt(it['disabled'])
-            it['status'] = it['disabled']?false:true
+            it['status'] = it['disabled']==0?false:true
           })
           console.log('UserList getUserList data.users:',data.users)
           this.userListData = data.users
