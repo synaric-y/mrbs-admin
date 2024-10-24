@@ -156,4 +156,12 @@ export class Api {
     static async unbindUserToGoup(params){
         return Request.post('user_group/unbind_user_to_group',params)
     }
+
+    static async addGroup(params){
+        return Request.post('user_group/add_group',params)
+    }
+
+    static async editGroup(params){
+        return Request.post('user_group/edit_group',params)
+    }
 }

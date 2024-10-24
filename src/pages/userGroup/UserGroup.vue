@@ -44,13 +44,13 @@
                 <div v-if="scope.row.source === 'system'">
                   <!-- <span class="group-btn" v-for="(item,func) in scope.row.btns" @click="func">{{ item }}</span> -->
                   <template v-if="scope.row.children">
-                    <span class="group-btn" @click="editGroup(1, scope.row)">组编辑</span>
-                    <span class="group-btn" @click="editGroup(0, scope.row)">新增组</span>
+                    <span class="group-btn" @click="editGroupBtn(1, scope.row)">组编辑</span>
+                    <span class="group-btn" @click="editGroupBtn(0, scope.row)">新增组</span>
                     <span class="group-btn" @click="deleteGroupDialog(scope.row)">删除</span>
                   </template>
                   <template v-else>
-                    <span class="group-btn" @click="editGroup(1, scope.row)">组编辑</span>
-                    <span class="group-btn" @click="editGroup(0, scope.row)">新增组</span>
+                    <span class="group-btn" @click="editGroupBtn(1, scope.row)">组编辑</span>
+                    <span class="group-btn" @click="editGroupBtn(0, scope.row)">新增组</span>
                     <span class="group-btn" @click="editGroupMember(scope.row)">组成员编辑</span>
                     <span class="group-btn" @click="deleteGroupDialog(scope.row)">删除</span>
                   </template>
@@ -87,7 +87,7 @@
               </el-form-item>
             </div>
             <el-form-item label="同步用户组" label-width="140px" style="margin-right: 50px;">
-              <el-tree-select lazy v-model="groupVal" :load="loadGroup" :props="groupProps" />
+              <el-tree-select lazy v-model="addGroupForm.sync_group_name" :load="loadGroup" :props="groupProps" :disabled="mode"  @change="handleTreeSelect"/>
             </el-form-item>
           </el-form>
           <template #footer>
@@ -154,55 +154,40 @@ export default {
         newPassword: '',
         againPassword: ''
       },
-
       dialogGroupMember: false,
       groupMemberForm: {
         keyword: '',
         page_number: 0,
         pagesize: 20,
       },
-      dialogEditGroup: false,
-
       dialogAddGroup: false,
       addGroupForm: {
         name: '',
-        group_info: {},
+        sync_group_name: '',
       },
-
       userRow: null,
       deleteRow: null,
-
       selectedGroupId: -1,
       selectedGroupName: '',
       isEdit: false,
       groupVal: '请选择',
       groupProps:
       {
-        // label: 'name',
-        // children: 'children',
-        // isLeaf: 'isLeaf',
-
         value: 'id',
         label: 'name',
         children: 'children',
-        // isLeaf: (data) => !data.has_child,
         isLeaf: 'isLeaf',
         disabled: 'disabled',
-
-        // id: 'id',
-        // name: 'name',
-        // third_id: 'third_id',
-        // disabled: 'disabled',
-        // user_count: 'user_count',
-        // source: 'source',
-        // sync_state: 'sync_state',
-        // has_child: 'has_child'
       },
+      treeData:[],
       rules: {
         name: [
           { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
         ]
       },
+      // mode=0为新增 1为编辑
+      mode:0,
+      selectedItem: null,
     }
   },
   methods: {
@@ -236,22 +221,14 @@ export default {
         console.log('loadGroup sync level1', node.level)
         this.getAdTreeWithId(-1).then(childrenData => {
           console.log('getAdTreeWithId 1 groups',childrenData)
+          // this.treeData = childrenData
           resolve(childrenData);
         }).catch(() => {
           resolve([]);
         });
       } else {
         console.log('loadGroup sync level2', node.level)
-        // 顶级节点1的子节点
-        // setTimeout(() => {
-        //   resolve([
-        //     { label: '子节点1-1', id: 3, has_child: false },
-        //     { label: '子节点1-2', id: 4, has_child: true },
-        //   ]);
-        // }, 50);
-
         this.getAdTreeWithId(node.data.id).then(childrenData => {
-          
           console.log('getAdTreeWithId 3 childrenData',childrenData)
           resolve(childrenData);
         }).catch(() => {
@@ -287,18 +264,6 @@ export default {
       this.dialogFormVisible = false
       this.dialogUserDetailForm = false
     },
-    commitAddForm() {
-      console.log('UserList commitAddForm', this.userForm)
-      let params = {}
-      params['action'] = this.dialogUserDetailForm ? 'edit' : 'add'
-      params['id'] = row.number
-      params['name'] = row.name
-      params['display_name'] = row.account
-      params['email'] = row.email
-      params['password'] = row.password
-      params['remark'] = row.remark
-      this.editUser(params)
-    },
     sureDeleteUser() {
       let params = {}
       params['group_id'] = this.deleteRow.id
@@ -306,15 +271,46 @@ export default {
       this.deleteUser(params)
     },
 
-    handleCurrentChange(num) {
-      console.log('UserList handleCurrentChange num:', num)
-      this.page_number = num
+    handleTreeSelect(id) {
+      console.log('UserGroup handleTreeSelect',id)
+      const selectedItem = this.findNodeById(this.treeData, id);
+      console.log('选中的 item 数据:', selectedItem);
+      this.selectedItem = selectedItem
     },
 
-    editGroup(mode, row) {
+    findNodeById(nodes, id) {
+      for (let node of nodes) {
+        if (node.id === id) {
+          return node;
+        }
+        if (node.third_id === id) {
+          return node
+        }
+        if (node.children && node.children.length > 0) {
+          const found = this.findNodeById(node.children, id);
+          if (found) return found;
+        }
+      }
+      return null;
+    },
+
+    editGroupBtn(mode, row) {
       // 0新增、1编辑
+      console.log('editGroupBtn row',row)
       this.dialogAddGroup = true
-      this.selectedGroupId = row.id
+      this.selectedGroupId = row.third_id
+      this.mode = mode
+      if (mode == 1) {
+        this.selectedGroupId = row.id
+        this.addGroupForm.name = row.name
+        const selectedItem = this.findNodeById(this.treeData, row.third_id);
+        console.log('editGroupBtn selectedItem',selectedItem,this.treeData)
+        this.addGroupForm.sync_group_name = selectedItem.name
+        this.selectedItem = selectedItem
+      } else {
+        this.addGroupForm.name = ''
+        this.addGroupForm.sync_group_name = ''
+      }
     },
 
     deleteGroupDialog(row) {
@@ -322,43 +318,60 @@ export default {
       this.deleteRow = row
     },
     editGroupMember(row) {
-      this.dialogEditGroup = true
       this.dialogGroupMember = true
       this.isEdit = true
       this.selectedGroupId = row.id
     },
     moreGroupMember(row) {
-
       console.log(430)
-
       this.selectedGroupId = row.id
       this.selectedGroupName = row.name
       this.dialogGroupMember = true
       this.isEdit = false
-
       console.log(435)
     },
 
     closeGroupMember() {
-      this.dialogEditGroup = false
       this.dialogGroupMember = false
     },
 
     commitGroupForm() {
-
+      console.log('commitGroupForm mode',this.mode)
+      if (this.mode == 1) {
+        this.editGroup(this.selectedItem.third_id)
+        return
+      }
+      this.addGroup(this.selectedItem.third_id)
     },
 
-    updateUserDisabled(row) {
+    addGroup(third_id) {
       let params = {}
-      params['userid'] = row.number
-      params['disabled'] = row.status != '100' ? 1 : 0
-      console.log('UserList updateUserStatus params', params)
-      return
-      Api.updateAccount({ params }).then(({ data, code, msg }) => {
+      params['name'] = this.addGroupForm.name
+      params['parent_id'] = -1
+      params['third_id'] = third_id
+      console.log('UserGroup updateUserStatus params', params)
+      Api.addGroup(params ).then(({ data, code, msg }) => {
         if (code == 0) {
-
+          this.dialogAddGroup = false
+          this.getTableData()
         } else {
+          ElMessage.error(msg)
+        }
+      })
+    },
 
+    editGroup(third_id) {
+      let params = {}
+      params['name'] = this.addGroupForm.name
+      params['group_id'] = this.selectedGroupId
+      params['third_id'] = third_id
+      console.log('UserGroup updateUserStatus params', params)
+      Api.editGroup(params ).then(({ data, code, msg }) => {
+        if (code == 0) {
+          this.dialogAddGroup = false
+          this.getTableData()
+        } else {
+          ElMessage.error(msg)
         }
       })
     },
@@ -402,7 +415,7 @@ export default {
             })
             if (group_id == -1) {
               const res = {
-                id: uuidv4(),
+                id: -1,
                 date: '2016-05-04',
                 name: '我的分组',
                 source: 'system',
@@ -458,6 +471,7 @@ export default {
               item['source'] = 'AD'
             })
             if (group_id == -1) {
+              this.treeData = groups
               const res = {
                 id: uuidv4(),
                 date: '2016-05-04',
@@ -469,6 +483,7 @@ export default {
               resolve(res)
               return
             }
+
             resolve(groups)
             console.log('UserGroup tableData', this.tableData)
           } else {
