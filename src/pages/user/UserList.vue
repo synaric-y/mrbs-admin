@@ -380,6 +380,9 @@ export default {
           console.log('UserList getUserList data.users:',data.users)
           this.userListData = data.users
           this.total_num = data.total_num
+        } else {
+          this.userListData = []
+          this.total_num = data.total_num
         }
       })
     },
@@ -443,7 +446,7 @@ export default {
 }
 
 .table-wrapper {
-  margin-left: -100px;
+  margin-left: -20px;
   padding: 0;
   width: auto;
 }

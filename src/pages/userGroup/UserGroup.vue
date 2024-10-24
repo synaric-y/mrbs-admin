@@ -567,6 +567,7 @@ export default {
 
 .table-wrapper {
   margin-top: 50px;
+  margin-left: 90px;
   padding: 0;
   width: 100%;
 }
