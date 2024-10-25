@@ -193,7 +193,6 @@ export default {
   // justify-content: center;
   align-items: center;
   flex-direction: column;
-  width: calc(100vw - 169px);
   // height: calc(100vh - 95px);
   height: auto;
   min-height: calc(100vh - 95px);
@@ -236,12 +235,6 @@ export default {
   margin: 0;
 }
 
-.table-wrapper {
-  margin-left: -100px;
-  padding: 0;
-  width: auto;
-}
-
 .tb-header {
   font-size: 14px !important;
 }
@@ -274,23 +267,6 @@ export default {
   color: #FFFFFF;
   margin-left: 20px;
   padding: 4px 0;
-}
-
-.operate-wrapper {
-  display: flex;
-  flex-direction: row;
-}
-
-.operate-item {
-  font-family: PingFang SC;
-  font-size: 14px;
-  font-weight: normal;
-  line-height: 22px;
-  display: flex;
-  align-items: center;
-  letter-spacing: -0.07px;
-  color: #591BB7;
-  padding: 10px;
 }
 
 .el-button-img {

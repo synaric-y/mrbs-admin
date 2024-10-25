@@ -44,15 +44,19 @@
                 <div v-if="scope.row.source === 'system'">
                   <!-- <span class="group-btn" v-for="(item,func) in scope.row.btns" @click="func">{{ item }}</span> -->
                   <template v-if="scope.row.children">
-                    <span class="group-btn" @click="editGroupBtn(1, scope.row)">组编辑</span>
-                    <span class="group-btn" @click="editGroupBtn(0, scope.row)">新增组</span>
-                    <span class="group-btn" @click="deleteGroupDialog(scope.row)">删除</span>
+                    <div class="operate-wrapper">
+                      <span class="operate-item" @click="editGroupBtn(0, scope.row)">新增</span>
+                      <span class="operate-item" @click="editGroupBtn(1, scope.row)">编辑</span>
+                      <span class="operate-item" @click="deleteGroupDialog(scope.row)">删除</span>
+                    </div>
                   </template>
                   <template v-else>
-                    <span class="group-btn" @click="editGroupBtn(1, scope.row)">组编辑</span>
-                    <!-- <span class="group-btn" @click="editGroupBtn(0, scope.row)">新增组</span> -->
-                    <span class="group-btn" @click="editGroupMember(scope.row)">组成员编辑</span>
-                    <span class="group-btn" @click="deleteGroupDialog(scope.row)">删除</span>
+                    <div class="operate-wrapper">
+                      <!-- <span class="group-btn" @click="editGroupBtn(0, scope.row)">新增</span> -->
+                      <span class="operate-item" @click="editGroupBtn(1, scope.row)">编辑</span>
+                      <span class="operate-item" @click="deleteGroupDialog(scope.row)">删除</span>
+                      <span class="operate-item" @click="editGroupMember(scope.row)">组成员编辑</span>
+                    </div>
                   </template>
                 </div>
                 <div v-else>
@@ -518,7 +522,6 @@ export default {
   display: flex;
   align-items: center;
   flex-direction: column;
-  width: calc(100vw - 169px);
   // min-height: calc(100vh - 95px);
   height: auto;
   background-color: white;
@@ -563,13 +566,6 @@ export default {
   font-weight: 500;
   letter-spacing: 0px;
   color: #1D2129;
-}
-
-.table-wrapper {
-  margin-top: 50px;
-  margin-left: 90px;
-  padding: 0;
-  width: 100%;
 }
 
 .el-table {
@@ -641,31 +637,10 @@ export default {
   margin-top: 40px;
 }
 
-.tb-header {
-  font-size: 14px !important;
-}
-
 .el-table {
   --el-table-tr-bg-color: white;
   padding: 0;
   margin: 0;
-}
-
-.operate-wrapper {
-  display: flex;
-  flex-direction: row;
-}
-
-.operate-item {
-  font-family: PingFang SC;
-  font-size: 14px;
-  font-weight: normal;
-  line-height: 22px;
-  display: flex;
-  align-items: center;
-  letter-spacing: -0.07px;
-  color: #591BB7;
-  padding: 10px;
 }
 
 .el-button-img {

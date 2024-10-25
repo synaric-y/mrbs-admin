@@ -12,11 +12,11 @@
               <el-option style="height: 30px;" v-for="item in accountStatusOptions" :key="item.value"
                 :label="item.label" :value="item.value" />
             </el-select>
-            <el-button size="large" class="el-button-content" @click="searchUser">
+            <el-button class="el-button-content" @click="searchUser">
               <img src="/imgs/button_search.png" alt="Search Icon" class="el-button-img" />
               查询
             </el-button>
-            <el-button size="large" class="el-button-content" @click="addUser(1, null)">
+            <el-button class="el-button-content" @click="addUser(1, null)">
               <img src="/imgs/button_add.png" alt="Add Icon" class="el-button-img" />
               添加
             </el-button>
@@ -28,7 +28,11 @@
         </div>
 
         <div class="table-wrapper" style="height: auto;">
-          <el-table :data="userListData" style="margin-top: 56px;" header-cell-class-name="tb-header" max-height="450">
+          <el-table :data="userListData"
+                    style="margin-top: 56px;"
+                    header-cell-class-name="tb-header"
+                    max-height="450"
+                    table-layout="auto">
             <el-table-column prop="number" label="序号" width="120">
               <template #default="scope">
                 {{ scope.$index + 1 }}
@@ -38,7 +42,7 @@
             </el-table-column>
             <el-table-column prop="display_name" label="账号" width="130">
             </el-table-column>
-            <el-table-column prop="email" label="邮箱" width="130">
+            <el-table-column prop="email" label="邮箱">
             </el-table-column>
             <el-table-column prop="status" label="状态" width="100" v-if="!isLoading">
               <template #default="scope">
@@ -105,8 +109,8 @@
           </el-form>
           <template #footer>
             <div class="dialog-footer">
-              <el-button @click="commitAddForm">提交</el-button>
-              <el-button style="margin-left: 50px" type="primary" @click="closedAlert">
+              <el-button @click="commitAddForm" type="primary">提交</el-button>
+              <el-button style="margin-left: 50px"  @click="closedAlert">
                 取消
               </el-button>
             </div>
@@ -132,10 +136,10 @@
           </el-form>
           <template #footer>
             <div class="dialog-footer">
-              <el-button style="margin-left: 50px" type="primary" @click="commitNewPassword">
+              <el-button type="primary" @click="commitNewPassword">
                 Confirm
               </el-button>
-              <el-button @click="dialogResetPasswordForm = false">Cancel</el-button>
+              <el-button style="margin-left: 50px" @click="dialogResetPasswordForm = false">Cancel</el-button>
             </div>
           </template>
         </el-dialog>
@@ -147,10 +151,10 @@
           </div>
           <template #footer>
             <div class="dialog-footer">
-              <el-button style="margin-left: 50px" type="primary" @click="deleteUser">
+              <el-button type="primary" @click="deleteUser">
                 Confirm
               </el-button>
-              <el-button @click="dialogDeleteVisible = false">Cancel</el-button>
+              <el-button style="margin-left: 50px" @click="dialogDeleteVisible = false">Cancel</el-button>
             </div>
           </template>
         </el-dialog>
@@ -403,7 +407,6 @@ export default {
   // justify-content: center;
   align-items: center;
   flex-direction: column;
-  width: calc(100vw - 169px);
   // height: calc(100vh - 95px);
   height: auto;
   background-color: white;
@@ -445,16 +448,6 @@ export default {
   margin: 0;
 }
 
-.table-wrapper {
-  margin-left: -20px;
-  padding: 0;
-  width: auto;
-}
-
-.tb-header {
-  font-size: 14px !important;
-}
-
 .el-table {
   --el-table-tr-bg-color: white;
   padding: 0;
@@ -483,23 +476,6 @@ export default {
   color: #FFFFFF;
   margin-left: 20px;
   padding: 4px 0;
-}
-
-.operate-wrapper {
-  display: flex;
-  flex-direction: row;
-}
-
-.operate-item {
-  font-family: PingFang SC;
-  font-size: 14px;
-  font-weight: normal;
-  line-height: 22px;
-  display: flex;
-  align-items: center;
-  letter-spacing: -0.07px;
-  color: #591BB7;
-  padding: 10px;
 }
 
 .el-button-img {

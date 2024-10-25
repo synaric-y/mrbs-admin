@@ -95,7 +95,6 @@ export default {
   justify-content: center;
   align-items: flex-start;
   flex-direction: column;
-  width: calc(100vw - 169px);
   height: auto;
   min-height: calc(100vh - 95px);
   background-color: white;

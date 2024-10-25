@@ -5,8 +5,12 @@
         <div class="sub-title">{{ $t("base.areaManagement") }}</div>
         <el-button style="margin-top: 20px;" type="primary" size="default" @click="pendingAddArea">{{ $t("base.add") }}</el-button>
       </div>
-      <el-table :data="tableData" style="width: auto;margin-top: 30px;" header-cell-class-name="tb-header" header-align="center"
-        max-height="600">
+      <el-table :data="tableData"
+                style="margin-top: 30px;"
+                header-cell-class-name="tb-header"
+                header-align="center"
+                table-layout="auto"
+                max-height="600">
         <el-table-column fixed prop="area_name" :label="$t('area.tableArea.name')" width="350">
         </el-table-column>
         <el-table-column prop="disabled" :label="$t('area.tableArea.state')" width="150">
@@ -18,13 +22,12 @@
         </el-table-column>
         <el-table-column prop="timezone" :label="$t('area.tableArea.timezone')" width="250">
         </el-table-column>
-        <el-table-column prop="id" :label="$t('area.tableArea.operate')" width="200">
+        <el-table-column prop="id" :label="$t('area.tableArea.operate')" width="300">
           <template #default="scope">
-            <!-- <img class="tb-op-icon tb-op-icon-span" src="/imgs/edit.png" @click="toAreaDetail(scope.row.id)">
-            <img class="tb-op-icon" src="/imgs/delete.png" @click="pendingDeleteArea(scope.row.id)"> -->
-            <span style="color: #591BB7;font-size: 14px;" @click="toAreaDetail(scope.row.id)">编辑</span>
-            <span style="margin-left: 20px;color: #591BB7;font-size: 14px;"
-              @click="pendingDeleteArea(scope.row.id)">删除</span>
+            <div class="operate-wrapper">
+              <span class="operate-item" @click="toAreaDetail(scope.row.id)">编辑</span>
+              <span class="operate-item" @click="pendingDeleteArea(scope.row.id)">删除</span>
+            </div>
           </template>
         </el-table-column>
       </el-table>
@@ -149,8 +152,6 @@ export default {
 }
 
 .el-table {
-  --el-table-tr-bg-color: white;
-  --el-table-header-bg-color:white;
 }
 
 .tb-op-icon {
@@ -167,7 +168,7 @@ export default {
   height: 18px;
   border-radius: 20px;
   background: #08D50A;
-  margin-left: 15px;
+  //margin-left: 15px;
 }
 
 .tb-state-disable {

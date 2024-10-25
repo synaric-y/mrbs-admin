@@ -390,10 +390,34 @@ body {
   color: var(--el-color-primary);
 }
 
+/*表格外间距*/
+.table-wrapper {
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
 /*表头*/
 .tb-header {
   /* color: #333333; */
   font-size: 14px;
+}
+
+/*表格操作按钮*/
+.operate-wrapper {
+  display: flex;
+  flex-direction: row;
+}
+.operate-item {
+  font-family: PingFang SC;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 22px;
+  display: flex;
+  align-items: center;
+  letter-spacing: -0.07px;
+  color: #591BB7;
+  padding: 10px 20px 10px 0;
 }
 
 /*公共代码----内容页标题的容器*/
