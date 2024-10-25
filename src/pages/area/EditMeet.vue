@@ -28,7 +28,6 @@
         </el-table-column>
         <el-table-column prop="battery_level" :label="$t('room.tableRoom.battery')" width="200">
         </el-table-column>
-        <el-table-column prop="id" :label="$t('room.tableRoom.operate')" width="200"></el-table-column>
         <el-table-column
             prop="id"
             :label="$t('room.tableRoom.operate')"

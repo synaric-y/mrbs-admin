@@ -418,6 +418,7 @@ body {
   letter-spacing: -0.07px;
   color: #591BB7;
   padding: 10px 20px 10px 0;
+  cursor: pointer;
 }
 
 /*公共代码----内容页标题的容器*/
