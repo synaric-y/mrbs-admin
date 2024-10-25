@@ -172,15 +172,7 @@ export default {
   mixins: [PageMixin],
   data() {
     return {
-      userListData: [
-        { "number": 1, "name": 'zhangsan', "display_name": 'jack.chen', "email": '123@163.com', "disabled": 1, "level": '2', "id": 2, "permissions": '管理员', "create_time": '2024-10-14 10:30:01', "password": 'zhangsan' },
-        { "number": 2, "name": 'lisi', "display_name": 'li.zhang', "email": '456@163.com', "disabled": 0, "level": '2', "id": 3, "permissions": '普通用户', "create_time": '2024-10-12 15:30:01', "password": 'lisi' },
-        { "number": 3, "name": 'lisi', "display_name": 'si.zhang', "email": '456@163.com', "disabled": 1, "level": '2', "id": 3, "permissions": '普通用户', "create_time": '2024-10-12 15:30:01', "password": 'lisi' },
-        { "number": 4, "name": 'lisi', "display_name": 'xiao.zhang', "email": '456@163.com', "disabled": 0, "level": '2', "id": 3, "permissions": '普通用户', "create_time": '2024-10-12 15:30:01', "password": 'lisi' },
-        { "number": 5, "name": 'lisi', "display_name": 'cheng.zhang', "email": '456@163.com', "disabled": 0, "level": '2', "id": 3, "permissions": '普通用户', "create_time": '2024-10-12 15:30:01', "password": 'lisi' },
-        { "number": 6, "name": 'lisi', "display_name": 'wu.zhang', "email": '456@163.com', "disabled": 0, "level": '2', "id": 3, "permissions": '普通用户', "create_time": '2024-10-12 15:30:01', "password": 'lisi' },
-        { "number": 7, "name": 'lisi', "display_name": 'liu.zhang', "email": '456@163.com', "disabled": 0, "level": '2', "id": 3, "permissions": '普通用户', "create_time": '2024-10-12 15:30:01', "password": 'lisi' },
-      ],
+      userListData: [],
       accountStatusVal: 0,
       accountSwitch: 1,
       accountStatusOptions: [
