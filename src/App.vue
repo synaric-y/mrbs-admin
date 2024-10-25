@@ -391,12 +391,18 @@ body {
   color: var(--el-color-primary);
 }
 
+/*表格外间距*/
+.table-wrapper {
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
 /*表头*/
 .tb-header {
   /* color: #333333; */
   font-size: 14px;
 }
-
 
 /*表格操作按钮*/
 .operate-wrapper {

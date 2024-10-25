@@ -241,7 +241,6 @@ export default {
   // justify-content: center;
   align-items: center;
   flex-direction: column;
-  width: calc(100vw - 169px);
   // height: calc(100vh - 95px);
   height: auto;
   min-height: calc(100vh - 95px);
@@ -282,12 +281,6 @@ export default {
 
 .el-main {
   margin: 0;
-}
-
-.table-wrapper {
-  margin-left: -100px;
-  padding: 0;
-  width: auto;
 }
 
 .tb-header {

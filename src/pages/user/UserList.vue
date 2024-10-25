@@ -28,7 +28,11 @@
         </div>
 
         <div class="table-wrapper" style="height: auto;">
-          <el-table :data="userListData" style="margin-top: 56px;" header-cell-class-name="tb-header" max-height="450">
+          <el-table :data="userListData"
+                    style="margin-top: 56px;"
+                    header-cell-class-name="tb-header"
+                    max-height="450"
+                    table-layout="auto">
             <el-table-column prop="number" label="序号" width="120">
               <template #default="scope">
                 {{ scope.$index + 1 }}
@@ -38,7 +42,7 @@
             </el-table-column>
             <el-table-column prop="display_name" label="账号" width="130">
             </el-table-column>
-            <el-table-column prop="email" label="邮箱" width="130">
+            <el-table-column prop="email" label="邮箱">
             </el-table-column>
             <el-table-column prop="status" label="状态" width="100" v-if="!isLoading">
               <template #default="scope">
@@ -403,7 +407,6 @@ export default {
   // justify-content: center;
   align-items: center;
   flex-direction: column;
-  width: calc(100vw - 169px);
   // height: calc(100vh - 95px);
   height: auto;
   background-color: white;
@@ -443,12 +446,6 @@ export default {
 
 .el-main {
   margin: 0;
-}
-
-.table-wrapper {
-  margin-left: -20px;
-  padding: 0;
-  width: auto;
 }
 
 .tb-header {

@@ -522,7 +522,6 @@ export default {
   display: flex;
   align-items: center;
   flex-direction: column;
-  width: calc(100vw - 169px);
   // min-height: calc(100vh - 95px);
   height: auto;
   background-color: white;
@@ -567,13 +566,6 @@ export default {
   font-weight: 500;
   letter-spacing: 0px;
   color: #1D2129;
-}
-
-.table-wrapper {
-  margin-top: 50px;
-  margin-left: 90px;
-  padding: 0;
-  width: 100%;
 }
 
 .el-table {
