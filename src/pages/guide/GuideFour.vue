@@ -3,58 +3,42 @@
     <el-main class="container-sub-page-main">
       <div class="sub-page-content">
         <div class="page-title">会议系统配置向导</div>
-      <div class="guide-progress">
-        <div class="guide-item">
-          <img src="../../../public/imgs/checked.png" alt="">
-          <span class="guide-title" style="margin-left: 12px;">用户同步配置</span>
-        </div>
-        <div class="guide-item">
-          <img src="../../../public/imgs/checked.png" alt="">
-          <span class="guide-title" style="margin-left: 12px;">日历同步配置</span>
-        </div>
-        <div class="guide-item">
-          <span class="guide-number-active">3</span>
-          <span class="guide-title-active" style="margin-left: 12px;">添加会议室</span>
-        </div>
-        <div class="guide-item">
-          <span class="guide-number">4</span>
-          <span class="guide-title" style="margin-left: 12px;">完成</span>
-        </div>
-      </div>
-      <div class="guide-tips">添加您的第一个会议室</div>
-        <div class="form-item">
-          <span class="form-item-tip">会议室名称</span>
-          <input class="form-item-input" placeholder="请输入会议室名称" />
-        </div>
-        <div class="form-item" style="margin-top: 20px;">
-          <span class="form-item-tip">容纳人数</span>
-          <input class="form-item-input" placeholder="请输入会议室容纳人数" />
-        </div>
-        <div class="form-line"></div>
+        <ProgressBar :active-index="3"/>
 
-        <div class="form-calendar-wrapper">
-          <div class="form-calendar-head" style="margin-top: 0px;">
-            <div class="form-item-tip">关联第三方日历</div>
-            <img class="form-item-img" src="../../../public/imgs/exchange.png" alt="#">
-          </div>
-          <div class="form-calendar-item" style="margin-top: 29px;">
-            <span class="form-item-tip">账号</span>
-            <input class="form-item-input" placeholder="请输入三方账号" />
-          </div>
+        <div class="section">
+          <el-form :model="form" :rules="rules" ref="formRef" label-width="150px">
+            <el-form-item label="会议室名称">
+              <el-input class="form-item-input" v-model="form.room_name" placeholder="请输入会议室名称"/>
+            </el-form-item>
+            <el-form-item label="容纳人数">
+              <el-input class="form-item-input" v-model="form.capacity" placeholder="请输入会议室容纳人数"/>
+            </el-form-item>
 
-          <div class="form-calendar-item" style="margin-top: 29px;">
-            <span class="form-item-tip">密码</span>
-            <input class="form-item-input" placeholder="请输入三方账号密码" />
-          </div>
+            <el-divider/>
+
+            <el-form-item label="关联第三方日历">
+              <img class="form-item-img" src="../../../public/imgs/exchange.png" alt="#">
+            </el-form-item>
+            <el-form-item label="账号">
+              <el-input class="form-item-input" v-model="form.exchange_username" placeholder="请输入三方账号"/>
+            </el-form-item>
+            <el-form-item label="密码">
+              <el-input class="form-item-input" v-model="form.exchange_password" placeholder="请输入三方账号密码" />
+            </el-form-item>
+          </el-form>
         </div>
+
+
+
+
+
         <div class="sub-buttons">
-          <div class="buttons-wrapper">
-            <span class="jump-btn">跳过向导</span>
-            <span class="pre-btn" @click="switchTab('/guide_three')">上一步</span>
-            <span class="not-btn">暂不需要</span>
-            <span class="next-btn" @click="switchTab('/guide_five')">下一步</span>
-          </div>
+          <el-button plain class="btn" @click="jumpGuide">跳过向导</el-button>
+          <el-button type="primary" class="btn" @click="switchTab('/guide_three')">上一步</el-button>
+          <el-button plain class="btn" @click="skipCurrentGuide">暂不需要</el-button>
+          <el-button type="primary" class="btn" @click="nextStep">下一步</el-button>
         </div>
+
       </div>
     </el-main>
   </el-container>
@@ -66,19 +50,81 @@ import { PageMixin } from "@/pages/PageMixin.js";
 import { STORAGE } from "@/const.js";
 import { ElMessage } from "element-plus";
 import { Text } from "vue";
+import ProgressBar from "@/pages/guide/ProgressBar.vue";
 export default {
+  components: {ProgressBar},
   mixins: [PageMixin],
   data() {
     return {
-      mode: 'add',
       form: {
-        username: '',
-        password: ''
+        room_name: '',
+        capacity: '',
+        exchange_username: '',
+        exchange_password: ''
+      },
+      rules: {
       },
     }
   },
   methods: {
+    jumpGuide(){
+      Api.setVariables(
+          {"init_status": 3}
+      ).then(res => {
+        this.switchTab('/user_list')
+      }).catch(e=>{
+        console.log(e)
+      })
+    },
+    skipCurrentGuide(){
+      Api.setVariables(
+          {"init_status": 3}
+      ).then(res => {
+        this.switchTab('/guide_five')
+      }).catch(e=>{
+        console.log(e)
+      })
+    },
+    nextStep() {
+      this.$refs.formRef.validate((valid) => {
+        if (valid) {
+          // Api.addRoom(this.form).then(({data, code, msg}) => {
+          //   if (code == 0) {
+          //     this.getRoomList()
+          //   } else {
+          //     ElMessage.error(message)
+          //   }
+          // })
 
+          Api.setVariables(
+              {
+                "init_status": 3,
+              }
+          ).then(res => {
+            console.log(res)
+            if (res?.code == 0) {
+              ElMessage.success({
+                message: '设置成功',
+              })
+              this.switchTab('/guide_five')
+            } else {
+              ElMessage.error({
+                message: '设置失败',
+              })
+            }
+          }).catch(e => {
+            ElMessage.error({
+              message: '设置失败',
+            })
+            console.log(e)
+          })
+        } else {
+          ElMessage.error({
+            message: '表单格式错误',
+          })
+        }
+      })
+    }
   },
   mounted() {
 
@@ -98,208 +144,40 @@ export default {
   height: auto;
   min-height: calc(100vh - 95px);
   background-color: white;
-  padding: 0;
-  margin: 0;
-  position: relative;
+  padding: 20px;
 }
 .page-title {
-  position: absolute;
-  top: 20px;
-  left: 20px;
   font-size: 20px;
 }
-.guide-progress {
+
+.section{
+  width: 100%;
   display: flex;
-  flex-direction: row;
-  margin-left: 72px;
-  margin-top: 80px;
-}
-.guide-item {
-  display: flex;
-  flex-direction: row;
-  margin-left: 72px;
-}
-.guide-number-active {
-  width: 29px;
-  height: 28px;
-  border-radius: 14px;
-  line-height: 28px;
-  text-align: center;
-  opacity: 1;
-  background: #591BB7;
-  color: #FFFFFF;
-}
-.guide-number {
-  width: 28px;
-  height: 28px;
-  line-height: 28px;
-  text-align: center;
-  border-radius: 14px;
-  opacity: 1;
-  background: #F2F3F5;
-  color: #4E5969;
-}
-.guide-title-active {
-  font-family: PingFang SC;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 24px;
-  letter-spacing: 0px;
-  font-variation-settings: "opsz" auto;
-  color: #591BB7;
-}
-.guide-title {
-  font-family: PingFang SC;
-  font-size: 16px;
-  font-weight: normal;
-  line-height: 24px;
-  letter-spacing: 0px;
-  color: #4E5969;
-}
-.guide-tips {
-  font-family: PingFang SC;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 20px;
-  letter-spacing: 0px;
-  font-variation-settings: "opsz" auto;
-  color: #3D3D3D;
-  margin-top: 40px;
-  margin-bottom: 40px;
-  margin-left: -160px;
-  align-self: center;
+  justify-content: center;
+  margin: 30px 0;
 }
 
-.form-item {
-  display: flex;
-  flex-direction: row;
-  height: 50px;
-  align-items: center;
-}
-.form-line {
-  margin-top: 29px;
-  margin-left: 330px;
-  background: #A8ABB2;
-  height: 1px;
-  width: 500px;
-}
-.form-calendar-wrapper {
-  display: flex;
-  flex-direction: column;
-  height: 53px;
-  align-items: center;
-  margin-top: 49px;
-}
-.form-calendar-head {
-  display: flex;
-  flex-direction: row;
-  height: 53px;
-  width: 100%;
-  /* background-color: red; */
-}
-.form-calendar-title {
-  font-family: PingFang SC;
-  font-size: 14px;
-  font-weight: 500;
-  line-height: 53px;
-  letter-spacing: 0px;
-  font-variation-settings: "opsz" auto;
-  color: #591BB7;
-  text-align: right;
-}
-.form-calendar-item {
-  display: flex;
-  flex-direction: row;
-}
-.form-item-tip {
-  font-family: PingFang SC;
-  font-size: 14px;
-  font-weight: normal;
-  line-height: 22px;
-  text-align: right;
-  letter-spacing: 0px;
-  color: #4E5969;
-  margin-right: 28px;
-  width: 400px;
-}
 .form-item-img {
-  margin-top: -10px;
   width: 153px;
   height: 53px;
-  background-color: red;
 }
+
 .form-item-input {
   width: 400px;
   height: 33px;
 }
-.form-item-btn {
-  border-radius: 2px;
-  opacity: 1;
-  background: #591BB7;
-  box-sizing: border-box;
-  padding: 0 15px;
-  border: 1px solid #000000;
-  font-family: PingFang SC;
-  font-size: 14px;
-  font-weight: normal;
-  height: 33px;
-  line-height: 33px;
-  text-align: right;
-  display: flex;
-  align-items: center;
-  letter-spacing: 0px;
-  font-variation-settings: "opsz" auto;
-  color: #FFFFFF;
-  margin-left: 20px;
-}
+
 .sub-buttons {
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
+  justify-content: center;
+  gap: 30px;
   width: 100%;
-  margin-top: 185px;
+  margin-top: 15px;
   padding-bottom: 15px;
 }
-.buttons-wrapper {
-  width: 500px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  margin-left: -280px;
-}
-.jump-btn {
+.btn {
   padding: 0 15px;
-  border-radius: 2px;
-  opacity: 1;
-  color: #1D2129;
-  background: #F2F3F5;
-  height: 36px;
-  line-height: 36px;
-}
-.pre-btn {
-  padding: 0 15px;
-  border-radius: 2px;
-  opacity: 1;
-  background: #591BB7;
-  color: white;
-  height: 36px;
-  line-height: 36px;
-}
-.next-btn {
-  padding: 0 15px;
-  border-radius: 2px;
-  opacity: 1;
-  background: #591BB7;
-  color: white;
-  height: 36px;
-  line-height: 36px;
-}
-.not-btn {
-  padding: 0 15px;
-  border-radius: 2px;
-  opacity: 1;
-  color: #1D2129;
-  background: #F2F3F5;
   height: 36px;
   line-height: 36px;
 }
