@@ -89,63 +89,63 @@
             <el-form-item :label="$t('user.tableUser.level')" label-width="140px" style="margin-right: 50px;">
               <!-- :disabled="dialogUserDetailForm" -->
               <el-select v-model="userForm.levelName" :placeholder="$t('user.plzSelectLevel')" >
-                <el-option label="普通用户" value="1" />
-                <el-option label="管理员" value="2" />
+                <el-option :label="$t('user.role.level1')" value="1" />
+                <el-option :label="$t('user.role.level2')" value="2" />
               </el-select>
             </el-form-item>
-            <el-form-item label="备注" label-width="140px" style="margin-right: 50px;">
-              <el-input v-model="userForm.remark" maxlength="100" style="width: 310px" placeholder="Please input"
+            <el-form-item :label="$t('user.tableUser.remark')" label-width="140px" style="margin-right: 50px;">
+              <el-input v-model="userForm.remark" maxlength="100" style="width: 310px"
                 show-word-limit type="textarea" />
             </el-form-item>
           </el-form>
           <template #footer>
             <div class="dialog-footer">
-              <el-button @click="commitAddForm" type="primary">提交</el-button>
+              <el-button @click="commitAddForm" type="primary">{{$t('base.submit')}}</el-button>
               <el-button style="margin-left: 50px"  @click="closedAlert">
-                取消
+                {{$t('base.cancel')}}
               </el-button>
             </div>
           </template>
         </el-dialog>
 
 
-        <el-dialog v-model="dialogResetPasswordForm" title="重置密码" width="550">
+        <el-dialog v-model="dialogResetPasswordForm" :title="$t('base.resetPassword')" width="550">
           <el-form :model="passwordForm">
-            <el-form-item label="用户名称" label-width="90px" style="margin-right: 140px;">
+            <el-form-item :label="$t('user.tableUser.name')" label-width="90px" style="margin-right: 140px;">
               <el-input v-model="passwordForm.name" autocomplete="off" readonly />
             </el-form-item>
-            <el-form-item label="密码" label-width="90px" style="margin-right: 50px;">
+            <el-form-item :label="$t('user.formUser.password0')" label-width="90px" style="margin-right: 50px;">
               <div class="reset-password">
                 <el-input v-model="passwordForm.newPassword" autocomplete="off" />
-                <el-button style="margin-left: 20px" @click="creatPassword">生成</el-button>
-                <el-button @click="copyPassword">复制</el-button>
+                <el-button style="margin-left: 20px" @click="creatPassword">{{$t('base.generate')}}</el-button>
+                <el-button @click="copyPassword">{{$t('base.copy')}}</el-button>
               </div>
             </el-form-item>
-            <el-form-item label="确认密码" label-width="90px" style="margin-right: 140px;">
+            <el-form-item :label="$t('user.formUser.password1')" label-width="90px" style="margin-right: 140px;">
               <el-input v-model="passwordForm.againPassword" autocomplete="off" />
             </el-form-item>
           </el-form>
           <template #footer>
             <div class="dialog-footer">
               <el-button type="primary" @click="commitNewPassword">
-                Confirm
+                {{$t('base.confirm')}}
               </el-button>
-              <el-button style="margin-left: 50px" @click="dialogResetPasswordForm = false">Cancel</el-button>
+              <el-button style="margin-left: 50px" @click="dialogResetPasswordForm = false">{{$t('base.cancel')}}</el-button>
             </div>
           </template>
         </el-dialog>
 
 
-        <el-dialog v-model="dialogDeleteVisible" title="删除用户" width="550">
+        <el-dialog v-model="dialogDeleteVisible" :title="$t('user.deleteUser')" width="550">
           <div class="">
-            是否删除当前用户？
+            {{$t('user.deleteUserHint')}}
           </div>
           <template #footer>
             <div class="dialog-footer">
               <el-button type="primary" @click="deleteUser">
-                Confirm
+                {{$t('base.confirm')}}
               </el-button>
-              <el-button style="margin-left: 50px" @click="dialogDeleteVisible = false">Cancel</el-button>
+              <el-button style="margin-left: 50px" @click="dialogDeleteVisible = false">{{$t('base.cancel')}}</el-button>
             </div>
           </template>
         </el-dialog>
@@ -258,7 +258,7 @@ export default {
         // 接口修复报错
       }
       params['level'] = this.userForm.level
-      if (params['levelName'] == '管理员') {
+      if (params['levelName'] == this.$t('user.role.level2')) {
         params['level'] = '2'
       }
       delete params['levelName']
@@ -320,7 +320,7 @@ export default {
 
     commitNewPassword() {
       if (this.passwordForm.newPassword != this.passwordForm.againPassword) {
-        ElMessage.error('二次输入密码不一致')
+        ElMessage.error(this.$t('user.password1Hint'))
         return
       }
     },
@@ -370,8 +370,8 @@ export default {
             if(!it['create_time']) {
               it["create_time"] = '无'
             }
-            it['levelname'] = (it['level'] == '1' ? '普通用户':'管理员')
-            it["permissions"] = (it['level'] == '1' ? '普通用户':'管理员')
+            it['levelname'] = (it['level'] == '1' ? this.$t('user.role.level1'):this.$t('user.role.level2'))
+            it["permissions"] = (it['level'] == '1' ? this.$t('user.role.level1'):this.$t('user.role.level2'))
             it['disabled'] = !parseInt(it['disabled'])
             it['status'] = it['disabled']==0?false:true
           })
