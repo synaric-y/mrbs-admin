@@ -141,6 +141,36 @@ export class Api {
         return Request.post('user_group%2Fget_group_member',params)
     }
 
+    
+    static async getADSyncStatus(params){
+        return Request.post('user_group/get_sync_ad_state',params)
+    }
+    
+    static async deleteGroup(params){
+        return Request.post('user_group/del_group',params)
+    }
+
+    static async bindUserToGoup(params){
+        return Request.post('user_group/bind_user_to_group',params)
+    }
+
+    static async unbindUserToGoup(params){
+        return Request.post('user_group/unbind_user_to_group',params)
+    }
+
+    static async addGroup(params){
+        return Request.post('user_group/add_group',params)
+    }
+
+    static async editGroup(params){
+        return Request.post('user_group/edit_group',params)
+    }
+
+    static async getTerminalList(params){
+        return Request.post('device%2Fdevice_info',params)
+    }
+
+
     // 引导页&系统设置
     static async getVariables(params){
         return Request.post('system_setting%2Fget_variables',params)
@@ -153,5 +183,6 @@ export class Api {
     static async uploadAppLogo(params){
         return Request.post('app_logo',params)
     }
+
 
 }

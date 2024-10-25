@@ -315,7 +315,7 @@ export default {
 </script>
 
 
-<style scoped>
+<style lang="scss" scoped>
 
 
 ::v-deep .hide .el-upload--picture-card {

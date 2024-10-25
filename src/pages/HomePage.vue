@@ -316,6 +316,9 @@ export default defineComponent({
     console.log('Home 获取当前设备的时区', timeZone)
     this.startSync()
     this.getAllAreas()
+    this.$nextTick(() => {
+      this.showLoading = false
+    })
   },
 
   methods: {
@@ -542,6 +545,9 @@ export default defineComponent({
     },
 
     getMaxAreaDuration() {
+      const minStart = '06:00'
+      const maxEnd = '10:30'
+      return { minStart, maxEnd }
       if (testAreas && testAreas.data && testAreas.data.areas) {
         const localAreas = testAreas.data.areas
         let minStart = localAreas[0].start_time

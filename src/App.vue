@@ -47,10 +47,9 @@
           <el-col>
             <el-menu default-active="1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
               <el-menu-item index="1">
-                <img class="menu_icon" src="../public/imgs/dashboard_manager.png" alt="#">
+                <img class="menu_icon" src="../public/imgs/dashboard_manager_default.png" alt="#">
                 <span @click="switchTab('/guide_one')">Dashboard</span>
               </el-menu-item>
-
               <el-sub-menu index="2">
                 <template #title>
                   <!-- <el-icon>
@@ -75,7 +74,6 @@
                 <el-menu-item index="3-2" @click="switchTab('/cycle_meet')">循环会议预定</el-menu-item>
                 <el-menu-item index="3-3" @click="switchTab('/meet_list')">历史会议</el-menu-item>
               </el-sub-menu>
-
               <el-sub-menu index="4">
                 <template #title>
                   <!-- <el-icon>
@@ -86,7 +84,6 @@
                 </template>
                 <el-menu-item index="4-1" @click="switchTab('/edit_area')">编辑区域</el-menu-item>
                 <el-menu-item index="4-2" @click="switchTab('/edit_meet')">编辑会议室</el-menu-item>
-                <el-menu-item index="4-3" @click="switchTab('/bind_terminal')">终端绑定</el-menu-item>
               </el-sub-menu>
 
               <el-menu-item index="5">
@@ -108,7 +105,6 @@
                 <el-menu-item index="6-3" @click="switchTab('/sync_user')">用户同步</el-menu-item>
                 <el-menu-item index="6-4" @click="switchTab('/sync_calendar')">日历同步</el-menu-item>
               </el-sub-menu>
-
               <el-sub-menu index="7">
                 <template #title>
                   <!-- <el-icon>
@@ -126,7 +122,6 @@
         </el-scrollbar>
       </div>
       <div class="left-menu-placeholder" v-if="!isLoginPage"></div>
-
       <div class="menu-content">
         <!-- <el-main> -->
         <router-view v-slot="{ Component, route }">
@@ -141,15 +136,12 @@
         <!-- </el-main> -->
       </div>
     </div>
-
     <!-- <div class="nav-block"></div> -->
     <!--    <transition name="el-fade-in" mode="out-in">-->
     <!--      <keep-alive>-->
     <!--        <router-view></router-view>-->
     <!--      </keep-alive>-->
     <!--    </transition>-->
-
-
   </div>
 </template>
 
@@ -162,33 +154,10 @@ export default {
   mixins: [PageMixin],
   data() {
     return {
-      tabs: [
-        {
-          path: "/",
-          name: "base.home",
-          level: 0
-        },
-        {
-          path: "/area",
-          name: "base.area",
-          level: 2
-        },
-        {
-          path: "/room",
-          name: "base.room",
-          level: 2
-        },
-        {
-          path: "/user",
-          name: "base.user",
-          level: 2
-        },
-      ],
       showPop: false
     }
   },
   methods: {
-
     handleOpen(key, path) {
       console.log('App handleOpen', key, path)
     },
@@ -421,10 +390,35 @@ body {
   color: var(--el-color-primary);
 }
 
+/*表格外间距*/
+.table-wrapper {
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
 /*表头*/
 .tb-header {
   /* color: #333333; */
   font-size: 14px;
+}
+
+/*表格操作按钮*/
+.operate-wrapper {
+  display: flex;
+  flex-direction: row;
+}
+.operate-item {
+  font-family: PingFang SC;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 22px;
+  display: flex;
+  align-items: center;
+  letter-spacing: -0.07px;
+  color: #591BB7;
+  padding: 10px 20px 10px 0;
+  cursor: pointer;
 }
 
 /*公共代码----内容页标题的容器*/

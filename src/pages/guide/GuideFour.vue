@@ -141,6 +141,8 @@ export default {
   justify-content: center;
   align-items: flex-start;
   flex-direction: column;
+  height: auto;
+  min-height: calc(100vh - 95px);
   background-color: white;
   padding: 20px;
 }

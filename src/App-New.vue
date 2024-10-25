@@ -212,12 +212,6 @@ body {
   color: var(--el-color-primary);
 }
 
-/*表头*/
-.tb-header {
-  /* color: #333333; */
-  font-size: 18px;
-}
-
 /*内容页标题的容器*/
 .sub-title-wrapper {
   width: 100%;

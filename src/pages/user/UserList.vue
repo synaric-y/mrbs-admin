@@ -12,11 +12,11 @@
               <el-option style="height: 30px;" v-for="item in accountStatusOptions" :key="item.value"
                 :label="item.label" :value="item.value" />
             </el-select>
-            <el-button size="large" class="el-button-content" @click="searchUser">
+            <el-button class="el-button-content" @click="searchUser">
               <img src="/imgs/button_search.png" alt="Search Icon" class="el-button-img" />
               查询
             </el-button>
-            <el-button size="large" class="el-button-content" @click="addUser(1, null)">
+            <el-button class="el-button-content" @click="addUser(1, null)">
               <img src="/imgs/button_add.png" alt="Add Icon" class="el-button-img" />
               添加
             </el-button>
@@ -28,7 +28,11 @@
         </div>
 
         <div class="table-wrapper" style="height: auto;">
-          <el-table :data="userListData" style="margin-top: 56px;" header-cell-class-name="tb-header" max-height="450">
+          <el-table :data="userListData"
+                    style="margin-top: 56px;"
+                    header-cell-class-name="tb-header"
+                    max-height="450"
+                    table-layout="auto">
             <el-table-column prop="number" label="序号" width="120">
               <template #default="scope">
                 {{ scope.$index + 1 }}
@@ -38,13 +42,13 @@
             </el-table-column>
             <el-table-column prop="display_name" label="账号" width="130">
             </el-table-column>
-            <el-table-column prop="email" label="邮箱" width="130">
+            <el-table-column prop="email" label="邮箱">
             </el-table-column>
-            <el-table-column prop="disabled" label="状态" width="100">
+            <el-table-column prop="status" label="状态" width="100" v-if="!isLoading">
               <template #default="scope">
-                <el-switch v-model="scope.row.disabled"
-                  style="--el-switch-on-color: #591BB7; --el-switch-off-color: #A8ABB2" active-value="1"
-                  inactive-value="0" @change="handleSwitchChange(scope.row)" />
+                <el-switch v-model="scope.row.status"
+                  style="--el-switch-on-color: #591BB7; --el-switch-off-color: #A8ABB2" :active-value="true"
+                  :inactive-value="false" @change="handleSwitchChange(scope.row)" />
               </template>
             </el-table-column>
             <el-table-column prop="permissions" label="账号权限" width="150">
@@ -105,8 +109,8 @@
           </el-form>
           <template #footer>
             <div class="dialog-footer">
-              <el-button @click="commitAddForm">提交</el-button>
-              <el-button style="margin-left: 50px" type="primary" @click="closedAlert">
+              <el-button @click="commitAddForm" type="primary">提交</el-button>
+              <el-button style="margin-left: 50px"  @click="closedAlert">
                 取消
               </el-button>
             </div>
@@ -132,10 +136,10 @@
           </el-form>
           <template #footer>
             <div class="dialog-footer">
-              <el-button style="margin-left: 50px" type="primary" @click="commitNewPassword">
+              <el-button type="primary" @click="commitNewPassword">
                 Confirm
               </el-button>
-              <el-button @click="dialogResetPasswordForm = false">Cancel</el-button>
+              <el-button style="margin-left: 50px" @click="dialogResetPasswordForm = false">Cancel</el-button>
             </div>
           </template>
         </el-dialog>
@@ -147,10 +151,10 @@
           </div>
           <template #footer>
             <div class="dialog-footer">
-              <el-button style="margin-left: 50px" type="primary" @click="deleteUser">
+              <el-button type="primary" @click="deleteUser">
                 Confirm
               </el-button>
-              <el-button @click="dialogDeleteVisible = false">Cancel</el-button>
+              <el-button style="margin-left: 50px" @click="dialogDeleteVisible = false">Cancel</el-button>
             </div>
           </template>
         </el-dialog>
@@ -168,15 +172,7 @@ export default {
   mixins: [PageMixin],
   data() {
     return {
-      userListData: [
-        { "number": 1, "name": 'zhangsan', "display_name": 'jack.chen', "email": '123@163.com', "disabled": 1, "level": '2', "id": 2, "permissions": '管理员', "create_time": '2024-10-14 10:30:01', "password": 'zhangsan' },
-        { "number": 2, "name": 'lisi', "display_name": 'li.zhang', "email": '456@163.com', "disabled": 0, "level": '2', "id": 3, "permissions": '普通用户', "create_time": '2024-10-12 15:30:01', "password": 'lisi' },
-        { "number": 3, "name": 'lisi', "display_name": 'si.zhang', "email": '456@163.com', "disabled": 1, "level": '2', "id": 3, "permissions": '普通用户', "create_time": '2024-10-12 15:30:01', "password": 'lisi' },
-        { "number": 4, "name": 'lisi', "display_name": 'xiao.zhang', "email": '456@163.com', "disabled": 0, "level": '2', "id": 3, "permissions": '普通用户', "create_time": '2024-10-12 15:30:01', "password": 'lisi' },
-        { "number": 5, "name": 'lisi', "display_name": 'cheng.zhang', "email": '456@163.com', "disabled": 0, "level": '2', "id": 3, "permissions": '普通用户', "create_time": '2024-10-12 15:30:01', "password": 'lisi' },
-        { "number": 6, "name": 'lisi', "display_name": 'wu.zhang', "email": '456@163.com', "disabled": 0, "level": '2', "id": 3, "permissions": '普通用户', "create_time": '2024-10-12 15:30:01', "password": 'lisi' },
-        { "number": 7, "name": 'lisi', "display_name": 'liu.zhang', "email": '456@163.com', "disabled": 0, "level": '2', "id": 3, "permissions": '普通用户', "create_time": '2024-10-12 15:30:01', "password": 'lisi' },
-      ],
+      userListData: [],
       accountStatusVal: 0,
       accountSwitch: 1,
       accountStatusOptions: [
@@ -218,7 +214,7 @@ export default {
       resetPasswordRow: null,
       userRow: null,
       deleteRow: null,
-      initialized: false,
+      isLoading: true,
     }
   },
   methods: {
@@ -298,7 +294,7 @@ export default {
       // }
     },
     handleSwitchChange(row) {
-      if (!this.initialized) {
+      if (this.isLoading) {
         return
       }
       console.log('UserList handleCurrentChange id: status', row)
@@ -330,7 +326,7 @@ export default {
     updateUserDisabled(row) {
       let params = {}
       params['userid'] = row.id
-      params['disabled'] = row.disabled == '1' ? 1 : 0
+      params['disabled'] = row.status?0:1
       console.log('UserList updateUserStatus params', params)
       Api.updateAccount(params).then(({ data, code, msg }) => {
         if (code == 0) {
@@ -363,7 +359,7 @@ export default {
       console.log('UserList getUserList params:',params)
       // Api.getAllUsers
       Api.getAllUsers(params).then(({code,msg,data }) => {
-        this.initialized = true
+        this.isLoading = false
         if (code == 0 && data && data.users) {
           data.users.forEach(it => {
             if(!it['email']) {
@@ -374,10 +370,14 @@ export default {
             }
             it['levelname'] = (it['level'] == '1' ? '普通用户':'管理员')
             it["permissions"] = (it['level'] == '1' ? '普通用户':'管理员')
-            // it['disabled'] = !parseInt(it['disabled'])
+            it['disabled'] = !parseInt(it['disabled'])
+            it['status'] = it['disabled']==0?false:true
           })
           console.log('UserList getUserList data.users:',data.users)
           this.userListData = data.users
+          this.total_num = data.total_num
+        } else {
+          this.userListData = []
           this.total_num = data.total_num
         }
       })
@@ -399,7 +399,6 @@ export default {
   // justify-content: center;
   align-items: center;
   flex-direction: column;
-  width: calc(100vw - 169px);
   // height: calc(100vh - 95px);
   height: auto;
   background-color: white;
@@ -441,16 +440,6 @@ export default {
   margin: 0;
 }
 
-.table-wrapper {
-  margin-left: -100px;
-  padding: 0;
-  width: auto;
-}
-
-.tb-header {
-  font-size: 14px !important;
-}
-
 .el-table {
   --el-table-tr-bg-color: white;
   padding: 0;
@@ -479,23 +468,6 @@ export default {
   color: #FFFFFF;
   margin-left: 20px;
   padding: 4px 0;
-}
-
-.operate-wrapper {
-  display: flex;
-  flex-direction: row;
-}
-
-.operate-item {
-  font-family: PingFang SC;
-  font-size: 14px;
-  font-weight: normal;
-  line-height: 22px;
-  display: flex;
-  align-items: center;
-  letter-spacing: -0.07px;
-  color: #591BB7;
-  padding: 10px;
 }
 
 .el-button-img {
