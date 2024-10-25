@@ -84,7 +84,6 @@
                 </template>
                 <el-menu-item index="4-1" @click="switchTab('/edit_area')">编辑区域</el-menu-item>
                 <el-menu-item index="4-2" @click="switchTab('/edit_meet')">编辑会议室</el-menu-item>
-                <el-menu-item index="4-3" @click="switchTab('/bind_terminal')">终端绑定</el-menu-item>
               </el-sub-menu>
 
               <el-menu-item index="5">
