@@ -147,13 +147,14 @@ export default {
     },
 
     getGroupMember() {
-      Api.getGroupMember({
-        group_id: parseInt(this.groupId),
-        search: this.keyword || '',
-        page: this.pageNumber,
-        in_group: this.adMore?1:0,
-        // source: this.sourceVal
-      }).then(({ data, code, msg }) => {
+      let params = {}
+      params['group_id'] = parseInt(this.groupId)
+      params['search'] = this.keyword || '',
+      params['page'] = this.pageNumber
+      if (this.adMore) {
+        params['in_group'] = 1
+      }
+      Api.getGroupMember(params).then(({ data, code, msg }) => {
         this.isLoading = false
         if (code == 0 && data && data.users) {
           data.users.forEach(it => {

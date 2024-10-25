@@ -95,10 +95,6 @@ const router = createRouter({
       name: 'edit_meet',
       component: () => import('@/pages/area/EditMeet.vue')
     },{
-      path: '/bind_terminal',
-      name: 'bind_terminal',
-      component: () => import('@/pages/area/BindTerminal.vue')
-    },{
       path: '/terminal_manager',
       name: 'terminal_manager',
       component: () => import('@/pages/terminal/TerminalManager.vue')
