@@ -170,6 +170,9 @@ export class Api {
         return Request.post('device%2Fdevice_info',params)
     }
 
+    static async changeBind(params){
+        return Request.post('change_bind',params)
+    }
 
     // 引导页&系统设置
     static async getVariables(params){
@@ -183,6 +186,4 @@ export class Api {
     static async uploadAppLogo(params){
         return Request.post('app_logo',params)
     }
-
-
 }
