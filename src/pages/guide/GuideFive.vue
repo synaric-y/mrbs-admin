@@ -6,24 +6,7 @@
       <div class="sub-page-content">
 
         <div class="page-title">会议系统配置向导</div>
-        <div class="guide-progress">
-          <div class="guide-item">
-            <img src="../../../public/imgs/checked.png" alt="">
-            <span class="guide-title" style="margin-left: 12px;">用户同步配置</span>
-          </div>
-          <div class="guide-item">
-            <img src="../../../public/imgs/checked.png" alt="">
-            <span class="guide-title" style="margin-left: 12px;">日历同步配置</span>
-          </div>
-          <div class="guide-item">
-            <img src="../../../public/imgs/checked.png" alt="">
-            <span class="guide-title" style="margin-left: 12px;">添加会议室</span>
-          </div>
-          <div class="guide-item">
-            <img src="../../../public/imgs/checked.png" alt="">
-            <span class="guide-title" style="margin-left: 12px;">完成</span>
-          </div>
-        </div>
+        <ProgressBar :active-index="4"/>
         <div class="guide-success">
           <img class="guide-img" src="../../../public/imgs/guide_success.png" alt="">
           <div class="guide-success-text">您已经完成初始化配置！<br>
@@ -32,7 +15,7 @@
 
         <div class="sub-buttons">
           <div class="buttons-wrapper">
-            <span class="jump-btn">结束向导</span>
+            <span class="jump-btn" @click="switchTab('/')">结束向导</span>
             <span class="pre-btn" @click="switchTab('/')">预约会议</span>
             <span class="not-btn">继续添加会议室</span>
           </div>
@@ -48,7 +31,9 @@ import { PageMixin } from "@/pages/PageMixin.js";
 import { STORAGE } from "@/const.js";
 import { ElMessage } from "element-plus";
 import { Text } from "vue";
+import ProgressBar from "@/pages/guide/ProgressBar.vue";
 export default {
+  components: {ProgressBar},
   mixins: [PageMixin],
   data() {
     return {
@@ -77,73 +62,12 @@ export default {
   justify-content: center;
   align-items: flex-start;
   flex-direction: column;
-  width: calc(100vw - 169px);
-  height: calc(100vh - 95px);
   background-color: white;
-  padding: 0;
-  margin: 0;
-  position: relative;
+  padding: 20px;
 }
 
 .page-title {
-  position: absolute;
-  top: 20px;
-  left: 20px;
   font-size: 20px;
-}
-
-.guide-progress {
-  display: flex;
-  flex-direction: row;
-  margin-left: 72px;
-  margin-top: 75px;
-}
-
-.guide-item {
-  display: flex;
-  flex-direction: row;
-  margin-left: 72px;
-}
-
-.guide-number-active {
-  width: 29px;
-  height: 28px;
-  border-radius: 14px;
-  line-height: 28px;
-  text-align: center;
-  opacity: 1;
-  background: #591BB7;
-  color: #FFFFFF;
-}
-
-.guide-number {
-  width: 28px;
-  height: 28px;
-  line-height: 28px;
-  text-align: center;
-  border-radius: 14px;
-  opacity: 1;
-  background: #F2F3F5;
-  color: #4E5969;
-}
-
-.guide-title-active {
-  font-family: PingFang SC;
-  font-size: 16px;
-  font-weight: 500;
-  line-height: 24px;
-  letter-spacing: 0px;
-  font-variation-settings: "opsz" auto;
-  color: #591BB7;
-}
-
-.guide-title {
-  font-family: PingFang SC;
-  font-size: 16px;
-  font-weight: normal;
-  line-height: 24px;
-  letter-spacing: 0px;
-  color: #4E5969;
 }
 
 .guide-tips {
@@ -162,11 +86,11 @@ export default {
 .guide-success {
   display: flex;
   flex-direction: column;
+  gap: 20px;
   width: 100%;
+  height: 200px;
   justify-content: center;
   align-items: center;
-  margin-left: -200px;
-  margin-top: 108px;
 }
 
 .guide-img {
@@ -176,6 +100,8 @@ export default {
 
 .guide-success-text {
   text-align: center;
+  line-height: 1.5;
+  font-size: 14px;
 }
 
 .sub-buttons {
@@ -192,7 +118,6 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
-  margin-left: -400px;
 }
 
 .jump-btn {

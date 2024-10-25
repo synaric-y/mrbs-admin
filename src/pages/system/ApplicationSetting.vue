@@ -23,6 +23,7 @@
 
               <el-form-item label="管理后台Logo" prop="webLogo">
                 <div class="form-item-content">
+                  <img v-if="originalWebLogoURL!==''" class="form-item-logo" :src="originalWebLogoURL" alt="图片未加载">
                   <el-upload
                       :class="{ hide: form.webLogo && form.webLogo.length===1 }"
                       v-model:file-list="form.webLogo"
@@ -53,6 +54,7 @@
 
               <el-form-item label="平板端首页Logo" prop="appLogo">
                 <div class="form-item-content">
+                  <img v-if="originalAppLogoURL!==''" class="form-item-logo" :src="originalAppLogoURL" alt="图片未加载">
                   <el-upload
                       :class="{ hide: form.appLogo && form.appLogo.length===1 }"
                       v-model:file-list="form.appLogo"
@@ -133,6 +135,7 @@
 
 
 <script>
+import {HOST} from "@/config.js";
 import {Api} from "@/network/api.js";
 import {PageMixin} from "@/pages/PageMixin.js";
 import {STORAGE} from "@/const.js";
@@ -152,6 +155,8 @@ export default {
         timeFormat:'',
         theme:''
       },
+      originalWebLogoURL: '',
+      originalAppLogoURL: '',
       tableData: [
         {
           id: 1,
@@ -193,7 +198,50 @@ export default {
 
     }
   },
+  created() {
+    const that = this
+    Api.getVariables({
+      "logo_dir": 1,
+      "app_logo_dir": 1,
+      "time_type": 1,
+      "company_name": 1,
+      "server_address": 1,
+      "theme_type": 1
+    }).then(({code,data,msg})=>{
+      if(code==0){
+        console.log(data)
+        // that.form.timeFormat = data.timeFormat
+        // that.form.companyName = data.companyName
+        // that.form.requestUrl = data.requestUrl
+        // that.form.theme = data.theme
+
+        that.form={
+          companyName: data.company_name,
+          requestUrl: data.server_address,
+          webLogo:[],
+          appLogo:[],
+          timeFormat:data.time_type,
+          theme:data.theme_type
+        }
+
+        that.originalWebLogoURL = data.logo_dir!=='' ? HOST + data.logo_dir : ''
+        that.originalAppLogoURL = data.app_logo_dir!=='' ? HOST + data.app_logo_dir : ''
+
+        console.log(that.originalWebLogoURL,that.originalWebLogoURL)
+      }else{
+        ElMessage.error({
+          message: '设置获取失败',
+        })
+      }
+    })
+    .catch(e=>{
+      console.log(e)
+    })
+  },
   methods: {
+    HOST() {
+      return HOST
+    },
     removeImage(type,file){
       switch (type){
         case 'web':{
@@ -207,13 +255,54 @@ export default {
     submit(){
       console.log(this.form)
       this.$refs.formRef.validate((valid) => {
-        if (valid) {
-          console.log('submit!')
-        } else {
-          console.log('error submit!')
-        }
-      })
+            if (valid) {
+              console.log('submit!')
 
+              const formData = new FormData(); // 图片上传
+              formData.append('logo',this.form.webLogo[0])
+
+              // Api.uploadAppLogo(
+              //     formData
+              // ).then(res1=>{
+              //   console.log(res1)
+              // }).catch(e=>{
+              //   console.log(e)
+              // })
+
+              Api.setVariables(
+                  {
+                    "logo_dir": "",
+                    "app_logo_dir": "",
+                    "time_type": this.form.timeFormat,
+                    "company_name": this.form.companyName,
+                    "server_address": this.form.requestUrl,
+                    "theme_type": this.form.theme,
+                  }
+              ).then(res => {
+                console.log(res)
+                if (res?.code == 0) {
+                  ElMessage.success({
+                    message: '设置成功',
+                  })
+                  // this.switchTab('/guide_five')
+                } else {
+                  ElMessage.error({
+                    message: '设置失败',
+                  })
+                }
+              }).catch(e => {
+                ElMessage.error({
+                  message: '设置失败',
+                })
+                console.log(e)
+              })
+            } else {
+              ElMessage.error({
+                message: '表单格式错误',
+              })
+            }
+          }
+      )
     }
   },
   mounted() {
@@ -291,6 +380,10 @@ export default {
       .form-item-input {
         width: 350px;
         height: 33px;
+      }
+
+      .form-item-logo{
+        height: 90px;
       }
 
       ::v-deep .el-upload-list--picture-card{
