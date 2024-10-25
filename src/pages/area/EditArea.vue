@@ -5,8 +5,12 @@
         <div class="sub-title">{{ $t("base.areaManagement") }}</div>
         <el-button style="margin-top: 20px;" type="primary" size="default" @click="pendingAddArea">{{ $t("base.add") }}</el-button>
       </div>
-      <el-table :data="tableData" style="width: auto;margin-top: 30px;" header-cell-class-name="tb-header" header-align="center"
-        max-height="600">
+      <el-table :data="tableData"
+                style="margin-top: 30px;"
+                header-cell-class-name="tb-header"
+                header-align="center"
+                table-layout="auto"
+                max-height="600">
         <el-table-column fixed prop="area_name" :label="$t('area.tableArea.name')" width="350">
         </el-table-column>
         <el-table-column prop="disabled" :label="$t('area.tableArea.state')" width="150">
@@ -148,8 +152,6 @@ export default {
 }
 
 .el-table {
-  --el-table-tr-bg-color: white;
-  --el-table-header-bg-color:white;
 }
 
 .tb-op-icon {
@@ -166,7 +168,7 @@ export default {
   height: 18px;
   border-radius: 20px;
   background: #08D50A;
-  margin-left: 15px;
+  //margin-left: 15px;
 }
 
 .tb-state-disable {

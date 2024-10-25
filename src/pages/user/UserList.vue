@@ -448,10 +448,6 @@ export default {
   margin: 0;
 }
 
-.tb-header {
-  font-size: 14px !important;
-}
-
 .el-table {
   --el-table-tr-bg-color: white;
   padding: 0;

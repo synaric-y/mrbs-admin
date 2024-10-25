@@ -167,8 +167,7 @@ export default {
 }
 
 .el-table {
-  --el-table-tr-bg-color: white;
-  --el-table-header-bg-color:white;
+
 }
 
 .tb-op-icon {

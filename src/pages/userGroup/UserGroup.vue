@@ -637,10 +637,6 @@ export default {
   margin-top: 40px;
 }
 
-.tb-header {
-  font-size: 14px !important;
-}
-
 .el-table {
   --el-table-tr-bg-color: white;
   padding: 0;
