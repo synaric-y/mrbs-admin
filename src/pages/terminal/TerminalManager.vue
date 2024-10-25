@@ -324,23 +324,6 @@ export default {
   padding: 4px 0;
 }
 
-.operate-wrapper {
-  display: flex;
-  flex-direction: row;
-}
-
-.operate-item {
-  font-family: PingFang SC;
-  font-size: 14px;
-  font-weight: normal;
-  line-height: 22px;
-  display: flex;
-  align-items: center;
-  letter-spacing: -0.07px;
-  color: #591BB7;
-  padding: 10px;
-}
-
 .el-button-img {
   width: 16px;
   height: 16px;

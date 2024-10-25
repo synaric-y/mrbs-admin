@@ -18,10 +18,12 @@
         </el-table-column>
         <el-table-column prop="timezone" :label="$t('area.tableArea.timezone')" width="250">
         </el-table-column>
-        <el-table-column prop="id" :label="$t('area.tableArea.operate')" width="200">
+        <el-table-column prop="id" :label="$t('area.tableArea.operate')" width="300">
           <template #default="scope">
-            <img class="tb-op-icon tb-op-icon-span" src="/imgs/edit.png" @click="toAreaDetail(scope.row.id)">
-            <img class="tb-op-icon" src="/imgs/delete.png" @click="pendingDeleteArea(scope.row.id)">
+            <div class="operate-wrapper">
+              <span class="operate-item" @click="toAreaDetail(scope.row.id)">编辑</span>
+              <span class="operate-item" @click="pendingDeleteArea(scope.row.id)">删除</span>
+            </div>
           </template>
         </el-table-column>
       </el-table>

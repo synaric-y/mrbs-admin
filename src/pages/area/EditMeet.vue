@@ -60,9 +60,12 @@
             prop="id"
             :label="$t('room.tableRoom.operate')"
             width="200">
+
           <template #default="scope">
-            <img class="tb-op-icon tb-op-icon-span" src="/imgs/edit.png" @click="toRoomDetail(scope.row.id)">
-            <img class="tb-op-icon" src="/imgs/delete.png" @click="pendingDeleteRoom(scope.row.id)">
+            <div class="operate-wrapper">
+              <span class="operate-item" @click="toRoomDetail(scope.row.id)">编辑</span>
+              <span class="operate-item" @click="pendingDeleteRoom(scope.row.id)">删除</span>
+            </div>
           </template>
         </el-table-column>
       </el-table>
