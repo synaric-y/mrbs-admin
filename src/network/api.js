@@ -164,4 +164,8 @@ export class Api {
     static async editGroup(params){
         return Request.post('user_group/edit_group',params)
     }
+
+    static async getTerminalList(params){
+        return Request.post('device%2Fdevice_info',params)
+    }
 }

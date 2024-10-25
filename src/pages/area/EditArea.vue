@@ -20,8 +20,11 @@
         </el-table-column>
         <el-table-column prop="id" :label="$t('area.tableArea.operate')" width="200">
           <template #default="scope">
-            <img class="tb-op-icon tb-op-icon-span" src="/imgs/edit.png" @click="toAreaDetail(scope.row.id)">
-            <img class="tb-op-icon" src="/imgs/delete.png" @click="pendingDeleteArea(scope.row.id)">
+            <!-- <img class="tb-op-icon tb-op-icon-span" src="/imgs/edit.png" @click="toAreaDetail(scope.row.id)">
+            <img class="tb-op-icon" src="/imgs/delete.png" @click="pendingDeleteArea(scope.row.id)"> -->
+            <span style="color: #591BB7;font-size: 14px;" @click="toAreaDetail(scope.row.id)">编辑</span>
+            <span style="margin-left: 20px;color: #591BB7;font-size: 14px;"
+              @click="pendingDeleteArea(scope.row.id)">删除</span>
           </template>
         </el-table-column>
       </el-table>
