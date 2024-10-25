@@ -9,10 +9,13 @@ export const langEn = {
         roomManagement: 'Room Management',
         userManagement: 'User Management',
         add: '+ Add',
+        add2: 'Add',
         plzSelect: 'Select',
         confirm: 'Confirm',
         cancel: 'Cancel',
         logout: 'Logout',
+        search: 'Search',
+        detail: 'Detail',
         exchange: 'Exchange',
         wxwork: 'Wxwork',
         editSuccess: 'Edited successfully',
@@ -41,6 +44,7 @@ export const langEn = {
         passTimeError: 'Cannot select a time that has passed',
         loginoutUser: 'Not logged in',
         minMinuteTitle: '(15 minutes)',
+        userSync: 'Sync Users',
     },
     meet: {
         title: 'Editing Meetings',
@@ -129,6 +133,8 @@ export const langEn = {
             email: 'Email',
             updateTime: 'Update Time',
             loginTime: 'Login Time',
+            createTime: 'Create Time',
+            status: 'Status',
             operate: 'Operate',
         },
         formUser: {
@@ -146,7 +152,9 @@ export const langEn = {
         },
         addUser: 'New User',
         editUser: 'Edit User',
+        userList: 'Users',
         deleteUserHint: 'Are you sure you want to delete this user?',
         password1Hint: 'The passwords are inconsistent',
+        plzEnterUsernameHint: 'Enter username',
     }
 }
