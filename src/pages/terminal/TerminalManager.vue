@@ -44,8 +44,8 @@
             <el-table-column prop="set_time" label="接入时间" width="100"></el-table-column>
             <el-table-column prop="id" :label="$t('user.tableUser.operate')" width="200">
               <template #default="scope">
-                <div class="operate-wrapper">
-                  <span class="operate-item" @click="unbindDevice(scope.row)">解绑</span>
+                <div class="operate-wrapper" v-if="scope.row.status">
+                  <span class="operate-item" @click="unbindDeviceDialog(scope.row)">解绑</span>
                 </div>
               </template>
             </el-table-column>
@@ -63,7 +63,7 @@
           </div>
           <template #footer>
             <div class="dialog-footer">
-              <el-button style="margin-left: 50px" type="primary" @click="deleteUser">
+              <el-button style="margin-left: 50px" type="primary" @click="unbindDevice">
                 确定
               </el-button>
               <el-button @click="dialogDeleteVisible = false">取消</el-button>
@@ -84,21 +84,6 @@ export default {
   mixins: [PageMixin],
   data() {
     return {
-      userListData: [
-        { "number": 1, "area": 'shanghai', "room": '会议室A', "meet_start": '2024-10-12', "meet_end": '2024-12-30', "meet_time": '13:00-14:00', "is_cycle": '是', "meet_status": '未开始', "display_name": 'joy', "is_edit": '1' },
-        { "number": 1, "area": 'shanghai', "room": '会议室A', "meet_start": '2024-10-12', "meet_end": '2024-12-30', "meet_time": '13:00-14:00', "is_cycle": '是', "meet_status": '未开始', "display_name": 'joy', "is_edit": '1' },
-        { "number": 1, "area": 'shanghai', "room": '会议室A', "meet_start": '2024-10-12', "meet_end": '2024-12-30', "meet_time": '13:00-14:00', "is_cycle": '是', "meet_status": '未开始', "display_name": 'joy', "is_edit": '1' },
-        { "number": 1, "area": 'shanghai', "room": '会议室A', "meet_start": '2024-10-12', "meet_end": '2024-12-30', "meet_time": '13:00-14:00', "is_cycle": '是', "meet_status": '未开始', "display_name": 'joy', "is_edit": '1' },
-        { "number": 1, "area": 'shanghai', "room": '会议室A', "meet_start": '2024-10-12', "meet_end": '2024-12-30', "meet_time": '13:00-14:00', "is_cycle": '是', "meet_status": '未开始', "display_name": 'joy', "is_edit": '1' },
-        { "number": 1, "area": 'shanghai', "room": '会议室A', "meet_start": '2024-10-12', "meet_end": '2024-12-30', "meet_time": '13:00-14:00', "is_cycle": '是', "meet_status": '未开始', "display_name": 'joy', "is_edit": '1' },
-        { "number": 1, "area": 'shanghai', "room": '会议室A', "meet_start": '2024-10-12', "meet_end": '2024-12-30', "meet_time": '13:00-14:00', "is_cycle": '是', "meet_status": '未开始', "display_name": 'joy', "is_edit": '1' },
-        { "number": 1, "area": 'shanghai', "room": '会议室A', "meet_start": '2024-10-12', "meet_end": '2024-12-30', "meet_time": '13:00-14:00', "is_cycle": '是', "meet_status": '未开始', "display_name": 'joy', "is_edit": '1' },
-        { "number": 1, "area": 'shanghai', "room": '会议室A', "meet_start": '2024-10-12', "meet_end": '2024-12-30', "meet_time": '13:00-14:00', "is_cycle": '是', "meet_status": '未开始', "display_name": 'joy', "is_edit": '1' },
-        { "number": 1, "area": 'shanghai', "room": '会议室A', "meet_start": '2024-10-12', "meet_end": '2024-12-30', "meet_time": '13:00-14:00', "is_cycle": '是', "meet_status": '未开始', "display_name": 'joy', "is_edit": '1' },
-        { "number": 1, "area": 'shanghai', "room": '会议室A', "meet_start": '2024-10-12', "meet_end": '2024-12-30', "meet_time": '13:00-14:00', "is_cycle": '是', "meet_status": '未开始', "display_name": 'joy', "is_edit": '1' },
-        { "number": 1, "area": 'shanghai', "room": '会议室A', "meet_start": '2024-10-12', "meet_end": '2024-12-30', "meet_time": '13:00-14:00', "is_cycle": '是', "meet_status": '未开始', "display_name": 'joy', "is_edit": '1' },
-       
-       ],
       statusVal: 0,
       accountSwitch: 1,
       statusOptions: [
@@ -122,29 +107,24 @@ export default {
           label: 'B',
         }],
       pendingDeleteName: null,
-      role: [
-        this.$t('user.role.level0'),
-        this.$t('user.role.level1'),
-        this.$t('user.role.level2'),
-      ],
       page_number: 1,
-      total_num: 0,
-      initialized: false,
-      baseTime: '',
-      startTime: this.$t('base.startDate'),
-      endTime: this.$t('base.endDate'),
       dialogDeleteVisible: false,
+      selectRow: null,
       terminals: [],
       total_num: 0,
     }
   },
   methods: {
 
-    deleteUser() {
-      // 解绑当前设备
-    },
-    unbindDevice(row) {
+    unbindDeviceDialog(row) {
       this.dialogDeleteVisible = true
+      this.selectRow = row
+    },
+
+    unbindDevice() {
+      // 解绑当前设备
+      
+
     },
 
     searchUser() {
@@ -155,7 +135,7 @@ export default {
       this.page_number = newPage
     },
 
-    unbindDevice() {
+    unBindDevice() {
       console.log('TerminalManager unbindDevice')
       Api.editUser(params).then(({ data, code, msg }) => {
         this.closedAlert()
@@ -169,12 +149,12 @@ export default {
     
     getTerminalList() {
       Api.getTerminalList({}).then(({ data, code, msg }) => {
-        if (code == 0 && data) {
-          data.users.forEach(it => {
+        if (code == 0) {
+          // data.users.forEach(it => {
             // if (!it['email']) {
             //   it["email"] = '无邮箱'
             // }
-          })
+          // })
           this.terminals = data
           this.total_num = data.total_num
         }

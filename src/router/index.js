@@ -37,16 +37,6 @@ const router = createRouter({
       component: () => import('@/pages/guide/GuideFive.vue')
     },
     {
-      path: '/edit_user',
-      name: 'edit_user',
-      component: () => import('@/pages/user/EditUser.vue')
-    },
-    {
-      path: '/reset_password',
-      name: 'reset_password',
-      component: () => import('@/pages/user/ResetPassword.vue')
-    },
-    {
       path: '/user_detail',
       name: 'user_detail',
       component: () => import('@/pages/user/UserDetail.vue')

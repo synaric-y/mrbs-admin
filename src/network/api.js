@@ -168,4 +168,8 @@ export class Api {
     static async getTerminalList(params){
         return Request.post('device%2Fdevice_info',params)
     }
+
+    static async changeBind(params){
+        return Request.post('change_bind',params)
+    }
 }
