@@ -33,13 +33,14 @@
                     style="--el-switch-on-color: #591bb7;"
                 />
                 <el-text v-if="form.quickMeetingDisplay" class="mx-1" type="primary">终端将显示临时会议按钮</el-text>
-                <el-text v-else class="mx-1">终端将不显示临时会议按钮</el-text>、
+                <el-text v-else class="mx-1">终端将不显示临时会议按钮</el-text>
+                、
               </div>
             </div>
             <div class="preview">
               <div class="left">
                 <div class="times">
-                  <div class="time" v-for="item in timeline">{{item}}</div>
+                  <div class="time" v-for="item in timeline">{{ item }}</div>
                 </div>
                 <div class="btn" v-if="form.quickMeetingDisplay">临时会议</div>
               </div>
@@ -54,16 +55,22 @@
                 <div class="info">
                   <div class="title">正在进行的会议:</div>
                   <div class="info-row">
-                    <el-icon><Monitor /></el-icon>
-                    <div class="value">{{form.meetingNameDisplay?'销售部门会议':'xx会议'}}</div>
+                    <el-icon>
+                      <Monitor/>
+                    </el-icon>
+                    <div class="value">{{ form.meetingNameDisplay ? '销售部门会议' : 'xx会议' }}</div>
                   </div>
                   <div class="info-row">
-                    <el-icon><Clock /></el-icon>
+                    <el-icon>
+                      <Clock/>
+                    </el-icon>
                     <div class="value">09:00AM - 11:00AM</div>
                   </div>
                   <div class="info-row">
-                    <el-icon><User /></el-icon>
-                    <div class="value">{{form.bookerDisplay?'Alvin':'xx预定'}}</div>
+                    <el-icon>
+                      <User/>
+                    </el-icon>
+                    <div class="value">{{ form.bookerDisplay ? 'Alvin' : 'xx预定' }}</div>
                   </div>
                 </div>
               </div>
@@ -77,15 +84,15 @@
           <div class="section-content">
             <el-form ref="formRef" :model="form" label-width="auto" :rules="rules">
               <el-form-item label="快速会议开始时间" prop="startTime">
-                <el-select  style="min-width: 400px" v-model="form.startTime" placeholder="请选择">
-                  <el-option label="最近空闲时段马上开始" value="0" />
-                  <el-option label="手动选择" value="1" />
+                <el-select style="min-width: 400px" v-model="form.startTime" placeholder="请选择">
+                  <el-option label="最近空闲时段马上开始" value="0"/>
+                  <el-option label="手动选择" value="1"/>
                 </el-select>
               </el-form-item>
               <el-form-item label="预定时间最小间隔" prop="minScale">
                 <el-select style="min-width: 400px" v-model="form.minScale" placeholder="请选择">
-                  <el-option label="15分钟" value="0" />
-                  <el-option label="30分钟" value="1" />
+                  <el-option label="15分钟" value="0"/>
+                  <el-option label="30分钟" value="1"/>
                 </el-select>
               </el-form-item>
             </el-form>
@@ -103,13 +110,13 @@
 </template>
 
 
-
 <script>
-import { Api } from "@/network/api.js";
-import { PageMixin } from "@/pages/PageMixin.js";
-import { STORAGE } from "@/const.js";
-import { ElMessage } from "element-plus";
+import {Api} from "@/network/api.js";
+import {PageMixin} from "@/pages/PageMixin.js";
+import {STORAGE} from "@/const.js";
+import {ElMessage} from "element-plus";
 import {Clock, Monitor, User} from "@element-plus/icons-vue";
+import {HOST} from "@/config.js";
 
 export default {
   components: {User, Monitor, Clock},
@@ -125,27 +132,82 @@ export default {
         minScale: '',
       },
 
-      timeline:[
-          '10:00am','10:30am','11:00am','11:30am','12:00am','12:30am','01:00pm','01:30pm',
+      timeline: [
+        '10:00am', '10:30am', '11:00am', '11:30am', '12:00am', '12:30am', '01:00pm', '01:30pm',
       ],
-      rules:{
+      rules: {
         startTime: [
-          { required: true, message: '请选择快速会议开始时间', trigger: 'blur'},
+          {required: true, message: '请选择快速会议开始时间', trigger: 'blur'},
         ],
         minScale: [
-          { required: true, message: '请选择预定时间最小间隔', trigger: 'blur'},
+          {required: true, message: '请选择预定时间最小间隔', trigger: 'blur'},
         ],
       }
     }
   },
+  created() {
+    const that = this
+    Api.getVariables({
+      "show_book": 1,
+      "show_meeting_name": 1,
+      "temporary_meeting": 1,
+    }).then(({code, data, msg}) => {
+      if (code == 0) {
+        console.log(data)
+
+        that.form = {
+          ...that.form,
+          bookerDisplay: data.show_book===1,
+          meetingNameDisplay: data.show_meeting_name===1,
+          quickMeetingDisplay: data.temporary_meeting===1,
+        }
+      } else {
+        ElMessage.error({
+          message: '设置获取失败',
+        })
+      }
+    })
+    .catch(e => {
+      console.log(e)
+    })
+  },
   methods: {
-    submit(){
+    submit() {
       console.log(this.form)
       this.$refs.formRef.validate((valid) => {
         if (valid) {
           console.log('submit!')
+
+          Api.setVariables(
+              {
+                "init_status": 3,
+                "show_book": this.form.bookerDisplay?1:0,
+                "show_meeting_name": this.form.meetingNameDisplay?1:0,
+                "temporary_meeting": this.form.quickMeetingDisplay?1:0,
+              }
+          ).then(({code,data})=>{
+            if(code==0){
+              ElMessage.success({
+                message: '设置成功',
+              })
+            }else{
+              ElMessage.error({
+                message: '设置失败',
+              })
+            }
+          })
+          .catch(e=>{
+            ElMessage.error({
+              message: '设置失败',
+            })
+            console.log(e)
+          })
+
         } else {
           console.log('error submit!')
+          ElMessage.error({
+            message: '表单格式错误',
+          })
         }
       })
     }
@@ -160,8 +222,7 @@ export default {
 </script>
 
 
-
-<style  lang="scss" scoped>
+<style lang="scss" scoped>
 .logo {
   width: 207px;
   height: 51px;
@@ -169,7 +230,7 @@ export default {
   margin-bottom: 50px;
 }
 
-.container-sub-page-main{
+.container-sub-page-main {
 
 
   .sub-page-content {
@@ -185,14 +246,14 @@ export default {
     gap: 30px;
     background-color: #fff;
 
-    .title{
+    .title {
       font-family: PingFang SC;
       font-size: 20px;
       font-weight: 500;
     }
 
-    .section{
-      .section-title{
+    .section {
+      .section-title {
         color: var(--el-color-primary);
         font-family: PingFang SC;
         font-size: 16px;
@@ -201,47 +262,49 @@ export default {
         margin-bottom: 20px;
       }
 
-      .section-content{
+      .section-content {
 
         display: flex;
         align-items: center;
-        gap:50px;
+        gap: 50px;
         margin-left: 100px;
       }
 
-      .switches{
-        .switch-row{
+      .switches {
+        .switch-row {
           display: flex;
-          gap:20px;
+          gap: 20px;
           align-items: center;
           font-size: 14px;
           line-height: 3;
           color: #666;
           width: 500px;
 
-          .label{
+          .label {
             min-width: 120px;
             text-align: right;
-            color:#4e5969;
+            color: #4e5969;
           }
         }
       }
 
-      .preview{
+      .preview {
         display: flex;
         height: 300px;
         width: 480px;
-        .left{
+
+        .left {
           width: 40%;
           background-color: #333333;
           padding: 5px;
           position: relative;
 
-          .times{
+          .times {
             width: 100%;
             height: 260px;
             overflow: hidden;
-            .time{
+
+            .time {
               color: #ccc;
               text-align: left;
               font-size: 12px;
@@ -249,7 +312,7 @@ export default {
             }
           }
 
-          .btn{
+          .btn {
             position: absolute;
             bottom: 5px;
             left: 50%;
@@ -263,7 +326,7 @@ export default {
           }
         }
 
-        .right{
+        .right {
           width: 100%;
           background-color: #bd3124;
           display: flex;
@@ -272,32 +335,33 @@ export default {
           color: #fff;
           padding: 5px 10px;
 
-          .room{
-            border-bottom: 1px solid rgba(255,255,255,.3);
-            .room-name{
+          .room {
+            border-bottom: 1px solid rgba(255, 255, 255, .3);
+
+            .room-name {
               font-size: 22px;
             }
           }
 
-          .title{
+          .title {
             font-size: 36px;
             line-height: 2;
           }
 
-          .info{
-            .title{
+          .info {
+            .title {
               font-size: 14px;
               line-height: 2;
               font-weight: normal;
             }
 
-            .info-row{
+            .info-row {
               display: flex;
-              gap:5px;
+              gap: 5px;
               line-height: 2;
               align-items: center;
 
-              .label{
+              .label {
                 min-width: 60px;
               }
             }
@@ -306,7 +370,7 @@ export default {
       }
     }
 
-    .btns{
+    .btns {
       display: flex;
       align-items: center;
       justify-content: center;
@@ -316,7 +380,6 @@ export default {
 
 
 }
-
 
 
 </style>

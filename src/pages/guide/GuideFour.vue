@@ -71,7 +71,7 @@ export default {
       Api.setVariables(
           {"init_status": 3}
       ).then(res => {
-        this.switchTab('/user_list')
+        this.switchTab('/')
       }).catch(e=>{
         console.log(e)
       })

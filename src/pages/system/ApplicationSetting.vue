@@ -84,16 +84,16 @@
               </el-form-item>
               <el-form-item label="时间格式" prop="timeFormat">
                 <el-select v-model="form.timeFormat" style="width: 200px" placeholder="请选择">
-                  <el-option label="12小时制" value="0"/>
-                  <el-option label="24小时制" value="1"/>
+                  <el-option label="12小时制" :value="0"/>
+                  <el-option label="24小时制" :value="1"/>
                 </el-select>
               </el-form-item>
               <el-form-item label="主题" prop="theme">
                 <el-radio-group v-model="form.theme">
-                  <el-radio value="0">
+                  <el-radio :value="0">
                     <div class="theme theme-0"></div>
                   </el-radio>
-                  <el-radio value="1">
+                  <el-radio :value="1">
                     <div class="theme theme-1"></div>
                   </el-radio>
                 </el-radio-group>
@@ -183,10 +183,16 @@ export default {
           { max: 300, message: '服务器地址长度必须小于300字符', trigger: 'blur' },
         ],
         webLogo: [
-          { type: 'array', required: true, message: '请上传管理后台Logo图片', trigger: 'blur' },
+          { type: 'array', validator:(rule, value, callback)=>{
+            if(this.originalWebLogoURL==='') callback(new Error('请上传管理后台Logo图片'))
+            else callback()
+            },message: '请上传管理后台Logo图片', trigger: 'blur' },
         ],
         appLogo: [
-          { type: 'array', required: true, message: '请上传平板端Logo图片', trigger: 'blur' },
+          { type: 'array', validator:(rule, value, callback)=>{
+              if(this.originalAppLogoURL==='') callback(new Error('请上传平板端Logo图片'))
+              else callback()
+            }, message: '请上传平板端Logo图片', trigger: 'blur' },
         ],
         timeFormat: [
           { required: true, message: '请选择一个时间格式', trigger: 'blur'},
@@ -258,44 +264,51 @@ export default {
             if (valid) {
               console.log('submit!')
 
-              const formData = new FormData(); // 图片上传
-              formData.append('logo',this.form.webLogo[0])
+              const requests = []
 
-              // Api.uploadAppLogo(
-              //     formData
-              // ).then(res1=>{
-              //   console.log(res1)
-              // }).catch(e=>{
-              //   console.log(e)
-              // })
+              // 管理端图片上传
+              if(this.form.webLogo.length!==0){
+                const webLogoData = new FormData();
+                webLogoData.append('logo',this.form.webLogo[0].raw)
+                requests.push(Api.uploadWebLogo(webLogoData))
+              }
 
-              Api.setVariables(
+              // 平板端图片上传
+              if(this.form.appLogo.length!==0){
+                const appLogoData = new FormData();
+                appLogoData.append('logo',this.form.appLogo[0].raw)
+                requests.push(Api.uploadAppLogo(appLogoData))
+              }
+
+
+              // 其他数据修改
+              requests.push(Api.setVariables(
                   {
-                    "logo_dir": "",
-                    "app_logo_dir": "",
+                    "init_status": 3,
                     "time_type": this.form.timeFormat,
                     "company_name": this.form.companyName,
                     "server_address": this.form.requestUrl,
                     "theme_type": this.form.theme,
                   }
-              ).then(res => {
-                console.log(res)
-                if (res?.code == 0) {
-                  ElMessage.success({
-                    message: '设置成功',
+              ))
+
+
+              Promise.all(requests)
+                  .then((responses) => {
+                    console.log(responses)
+
+                    ElMessage.success({
+                      message: '设置成功',
+                    })
                   })
-                  // this.switchTab('/guide_five')
-                } else {
-                  ElMessage.error({
-                    message: '设置失败',
-                  })
-                }
-              }).catch(e => {
-                ElMessage.error({
-                  message: '设置失败',
-                })
-                console.log(e)
-              })
+                  .catch((error) => {
+                    ElMessage.error({
+                      message: '设置失败',
+                    })
+                    console.log(error)
+                  });
+
+
             } else {
               ElMessage.error({
                 message: '表单格式错误',

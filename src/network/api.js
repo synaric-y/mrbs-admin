@@ -1,4 +1,6 @@
 import {Request} from "@/network/request.js";
+import axios from 'axios';
+import {HOST} from "@/config.js";
 
 export class Api {
 
@@ -180,8 +182,21 @@ export class Api {
         return Request.post('system_setting%2Fset_variables',params)
     }
 
-    static async uploadAppLogo(params){
-        return Request.post('app_logo',params)
+
+    static async uploadAppLogo(formData){
+        return axios.post(`${HOST}/web/call.php?act=upload%2Fapp_logo`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
+    }
+
+    static async uploadWebLogo(formData){
+        return axios.post(`${HOST}/web/call.php?act=upload%2Fweb_logo`, formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
     }
 
 

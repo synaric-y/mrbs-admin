@@ -14,11 +14,9 @@
         </div>
 
         <div class="sub-buttons">
-          <div class="buttons-wrapper">
-            <span class="jump-btn" @click="switchTab('/')">结束向导</span>
-            <span class="pre-btn" @click="switchTab('/')">预约会议</span>
-            <span class="not-btn">继续添加会议室</span>
-          </div>
+            <el-button class="btn" @click="switchTab('/')">结束向导</el-button>
+            <el-button class="btn" type="primary" @click="switchTab('/')">预约会议</el-button>
+            <el-button class="btn">继续添加会议室</el-button>
         </div>
       </div>
     </el-main>
@@ -107,56 +105,17 @@ export default {
 .sub-buttons {
   display: flex;
   flex-direction: row;
-  justify-content: space-evenly;
+  justify-content: center;
+  gap: 30px;
   width: 100%;
   margin-top: 95px;
   padding-bottom: 15px;
 }
 
-.buttons-wrapper {
-  width: 500px;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-}
-
-.jump-btn {
+.btn {
   padding: 0 15px;
-  border-radius: 2px;
-  opacity: 1;
-  color: #1D2129;
-  background: #F2F3F5;
   height: 36px;
   line-height: 36px;
 }
 
-.pre-btn {
-  padding: 0 15px;
-  border-radius: 2px;
-  opacity: 1;
-  background: #591BB7;
-  color: white;
-  height: 36px;
-  line-height: 36px;
-}
-
-.next-btn {
-  padding: 0 15px;
-  border-radius: 2px;
-  opacity: 1;
-  background: #591BB7;
-  color: white;
-  height: 36px;
-  line-height: 36px;
-}
-
-.not-btn {
-  padding: 0 15px;
-  border-radius: 2px;
-  opacity: 1;
-  color: #1D2129;
-  background: #F2F3F5;
-  height: 36px;
-  line-height: 36px;
-}
 </style>
