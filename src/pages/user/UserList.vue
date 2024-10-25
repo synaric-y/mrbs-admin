@@ -12,11 +12,11 @@
               <el-option style="height: 30px;" v-for="item in accountStatusOptions" :key="item.value"
                 :label="item.label" :value="item.value" />
             </el-select>
-            <el-button size="large" class="el-button-content" @click="searchUser">
+            <el-button class="el-button-content" @click="searchUser">
               <img src="/imgs/button_search.png" alt="Search Icon" class="el-button-img" />
               查询
             </el-button>
-            <el-button size="large" class="el-button-content" @click="addUser(1, null)">
+            <el-button class="el-button-content" @click="addUser(1, null)">
               <img src="/imgs/button_add.png" alt="Add Icon" class="el-button-img" />
               添加
             </el-button>
@@ -105,8 +105,8 @@
           </el-form>
           <template #footer>
             <div class="dialog-footer">
-              <el-button @click="commitAddForm">提交</el-button>
-              <el-button style="margin-left: 50px" type="primary" @click="closedAlert">
+              <el-button @click="commitAddForm" type="primary">提交</el-button>
+              <el-button style="margin-left: 50px"  @click="closedAlert">
                 取消
               </el-button>
             </div>
@@ -132,10 +132,10 @@
           </el-form>
           <template #footer>
             <div class="dialog-footer">
-              <el-button style="margin-left: 50px" type="primary" @click="commitNewPassword">
+              <el-button type="primary" @click="commitNewPassword">
                 Confirm
               </el-button>
-              <el-button @click="dialogResetPasswordForm = false">Cancel</el-button>
+              <el-button style="margin-left: 50px" @click="dialogResetPasswordForm = false">Cancel</el-button>
             </div>
           </template>
         </el-dialog>
@@ -147,10 +147,10 @@
           </div>
           <template #footer>
             <div class="dialog-footer">
-              <el-button style="margin-left: 50px" type="primary" @click="deleteUser">
+              <el-button type="primary" @click="deleteUser">
                 Confirm
               </el-button>
-              <el-button @click="dialogDeleteVisible = false">Cancel</el-button>
+              <el-button style="margin-left: 50px" @click="dialogDeleteVisible = false">Cancel</el-button>
             </div>
           </template>
         </el-dialog>

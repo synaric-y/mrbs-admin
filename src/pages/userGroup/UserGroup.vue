@@ -44,15 +44,19 @@
                 <div v-if="scope.row.source === 'system'">
                   <!-- <span class="group-btn" v-for="(item,func) in scope.row.btns" @click="func">{{ item }}</span> -->
                   <template v-if="scope.row.children">
-                    <span class="group-btn" @click="editGroupBtn(1, scope.row)">组编辑</span>
-                    <span class="group-btn" @click="editGroupBtn(0, scope.row)">新增组</span>
-                    <span class="group-btn" @click="deleteGroupDialog(scope.row)">删除</span>
+                    <div class="operate-wrapper">
+                      <span class="operate-item" @click="editGroupBtn(0, scope.row)">新增</span>
+                      <span class="operate-item" @click="editGroupBtn(1, scope.row)">编辑</span>
+                      <span class="operate-item" @click="deleteGroupDialog(scope.row)">删除</span>
+                    </div>
                   </template>
                   <template v-else>
-                    <span class="group-btn" @click="editGroupBtn(1, scope.row)">组编辑</span>
-                    <!-- <span class="group-btn" @click="editGroupBtn(0, scope.row)">新增组</span> -->
-                    <span class="group-btn" @click="editGroupMember(scope.row)">组成员编辑</span>
-                    <span class="group-btn" @click="deleteGroupDialog(scope.row)">删除</span>
+                    <div class="operate-wrapper">
+                      <!-- <span class="group-btn" @click="editGroupBtn(0, scope.row)">新增</span> -->
+                      <span class="operate-item" @click="editGroupBtn(1, scope.row)">编辑</span>
+                      <span class="operate-item" @click="deleteGroupDialog(scope.row)">删除</span>
+                      <span class="operate-item" @click="editGroupMember(scope.row)">组成员编辑</span>
+                    </div>
                   </template>
                 </div>
                 <div v-else>
