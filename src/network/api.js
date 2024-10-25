@@ -140,6 +140,7 @@ export class Api {
     static async getGroupMember(params){
         return Request.post('user_group%2Fget_group_member',params)
     }
+
     
     static async getADSyncStatus(params){
         return Request.post('user_group/get_sync_ad_state',params)
@@ -168,4 +169,20 @@ export class Api {
     static async getTerminalList(params){
         return Request.post('device%2Fdevice_info',params)
     }
+
+
+    // 引导页&系统设置
+    static async getVariables(params){
+        return Request.post('system_setting%2Fget_variables',params)
+    }
+
+    static async setVariables(params){
+        return Request.post('system_setting%2Fset_variables',params)
+    }
+
+    static async uploadAppLogo(params){
+        return Request.post('app_logo',params)
+    }
+
+
 }
