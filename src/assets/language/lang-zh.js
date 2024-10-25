@@ -16,6 +16,8 @@ export const langZh = {
         logout: '登出',
         search: '查询',
         detail: '查看',
+        delete: '删除',
+        resetPassword: '重置密码',
         exchange: 'Exchange',
         wxwork: '企业微信',
         editSuccess: '编辑成功',
@@ -45,6 +47,7 @@ export const langZh = {
         loginoutUser: '未登录状态',
         minMinuteTitle: '(15分钟)',
         userSync: '用户同步',
+        tableBottomCount: '共{count}条',
     },
     meet: {
         title: '编辑会议',
@@ -158,5 +161,6 @@ export const langZh = {
         deleteUserHint: '确定要删除当前用户吗',
         password1Hint: '两次输入的密码不一致',
         plzEnterUsernameHint: '请输入用户名称',
+        plzSelectLevel: '请选择账号权限',
     }
 }
