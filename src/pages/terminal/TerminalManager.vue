@@ -27,21 +27,21 @@
         </div>
 
         <div class="table-wrapper" style="height: auto;">
-          <el-table :data="userListData" style="margin-top: 56px;" header-cell-class-name="tb-header" max-height="450">
+          <el-table :data="terminals" style="margin-top: 56px;" header-cell-class-name="tb-header" max-height="450">
             <el-table-column prop="number" label="序号" width="60">
               <template #default="scope">
                 {{ scope.$index + 1 }}
               </template>
             </el-table-column>
-            <el-table-column prop="deviceID" label="设备ID" width="80"></el-table-column>
+            <el-table-column prop="device_id" label="设备ID" width="80"></el-table-column>
             <el-table-column prop="version" label="当前版本" width="80"></el-table-column>
-            <el-table-column prop="meet_start" label="设备信息" width="150"></el-table-column>
-            <el-table-column prop="meet_end" label="屏幕分辨率" width="150"></el-table-column>
-            <el-table-column prop="meet_time" label="剩余电量" width="130"></el-table-column>
-            <el-table-column prop="is_cycle" label="设备实时状态" width="130"></el-table-column>
-            <el-table-column prop="meet_status" label="绑定状态" width="80"></el-table-column>
-            <el-table-column prop="display_name" label="绑定会议室" width="100"></el-table-column>
-            <el-table-column prop="display_name" label="接入时间" width="100"></el-table-column>
+            <el-table-column prop="description" label="设备信息" width="150"></el-table-column>
+            <el-table-column prop="resolution" label="屏幕分辨率" width="150"></el-table-column>
+            <el-table-column prop="battery_level" label="剩余电量" width="130"></el-table-column>
+            <el-table-column prop="status" label="设备实时状态" width="130"></el-table-column>
+            <el-table-column prop="is_set" label="绑定状态" width="80"></el-table-column>
+            <el-table-column prop="room_name" label="绑定会议室" width="100"></el-table-column>
+            <el-table-column prop="set_time" label="接入时间" width="100"></el-table-column>
             <el-table-column prop="id" :label="$t('user.tableUser.operate')" width="200">
               <template #default="scope">
                 <div class="operate-wrapper">
@@ -134,6 +134,8 @@ export default {
       startTime: this.$t('base.startDate'),
       endTime: this.$t('base.endDate'),
       dialogDeleteVisible: false,
+      terminals: [],
+      total_num: 0,
     }
   },
   methods: {
@@ -145,48 +147,16 @@ export default {
       this.dialogDeleteVisible = true
     },
 
-    commitAddForm() {
-      console.log('UserList commitAddForm', this.userForm)
-      let params = {}
-      params['action'] = this.dialogUserDetailForm ? 'edit' : 'add'
-      if (this.dialogUserDetailForm && this.userRow.id) {
-        params['id'] = this.userRow.id
-      } else {
-        // 接口修复报错
-      }
-      params['level'] = this.userForm.level
-      if (params['levelName'] == '管理员') {
-        params['level'] = '2'
-      }
-      delete params['levelName']
-      params['name'] = this.userForm.name
-      params['display_name'] = this.userForm.display_name
-      params['email'] = this.userForm.email
-      params['password'] = this.userForm.password
-      params['remark'] = this.userForm.remark
-      this.editUser(params)
-    },
-
     searchUser() {
-      this.getUserList()
+      this.getTerminalList()
     },
     handleCurrentChange(newPage) {
-      console.log('UserList handleCurrentChange newPage:', newPage, this.page_number)
-      // if (newPage != this.page_number) {
-      // this.page_number = newPage
-      this.getUserList()
-      // }
-    },
-    handleSwitchChange(row) {
-      if (!this.initialized) {
-        return
-      }
-      console.log('UserList handleCurrentChange id: status', row)
-      this.updateUserDisabled(row)
+      console.log('TerminalManager handleCurrentChange newPage:', newPage, this.page_number)
+      this.page_number = newPage
     },
 
-    editUser(params) {
-      console.log('UserList editUser params', params)
+    unbindDevice() {
+      console.log('TerminalManager unbindDevice')
       Api.editUser(params).then(({ data, code, msg }) => {
         this.closedAlert()
         if (code == 0) {
@@ -196,41 +166,23 @@ export default {
         }
       })
     },
-    getUserList() {
-      return
-      let params = {}
-      params['name'] = this.keyword
-      params['pagesize'] = 20
-      params['pagenum'] = this.page_number
-      const selectedItem = this.accountStatusOptions.filter(item => item.value === this.accountStatusVal)
-      const disabled = selectedItem[0].value
-      params['disabled'] = disabled
-      console.log('UserList getUserList params:', params)
-      // Api.getAllUsers
-      Api.getAllUsers(params).then(({ code, msg, data }) => {
-        this.initialized = true
-        if (code == 0 && data && data.users) {
+    
+    getTerminalList() {
+      Api.getTerminalList({}).then(({ data, code, msg }) => {
+        if (code == 0 && data) {
           data.users.forEach(it => {
-            if (!it['email']) {
-              it["email"] = '无邮箱'
-            }
-            if (!it['create_time']) {
-              it["create_time"] = '无'
-            }
-            it['levelname'] = (it['level'] == '1' ? '普通用户' : '管理员')
-            it["permissions"] = (it['level'] == '1' ? '普通用户' : '管理员')
-            // it['disabled'] = !parseInt(it['disabled'])
+            // if (!it['email']) {
+            //   it["email"] = '无邮箱'
+            // }
           })
-          console.log('UserList getUserList data.users:', data.users)
-          this.userListData = data.users
+          this.terminals = data
           this.total_num = data.total_num
         }
       })
     },
   },
   mounted() {
-    this.setTab('/user')
-    this.getUserList()
+    this.getTerminalList()
   }
 }
 </script>
