@@ -110,18 +110,18 @@
 
 
         <el-dialog v-model="dialogResetPasswordForm" :title="$t('base.resetPassword')" width="550">
-          <el-form :model="passwordForm">
+          <el-form :model="passwordForm"  :rules="passwordRules">
             <el-form-item :label="$t('user.tableUser.name')" label-width="90px" style="margin-right: 140px;">
               <el-input v-model="passwordForm.name" autocomplete="off" readonly />
             </el-form-item>
-            <el-form-item :label="$t('user.formUser.password0')" label-width="90px" style="margin-right: 50px;">
+            <el-form-item prop="newPassword" :label="$t('user.formUser.password0')" label-width="90px" style="margin-right: 50px;">
               <div class="reset-password">
                 <el-input v-model="passwordForm.newPassword" autocomplete="off" />
                 <el-button style="margin-left: 20px" @click="creatPassword">{{$t('base.generate')}}</el-button>
                 <el-button @click="copyPassword">{{$t('base.copy')}}</el-button>
               </div>
             </el-form-item>
-            <el-form-item :label="$t('user.formUser.password1')" label-width="90px" style="margin-right: 140px;">
+            <el-form-item  prop="againPassword" :label="$t('user.formUser.password1')" label-width="90px" style="margin-right: 140px;">
               <el-input v-model="passwordForm.againPassword" autocomplete="off" />
             </el-form-item>
           </el-form>
@@ -159,6 +159,7 @@ import { PageMixin } from "@/pages/PageMixin.js";
 import { Api } from "@/network/api.js";
 import { ElMessage } from "element-plus/es";
 import { Common } from "@/common/common";
+import { Value } from "sass-embedded";
 export default {
   mixins: [PageMixin],
   data() {
@@ -209,6 +210,31 @@ export default {
         name: '',
         newPassword: '',
         againPassword: ''
+      },
+      validateNewPassword: (rule, value, callback, source, options) => {
+            if (value === '') {
+              callback(new Error('请输入密码'))
+            } else {
+              if (!passwordRuleFormRef.value) return
+              passwordRuleFormRef.value.validateField('checkPass')
+              callback()
+          }
+        },
+        validateAgainPassword: (rule, value, callback, source, options) => {
+            if (value === '') {
+              callback(new Error('请输入确认密码'))
+            } else {
+              if (passwordForm.newPassword !== value) {
+                callback(new Error('二次输入密码不一致'))
+              }
+              if (!passwordRuleFormRef.value) return
+              passwordRuleFormRef.value.validateField('checkPass')
+              callback()
+          }
+        },
+      passwordRules:{
+        newPassword:{required: true, message: this.$t('base.noDataHint'), trigger: 'blur',validator:validateNewPassword},
+        againPassword:{required: true, message: this.$t('base.noDataHint'), trigger: 'blur',validator:validateAgainPassword},
       },
       keyword: '',
       page_number: 1,
