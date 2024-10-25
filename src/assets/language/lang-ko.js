@@ -16,6 +16,8 @@ export const langKo = {
         logout: '로그아웃',
         search: '질문',
         detail: '세부',
+        delete: '삭제',
+        resetPassword: '비밀번호 재설정',
         exchange: 'Exchange',
         wxwork: '엔터프라이즈 위챗',
         editSuccess: '수정되었습니다.',
@@ -45,6 +47,7 @@ export const langKo = {
         loginoutUser: '로그인되지 않은 상태',
         minMinuteTitle: '(15분)',
         userSync: '사용자 동기화',
+        tableBottomCount: '총 {count}개 항목',
     },
     meet: {
         title: '편집회의',
@@ -157,5 +160,6 @@ export const langKo = {
         deleteUserHint: '현재 사용자를 삭제하시겠습니까?',
         password1Hint: '두 번 입력한 비밀번호가 일치하지 않습니다.',
         plzEnterUsernameHint: '사용자 이름을 입력하세요',
+        plzSelectLevel: '계정 권한을 선택하세요',
     }
 }

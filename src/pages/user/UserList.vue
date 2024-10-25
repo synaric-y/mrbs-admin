@@ -58,46 +58,37 @@
             <el-table-column prop="id" :label="$t('user.tableUser.operate')" width="300">
               <template #default="scope">
                 <div class="operate-wrapper">
-                  <span class="operate-item" @click="resetPassword(scope.row)">重置密码</span>
-                  <span class="operate-item" @click="addUser(0, scope.row)">查看</span>
-                  <span class="operate-item" @click="deleteUserPop(scope.row)">删除</span>
+                  <span class="operate-item" @click="resetPassword(scope.row)">{{$t('base.resetPassword')}}</span>
+                  <span class="operate-item" @click="addUser(0, scope.row)">{{$t('base.detail')}}</span>
+                  <span class="operate-item" @click="deleteUserPop(scope.row)">{{$t('base.delete')}}</span>
                 </div>
               </template>
             </el-table-column>
           </el-table>
         </div>
         <div class="table-pagination-block">
-          <div class="table-demonstration">共{{ total_num }}条</div>
+          <div class="table-demonstration">{{$t('base.tableBottomCount', total_num)}}</div>
           <el-pagination  v-model:current-page="page_number" @current-change="handleCurrentChange" layout="prev, pager, next" :default-page-size="20" :total="total_num" />
         </div>
 
         <el-dialog v-model="dialogFormVisible" :title="userDetailTitle" width="550">
-          <el-form :model="userForm">
-            <div class="request-wrapper">
-              <img class="request-tag" src="/imgs/request_icon.png" alt="">
-              <el-form-item label="用户名称" label-width="140px" style="margin-right: 50px;">
-                <el-input v-model="userForm.name" autocomplete="off" />
-              </el-form-item>
-            </div>
-            <div class="request-wrapper">
-              <img class="request-tag" style="left: 85px;" src="/imgs/request_icon.png" alt="">
-              <el-form-item label="账号" label-width="140px" style="margin-right: 50px;">
-                <!-- :readonly="dialogUserDetailForm" -->
-                <el-input v-model="userForm.display_name" autocomplete="off" />
-              </el-form-item>
-            </div>
-            <div class="request-wrapper">
-              <img class="request-tag"  style="left: 85px;" src="/imgs/request_icon.png" alt="">
-              <el-form-item label="密码" label-width="140px" style="margin-right: 50px;">
-                <el-input v-model="userForm.password" autocomplete="off" />
-              </el-form-item>
-            </div>
-            <el-form-item label="邮箱" label-width="140px" style="margin-right: 50px;">
+          <el-form :model="userForm" :rules="rules">
+            <el-form-item prop="name" :label="$t('user.tableUser.name')" label-width="140px" style="margin-right: 50px;">
+              <el-input v-model="userForm.name" autocomplete="off" />
+            </el-form-item>
+            <el-form-item prop="display_name" :label="$t('user.tableUser.displayName')" label-width="140px" style="margin-right: 50px;">
+              <!-- :readonly="dialogUserDetailForm" -->
+              <el-input v-model="userForm.display_name" autocomplete="off" />
+            </el-form-item>
+            <el-form-item prop="password" :label="$t('user.formUser.password0')" label-width="140px" style="margin-right: 50px;">
+              <el-input v-model="userForm.password" autocomplete="off" />
+            </el-form-item>
+            <el-form-item :label="$t('user.tableUser.email')" label-width="140px" style="margin-right: 50px;">
               <el-input v-model="userForm.email" autocomplete="off" />
             </el-form-item>
-            <el-form-item label="账号权限" label-width="140px" style="margin-right: 50px;">
+            <el-form-item :label="$t('user.tableUser.level')" label-width="140px" style="margin-right: 50px;">
               <!-- :disabled="dialogUserDetailForm" -->
-              <el-select v-model="userForm.levelName" placeholder="请选择账号权限" >
+              <el-select v-model="userForm.levelName" :placeholder="$t('user.plzSelectLevel')" >
                 <el-option label="普通用户" value="1" />
                 <el-option label="管理员" value="2" />
               </el-select>
@@ -189,6 +180,17 @@ export default {
         this.$t('user.role.level1'),
         this.$t('user.role.level2'),
       ],
+      rules: {
+        name: [
+          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
+        ],
+        display_name: [
+          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
+        ],
+        password: [
+          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
+        ],
+      },
       dialogFormVisible: false,
       dialogUserDetailForm: false,
       userDetailTitle: '添加用户',

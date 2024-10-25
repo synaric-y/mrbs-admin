@@ -16,6 +16,8 @@ export const langEn = {
         logout: 'Logout',
         search: 'Search',
         detail: 'Detail',
+        delete: 'Delete',
+        resetPassword: 'Reset Password',
         exchange: 'Exchange',
         wxwork: 'Wxwork',
         editSuccess: 'Edited successfully',
@@ -45,6 +47,7 @@ export const langEn = {
         loginoutUser: 'Not logged in',
         minMinuteTitle: '(15 minutes)',
         userSync: 'Sync Users',
+        tableBottomCount: '{count} items in total',
     },
     meet: {
         title: 'Editing Meetings',
@@ -156,5 +159,6 @@ export const langEn = {
         deleteUserHint: 'Are you sure you want to delete this user?',
         password1Hint: 'The passwords are inconsistent',
         plzEnterUsernameHint: 'Enter username',
+        plzSelectLevel: 'Select account level',
     }
 }
