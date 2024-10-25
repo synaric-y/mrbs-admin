@@ -9,10 +9,13 @@ export const langZh = {
         roomManagement: '会议室管理',
         userManagement: '用户管理',
         add: '+ 添加',
+        add2: '添加',
         plzSelect: '请选择',
         confirm: '确定',
         cancel: '取消',
         logout: '登出',
+        search: '查询',
+        detail: '查看',
         exchange: 'Exchange',
         wxwork: '企业微信',
         editSuccess: '编辑成功',
@@ -41,6 +44,7 @@ export const langZh = {
         passTimeError: '不能选择已过去的时间',
         loginoutUser: '未登录状态',
         minMinuteTitle: '(15分钟)',
+        userSync: '用户同步',
     },
     meet: {
         title: '编辑会议',
@@ -131,6 +135,8 @@ export const langZh = {
             email: 'Email地址',
             updateTime: '最近更新',
             loginTime: '最近登录',
+            createTime: '创建时间',
+            status: '状态',
             operate: '操作',
         },
         formUser: {
@@ -148,7 +154,9 @@ export const langZh = {
         },
         addUser: '新增用户',
         editUser: '编辑用户',
+        userList: '用户列表',
         deleteUserHint: '确定要删除当前用户吗',
         password1Hint: '两次输入的密码不一致',
+        plzEnterUsernameHint: '请输入用户名称',
     }
 }

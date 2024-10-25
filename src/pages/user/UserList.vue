@@ -4,9 +4,9 @@
       <div class="sub-page-content">
         <div class="sub-title-wrapper" style="margin-left: 20px;">
           <!-- <div class="sub-title">{{ $t("base.userManagement") }}</div> -->
-          <div class="page-title">用户列表</div>
+          <div class="page-title">{{$t('user.userList')}}</div>
           <div class="filter-wrapper" style="margin-top: 20px;height: 30px;">
-            <el-input v-model="keyword" style="width: 140px" placeholder="请输入用户名称" />
+            <el-input v-model="keyword" style="width: 140px" :placeholder="$t('user.plzEnterUsernameHint')" />
             <el-select class="account-status-select" v-model="accountStatusVal" placeholder="Select" size="large"
               style="width: 140px;margin-left: 25px;min-height: 30px;">
               <el-option style="height: 30px;" v-for="item in accountStatusOptions" :key="item.value"
@@ -14,15 +14,15 @@
             </el-select>
             <el-button class="el-button-content" @click="searchUser">
               <img src="/imgs/button_search.png" alt="Search Icon" class="el-button-img" />
-              查询
+              {{$t('base.search')}}
             </el-button>
             <el-button class="el-button-content" @click="addUser(1, null)">
               <img src="/imgs/button_add.png" alt="Add Icon" class="el-button-img" />
-              添加
+              {{$t('base.add2')}}
             </el-button>
             <el-button size="large" class="el-button-content" style="width: 112px;">
               <img src="/imgs/button_reflesh.png" alt="Sync Icon" class="el-button-img" />
-              用户同步
+              {{$t('base.userSync')}}
             </el-button>
           </div>
         </div>
@@ -38,22 +38,22 @@
                 {{ scope.$index + 1 }}
               </template>
             </el-table-column>
-            <el-table-column prop="name" label="用户名称" width="130">
+            <el-table-column prop="name" :label="$t('user.tableUser.displayName')" width="130">
             </el-table-column>
-            <el-table-column prop="display_name" label="账号" width="130">
+            <el-table-column prop="display_name" :label="$t('user.tableUser.name')" width="130">
             </el-table-column>
-            <el-table-column prop="email" label="邮箱">
+            <el-table-column prop="email" :label="$t('user.tableUser.email')">
             </el-table-column>
-            <el-table-column prop="status" label="状态" width="100" v-if="!isLoading">
+            <el-table-column prop="status" :label="$t('user.tableUser.status')" width="100" v-if="!isLoading">
               <template #default="scope">
                 <el-switch v-model="scope.row.status"
                   style="--el-switch-on-color: #591BB7; --el-switch-off-color: #A8ABB2" :active-value="true"
                   :inactive-value="false" @change="handleSwitchChange(scope.row)" />
               </template>
             </el-table-column>
-            <el-table-column prop="permissions" label="账号权限" width="150">
+            <el-table-column prop="permissions" :label="$t('user.tableUser.level')" width="150">
             </el-table-column>
-            <el-table-column prop="create_time" label="创建时间" width="200">
+            <el-table-column prop="create_time" :label="$t('user.tableUser.createTime')" width="200">
             </el-table-column>
             <el-table-column prop="id" :label="$t('user.tableUser.operate')" width="300">
               <template #default="scope">
@@ -74,20 +74,20 @@
         <el-dialog v-model="dialogFormVisible" :title="userDetailTitle" width="550">
           <el-form :model="userForm">
             <div class="request-wrapper">
-              <img class="request-tag" src="../../../public/imgs/request_icon.png" alt="">
+              <img class="request-tag" src="/imgs/request_icon.png" alt="">
               <el-form-item label="用户名称" label-width="140px" style="margin-right: 50px;">
                 <el-input v-model="userForm.name" autocomplete="off" />
               </el-form-item>
             </div>
             <div class="request-wrapper">
-              <img class="request-tag" style="left: 85px;" src="../../../public/imgs/request_icon.png" alt="">
+              <img class="request-tag" style="left: 85px;" src="/imgs/request_icon.png" alt="">
               <el-form-item label="账号" label-width="140px" style="margin-right: 50px;">
                 <!-- :readonly="dialogUserDetailForm" -->
                 <el-input v-model="userForm.display_name" autocomplete="off" />
               </el-form-item>
             </div>
             <div class="request-wrapper">
-              <img class="request-tag"  style="left: 85px;" src="../../../public/imgs/request_icon.png" alt="">
+              <img class="request-tag"  style="left: 85px;" src="/imgs/request_icon.png" alt="">
               <el-form-item label="密码" label-width="140px" style="margin-right: 50px;">
                 <el-input v-model="userForm.password" autocomplete="off" />
               </el-form-item>

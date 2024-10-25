@@ -9,10 +9,13 @@ export const langKo = {
         roomManagement: '회의실 관리',
         userManagement: '사용자 관리',
         add: '+ 추가',
+        add2: '추가',
         plzSelect: '선택하세요',
         confirm: '확신하는',
         cancel: '취소',
         logout: '로그아웃',
+        search: '질문',
+        detail: '세부',
         exchange: 'Exchange',
         wxwork: '엔터프라이즈 위챗',
         editSuccess: '수정되었습니다.',
@@ -41,6 +44,7 @@ export const langKo = {
         passTimeError: '과거 시간은 선택할 수 없습니다.',
         loginoutUser: '로그인되지 않은 상태',
         minMinuteTitle: '(15분)',
+        userSync: '사용자 동기화',
     },
     meet: {
         title: '편집회의',
@@ -130,6 +134,8 @@ export const langKo = {
             email: '이메일 주소',
             updateTime: '최신 업데이트',
             loginTime: '최근 로그인됨',
+            createTime: '생성 시간',
+            status: '상태',
             operate: '작동하다',
         },
         formUser: {
@@ -147,7 +153,9 @@ export const langKo = {
         },
         addUser: '새 사용자 추가',
         editUser: '사용자 편집',
+        userList: '사용자 목록',
         deleteUserHint: '현재 사용자를 삭제하시겠습니까?',
         password1Hint: '두 번 입력한 비밀번호가 일치하지 않습니다.',
+        plzEnterUsernameHint: '사용자 이름을 입력하세요',
     }
 }
