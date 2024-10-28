@@ -8,15 +8,15 @@
           <div class="filter-wrapper" style="margin-top: 20px;height: 30px;">
             <el-input v-model="keyword" style="width: 140px;height: 30px" placeholder="请输入设备ID" />
             <el-select class="account-status-select" v-model="statusVal" placeholder="Select" size="default"
-              style="width: 140px;margin-left: 25px;min-height: 30px;">
+              style="width: 140px;margin-left: 25px;min-height: 30px;" @change="onStatusChange">
               <el-option style="height: 30px;" v-for="item in statusOptions" :key="item.value"
                 :label="item.label" :value="item.value" />
             </el-select>
 
             <el-select class="account-status-select" v-model="roomVal" placeholder="Select" size="default"
-              style="width: 140px;margin-left: 25px;min-height: 30px;">
-              <el-option style="height: 30px;" v-for="item in roomOptions" :key="item.value" :label="item.label"
-                :value="item.value" />
+              style="width: 140px;margin-left: 25px;min-height: 30px;" @change="onRoomChange">
+              <el-option style="height: 30px;" v-for="item in roomOptions" :key="item.room_id" :label="item.title"
+                :value="item.room_id" />
             </el-select>
 
             <el-button size="large" class="el-button-content" @click="searchUser">
@@ -33,13 +33,13 @@
                 {{ scope.$index + 1 }}
               </template>
             </el-table-column>
-            <el-table-column prop="device_id" label="设备ID" width="80"></el-table-column>
-            <el-table-column prop="version" label="当前版本" width="80"></el-table-column>
+            <el-table-column prop="device_id" label="设备ID" width="200"></el-table-column>
+            <el-table-column prop="version" label="当前版本" width="100"></el-table-column>
             <el-table-column prop="description" label="设备信息" width="150"></el-table-column>
             <el-table-column prop="resolution" label="屏幕分辨率" width="150"></el-table-column>
-            <el-table-column prop="battery_level" label="剩余电量" width="130"></el-table-column>
+            <el-table-column prop="battry_text" label="剩余电量" width="130"></el-table-column>
             <el-table-column prop="status" label="设备实时状态" width="130"></el-table-column>
-            <el-table-column prop="is_set" label="绑定状态" width="80"></el-table-column>
+            <el-table-column prop="bind_room" label="绑定状态" width="80"></el-table-column>
             <el-table-column prop="room_name" label="绑定会议室" width="100"></el-table-column>
             <el-table-column prop="set_time" label="接入时间" width="100"></el-table-column>
             <el-table-column prop="id" :label="$t('user.tableUser.operate')" width="200">
@@ -84,37 +84,78 @@ export default {
   mixins: [PageMixin],
   data() {
     return {
-      statusVal: 0,
+      keyword:'',
+      statusVal: -1,
       accountSwitch: 1,
       statusOptions: [
+      {
+          value: -1,
+          label: '所有',
+        },
         {
           value: 0,
-          label: '已结束',
+          label: '下线',
         }, {
           value: 1,
-          label: '进行中',
-        }, {
-          value: 2,
-          label: '未开始',
+          label: '在线',
         }],
-      roomVal: 0,
-      roomOptions: [
-        {
-          value: 0,
-          label: 'A',
-        }, {
-          value: 1,
-          label: 'B',
-        }],
+      roomVal: 'all',
+      roomOptions: [],
       pendingDeleteName: null,
       page_number: 1,
       dialogDeleteVisible: false,
       selectRow: null,
       terminals: [],
       total_num: 0,
+      select_status_id:-1,
+      select_room_id: -1,
+      page_cache_areas:[],
     }
   },
   methods: {
+
+    onStatusChange(e) {
+      console.log('TerminalManager onStatusChange e', e)
+      this.select_status_id = e
+
+    },
+    onRoomChange(e) {
+      console.log('TerminalManager onRoomChange e', e)
+      this.select_room_id = e
+    },
+
+    getAllAreas() {
+      if (this.page_cache_areas.length > 0) {
+        console.log('TerminalManager getAllAreas page_cache_areas', this.page_cache_areas)
+        return
+      }
+      Api.getAreaRooms().then(({ data, code, msg }) => {
+        if (code != 0) {
+          ElMessage({
+            message: this.$t('base.getAreaError'),
+            type: 'error'
+          })
+          return
+        }
+        console.log('TerminalManager getAllAreas data', data.areas)
+        this.page_cache_areas = data.areas
+        const select_rooms = []
+        this.page_cache_areas.forEach(area => {
+          area.rooms.forEach(room => {
+            select_rooms.push({
+              area_id: area.area_id,
+              area_name: area.area_name,
+              room_id: room.room_id,
+              room_name: room.room_name,
+              title: `${area.area_name}-${room.room_name}`,
+              disabled: room.disabled,
+            });
+          });
+        });
+        select_rooms.unshift({title: '全部',room_id: -1,room_name: '全部'})
+        this.roomOptions = select_rooms
+      })
+    },
 
     unbindDeviceDialog(row) {
       this.dialogDeleteVisible = true
@@ -148,14 +189,31 @@ export default {
     },
     
     getTerminalList() {
-      Api.getTerminalList({}).then(({ data, code, msg }) => {
+      let params = {}
+      params['name'] = this.keyword
+      params['pagenum'] = this.page_number
+      params['pagesize'] = 20
+      console.log('TerminalManager getTerminalList select_status_id',this.select_status_id)
+      if (this.select_status_id != -1) {
+        params['status'] = this.select_status_id
+      }
+      if (this.select_room_id != -1) {
+        params['room_id'] = this.select_room_id
+      }
+      console.log('TerminalManager getTerminalList params',params)
+      Api.getTerminalList(params).then(({ data, code, msg }) => {
         if (code == 0) {
-          // data.users.forEach(it => {
-            // if (!it['email']) {
-            //   it["email"] = '无邮箱'
-            // }
-          // })
-          this.terminals = data
+
+          data.devices.forEach(it => {
+            it["version"] = !it["version"]?'无':it["version"]
+            it['description'] = !it['description']?'无':it['description']
+            it['status'] = !it['status']?'下线':'上线'
+            it['battry_text'] = it['is_charging']?`充电中${it['battery_level']}`:it['battery_level']
+            it['bind_room'] = it['is_set']?'已绑定':'未绑定'
+            it['set_time'] = it['set_time']?it['set_time']:'无'
+          })
+
+          this.terminals = data.devices
           this.total_num = data.total_num
         }
       })
@@ -163,6 +221,7 @@ export default {
   },
   mounted() {
     this.getTerminalList()
+    this.getAllAreas()
   }
 }
 </script>

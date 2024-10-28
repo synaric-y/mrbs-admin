@@ -47,7 +47,7 @@
             <el-table-column prop="create_by" label="预约人" width="100">
             </el-table-column>
             <el-table-column prop="id" :label="$t('user.tableUser.operate')" width="200">
-              <template #default="scope" >
+              <template #default="scope">
                 <div class="operate-wrapper">
                   <span class="operate-item" @click="editMeetDislog(scope.row)">编辑</span>
                 </div>
