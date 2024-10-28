@@ -30,7 +30,7 @@
         <div class="table-wrapper" style="height: auto;">
           <el-table :data="userListData" style="margin-top: 56px;" header-cell-class-name="tb-header" max-height="450"
             table-layout="auto">
-            <el-table-column prop="number" label="序号" width="120">
+            <el-table-column prop="number" :label="$t('user.tableUser.id')" width="120">
               <template #default="scope">
                 {{ scope.$index + 1 }}
               </template>
@@ -174,10 +174,10 @@ export default {
       accountStatusOptions: [
         {
           value: 0,
-          label: '正常',
+          label: this.$t('base.enabled'),
         }, {
           value: 1,
-          label: '禁用',
+          label: this.$t('base.disabled'),
         }],
       pendingDeleteName: null,
       role: [
@@ -198,7 +198,7 @@ export default {
       },
       dialogFormVisible: false,
       dialogUserDetailForm: false,
-      userDetailTitle: '添加用户',
+      userDetailTitle: this.$t('user.addUser'),
       dialogResetPasswordForm: false,
       dialogDeleteVisible: false,
       userForm: {
@@ -208,7 +208,7 @@ export default {
         email: '',
         remark: '',
         level: '1',
-        levelName: '普通用户',
+        levelName: this.$t('user.role.level1'),
       },
       passwordForm: {
         name: '',
@@ -231,16 +231,16 @@ export default {
   methods: {
     validateNewPassword: (rule, value, callback, source, options) => {
       if (value === '') {
-        callback(new Error('请输入密码'))
+        callback(new Error(this.$t('base.noDataHint')))
       } else {
         callback()
       }
     },
     validateAgainPassword: (rule, value, callback, source, options) => {
       if (value === '') {
-        callback(new Error('请输入确认密码'))
+        callback(new Error(this.$t('base.noDataHint')))
       } else if(this.passwordForm.newPassword !== value) {
-        callback(new Error('二次输入密码不一致'))
+        callback(new Error(this.$t('user.password1Hint')))
       } else {
         callback()
       }
@@ -249,7 +249,7 @@ export default {
       this.dialogFormVisible = true
       if (val === 1) {
         this.dialogUserDetailForm = false// Editable for adding a user
-        this.userDetailTitle = '添加用户'
+        this.userDetailTitle = this.$t('user.addUser')
         this.userForm.name = ''
         this.userForm.display_name = ''
         this.userForm.password = ''
@@ -257,7 +257,7 @@ export default {
         this.userForm.remark = ''
       } else {
         this.dialogUserDetailForm = true // Read-only for viewing user details
-        this.userDetailTitle = '查看用户'
+        this.userDetailTitle = this.$t('user.viewUser')
         this.userForm.name = row.name
         this.userForm.display_name = row.display_name
         this.userForm.password = ''
@@ -336,9 +336,9 @@ export default {
       console.log('UserList copyPassword:', this.passwordForm.newPassword)
       if (this.passwordForm.newPassword) {
         navigator.clipboard.writeText(this.passwordForm.newPassword).then(function () {
-          ElMessage('复制粘贴板成功')
+          ElMessage(this.$t('base.copiedToClipboard'))
         }, function (error) {
-          ElMessage('复制粘贴板失败')
+
         })
       }
     },
@@ -390,10 +390,10 @@ export default {
         if (code == 0 && data && data.users) {
           data.users.forEach(it => {
             if (!it['email']) {
-              it["email"] = '无邮箱'
+              it["email"] = this.$t('base.none')
             }
             if (!it['create_time']) {
-              it["create_time"] = '无'
+              it["create_time"] = this.$t('base.none')
             }
             it['levelname'] = (it['level'] == '1' ? this.$t('user.role.level1') : this.$t('user.role.level2'))
             it["permissions"] = (it['level'] == '1' ? this.$t('user.role.level1') : this.$t('user.role.level2'))
