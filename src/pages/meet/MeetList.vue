@@ -47,7 +47,7 @@
             <el-table-column prop="create_by" label="预约人" width="100">
             </el-table-column>
             <el-table-column prop="id" :label="$t('user.tableUser.operate')" width="200">
-              <template #default="scope">
+              <template #default="scope" >
                 <div class="operate-wrapper">
                   <span class="operate-item" @click="editMeetDislog(scope.row)">编辑</span>
                 </div>
@@ -141,9 +141,9 @@ export default {
         const area_rooms = this.page_cache_areas.filter((item) =>
           item.area_id === e
         )
-        console.log('MeetList onAreaChange area_rooms', area_rooms)
+        console.log('MeetList onAreaChange area_rooms', area_rooms[0])
         const select_rooms = [];
-        area_rooms.forEach(room => {
+        area_rooms[0].rooms.forEach(room => {
           select_rooms.push({
             room_id: room.room_id,
             room_name: room.room_name,
@@ -151,7 +151,7 @@ export default {
             disabled: room.disabled,
           });
         });
-        this.roomOptions = area_rooms[0].rooms
+        this.roomOptions = select_rooms
       } else {
         const select_rooms = [];
         this.page_cache_areas.forEach(area => {

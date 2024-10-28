@@ -211,9 +211,9 @@ export default {
         this.meetForm.room = data.room_name
         this.meetForm.area = data.area_name
         this.meetForm.start_day = moment.tz(data.start_time * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
-        this.start_hour =  moment.tz(data.start_time * 1000, 'Asia/Shanghai').format('HH:mm')
+        this.meetForm.start_hour =  moment.tz(data.start_time * 1000, 'Asia/Shanghai').format('HH:mm')
         this.meetForm.end_day = moment.tz(data.end_time * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
-        this.end_hour = this.start_hour =  moment.tz(data.end_time * 1000, 'Asia/Shanghai').format('HH:mm')
+        this.meetForm.end_hour = this.start_hour =  moment.tz(data.end_time * 1000, 'Asia/Shanghai').format('HH:mm')
       })
     },
     getGroupMember() {
