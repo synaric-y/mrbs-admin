@@ -9,17 +9,17 @@
             <!-- <el-input v-model="keyword" style="width: 140px" placeholder="请输入用户名称" /> -->
             <el-select class="account-status-select" v-model="statusVal" placeholder="Select" size="default"
               style="width: 140px;margin-left: 25px;min-height: 30px;">
-              <el-option style="height: 30px;" v-for="item in statusOptions" :key="item.value"
-                :label="item.label" :value="item.value" />
+              <el-option style="height: 30px;" v-for="item in statusOptions" :key="item.value" :label="item.label"
+                :value="item.value" />
             </el-select>
             <el-select class="account-status-select" v-model="areaStatusVal" placeholder="Select" size="default"
               style="width: 140px;margin-left: 25px;min-height: 30px;" @change="onAreaChange">
-              <el-option style="height: 30px;" v-for="item in page_cache_areas" :key="item.area_id" :label="item.area_name"
-                :value="item.area_id"/>
+              <el-option style="height: 30px;" v-for="item in page_cache_areas" :key="item.area_id"
+                :label="item.area_name" :value="item.area_id" />
             </el-select>
             <el-select class="account-status-select" v-model="roomVal" placeholder="Select" size="default"
               style="width: 140px;margin-left: 25px;min-height: 30px;" @change="onRoomChange">
-              <el-option style="height: 30px;" v-for="item in roomOptions" :key="item.room_id" :label="item.room_name"
+              <el-option style="height: 30px;" v-for="item in roomOptions" :key="item.room_id" :label="item.title"
                 :value="item.room_id" />
             </el-select>
             <!-- <el-date-picker style="margin-left: 20px;" v-model="baseTime" type="daterange" :range-separator="$t('base.to')"
@@ -62,7 +62,7 @@
         </div>
 
         <CycleMeetCMP v-if="dialogCycleMeet" :entry_id="entry_id" @close="dialogCycleMeet = false" />
-        <SingleMeetCMP v-if="dialogSingleMeet" :entry_id="entry_id" @close="dialogSingleMeet = false"  />
+        <SingleMeetCMP v-if="dialogSingleMeet" :entry_id="entry_id" @close="dialogSingleMeet = false" />
       </div>
     </el-main>
   </el-container>
@@ -77,13 +77,13 @@ import moment from "moment";
 import CycleMeetCMP from "@/components/CycleMeetCMP.vue";
 import SingleMeetCMP from "@/components/SingleMeetCMP.vue";
 export default {
-  components: { CycleMeetCMP,SingleMeetCMP },
+  components: { CycleMeetCMP, SingleMeetCMP },
   mixins: [PageMixin],
   data() {
     return {
       meetListData: [
         { "number": 1, "area": 'shanghai', "room": '会议室A', "meet_start": '2024-10-12', "meet_end": '2024-12-30', "meet_time": '13:00-14:00', "is_cycle": '是', "meet_status": '未开始', "display_name": 'joy', "is_edit": '1' },
-       ],
+      ],
       statusVal: 0,
       accountSwitch: 1,
       statusOptions: [
@@ -135,23 +135,40 @@ export default {
       this.getMeetList()
     },
     onAreaChange(e) {
-      console.log('MeetList onAreaChange e',e,this.page_cache_areas)
+      console.log('MeetList onAreaChange e', e, this.page_cache_areas)
       this.select_area_id = e
       if (this.select_area_id != -1) {
         const area_rooms = this.page_cache_areas.filter((item) =>
           item.area_id === e
         )
-        console.log('MeetList onAreaChange area_rooms',area_rooms)
+        console.log('MeetList onAreaChange area_rooms', area_rooms)
+        const select_rooms = [];
+        area_rooms.forEach(room => {
+          select_rooms.push({
+            room_id: room.room_id,
+            room_name: room.room_name,
+            title: room.room_name,
+            disabled: room.disabled,
+          });
+        });
         this.roomOptions = area_rooms[0].rooms
       } else {
-        const rooms = []
-        for (let index = 0; index < this.page_cache_areas.length; index++) {
-          const area = this.page_cache_areas[index]
-          rooms.push(area.rooms)
-        }
-        this.roomOptions = rooms
+        const select_rooms = [];
+        this.page_cache_areas.forEach(area => {
+          area.rooms.forEach(room => {
+            select_rooms.push({
+              area_id: area.area_id,
+              area_name: area.area_name,
+              room_id: room.room_id,
+              room_name: room.room_name,
+              title: `${area.area_name}-${room.room_name}`,
+              disabled: room.disabled,
+            });
+          });
+        });
+        this.roomOptions = select_rooms
       }
-      console.log('MeetList onAreaChange roomOptions',this.roomOptions)
+      console.log('MeetList onAreaChange roomOptions', this.roomOptions)
     },
     onRoomChange(e) {
       this.select_room_id = e
@@ -164,7 +181,7 @@ export default {
 
     getAllAreas() {
       if (this.page_cache_areas.length > 0) {
-        console.log('MeetList getAllAreas page_cache_areas',this.page_cache_areas)
+        console.log('MeetList getAllAreas page_cache_areas', this.page_cache_areas)
         return
       }
       Api.getAreaRooms().then(({ data, code, msg }) => {
@@ -177,25 +194,29 @@ export default {
         }
         console.log('MeetList getAllAreas data', data.areas)
         this.page_cache_areas = data.areas
+        this.getAreaRooms()
       })
-
     },
 
     getAreaRooms() {
-      const select_rooms = this.page_cache_areas.filter(item => item.area_name === this.areaStatusVal)
-      console.log('MeetList getAreaRooms',select_rooms)
-
-
-      // Api.getAreaRooms({ id: this.area_id }).then(({ data, code }) => {
-      //   if (code != 0) {
-      //     ElMessage({
-      //       message: this.$t('base.getAreaError'),
-      //       type: 'error'
-      //     })
-      //     return
-      //   }
-      //   console.log('MeetList getAreaRooms data', data)
-      // })
+      if (this.page_cache_areas.length > 0) {
+        const select_rooms = [];
+        this.page_cache_areas.forEach(area => {
+          area.rooms.forEach(room => {
+            select_rooms.push({
+              area_id: area.area_id,
+              area_name: area.area_name,
+              room_id: room.room_id,
+              room_name: room.room_name,
+              title: `${area.area_name}-${room.room_name}`,
+              disabled: room.disabled,
+            });
+          });
+        });
+        this.roomOptions = select_rooms
+      } else {
+        this.getAllAreas()
+      }
     },
 
     editMeet(params) {
@@ -214,13 +235,6 @@ export default {
       const select_status = this.statusOptions.filter((item) =>
         item.value === this.statusVal
       )
-      // const select_area = this.areaOptions.filter((item) =>
-      //   item.value == this.select_area_id
-      // )
-      // const select_room = this.roomOptions.filter((item) =>
-      //   item.value === this.select_room_id
-      // )
-      // console.log('MeetList getMeetList params select_room:', this.roomVal,select_room)
       if (select_status && select_status[0]) {
         params['status'] = select_status[0].value
       }
@@ -233,15 +247,14 @@ export default {
       params['pagesize'] = 20
       params['pagenum'] = this.page_number
       console.log('MeetList getMeetList params:', params)
-      // Api.getAllUsers
       Api.getMeetList(params).then(({ code, msg, data }) => {
         this.initialized = true
         if (code == 0 && data) {
           data.entries.forEach(it => {
             it["startTime"] = moment.tz(it['start_time'] * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
             it['endTime'] = moment.tz(it['end_time'] * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
-            it['is_repeat_text'] = it['is_repeat'] == 0?'否':'是'
-            it['status_text'] = it['status'] == 0?'未开始':it['status'] == 1?'进行中':'已结束'
+            it['is_repeat_text'] = it['is_repeat'] == 0 ? '否' : '是'
+            it['status_text'] = it['status'] == 0 ? '未开始' : it['status'] == 1 ? '进行中' : '已结束'
             // it['meet_time'] = '无'
           })
           console.log('MeetList getMeetList data:', data)
