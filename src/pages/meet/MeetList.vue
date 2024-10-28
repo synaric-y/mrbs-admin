@@ -13,14 +13,14 @@
                 :label="item.label" :value="item.value" />
             </el-select>
             <el-select class="account-status-select" v-model="areaStatusVal" placeholder="Select" size="default"
-              style="width: 140px;margin-left: 25px;min-height: 30px;">
-              <el-option style="height: 30px;" v-for="item in areaOptions" :key="item.value" :label="item.label"
-                :value="item.value" />
+              style="width: 140px;margin-left: 25px;min-height: 30px;" @change="onAreaChange">
+              <el-option style="height: 30px;" v-for="item in page_cache_areas" :key="item.area_id" :label="item.area_name"
+                :value="item.area_id"/>
             </el-select>
             <el-select class="account-status-select" v-model="roomVal" placeholder="Select" size="default"
-              style="width: 140px;margin-left: 25px;min-height: 30px;">
-              <el-option style="height: 30px;" v-for="item in roomOptions" :key="item.value" :label="item.label"
-                :value="item.value" />
+              style="width: 140px;margin-left: 25px;min-height: 30px;" @change="onRoomChange">
+              <el-option style="height: 30px;" v-for="item in roomOptions" :key="item.room_id" :label="item.room_name"
+                :value="item.room_id" />
             </el-select>
             <!-- <el-date-picker style="margin-left: 20px;" v-model="baseTime" type="daterange" :range-separator="$t('base.to')"
               :start-placeholder="startTime" :end-placeholder="endTime" @change="choseDate" /> -->
@@ -41,7 +41,7 @@
             <el-table-column prop="room_name" label="会议室" width="100"></el-table-column>
             <el-table-column prop="startTime" label="预约开始时间" width="150"></el-table-column>
             <el-table-column prop="endTime" label="预约结束时间" width="150"></el-table-column>
-            <el-table-column prop="meet_time" label="会议时间" width="130"></el-table-column>
+            <el-table-column prop="duration" label="会议时间" width="200"></el-table-column>
             <el-table-column prop="is_repeat_text" label="是否周期会议" width="130"></el-table-column>
             <el-table-column prop="status_text" label="会议状态" width="80"></el-table-column>
             <el-table-column prop="create_by" label="预约人" width="100">
@@ -61,7 +61,8 @@
             layout="prev, pager, next" :default-page-size="20" :total="total_num" />
         </div>
 
-        <CycleMeetCMP v-if="dialogCycleMeet" @close="dialogGroupMember = false" />
+        <CycleMeetCMP v-if="dialogCycleMeet" :entry_id="entry_id" @close="dialogCycleMeet = false" />
+        <SingleMeetCMP v-if="dialogSingleMeet" :entry_id="entry_id" @close="dialogSingleMeet = false"  />
       </div>
     </el-main>
   </el-container>
@@ -74,8 +75,9 @@ import { ElMessage } from "element-plus/es";
 import { Common } from "@/common/common";
 import moment from "moment";
 import CycleMeetCMP from "@/components/CycleMeetCMP.vue";
+import SingleMeetCMP from "@/components/SingleMeetCMP.vue";
 export default {
-  components: { CycleMeetCMP },
+  components: { CycleMeetCMP,SingleMeetCMP },
   mixins: [PageMixin],
   data() {
     return {
@@ -96,25 +98,10 @@ export default {
           label: '已结束',
         }],
 
-      areaStatusVal: 0,
-      areaOptions: [
-        {
-          value: 0,
-          label: '上海',
-        }, {
-          value: 1,
-          label: '北京',
-        }],
-
-      roomVal: 0,
-      roomOptions: [
-        {
-          value: 0,
-          label: 'A',
-        }, {
-          value: 1,
-          label: 'B',
-        }],
+      areaStatusVal: 'all',
+      areaOptions: [],
+      roomVal: 'all',
+      roomOptions: [],
       pendingDeleteName: null,
       role: [
         this.$t('user.role.level0'),
@@ -128,22 +115,87 @@ export default {
       startTime: this.$t('base.startDate'),
       endTime: this.$t('base.endDate'),
       dialogCycleMeet: false,
+      entry_id: -1,
+      dialogSingleMeet: false,
+      page_cache_areas: [],
+      select_area_id: -1,
+      select_room_id: -1,
     }
   },
   methods: {
 
     editMeetDislog(row) {
-      this.dialogCycleMeet = true
+      this.dialogSingleMeet = true
+      // this.dialogCycleMeet = true
+      this.entry_id = row.id
       // this.passwordForm.name = row.name
       // this.passwordForm.newPassword = ''
     },
     searchMeet() {
       this.getMeetList()
     },
+    onAreaChange(e) {
+      console.log('MeetList onAreaChange e',e,this.page_cache_areas)
+      this.select_area_id = e
+      if (this.select_area_id != -1) {
+        const area_rooms = this.page_cache_areas.filter((item) =>
+          item.area_id === e
+        )
+        console.log('MeetList onAreaChange area_rooms',area_rooms)
+        this.roomOptions = area_rooms[0].rooms
+      } else {
+        const rooms = []
+        for (let index = 0; index < this.page_cache_areas.length; index++) {
+          const area = this.page_cache_areas[index]
+          rooms.push(area.rooms)
+        }
+        this.roomOptions = rooms
+      }
+      console.log('MeetList onAreaChange roomOptions',this.roomOptions)
+    },
+    onRoomChange(e) {
+      this.select_room_id = e
+    },
     handleCurrentChange(newPage) {
       console.log('MeetList handleCurrentChange newPage:', newPage, this.page_number)
       this.page_number = newPage
       this.getMeetList()
+    },
+
+    getAllAreas() {
+      if (this.page_cache_areas.length > 0) {
+        console.log('MeetList getAllAreas page_cache_areas',this.page_cache_areas)
+        return
+      }
+      Api.getAreaRooms().then(({ data, code, msg }) => {
+        if (code != 0) {
+          ElMessage({
+            message: this.$t('base.getAreaError'),
+            type: 'error'
+          })
+          return
+        }
+        console.log('MeetList getAllAreas data', data.areas)
+        this.page_cache_areas = data.areas
+      })
+
+    },
+
+    getAreaRooms() {
+      const select_rooms = this.page_cache_areas.filter(item => item.area_name === this.areaStatusVal)
+      console.log('MeetList getAreaRooms',select_rooms)
+
+
+      // Api.getAreaRooms({ id: this.area_id }).then(({ data, code }) => {
+      //   if (code != 0) {
+      //     ElMessage({
+      //       message: this.$t('base.getAreaError'),
+      //       type: 'error'
+      //     })
+      //     return
+      //   }
+      //   console.log('MeetList getAreaRooms data', data)
+      // })
     },
 
     editMeet(params) {
@@ -162,24 +214,23 @@ export default {
       const select_status = this.statusOptions.filter((item) =>
         item.value === this.statusVal
       )
-      console.log('MeetList getMeetList params select_status:', this.statusOptions,this.statusVal,select_status)
-      const select_area = this.areaOptions.filter((item) =>
-        item.value === this.areaStatusVal
-      )
-      const select_room = this.roomOptions.filter((item) =>
-        item.value === this.roomVal
-      )
+      // const select_area = this.areaOptions.filter((item) =>
+      //   item.value == this.select_area_id
+      // )
+      // const select_room = this.roomOptions.filter((item) =>
+      //   item.value === this.select_room_id
+      // )
+      // console.log('MeetList getMeetList params select_room:', this.roomVal,select_room)
       if (select_status && select_status[0]) {
-        // params['status'] = select_status[0].value
+        params['status'] = select_status[0].value
       }
-      if (select_area && select_area[0]) {
-        // params['area_id'] = select_area[0].value
+      if (this.select_area_id != -1) {
+        params['area_id'] = this.select_area_id
       }
-      if (select_room && select_room[0]) {
-        // params['room_id'] = select_room[0].value
+      if (this.select_room_id != -1) {
+        params['room_id'] = this.select_room_id
       }
       params['pagesize'] = 20
-      
       params['pagenum'] = this.page_number
       console.log('MeetList getMeetList params:', params)
       // Api.getAllUsers
@@ -191,7 +242,7 @@ export default {
             it['endTime'] = moment.tz(it['end_time'] * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
             it['is_repeat_text'] = it['is_repeat'] == 0?'否':'是'
             it['status_text'] = it['status'] == 0?'未开始':it['status'] == 1?'进行中':'已结束'
-            it['meet_time'] = '无'
+            // it['meet_time'] = '无'
           })
           console.log('MeetList getMeetList data:', data)
           this.meetListData = data.entries
@@ -205,6 +256,7 @@ export default {
   },
   mounted() {
     this.getMeetList()
+    this.getAllAreas()
   }
 }
 </script>

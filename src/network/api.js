@@ -54,11 +54,15 @@ export class Api {
     }
 
     static async getAreaRooms(params) {
-        params["type"] = "all"
-        if(params.id > 0) {
-            params["type"] = "area"
+        if (!params) {
+            params = {}
+            params["type"] = "all"
+        } else {
+            if(params.id > 0) {
+                params["type"] = "area"
+            }
         }
-        return Request.post('get_all_rooms',params)
+        return Request.post('get_info%2Fget_all_rooms',params)
     }
 
     static async getMeetRooms(params) {
@@ -83,7 +87,7 @@ export class Api {
     }
 
     static async getMeetDetail(params) {
-        return Request.post('get_entry_by_id',params)
+        return Request.post('get_info%2Fget_entry_by_id',params)
     }
 
     static async editMeet(params) {

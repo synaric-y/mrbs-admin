@@ -20,47 +20,56 @@
           <el-input v-model="meetForm.title" autocomplete="off" />
         </el-form-item>
         <el-form-item prop="start_day" label="开始时间" style="margin-left: 20px" required>
+          <el-col :span="11">
+            <el-form-item prop="start_day">
+              <el-date-picker v-model="meetForm.start_day" type="date" aria-label="Pick start day"
+                placeholder="Pick start day" style="width: 100%" />
+            </el-form-item>
+          </el-col>
+          <el-col class="text-center" :span="1">
+            <span class="text-gray-500"></span>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item prop="start_hour">
+              <el-time-select v-model="meetForm.start_hour" style="width: 140px;margin-left: 20px" :start="minStartTime"
+                :step="minStep" :end="maxEndTime" :placeholder="$t('base.plzSelect')"
+                @change="choseDialogHour(0, start_hour, $event)" :min-time="currentHourMinute" />
+            </el-form-item>
+          </el-col>
+        </el-form-item>
+
+        <el-form-item prop="end_day" label="结束时间" style="margin-left: 20px" required>
+          <el-col :span="11">
+            <el-form-item prop="end_day">
+              <el-date-picker v-model="meetForm.start_day" type="date" aria-label="Pick end day"
+                placeholder="Pick end day" style="width: 100%" />
+            </el-form-item>
+          </el-col>
+          <el-col class="text-center" :span="1">
+            <span class="text-gray-500"></span>
+          </el-col>
+          <el-col :span="11">
+            <el-form-item prop="end_hour">
+              <el-time-select v-model="meetForm.end_hour" style="width: 140px;margin-left: 20px" :start="minStartTime"
+                :step="minStep" :end="maxEndTime" :placeholder="$t('base.plzSelect')"
+                @change="choseDialogHour(1, end_hour, $event)" :min-time="currentHourMinute" />
+            </el-form-item>
+          </el-col>
+        </el-form-item>
+
+
+        <!-- <el-form-item prop="start_day" label="开始时间" style="margin-left: 20px" required>
           <el-form-item prop="start_day">
             <el-date-picker v-model="meetForm.start_day" type="date" aria-label="Pick start day"
               placeholder="Pick start day" style="width: 100%" />
           </el-form-item>
-        </el-form-item>
-        <el-row style="margin-left: 97px">
-          <el-form-item prop="start_hour">
-            <el-time-select v-model="meetForm.start_hour" style="width: 140px;" :start="minStartTime" :step="minStep"
-              :end="maxEndTime" placeholder="会议开始" @change="choseDialogHour(0, start_hour, $event)"
-              :min-time="currentHourMinute" />
-          </el-form-item>
-          <span style="line-height: 32px;width: 20px;text-align: center;"> - </span>
-          <el-form-item prop="end_hour">
-            <el-time-select v-model="meetForm.start_hour" style="width: 140px;" :start="minStartTime" :step="minStep"
-              :end="maxEndTime" placeholder="会议结束" @change="choseDialogHour(0, start_hour, $event)"
-              :min-time="currentHourMinute" />
-          </el-form-item>
-        </el-row>
-        <el-form-item label="重复间隔为" prop="repeat_week" style="margin-left: 7px">
-          <el-input-number style="width: 100px;" v-model="meetForm.repeat" :min="1" :max="4"
-            @change="handleWeekChange" />
-          <span
-            style="margin-left: 20px;color: #4E5969;font-family: PingFang SC;font-size: 14px;font-weight: normal;">周后的：</span>
-        </el-form-item>
-        <el-form-item style="margin-left: 40px" prop="check_list">
-          <el-checkbox-group v-model="meetForm.check_list" size="small">
-            <el-checkbox label="星一" value="1" />
-            <el-checkbox label="星二" value="2" />
-            <el-checkbox label="星三" value="3" />
-            <el-checkbox label="星四" value="4" />
-            <el-checkbox label="星五" value="5" />
-            <el-checkbox label="星六" value="6" />
-            <el-checkbox label="星日" value="7" />
-          </el-checkbox-group>
         </el-form-item>
         <el-form-item prop="end_day" label="结束时间" style="margin-left: 20px;" required>
           <el-form-item prop="end_day">
             <el-date-picker v-model="meetForm.end_day" type="date" aria-label="Pick end day"
               placeholder="Pick end day" style="width: 100%" />
           </el-form-item>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="备注" label-width="100px">
           <el-input v-model="meetForm.remark" maxlength="100" style="width: 410px;" placeholder="Please input"
             show-word-limit type="textarea" />
@@ -91,9 +100,9 @@ export default {
     }
   },
   mixins: [PageMixin],
-  props: ['entry_id','is_series'],
+  props: ['entry_id'],
   emits: ['close'],
-  name: 'CycleMeetCMP',
+  name: 'SingleMeetCMP',
   data() {
     return {
       groupMembers: [],
@@ -162,14 +171,14 @@ export default {
   methods: {
 
     choseDialogHour(mode, str, e) {
-      console.log('CycleMeetCMP choseHour str e', str, e)
+      console.log('SingleMeetCMP choseHour str e', str, e)
       const ymd = this.form.start_date
       const lang = Common.getLocalLang()
       const appeedStr = ymd + ' ' + str
       const formatStr = Common.getAssignFormat(appeedStr, lang)
-      console.log('CycleMeetCMP choseHour this.currentTimeZone lang appeedStr', this.currentTimeZone, lang, appeedStr)
+      console.log('SingleMeetCMP choseHour this.currentTimeZone lang appeedStr', this.currentTimeZone, lang, appeedStr)
       const nextTimeStamp = moment.tz(formatStr, this.currentTimeZone).unix();
-      console.log('CycleMeetCMP choseHour formatStr nextTimeStamp ', formatStr, nextTimeStamp)
+      console.log('SingleMeetCMP choseHour formatStr nextTimeStamp ', formatStr, nextTimeStamp)
       if (mode == 0) {
         const currenDay = Common.getYearToDay()
         const currenStamp = Common.getCurrenTimeZoneStamp(this.currentTimeZone)
@@ -191,16 +200,20 @@ export default {
     getMeetDetail() {
       let params = {}
       params['id'] = Number(this.entry_id)
-      params['is_series'] = Number(this.is_series)
+      params['is_series'] = 0
       Api.getMeetDetail(params).then(({ data, code, msg }) => {
         if (code != 0 && !data) {
           return
         }
-        console.log('CycleMeetCMP getMeetDetail data', data)
-        this.meetForm.title = data.description
+        console.log('SingleMeetCMP getMeetDetail data', data)
+        this.meetForm.title = data.name
+        this.meetForm.remark = data.description
         this.meetForm.room = data.room_name
+        this.meetForm.area = data.area_name
         this.meetForm.start_day = moment.tz(data.start_time * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
+        this.start_hour =  moment.tz(data.start_time * 1000, 'Asia/Shanghai').format('HH:mm')
         this.meetForm.end_day = moment.tz(data.end_time * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
+        this.end_hour = this.start_hour =  moment.tz(data.end_time * 1000, 'Asia/Shanghai').format('HH:mm')
       })
     },
     getGroupMember() {
@@ -221,7 +234,7 @@ export default {
               it['status'] = false
             }
           })
-          console.log('CycleMeetCMP getUserList data.users:', data.users)
+          console.log('SingleMeetCMP getUserList data.users:', data.users)
           this.groupMembers = data.users
           this.total_num = data.total_num
         }
@@ -229,7 +242,7 @@ export default {
     },
   },
   created() {
-    console.log('CycleMeetCMP created:', this.entry_id)
+    console.log('SingleMeetCMP created:', this.entry_id)
     this.getMeetDetail()
   },
 
