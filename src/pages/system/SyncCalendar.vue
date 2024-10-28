@@ -67,33 +67,53 @@ export default {
 
       groupOptions: [
         {
-          value: '双向，Exchange与系统产生日历相互同步',
+          value: 1,
           label: '双向，Exchange与系统产生日历相互同步',
         }],
       everySecondOptions: [
-          {
-        value: '5分钟',
-        label: '5分钟',
-      }, {
-        value: '15分钟',
-        label: '15分钟',
-      }, {
-        value: '30分钟',
-        label: '30分钟',
-      }, {
-        value: '1小时',
-        label: '1小时',
-      }, {
-        value: '3小时',
-        label: '3小时',
-      }, {
-        value: '6小时',
-        label: '6小时',
-      }, {
-        value: '12小时',
-        label: '12小时',
-      }],
+        {
+          value: 1,
+          label: '5秒',
+        },
+        {
+          value: 2,
+          label: '10秒',
+        },
+        {
+          value: 3,
+          label: '30秒',
+        },
+        {
+          value: 4,
+          label: '60秒',
+        }
+      ],
     }
+  },
+  created() {
+    const that = this
+    Api.getVariables({
+      "Exchange_server": 1,
+      "Exchange_sync_type": 1,
+      "Exchange_sync_interval": 1,
+    }).then(({code, data, msg}) => {
+      if (code == 0) {
+        console.log(data)
+
+        that.form = {
+          hosts: data.Exchange_server || '',
+          syncMethod: data.Exchange_sync_type || '',
+          syncMinute: data.Exchange_sync_interval || '',
+        }
+      } else {
+        ElMessage.error({
+          message: '设置获取失败',
+        })
+      }
+    })
+    .catch(e => {
+      console.log(e)
+    })
   },
   methods: {
     validate(){
@@ -104,8 +124,37 @@ export default {
       this.$refs.formRef.validate((valid) => {
         if (valid) {
           console.log('submit!')
+
+          Api.setVariables(
+              {
+                "init_status": 3,
+                "Exchange_server": this.form.hosts,
+                "Exchange_sync_type": this.form.syncMethod,
+                "Exchange_sync_interval": this.form.syncMinute,
+              }
+          ).then(({code,data})=>{
+            if(code==0){
+              ElMessage.success({
+                message: '设置成功',
+              })
+            }else{
+              ElMessage.error({
+                message: '设置失败',
+              })
+            }
+          })
+          .catch(e=>{
+            ElMessage.error({
+              message: '设置失败',
+            })
+            console.log(e)
+          })
+
         } else {
           console.log('error submit!')
+          ElMessage.error({
+            message: '表单格式错误',
+          })
         }
       })
     }

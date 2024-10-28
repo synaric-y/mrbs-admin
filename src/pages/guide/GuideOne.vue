@@ -11,8 +11,8 @@
             接下来，我们诚挚地邀请您为系统做初始化配置，<br>
             仅需数分钟，您将迅速熟悉系统，并完成配置。</div>
           <div class="sub-buttons">
-            <span class="begin-btn" @click="switchTab('/guide_two')">开始</span>
-            <span class="next-btn" @click="switchTab('/')">下次再说</span>
+            <el-button class="btn" type="primary" @click="switchTab('/guide_two')">开始</el-button>
+            <el-button class="btn" @click="switchTab('/')">下次再说</el-button>
           </div>
         </div>
       </div>
@@ -95,22 +95,8 @@ export default {
   justify-content: center;
   margin-top: 48px;
 }
-.begin-btn {
+.btn {
   padding: 0 15px;
-  border-radius: 2px;
-  opacity: 1;
-  background: #591BB7;
-  color: white;
-  height: 36px;
-  line-height: 36px;
-}
-.next-btn {
-  padding: 0 15px;
-  border-radius: 2px;
-  margin-left: 20px;
-  opacity: 1;
-  color: #1D2129;
-  background: #F2F3F5;
   height: 36px;
   line-height: 36px;
 }

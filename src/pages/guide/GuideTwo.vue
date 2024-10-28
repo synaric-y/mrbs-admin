@@ -34,32 +34,14 @@
               <el-input type="password" v-model="form.password" class="form-item-input" placeholder="请输入包含数字、字母、特殊符号最低8位密码" />
             </el-form-item>
 
-            <el-form-item prop="syncRange" label="同步范围">
-              <el-tree-select v-model="form.syncRange" :data="adDatasource" multiple :render-after-expand="false" show-checkbox style="width: 240px" />
-            </el-form-item>
-
-            <el-form-item prop="syncMethod" label="同步方式">
-              <el-select v-model="form.syncMethod" placeholder="Select" style="width: 240px;">
-                <el-option v-for="item in groupOptions" :key="item.value" :label="item.label" :value="item.value" />
-              </el-select>
-            </el-form-item>
-
             <el-form-item prop="autoSync" label="开启定时同步">
               <el-switch v-model="form.autoSync" />
             </el-form-item>
 
-            <el-form-item prop="syncFrequency" label="同步间隔">
-              <el-radio-group v-model="form.syncFrequency">
-                <el-radio value="1" size="large">每隔</el-radio>
-                <el-select v-model="form.syncMinute" placeholder="Select" size="large"
-                           style="width: 100px;margin-right: 10px;">
-                  <el-option v-for="item in everySecondOptions" :key="item.value" :label="item.label" :value="item.value" />
-                </el-select>
-                <el-radio value="2" size="large">每天</el-radio>
-                <el-select v-model="form.syncDay" placeholder="Select" size="large" style="width: 100px;margin-right: 10px;">
-                  <el-option v-for="item in everyDayOptions" :key="item.value" :label="item.label" :value="item.value" />
-                </el-select>
-              </el-radio-group>
+            <el-form-item prop="syncDay" label="同步时间">
+              <el-select :disabled="!form.autoSync" v-model="form.syncDay" placeholder="Select" size="large" style="width: 100px;margin-right: 10px;">
+                <el-option v-for="item in everyDayOptions" :key="item.value" :label="item.label" :value="item.value" />
+              </el-select>
             </el-form-item>
 
           </el-form>
@@ -100,9 +82,7 @@ export default {
         syncRange: undefined,
         syncMethod: '用户和用户组',
         autoSync: true,
-        syncFrequency: '1',
-        syncMinute: '15分钟',
-        syncDay: '06:00'
+        syncDay: 1
       },
       rules: {
         port: [
@@ -208,25 +188,25 @@ export default {
         }],
       everyDayOptions: [
         {
-          value: '06:00',
+          value: 1,
           label: '06:00',
         }, {
-          value: '08:00',
+          value: 2,
           label: '08:00',
         }, {
-          value: '10:00',
+          value: 3,
           label: '10:00',
         }, {
-          value: '12:00',
+          value: 4,
           label: '12:00',
         }, {
-          value: '18:00',
+          value: 5,
           label: '18:00',
         }, {
-          value: '20:00',
+          value: 6,
           label: '20:00',
         }, {
-          value: '22:00',
+          value: 7,
           label: '22:00',
         }],
     }
@@ -249,7 +229,7 @@ export default {
       Api.setVariables(
           {"init_status": 3}
       ).then(res => {
-        this.switchTab('/user_list')
+        this.switchTab('/')
       }).catch(e=>{
         console.log(e)
       })
@@ -270,11 +250,12 @@ export default {
               {
                 "init_status": 1,
                 "AD_server": this.form.hosts,
-                "AD_post": this.form.port,
+                "AD_port": this.form.port,
                 "AD_base_dn": this.form.base_dn,
                 "AD_username": this.form.username,
                 "AD_password": this.form.password,
-                // "AD_interval_date": 12345,
+                "AD_interval_date": this.form.syncDay,
+                "AD_timely_sync": this.form.autoSync?1:0
               }
           ).then(res => {
             console.log(res)

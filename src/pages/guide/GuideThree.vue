@@ -68,32 +68,27 @@ export default {
 
       groupOptions: [
         {
-          value: '双向，Exchange与系统产生日历相互同步',
+          value: 1,
           label: '双向，Exchange与系统产生日历相互同步',
         }],
       everySecondOptions: [
         {
-          value: '5分钟',
-          label: '5分钟',
-        }, {
-          value: '15分钟',
-          label: '15分钟',
-        }, {
-          value: '30分钟',
-          label: '30分钟',
-        }, {
-          value: '1小时',
-          label: '1小时',
-        }, {
-          value: '3小时',
-          label: '3小时',
-        }, {
-          value: '6小时',
-          label: '6小时',
-        }, {
-          value: '12小时',
-          label: '12小时',
-        }],
+          value: 1,
+          label: '5秒',
+        },
+        {
+          value: 2,
+          label: '10秒',
+        },
+        {
+          value: 3,
+          label: '30秒',
+        },
+        {
+          value: 4,
+          label: '60秒',
+        }
+      ],
     }
   },
   methods: {
@@ -101,7 +96,7 @@ export default {
       Api.setVariables(
           {"init_status": 3}
       ).then(res => {
-        this.switchTab('/user_list')
+        this.switchTab('/')
       }).catch(e=>{
         console.log(e)
       })
