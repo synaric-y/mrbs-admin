@@ -51,6 +51,10 @@ export const langEn = {
         minMinuteTitle: '(15 minutes)',
         userSync: 'Sync Users',
         tableBottomCount: '{count} items in total',
+        enabled: 'Enabled',
+        disabled: 'Disabled',
+        copiedToClipboard: 'Copied to clipboard',
+        none: 'None',
     },
     meet: {
         title: 'Editing Meetings',
@@ -133,6 +137,7 @@ export const langEn = {
     },
     user: {
         tableUser: {
+            id: 'ID',
             name: 'Account',
             displayName: 'Display Name',
             level: 'Level',
@@ -160,6 +165,7 @@ export const langEn = {
         addUser: 'New User',
         editUser: 'Edit User',
         deleteUser: 'Delete User',
+        viewUser: 'View User',
         userList: 'Users',
         deleteUserHint: 'Are you sure you want to delete this user?',
         password1Hint: 'The passwords are inconsistent',

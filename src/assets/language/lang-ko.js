@@ -51,6 +51,10 @@ export const langKo = {
         minMinuteTitle: '(15분)',
         userSync: '사용자 동기화',
         tableBottomCount: '총 {count}개 항목',
+        enabled: '활성화됨',
+        disabled: '장애가 있는',
+        copiedToClipboard: '클립보드에 복사됨',
+        none: '없음',
     },
     meet: {
         title: '편집회의',
@@ -134,6 +138,7 @@ export const langKo = {
     },
     user: {
         tableUser: {
+            id: 'ID',
             name: '로그인 이름',
             displayName: '표시 이름',
             level: '권한',
@@ -161,6 +166,7 @@ export const langKo = {
         addUser: '새 사용자 추가',
         editUser: '사용자 편집',
         deleteUser: '사용자 삭제',
+        viewUser: '사용자 보기',
         userList: '사용자 목록',
         deleteUserHint: '현재 사용자를 삭제하시겠습니까?',
         password1Hint: '두 번 입력한 비밀번호가 일치하지 않습니다.',

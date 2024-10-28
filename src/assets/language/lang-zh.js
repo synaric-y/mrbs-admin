@@ -51,6 +51,10 @@ export const langZh = {
         minMinuteTitle: '(15分钟)',
         userSync: '用户同步',
         tableBottomCount: '共{count}条',
+        enabled: '正常',
+        disabled: '禁用',
+        copiedToClipboard: '已复制到剪贴板',
+        none: '无',
     },
     meet: {
         title: '编辑会议',
@@ -135,6 +139,7 @@ export const langZh = {
     },
     user: {
         tableUser: {
+            id: 'ID',
             name: '账号',
             displayName: '展示名',
             level: '权限',
@@ -162,6 +167,7 @@ export const langZh = {
         addUser: '新增用户',
         editUser: '编辑用户',
         deleteUser: '删除用户',
+        viewUser: '查看用户',
         userList: '用户列表',
         deleteUserHint: '确定要删除当前用户吗',
         password1Hint: '两次输入的密码不一致',
