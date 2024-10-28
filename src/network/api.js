@@ -174,6 +174,10 @@ export class Api {
         return Request.post('change_bind',params)
     }
 
+    static async getMeetList(params){
+        return Request.post('entry%2Fget_entry',params)
+    }
+
     // 引导页&系统设置
     static async getVariables(params){
         return Request.post('system_setting%2Fget_variables',params)

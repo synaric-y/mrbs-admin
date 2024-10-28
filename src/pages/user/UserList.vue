@@ -4,7 +4,7 @@
       <div class="sub-page-content">
         <div class="sub-title-wrapper" style="margin-left: 20px;">
           <!-- <div class="sub-title">{{ $t("base.userManagement") }}</div> -->
-          <div class="page-title">{{$t('user.userList')}}</div>
+          <div class="page-title">{{ $t('user.userList') }}</div>
           <div class="filter-wrapper" style="margin-top: 20px;height: 30px;">
             <el-input v-model="keyword" style="width: 140px" :placeholder="$t('user.plzEnterUsernameHint')" />
             <el-select class="account-status-select" v-model="accountStatusVal" placeholder="Select" size="large"
@@ -14,25 +14,22 @@
             </el-select>
             <el-button class="el-button-content" @click="searchUser">
               <img src="/imgs/button_search.png" alt="Search Icon" class="el-button-img" />
-              {{$t('base.search')}}
+              {{ $t('base.search') }}
             </el-button>
             <el-button class="el-button-content" @click="addUser(1, null)">
               <img src="/imgs/button_add.png" alt="Add Icon" class="el-button-img" />
-              {{$t('base.add2')}}
+              {{ $t('base.add2') }}
             </el-button>
             <el-button size="large" class="el-button-content" style="width: 112px;">
               <img src="/imgs/button_reflesh.png" alt="Sync Icon" class="el-button-img" />
-              {{$t('base.userSync')}}
+              {{ $t('base.userSync') }}
             </el-button>
           </div>
         </div>
 
         <div class="table-wrapper" style="height: auto;">
-          <el-table :data="userListData"
-                    style="margin-top: 56px;"
-                    header-cell-class-name="tb-header"
-                    max-height="450"
-                    table-layout="auto">
+          <el-table :data="userListData" style="margin-top: 56px;" header-cell-class-name="tb-header" max-height="450"
+            table-layout="auto">
             <el-table-column prop="number" label="序号" width="120">
               <template #default="scope">
                 {{ scope.$index + 1 }}
@@ -58,29 +55,33 @@
             <el-table-column prop="id" :label="$t('user.tableUser.operate')" width="300">
               <template #default="scope">
                 <div class="operate-wrapper">
-                  <span class="operate-item" @click="resetPassword(scope.row)">{{$t('base.resetPassword')}}</span>
-                  <span class="operate-item" @click="addUser(0, scope.row)">{{$t('base.detail')}}</span>
-                  <span class="operate-item" @click="deleteUserPop(scope.row)">{{$t('base.delete')}}</span>
+                  <span class="operate-item" @click="resetPassword(scope.row)">{{ $t('base.resetPassword') }}</span>
+                  <span class="operate-item" @click="addUser(0, scope.row)">{{ $t('base.detail') }}</span>
+                  <span class="operate-item" @click="deleteUserPop(scope.row)">{{ $t('base.delete') }}</span>
                 </div>
               </template>
             </el-table-column>
           </el-table>
         </div>
         <div class="table-pagination-block">
-          <div class="table-demonstration">{{$t('base.tableBottomCount', total_num)}}</div>
-          <el-pagination  v-model:current-page="page_number" @current-change="handleCurrentChange" layout="prev, pager, next" :default-page-size="20" :total="total_num" />
+          <div class="table-demonstration">{{ $t('base.tableBottomCount', total_num) }}</div>
+          <el-pagination v-model:current-page="page_number" @current-change="handleCurrentChange"
+            layout="prev, pager, next" :default-page-size="20" :total="total_num" />
         </div>
 
         <el-dialog v-model="dialogFormVisible" :title="userDetailTitle" width="550">
           <el-form :model="userForm" :rules="rules">
-            <el-form-item prop="name" :label="$t('user.tableUser.name')" label-width="140px" style="margin-right: 50px;">
+            <el-form-item prop="name" :label="$t('user.tableUser.name')" label-width="140px"
+              style="margin-right: 50px;">
               <el-input v-model="userForm.name" autocomplete="off" />
             </el-form-item>
-            <el-form-item prop="display_name" :label="$t('user.tableUser.displayName')" label-width="140px" style="margin-right: 50px;">
+            <el-form-item prop="display_name" :label="$t('user.tableUser.displayName')" label-width="140px"
+              style="margin-right: 50px;">
               <!-- :readonly="dialogUserDetailForm" -->
               <el-input v-model="userForm.display_name" autocomplete="off" />
             </el-form-item>
-            <el-form-item prop="password" :label="$t('user.formUser.password0')" label-width="140px" style="margin-right: 50px;">
+            <el-form-item prop="password" :label="$t('user.formUser.password0')" label-width="140px"
+              style="margin-right: 50px;">
               <el-input v-model="userForm.password" autocomplete="off" />
             </el-form-item>
             <el-form-item :label="$t('user.tableUser.email')" label-width="140px" style="margin-right: 50px;">
@@ -88,21 +89,21 @@
             </el-form-item>
             <el-form-item :label="$t('user.tableUser.level')" label-width="140px" style="margin-right: 50px;">
               <!-- :disabled="dialogUserDetailForm" -->
-              <el-select v-model="userForm.levelName" :placeholder="$t('user.plzSelectLevel')" >
+              <el-select v-model="userForm.levelName" :placeholder="$t('user.plzSelectLevel')">
                 <el-option :label="$t('user.role.level1')" value="1" />
                 <el-option :label="$t('user.role.level2')" value="2" />
               </el-select>
             </el-form-item>
             <el-form-item :label="$t('user.tableUser.remark')" label-width="140px" style="margin-right: 50px;">
-              <el-input v-model="userForm.remark" maxlength="100" style="width: 310px"
-                show-word-limit type="textarea" />
+              <el-input v-model="userForm.remark" maxlength="100" style="width: 310px" show-word-limit
+                type="textarea" />
             </el-form-item>
           </el-form>
           <template #footer>
             <div class="dialog-footer">
-              <el-button @click="commitAddForm" type="primary">{{$t('base.submit')}}</el-button>
-              <el-button style="margin-left: 50px"  @click="closedAlert">
-                {{$t('base.cancel')}}
+              <el-button @click="commitAddForm" type="primary">{{ $t('base.submit') }}</el-button>
+              <el-button style="margin-left: 50px" @click="closedAlert">
+                {{ $t('base.cancel') }}
               </el-button>
             </div>
           </template>
@@ -110,27 +111,30 @@
 
 
         <el-dialog v-model="dialogResetPasswordForm" :title="$t('base.resetPassword')" width="550">
-          <el-form :model="passwordForm"  :rules="passwordRules">
+          <el-form :model="passwordForm" :rules="passwordRules">
             <el-form-item :label="$t('user.tableUser.name')" label-width="90px" style="margin-right: 140px;">
               <el-input v-model="passwordForm.name" autocomplete="off" readonly />
             </el-form-item>
-            <el-form-item prop="newPassword" :label="$t('user.formUser.password0')" label-width="90px" style="margin-right: 50px;">
+            <el-form-item prop="newPassword" :label="$t('user.formUser.password0')" label-width="90px"
+              style="margin-right: 50px;">
               <div class="reset-password">
                 <el-input v-model="passwordForm.newPassword" autocomplete="off" />
-                <el-button style="margin-left: 20px" @click="creatPassword">{{$t('base.generate')}}</el-button>
-                <el-button @click="copyPassword">{{$t('base.copy')}}</el-button>
+                <el-button style="margin-left: 20px" @click="creatPassword">{{ $t('base.generate') }}</el-button>
+                <el-button @click="copyPassword">{{ $t('base.copy') }}</el-button>
               </div>
             </el-form-item>
-            <el-form-item  prop="againPassword" :label="$t('user.formUser.password1')" label-width="90px" style="margin-right: 140px;">
+            <el-form-item prop="againPassword" :label="$t('user.formUser.password1')" label-width="90px"
+              style="margin-right: 140px;">
               <el-input v-model="passwordForm.againPassword" autocomplete="off" />
             </el-form-item>
           </el-form>
           <template #footer>
             <div class="dialog-footer">
               <el-button type="primary" @click="commitNewPassword">
-                {{$t('base.confirm')}}
+                {{ $t('base.confirm') }}
               </el-button>
-              <el-button style="margin-left: 50px" @click="dialogResetPasswordForm = false">{{$t('base.cancel')}}</el-button>
+              <el-button style="margin-left: 50px"
+                @click="dialogResetPasswordForm = false">{{ $t('base.cancel') }}</el-button>
             </div>
           </template>
         </el-dialog>
@@ -138,14 +142,15 @@
 
         <el-dialog v-model="dialogDeleteVisible" :title="$t('user.deleteUser')" width="550">
           <div class="">
-            {{$t('user.deleteUserHint')}}
+            {{ $t('user.deleteUserHint') }}
           </div>
           <template #footer>
             <div class="dialog-footer">
               <el-button type="primary" @click="deleteUser">
-                {{$t('base.confirm')}}
+                {{ $t('base.confirm') }}
               </el-button>
-              <el-button style="margin-left: 50px" @click="dialogDeleteVisible = false">{{$t('base.cancel')}}</el-button>
+              <el-button style="margin-left: 50px"
+                @click="dialogDeleteVisible = false">{{ $t('base.cancel') }}</el-button>
             </div>
           </template>
         </el-dialog>
@@ -159,7 +164,6 @@ import { PageMixin } from "@/pages/PageMixin.js";
 import { Api } from "@/network/api.js";
 import { ElMessage } from "element-plus/es";
 import { Common } from "@/common/common";
-import { Value } from "sass-embedded";
 export default {
   mixins: [PageMixin],
   data() {
@@ -172,7 +176,7 @@ export default {
           value: 0,
           label: '正常',
         }, {
-          value:1,
+          value: 1,
           label: '禁用',
         }],
       pendingDeleteName: null,
@@ -183,13 +187,13 @@ export default {
       ],
       rules: {
         name: [
-          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
         ],
         display_name: [
-          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
         ],
         password: [
-          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
         ],
       },
       dialogFormVisible: false,
@@ -211,30 +215,9 @@ export default {
         newPassword: '',
         againPassword: ''
       },
-      validateNewPassword: (rule, value, callback, source, options) => {
-            if (value === '') {
-              callback(new Error('请输入密码'))
-            } else {
-              if (!passwordRuleFormRef.value) return
-              passwordRuleFormRef.value.validateField('checkPass')
-              callback()
-          }
-        },
-        validateAgainPassword: (rule, value, callback, source, options) => {
-            if (value === '') {
-              callback(new Error('请输入确认密码'))
-            } else {
-              if (passwordForm.newPassword !== value) {
-                callback(new Error('二次输入密码不一致'))
-              }
-              if (!passwordRuleFormRef.value) return
-              passwordRuleFormRef.value.validateField('checkPass')
-              callback()
-          }
-        },
-      passwordRules:{
-        newPassword:{required: true, message: this.$t('base.noDataHint'), trigger: 'blur',validator:validateNewPassword},
-        againPassword:{required: true, message: this.$t('base.noDataHint'), trigger: 'blur',validator:validateAgainPassword},
+      passwordRules: {
+        newPassword: { required: true, message: this.$t('base.noDataHint'), trigger: 'blur', validator: this.validateNewPassword },
+        againPassword: { required: true, message: this.$t('base.noDataHint'), trigger: 'blur', validator: this.validateAgainPassword },
       },
       keyword: '',
       page_number: 1,
@@ -246,6 +229,22 @@ export default {
     }
   },
   methods: {
+    validateNewPassword: (rule, value, callback, source, options) => {
+      if (value === '') {
+        callback(new Error('请输入密码'))
+      } else {
+        callback()
+      }
+    },
+    validateAgainPassword: (rule, value, callback, source, options) => {
+      if (value === '') {
+        callback(new Error('请输入确认密码'))
+      } else if(this.passwordForm.newPassword !== value) {
+        callback(new Error('二次输入密码不一致'))
+      } else {
+        callback()
+      }
+    },
     addUser(val, row) {
       this.dialogFormVisible = true
       if (val === 1) {
@@ -315,10 +314,10 @@ export default {
       this.getUserList()
     },
     handleCurrentChange(newPage) {
-      console.log('UserList handleCurrentChange newPage:', newPage,this.page_number)
+      console.log('UserList handleCurrentChange newPage:', newPage, this.page_number)
       // if (newPage != this.page_number) {
-        // this.page_number = newPage
-        this.getUserList()
+      // this.page_number = newPage
+      this.getUserList()
       // }
     },
     handleSwitchChange(row) {
@@ -334,7 +333,7 @@ export default {
       console.log('UserList creatPassword', this.passwordForm.newPassword)
     },
     copyPassword() {
-      console.log('UserList copyPassword:',this.passwordForm.newPassword)
+      console.log('UserList copyPassword:', this.passwordForm.newPassword)
       if (this.passwordForm.newPassword) {
         navigator.clipboard.writeText(this.passwordForm.newPassword).then(function () {
           ElMessage('复制粘贴板成功')
@@ -354,7 +353,7 @@ export default {
     updateUserDisabled(row) {
       let params = {}
       params['userid'] = row.id
-      params['disabled'] = row.status?0:1
+      params['disabled'] = row.status ? 0 : 1
       console.log('UserList updateUserStatus params', params)
       Api.updateAccount(params).then(({ data, code, msg }) => {
         if (code == 0) {
@@ -384,24 +383,24 @@ export default {
       const selectedItem = this.accountStatusOptions.filter(item => item.value === this.accountStatusVal)
       const disabled = selectedItem[0].value
       params['disabled'] = disabled
-      console.log('UserList getUserList params:',params)
+      console.log('UserList getUserList params:', params)
       // Api.getAllUsers
-      Api.getAllUsers(params).then(({code,msg,data }) => {
+      Api.getAllUsers(params).then(({ code, msg, data }) => {
         this.isLoading = false
         if (code == 0 && data && data.users) {
           data.users.forEach(it => {
-            if(!it['email']) {
+            if (!it['email']) {
               it["email"] = '无邮箱'
             }
-            if(!it['create_time']) {
+            if (!it['create_time']) {
               it["create_time"] = '无'
             }
-            it['levelname'] = (it['level'] == '1' ? this.$t('user.role.level1'):this.$t('user.role.level2'))
-            it["permissions"] = (it['level'] == '1' ? this.$t('user.role.level1'):this.$t('user.role.level2'))
+            it['levelname'] = (it['level'] == '1' ? this.$t('user.role.level1') : this.$t('user.role.level2'))
+            it["permissions"] = (it['level'] == '1' ? this.$t('user.role.level1') : this.$t('user.role.level2'))
             it['disabled'] = !parseInt(it['disabled'])
-            it['status'] = it['disabled']==0?false:true
+            it['status'] = it['disabled'] == 0 ? false : true
           })
-          console.log('UserList getUserList data.users:',data.users)
+          console.log('UserList getUserList data.users:', data.users)
           this.userListData = data.users
           this.total_num = data.total_num
         } else {
