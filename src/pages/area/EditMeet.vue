@@ -37,7 +37,7 @@
             <div class="operate-wrapper">
               <span class="operate-item" @click="toRoomDetail(scope.row.id)">编辑</span>
               <span class="operate-item" @click="pendingDeleteRoom(scope.row.id)">删除</span>
-              <span class="operate-item" @click="pendingBind(scope.row.id)">终端绑定</span>
+              <span class="operate-item" @click="pendingBindTerminal(scope.row.id)">终端绑定</span>
             </div>
           </template>
         </el-table-column>
@@ -84,8 +84,8 @@
         <el-form :model="terminalForm" :rules="terminal_rules">
           <el-form-item label="终端"  prop="terminal" required >
             <el-select style="min-width: 120px" v-model="select_terminal" placeholder="终端">
-              <el-option v-for="item in terminals" style="min-width: 120px;z-index: 99999" :key="item.value"
-                :label="item.terminal" :value="item.room_id" />
+              <el-option v-for="item in avaliableDevices" style="min-width: 120px;z-index: 99999" :key="item.device_id"
+                :label="item.device_name" :value="item.device_id" />
             </el-select></el-form-item>
         </el-form>
         <template #footer>
@@ -98,8 +98,6 @@
         </template>
       </el-dialog>
     </el-main>
-
-
   </el-container>
 </template>
 
@@ -144,7 +142,8 @@ export default {
         ],
       },
       select_terminal:'请选择',
-      terminals: [],
+      select_row: null,
+      avaliableDevices:[],
       areaList: [],
       areaListNoAll: [],
       areaId: '',
@@ -165,7 +164,7 @@ export default {
         if (code == 0) {
           this.getRoomList()
         } else {
-          ElMessage.error(message)
+          ElMessage.error(msg)
         }
 
       })
@@ -199,10 +198,10 @@ export default {
         }
       })
     },
-    getTerminalList() {
-      Api.getTerminalList({}).then(({ data, code, msg }) => {
+    getAvaliableDevices() {
+      Api.getAvaliableDevices().then(({ data, code, msg }) => {
         if (code == 0 && data) {
-          this.terminals = data
+          this.avaliableDevices = data
         }
       })
     },
@@ -219,9 +218,16 @@ export default {
     pendingBindTerminal(row) {
       console.log('pendingBindTerminal row',row)
       this.showTerminalDialog = true
+      this.select_row = row
     },
     sureBindTerminal() {
-
+      Api.bindDevice({device_id:this.select_row.device_id,room_id:this.select_row.id}).then(({ data, code, msg }) => {
+          if (code == 0) {
+            this.getRoomList()
+          } else {
+            ElMessage.error(msg)
+          }
+        })
     },
     addRoom() {
       this.$refs.roomForm.validate((pass) => {
@@ -233,7 +239,7 @@ export default {
           if (code == 0) {
             this.getRoomList()
           } else {
-            ElMessage.error(message)
+            ElMessage.error(msg)
           }
         })
       })
@@ -243,7 +249,7 @@ export default {
     this.setTab('/room')
     this.getRoomList()
     this.getAreaList()
-    this.getTerminalList()
+    this.getAvaliableDevices()
 
   }
 }

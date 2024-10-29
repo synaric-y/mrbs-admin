@@ -176,8 +176,12 @@ export class Api {
         return Request.post('device%2Fdevice_info',params)
     }
 
-    static async changeBind(params){
-        return Request.post('change_bind',params)
+    static async getAvaliableDevices(params){
+        return Request.post('device%2Fget_avaliable_device',params)
+    }
+
+    static async bindDevice(params){
+        return Request.post('device%2Fbind',params)
     }
 
     static async getMeetList(params){
