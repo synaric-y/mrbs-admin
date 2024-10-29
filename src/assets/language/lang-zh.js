@@ -182,10 +182,12 @@ export const langZh = {
         userGroupSettings: '用户组配置',
         local: '系统创建',
         fromAD: 'AD导入',
+        groupMy: '我的分组',
+        groupAD: 'AD分组',
         editMember: '编辑组成员',
         confirmDeleteUserGroup: '是否删除当前选中的用户/用户组？',
         editUserGroup: '编辑用户组',
-        lastSyncTime: '上次同步时间：',
+        lastSyncTime: `上次同步时间：{time}`,
         tableUserGroup: {
             name: '名称',
             syncFromAD: '同步AD用户组',

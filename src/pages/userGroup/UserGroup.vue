@@ -220,7 +220,7 @@ export default {
       if (node.level === 0) {
         console.log('loadGroup sync level0', node.level)
         resolve([
-          { name: 'AD组', id: '-1', isLeaf: false, third_id: 0, disabled: 0, user_count: 0, sync_state: 0, has_child: 1 },
+          { name: this.$t('userGroup.groupAD'), id: '-1', isLeaf: false, third_id: 0, disabled: 0, user_count: 0, sync_state: 0, has_child: 1 },
         ]);
       } else if (node.level === 1) {
         console.log('loadGroup sync level1', node.level)
@@ -398,11 +398,11 @@ export default {
         if (code == 0) {
           console.log('UserGroup getADStatus:', data)
           if (data.sync_time == 0) {
-            this.syncTime = `上次同步时间：未进行过同步操作`
+            this.syncTime = this.$t('userGroup.lastSyncTime', {time: '/'})
           } else {
             // 时间戳转化当前时间
             const time = moment(parseInt(data.sync_time)).format('YYYY/MM/DD hh:mm:ss')
-            this.syncTime = `上次同步时间：${time}`
+            this.syncTime = this.$t('userGroup.lastSyncTime', {time})
           }
         }
       })
@@ -423,7 +423,7 @@ export default {
               const res = {
                 id: -1,
                 date: '2016-05-04',
-                name: '我的分组',
+                name: this.$t('userGroup.groupMy'),
                 source: 'system',
                 children: groups,
                 top_level: true,
@@ -482,7 +482,7 @@ export default {
               const res = {
                 id: uuidv4(),
                 date: '2016-05-04',
-                name: 'AD分组',
+                name: this.$t('userGroup.groupAD'),
                 source: 'AD',
                 children: groups
               }

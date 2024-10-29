@@ -180,6 +180,8 @@ export const langEn = {
         userGroupSettings: 'User Group Settings',
         local: 'Local',
         fromAD: 'From Active Directory',
+        groupMy: 'My Group',
+        groupAD: 'AD Group',
         editMember: 'Edit Member',
         confirmDeleteUserGroup: 'Delete the currently selected user/user group?',
         editUserGroup: 'Edit User Group',

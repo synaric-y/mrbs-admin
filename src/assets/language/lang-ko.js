@@ -181,6 +181,8 @@ export const langKo = {
         userGroupSettings: '사용자 그룹 설정',
         local: '로컬',
         fromAD: 'Active Directory 에서',
+        groupMy: '나의 분리',
+        groupAD: 'AD분할',
         editMember: '회원 편집',
         confirmDeleteUserGroup: '현재 선택된 사용자/사용자 그룹을 삭제하시겠습니까?',
         editUserGroup: '사용자 그룹 편집',
