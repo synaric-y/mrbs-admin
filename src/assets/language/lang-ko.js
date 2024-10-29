@@ -16,6 +16,8 @@ export const langKo = {
         cancel: '취소',
         logout: '로그아웃',
         search: '질문',
+        new: '새로운',
+        edit: '편집',
         detail: '세부',
         delete: '삭제',
         generate: '생성하다',
@@ -55,6 +57,7 @@ export const langKo = {
         disabled: '장애가 있는',
         copiedToClipboard: '클립보드에 복사됨',
         none: '없음',
+        viewMore: '자세히 보기',
     },
     meet: {
         title: '편집회의',
@@ -172,5 +175,20 @@ export const langKo = {
         password1Hint: '두 번 입력한 비밀번호가 일치하지 않습니다.',
         plzEnterUsernameHint: '사용자 이름을 입력하세요',
         plzSelectLevel: '계정 권한을 선택하세요',
+    },
+    userGroup: {
+        userGroup: '사용자 그룹',
+        userGroupSettings: '사용자 그룹 설정',
+        local: '로컬',
+        fromAD: 'Active Directory 에서',
+        editMember: '회원 편집',
+        confirmDeleteUserGroup: '현재 선택된 사용자/사용자 그룹을 삭제하시겠습니까?',
+        editUserGroup: '사용자 그룹 편집',
+        lastSyncTime: '마지막 동기화 시간：',
+        tableUserGroup: {
+            name: '이름',
+            syncFromAD: 'Active Directory 와 동기화',
+            source: '원천',
+        }
     }
 }

@@ -4,11 +4,11 @@
       <div class="sub-page-content">
         <div class="sub-title-wrapper" style="margin-left: 20px;">
           <!-- <div class="sub-title">{{ $t("base.userManagement") }}</div> -->
-          <div class="page-title">用户组配置</div>
+          <div class="page-title">{{$t('userGroup.userGroupSettings')}}</div>
           <div class="async-wrapper" style="margin-top: 20px;height: 30px;">
             <el-button size="large" class="el-button-content" style="width: 112px;">
               <img src="/imgs/button_reflesh.png" alt="Search Icon" class="el-button-img" />
-              用户同步
+              {{$t('base.userSync')}}
             </el-button>
             <span class="async-last-time">{{ syncTime }}</span>
           </div>
@@ -18,24 +18,24 @@
           <!-- default-expand-all -->
           <el-table :data="tableData" lazy style="width: 100%;height: auto; margin-bottom: 20px;" row-key="id"
             :tree-props="{ children: 'children', hasChildren: 'has_child' }" :load="loadSubGroup" max-height="550">
-            <el-table-column prop="group" label="用户组/用户" label-width="400px">
+            <el-table-column prop="group" :label="$t('userGroup.userGroup')" label-width="400px">
               <template #default="scope">
                 <!-- <div class="group-title-wrapper"> -->
                 <span class="group-title" :style="{ 'font-weight': scope.row.children ? 'bold' : 'normal' }">{{
                   scope.row.name }}</span>
                 <template v-if="scope.row.source !== 'system'">
-                <span class="group-more" @click="moreGroupMember(scope.row)">查看更多</span>
+                <span class="group-more" @click="moreGroupMember(scope.row)">{{$t('base.viewMore')}}</span>
                 </template>
                 <!-- </div> -->
               </template>
             </el-table-column>
-            <el-table-column prop="source" label="来源" label-width="200px">
+            <el-table-column prop="source" :label="$t('userGroup.tableUserGroup.source')" label-width="200px">
               <template #default="scope">
                 <div v-if="scope.row.source === 'system'">
-                  系统创建
+                  {{ $t('userGroup.local') }}
                 </div>
                 <div v-else>
-                  AD导入
+                  {{ $t('userGroup.fromAD') }}
                 </div>
               </template>
             </el-table-column>
@@ -45,22 +45,22 @@
                   <!-- <span class="group-btn" v-for="(item,func) in scope.row.btns" @click="func">{{ item }}</span> -->
                   <template v-if="scope.row.children">
                     <div class="operate-wrapper">
-                      <span class="operate-item" @click="editGroupBtn(0, scope.row)">新增</span>
-                      <span class="operate-item" @click="editGroupBtn(1, scope.row)">编辑</span>
-                      <span class="operate-item" @click="deleteGroupDialog(scope.row)">删除</span>
+                      <span class="operate-item" @click="editGroupBtn(0, scope.row)">{{ $t('base.new') }}</span>
+                      <span class="operate-item" @click="editGroupBtn(1, scope.row)">{{ $t('base.edit') }}</span>
+                      <span class="operate-item" @click="deleteGroupDialog(scope.row)">{{ $t('base.delete') }}</span>
                     </div>
                   </template>
                   <template v-else>
                     <div class="operate-wrapper">
-                      <!-- <span class="group-btn" @click="editGroupBtn(0, scope.row)">新增</span> -->
-                      <span class="operate-item" @click="editGroupBtn(1, scope.row)">编辑</span>
-                      <span class="operate-item" @click="deleteGroupDialog(scope.row)">删除</span>
-                      <span class="operate-item" @click="editGroupMember(scope.row)">组成员编辑</span>
+                      <!-- <span class="group-btn" @click="editGroupBtn(0, scope.row)">{{ $t('base.new') }}</span> -->
+                      <span class="operate-item" @click="editGroupBtn(1, scope.row)">{{ $t('base.edit') }}</span>
+                      <span class="operate-item" @click="deleteGroupDialog(scope.row)">{{ $t('base.delete') }}</span>
+                      <span class="operate-item" @click="editGroupMember(scope.row)">{{$t('userGroup.editMember')}}</span>
                     </div>
                   </template>
                 </div>
                 <div v-else>
-                  <span class="default-group-btn">无</span>
+                  <span class="default-group-btn">{{$t('base.none')}}</span>
                 </div>
               </template>
             </el-table-column>
@@ -69,37 +69,37 @@
 
         <GroupDetail v-if="dialogGroupMember" :groupId="selectedGroupId" :groupName="selectedGroupName"
           :is-edit="isEdit" :ad-more="ad_more_member" @close="dialogGroupMember = false" />
-        <el-dialog v-model="dialogDeleteVisible" title="删除用户" width="550">
+        <el-dialog v-model="dialogDeleteVisible" :title="$t('user.deleteUser')" width="550">
           <div class="">
-            是否删除当前选中的用户/用户组？
+            {{$t('userGroup.confirmDeleteUserGroup')}}
           </div>
           <template #footer>
             <div class="dialog-footer">
               <el-button style="margin-left: 50px" type="primary" @click="sureDeleteUser">
-                确定
+                {{$t('base.confirm')}}
               </el-button>
-              <el-button @click="dialogDeleteVisible = false">取消</el-button>
+              <el-button @click="dialogDeleteVisible = false">{{$t('base.cancel')}}</el-button>
             </div>
           </template>
         </el-dialog>
 
-        <el-dialog v-model="dialogAddGroup" title="编辑组" width="550">
+        <el-dialog v-model="dialogAddGroup" :title="$t('userGroup.editUserGroup')" width="550">
           <el-form :model="addGroupForm" :rules="rules">
             <div class="request-wrapper">
-              <el-form-item label="用户组名称" label-width="140px" required>
+              <el-form-item :label="$t('userGroup.tableUserGroup.name')" label-width="140px" required>
                 <el-input v-model="addGroupForm.name" autocomplete="off" />
               </el-form-item>
             </div>
-            <el-form-item label="同步用户组" label-width="140px" style="margin-right: 50px;">
+            <el-form-item :label="$t('userGroup.tableUserGroup.syncFromAD')" label-width="140px" style="margin-right: 50px;">
               <el-tree-select lazy v-model="addGroupForm.sync_group_name" :load="loadGroup" :props="groupProps" :disabled="mode"  @change="handleTreeSelect"/>
             </el-form-item>
           </el-form>
           <template #footer>
             <div class="dialog-footer">
               <el-button style="margin-left: 50px" type="primary" @click="commitGroupForm">
-                确定
+                {{$t('base.confirm')}}
               </el-button>
-              <el-button @click="dialogAddGroup = false">取消</el-button>
+              <el-button @click="dialogAddGroup = false">{{$t('base.cancel')}}</el-button>
             </div>
           </template>
         </el-dialog>
@@ -124,16 +124,16 @@ export default {
   data() {
     return {
       tableData: [],
-      syncTime: '上次同步时间：',
+      syncTime: this.$t('userGroup.lastSyncTime'),
       sourceVal: '0',
       accountSwitch: 1,
       sourceOptions: [
         {
           value: '0',
-          label: '系统创建',
+          label: this.$t('userGroup.local'),
         }, {
           value: '1',
-          label: 'AD绑定',
+          label: this.$t('userGroup.fromAD'),
         }],
       pendingDeleteName: null,
       role: [
@@ -143,7 +143,7 @@ export default {
       ],
       dialogFormVisible: false,
       dialogUserDetailForm: false,
-      userDetailTitle: '添加用户',
+      userDetailTitle: this.$t('user.addUser'),
       dialogDeleteVisible: false,
       userForm: {
         name: '',
@@ -174,7 +174,7 @@ export default {
       selectedGroupId: -1,
       selectedGroupName: '',
       isEdit: false,
-      groupVal: '请选择',
+      groupVal: this.$t('base.plzSelect'),
       groupProps:
       {
         value: 'id',
@@ -245,7 +245,7 @@ export default {
       this.dialogFormVisible = true
       if (val === 1) {
         this.dialogUserDetailForm = false// Editable for adding a user
-        this.userDetailTitle = '添加用户'
+        this.userDetailTitle = this.$t('user.addUser')
         this.userForm.name = ''
         this.userForm.region = ''
         this.userForm.account = ''
@@ -254,7 +254,7 @@ export default {
         this.userForm.remark = ''
       } else {
         this.dialogUserDetailForm = true // Read-only for viewing user details
-        this.userDetailTitle = '查看用户'
+        this.userDetailTitle = this.$t('user.viewUser')
         this.userForm.name = row.name
         this.userForm.account = row.account
         this.userForm.password = ''

@@ -16,6 +16,8 @@ export const langEn = {
         cancel: 'Cancel',
         logout: 'Logout',
         search: 'Search',
+        new: 'New',
+        edit: 'Edit',
         detail: 'Detail',
         delete: 'Delete',
         generate: 'Generate',
@@ -55,6 +57,7 @@ export const langEn = {
         disabled: 'Disabled',
         copiedToClipboard: 'Copied to clipboard',
         none: 'None',
+        viewMore: 'More',
     },
     meet: {
         title: 'Editing Meetings',
@@ -171,5 +174,20 @@ export const langEn = {
         password1Hint: 'The passwords are inconsistent',
         plzEnterUsernameHint: 'Enter username',
         plzSelectLevel: 'Select account level',
+    },
+    userGroup: {
+        userGroup: 'User Group',
+        userGroupSettings: 'User Group Settings',
+        local: 'Local',
+        fromAD: 'From Active Directory',
+        editMember: 'Edit Member',
+        confirmDeleteUserGroup: 'Delete the currently selected user/user group?',
+        editUserGroup: 'Edit User Group',
+        lastSyncTime: 'Last sync time：',
+        tableUserGroup: {
+            name: 'Name',
+            syncFromAD: 'Sync from Active Directory',
+            source: 'Source',
+        }
     }
 }

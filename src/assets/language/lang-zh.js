@@ -16,6 +16,8 @@ export const langZh = {
         cancel: '取消',
         logout: '登出',
         search: '查询',
+        new: '新增',
+        edit: '编辑',
         detail: '查看',
         delete: '删除',
         generate: '生成',
@@ -55,6 +57,7 @@ export const langZh = {
         disabled: '禁用',
         copiedToClipboard: '已复制到剪贴板',
         none: '无',
+        viewMore: '查看更多',
     },
     meet: {
         title: '编辑会议',
@@ -173,5 +176,20 @@ export const langZh = {
         password1Hint: '两次输入的密码不一致',
         plzEnterUsernameHint: '请输入用户名称',
         plzSelectLevel: '请选择账号权限',
+    },
+    userGroup: {
+        userGroup: '用户组',
+        userGroupSettings: '用户组配置',
+        local: '系统创建',
+        fromAD: 'AD导入',
+        editMember: '编辑组成员',
+        confirmDeleteUserGroup: '是否删除当前选中的用户/用户组？',
+        editUserGroup: '编辑用户组',
+        lastSyncTime: '上次同步时间：',
+        tableUserGroup: {
+            name: '名称',
+            syncFromAD: '同步AD用户组',
+            source: '来源',
+        }
     }
 }
