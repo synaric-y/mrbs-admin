@@ -22,6 +22,8 @@ export const langEn = {
         delete: 'Delete',
         generate: 'Generate',
         copy: 'Copy',
+        bind: 'Bind',
+        unbind: 'Unbind',
         resetPassword: 'Reset Password',
         exchange: 'Exchange',
         wxwork: 'Wxwork',
@@ -190,6 +192,29 @@ export const langEn = {
             name: 'Name',
             syncFromAD: 'Sync from Active Directory',
             source: 'Source',
+        }
+    },
+    terminal: {
+        terminalManage: 'Device Management',
+        plzInputDeviceId: 'Device ID',
+        confirmUnbindHint: 'Unbind this device?',
+        unbindDevice: 'Unbind Device',
+        tableTerminal: {
+            id: 'ID',
+            deviceId: 'Device ID',
+            version: 'Version',
+            deviceInfo: 'Device Info',
+            resolution: 'Resolution',
+            battery: 'Battery',
+            status: 'Status',
+            bindStatus: 'Bind',
+            room: 'Room',
+            setTime: 'Access Time',
+        },
+        bind: {
+            offline: 'offline',
+            online: 'online',
+            all: 'all',
         }
     }
 }

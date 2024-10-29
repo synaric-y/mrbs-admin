@@ -22,6 +22,8 @@ export const langKo = {
         delete: '삭제',
         generate: '생성하다',
         copy: '복사',
+        bind: '묶다',
+        unbind: '바인딩 해제',
         resetPassword: '비밀번호 재설정',
         exchange: 'Exchange',
         wxwork: '엔터프라이즈 위챗',
@@ -191,6 +193,29 @@ export const langKo = {
             name: '이름',
             syncFromAD: 'Active Directory 와 동기화',
             source: '원천',
+        }
+    },
+    terminal: {
+        terminalManage: '터미널 장치 관리',
+        plzInputDeviceId: '장치 ID를 입력하세요',
+        confirmUnbindHint: '현재 장치의 바인딩을 해제하시겠습니까?',
+        unbindDevice: '장치 바인딩 해제',
+        tableTerminal: {
+            id: 'ID',
+            deviceId: '장치 ID',
+            version: '현재 버전',
+            deviceInfo: '장치 정보',
+            resolution: '화면 해상도',
+            battery: '남은 배터리',
+            status: '기기 실시간 상태',
+            bindStatus: '바인딩 상태',
+            room: '회의실 바인딩',
+            setTime: '접근 시간',
+        },
+        bind: {
+            offline: '오프라인',
+            online: '온라인',
+            all: '모두',
         }
     }
 }

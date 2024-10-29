@@ -4,9 +4,9 @@
       <div class="sub-page-content">
         <div class="sub-title-wrapper" style="margin-left: 20px;">
           <!-- <div class="sub-title">{{ $t("base.userManagement") }}</div> -->
-          <div class="page-title">终端设备管理</div>
+          <div class="page-title">{{$t('terminal.terminalManage')}}</div>
           <div class="filter-wrapper" style="margin-top: 20px;height: 30px;">
-            <el-input v-model="keyword" style="width: 140px;height: 30px" placeholder="请输入设备ID" />
+            <el-input v-model="keyword" style="width: 140px;height: 30px" :placeholder="$t('terminal.plzInputDeviceId')" />
             <el-select class="account-status-select" v-model="statusVal" placeholder="Select" size="default"
               style="width: 140px;margin-left: 25px;min-height: 30px;" @change="onStatusChange">
               <el-option style="height: 30px;" v-for="item in statusOptions" :key="item.value"
@@ -21,52 +21,52 @@
 
             <el-button size="large" class="el-button-content" @click="searchUser">
               <img src="/imgs/button_search.png" alt="Search Icon" class="el-button-img" />
-              查询
+              {{$t('base.search')}}
             </el-button>
           </div>
         </div>
 
         <div class="table-wrapper" style="height: auto;">
           <el-table :data="terminals" style="margin-top: 56px;" header-cell-class-name="tb-header" max-height="450">
-            <el-table-column prop="number" label="序号" width="60">
+            <el-table-column prop="number" :label="$t('terminal.tableTerminal.id')" width="60">
               <template #default="scope">
                 {{ scope.$index + 1 }}
               </template>
             </el-table-column>
-            <el-table-column prop="device_id" label="设备ID" width="200"></el-table-column>
-            <el-table-column prop="version" label="当前版本" width="100"></el-table-column>
-            <el-table-column prop="description" label="设备信息" width="150"></el-table-column>
-            <el-table-column prop="resolution" label="屏幕分辨率" width="150"></el-table-column>
-            <el-table-column prop="battry_text" label="剩余电量" width="130"></el-table-column>
-            <el-table-column prop="status" label="设备实时状态" width="130"></el-table-column>
-            <el-table-column prop="bind_room" label="绑定状态" width="80"></el-table-column>
-            <el-table-column prop="room_name" label="绑定会议室" width="100"></el-table-column>
-            <el-table-column prop="set_time" label="接入时间" width="100"></el-table-column>
+            <el-table-column prop="device_id" :label="$t('terminal.tableTerminal.deviceId')" width="200"></el-table-column>
+            <el-table-column prop="version" :label="$t('terminal.tableTerminal.version')" width="100"></el-table-column>
+            <el-table-column prop="description" :label="$t('terminal.tableTerminal.deviceInfo')"></el-table-column>
+            <el-table-column prop="resolution" :label="$t('terminal.tableTerminal.resolution')" width="150"></el-table-column>
+            <el-table-column prop="battry_text" :label="$t('terminal.tableTerminal.battery')" width="130"></el-table-column>
+            <el-table-column prop="status" :label="$t('terminal.tableTerminal.status')" width="130"></el-table-column>
+            <el-table-column prop="bind_room" :label="$t('terminal.tableTerminal.bindStatus')" width="80"></el-table-column>
+            <el-table-column prop="room_name" :label="$t('terminal.tableTerminal.room')" width="100"></el-table-column>
+            <el-table-column prop="set_time" :label="$t('terminal.tableTerminal.setTime')" width="100"></el-table-column>
             <el-table-column prop="id" :label="$t('user.tableUser.operate')" width="200">
               <template #default="scope">
                 <div class="operate-wrapper" v-if="scope.row.status">
-                  <span class="operate-item" @click="unbindDeviceDialog(scope.row)">解绑</span>
+                  <span class="operate-item" @click="unbindDeviceDialog(scope.row)">{{$t(base.unbind)}}</span>
                 </div>
               </template>
             </el-table-column>
           </el-table>
         </div>
         <div class="table-pagination-block">
-          <div class="table-demonstration">共{{ total_num }}条</div>
+          <div class="table-demonstration">{{$t('base.tableBottomCount', {count: total_num})}}</div>
           <el-pagination v-model:current-page="page_number" @current-change="handleCurrentChange"
             layout="prev, pager, next" :default-page-size="20" :total="total_num" />
         </div>
 
-        <el-dialog v-model="dialogUnbindVisible" title="解绑设备" width="550">
+        <el-dialog v-model="dialogUnbindVisible" :title="$t('terminal.unbindDevice')" width="550">
           <div class="">
-            是否解绑当前设备？
+            {{$t('terminal.confirmUnbindHint')}}
           </div>
           <template #footer>
             <div class="dialog-footer">
               <el-button style="margin-left: 50px" type="primary" @click="unbindDevice">
-                确定
+                {{$t('base.confirm')}}
               </el-button>
-              <el-button @click="dialogUnbindVisible = false">取消</el-button>
+              <el-button @click="dialogUnbindVisible = false">{{$t('base.cancel')}}</el-button>
             </div>
           </template>
         </el-dialog>
@@ -90,14 +90,14 @@ export default {
       statusOptions: [
       {
           value: -1,
-          label: '所有',
+          label: this.$t('terminal.bind.all'),
         },
         {
           value: 0,
-          label: '下线',
+          label: this.$t('terminal.bind.offline'),
         }, {
           value: 1,
-          label: '在线',
+          label: this.$t('terminal.bind.online'),
         }],
       roomVal: 'all',
       roomOptions: [],

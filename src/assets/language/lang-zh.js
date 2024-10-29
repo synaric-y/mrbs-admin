@@ -22,6 +22,8 @@ export const langZh = {
         delete: '删除',
         generate: '生成',
         copy: '复制',
+        bind: '绑定',
+        unbind: '解绑',
         resetPassword: '重置密码',
         exchange: 'Exchange',
         wxwork: '企业微信',
@@ -192,6 +194,29 @@ export const langZh = {
             name: '名称',
             syncFromAD: '同步AD用户组',
             source: '来源',
+        }
+    },
+    terminal: {
+        terminalManage: '终端设备管理',
+        plzInputDeviceId: '请输入设备ID',
+        confirmUnbindHint: '是否解绑当前设备？',
+        unbindDevice: '解绑设备',
+        tableTerminal: {
+            id: '序号',
+            deviceId: '设备ID',
+            version: '当前版本',
+            deviceInfo: '设备信息',
+            resolution: '屏幕分辨率',
+            battery: '剩余电量',
+            status: '设备实时状态',
+            bindStatus: '绑定状态',
+            room: '绑定会议室',
+            setTime: '接入时间',
+        },
+        bind: {
+            offline: '下线',
+            online: '上线',
+            all: '所有',
         }
     }
 }
