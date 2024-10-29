@@ -297,7 +297,8 @@ export default defineComponent({
       currentHourMinute: '',
       minStartTime: '06:00',
       maxEndTime: '21:00',
-      currentTimeZone: 'Asia/Shanghai'
+      currentTimeZone: 'Asia/Shanghai',
+      page_cache_areas:[],
     };
   },
 
@@ -449,40 +450,41 @@ export default defineComponent({
     },
 
     getAllAreas() {
-      const areas = testAreas.data.areas
-      console.log('home getAllAreas local areas', areas)
-      // 获取最小的值
-      if (areas) {
-        const minResolution = areas.reduce((min, area) => {
-          const resolution = parseInt(area.resolution, 10)
-          return resolution < min ? resolution : min
-        }, 900);
-        this.minDuration = minResolution
-        const firstArea = {
-          "area_id": "",
-          "area_name": this.$t('base.all'),
-          "resolution": '1800',
-          "rooms": []
-        }
-        this.minItemHeight = 60 / (1800 / parseInt(minResolution))
-        console.log('Home Minimum resolution: this.minItemHeight', minResolution, this.minItemHeight)
-        // 获取开始、结束时间
-        const { minStart, maxEnd } = this.getMaxAreaDuration()
-        console.log('Home Minimum minStart  maxEnd', minStart, maxEnd)
-        const { timeSlots, localTimeSlots } = Common.generateTimeSlots(minStart, maxEnd)
-        console.log('Home timeSlots localTimeSlots', timeSlots, localTimeSlots)
-        this.timeSlots = timeSlots
-        this.localTimeSlots = localTimeSlots
-        if (areas) {
-          areas.splice(0, 0, firstArea)
-        }
-        this.areas = areas
+      // const areas = testAreas.data.areas
+      // console.log('home getAllAreas local areas', areas)
+      // // 获取最小的值
+      // if (areas) {
+      //   const minResolution = areas.reduce((min, area) => {
+      //     const resolution = parseInt(area.resolution, 10)
+      //     return resolution < min ? resolution : min
+      //   }, 900);
+      //   this.minDuration = minResolution
+      //   const firstArea = {
+      //     "area_id": "",
+      //     "area_name": this.$t('base.all'),
+      //     "resolution": '1800',
+      //     "rooms": []
+      //   }
+      //   this.minItemHeight = 60 / (1800 / parseInt(minResolution))
+      //   console.log('Home Minimum resolution: this.minItemHeight', minResolution, this.minItemHeight)
+      //   // 获取开始、结束时间
+      //   const { minStart, maxEnd } = this.getMaxAreaDuration()
+      //   console.log('Home Minimum minStart  maxEnd', minStart, maxEnd)
+      //   const { timeSlots, localTimeSlots } = Common.generateTimeSlots(minStart, maxEnd)
+      //   console.log('Home timeSlots localTimeSlots', timeSlots, localTimeSlots)
+      //   this.timeSlots = timeSlots
+      //   this.localTimeSlots = localTimeSlots
+      //   if (areas) {
+      //     areas.splice(0, 0, firstArea)
+      //   }
+      //   this.areas = areas
+      // }
+      // return
+
+      if (this.page_cache_areas && this.page_cache_areas.length > 0) {
+        return
       }
-
-      return
-
-
-      Api.getAreaRooms({}).then(({ data, code }) => {
+      Api.getAreaRooms().then(({ data, code }) => {
         if (code != 0) {
           ElMessage({
             message: this.$t('base.getAreaError'),
@@ -491,9 +493,10 @@ export default defineComponent({
           return
         }
         // 网络数据
-        // let areas = data.areas
+        let areas = data.areas
+        this.page_cache_areas = areas
         // 本地测试数据
-        let areas = areaData.data.areas
+        // let areas = areaData.data.areas
         // 获取最小的值
         const minResolution = areas.reduce((min, area) => {
           const resolution = parseInt(area.resolution, 10)
@@ -508,7 +511,6 @@ export default defineComponent({
         }
         this.minItemHeight = 60 / (1800 / parseInt(minResolution))
         console.log('Home Minimum resolution: this.minItemHeight', minResolution, this.minItemHeight)
-
         // 获取开始、结束时间
         const { minStart, maxEnd } = this.getMaxAreaDuration()
         console.log('Home Minimum minStart  maxEnd', minStart, maxEnd)
@@ -524,10 +526,15 @@ export default defineComponent({
     },
 
     getCurrentAreaRooms(area_id) {
-      this.rooms = areaData.data.areas[0].rooms
-      return
+      // this.rooms = areaData.data.areas[0].rooms
+      // return
+      console.log('SingleMeet getCurrentAreaRooms area_id',area_id)
+      if (area_id == 0 || !area_id) {
+        console.log('SingleMeet getCurrentAreaRooms return')
+        return
+      }
 
-      Api.getAreaRooms({ id: area_id }).then(({ data, code }) => {
+      Api.getAreaRooms({ id: area_id }).then(({ data, code, msg }) => {
         if (code != 0) {
           ElMessage({
             message: this.$t('base.getAreaError'),
@@ -864,16 +871,16 @@ export default defineComponent({
 
 
       // 本地测试数据
-      this.currenTimestamp = homeData.data.timestamp
-      this.nowTime = homeData.data.time
-      this.getInMeeting(homeData.data)
-      this.$nextTick(() => {
-        this.showLoading = false
-      })
-      return
+      // this.currenTimestamp = homeData.data.timestamp
+      // this.nowTime = homeData.data.time
+      // this.getInMeeting(homeData.data)
+      // this.$nextTick(() => {
+      //   this.showLoading = false
+      // })
+      // return
 
       console.log('Home getMeetRooms currenArea:  start: end: ', this.currenArea, this.startStamp, this.endStamp);
-      Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp, end_time: this.endStamp, timezone: this.currentTimeZone }).then(({ data, code }) => {
+      Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp, end_time: this.endStamp, timezone: this.currentTimeZone }).then(({ data, code, msg }) => {
         if (!data) {
           ElMessage({
             message: this.$t('base.getMeetRoomError'),

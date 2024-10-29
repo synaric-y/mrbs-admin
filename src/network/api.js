@@ -59,6 +59,7 @@ export class Api {
             params["type"] = "all"
         } else {
             if(params.id > 0) {
+                params['id'] = params.id
                 params["type"] = "area"
             }
         }
@@ -70,7 +71,7 @@ export class Api {
         if(params.id > 0) {
             params["type"] = "area"
         }
-        return Request.post('index', params)
+        return Request.post('get_info%2Findex', params)
     }
 
     static async getRoom(params) {
