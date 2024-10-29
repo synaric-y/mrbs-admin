@@ -31,7 +31,7 @@
           <span style="line-height: 32px;width: 20px;text-align: center;"> - </span>
           <el-form-item prop="end_hour" required >
             <el-time-select v-model="meetForm.end_hour" style="width: 140px;" :start="minStartTime" :step="minStep"
-              :end="maxEndTime" placeholder="会议结束" @change="choseDialogHour(0, meetForm.end_hour, $event)"
+              :end="maxEndTime" placeholder="会议结束" @change="choseDialogHour(1, meetForm.end_hour, $event)"
               :min-time="currentHourMinute" />
           </el-form-item>
         </el-row>

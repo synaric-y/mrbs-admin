@@ -35,7 +35,7 @@
             <div class="calendar-header">
               <div class="time-header">
                 <div class="time-slots">
-                  <div v-for="(time, timeIndex) in timeSlots" :key="time" class="time-slot">
+                  <div v-for="(time, timeIndex) in timeSlots" :key="timeIndex" class="time-slot">
                     {{ time }}
                   </div>
                 </div>
@@ -99,8 +99,7 @@
           </el-scrollbar>
         </div>
 
-        <!-- <SingleMeetCMP v-if="dialogMeetForm" :mode="form_mode" :areas="page_cache_areas" :entry_id="entry_id" @close="dialogMeetForm = false" /> -->
-        <CycleMeetCMP v-if="dialogMeetForm" :mode="form_mode" :areas="page_cache_areas" :entry_id="entry_id" @close="dialogMeetForm = false" />
+        <SingleMeetCMP v-if="dialogMeetForm" :mode="form_mode" :areas="page_cache_areas" :entry_id="entry_id" @close="dialogMeetForm = false" />
         <el-dialog v-model="dialogFormVisible" title="单次会议预定" width="550">
           <el-form :model="meetForm" :rules="rules">
             <div class="request-wrapper">
@@ -522,7 +521,8 @@ export default defineComponent({
         const { minStart, maxEnd } = this.getMaxAreaDuration()
         console.log('Home Minimum minStart  maxEnd', minStart, maxEnd)
         const { timeSlots, localTimeSlots } = Common.generateTimeSlots(minStart, maxEnd)
-        console.log('Home timeSlots localTimeSlots', timeSlots, localTimeSlots)
+        console.log('Home getAllAreas timeSlots', timeSlots)
+        console.log('Home getAllAreas localTimeSlots', localTimeSlots)
         this.timeSlots = timeSlots
         this.localTimeSlots = localTimeSlots
         if (areas) {
@@ -573,7 +573,7 @@ export default defineComponent({
 
     getMaxAreaDuration() {
       const minStart = '06:00'
-      const maxEnd = '10:30'
+      const maxEnd = '22:30'
       return { minStart, maxEnd }
       if (testAreas && testAreas.data && testAreas.data.areas) {
         const localAreas = testAreas.data.areas
