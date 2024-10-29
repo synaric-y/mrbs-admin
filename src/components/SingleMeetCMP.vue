@@ -1,29 +1,27 @@
 <template>
   <div class="mask">
     <div class="content">
-      <div class="title">编辑会议</div>
-      <el-form :model="meetForm" :rules="rules">
+      <div class="title">{{ mode == 1 ? '编辑会议' : '新增会议' }}</div>
+      <el-form ref="meetForm" :model="meetForm" :rules="rules">
 
-        <el-form-item prop="area" label="区域" label-width="100px">
-          <el-select v-model="meetForm.area" placeholder="请选择区域">
-            <el-option label="上海" value="1" />
-            <el-option label="北京" value="2" />
+        <el-form-item prop="area_id" label="区域" label-width="100px" required>
+          <el-select v-model="meetForm.area_id" placeholder="请选择区域" @change="OnAreaChange">
+            <el-option v-for="item in areas" :key="item.area_id" :label="item.area_name" :value="item.area_id" />
           </el-select>
         </el-form-item>
-        <el-form-item prop="room" label="会议室" label-width="100px">
-          <el-select v-model="meetForm.room" placeholder="请选择会议室">
-            <el-option label="Room A" value="1" />
-            <el-option label="Room B" value="2" />
+        <el-form-item prop="room_id" label="会议室" label-width="100px" required>
+          <el-select v-model="meetForm.room_id" placeholder="请选择会议室">
+            <el-option v-for="item in roomOptions" :key="item.room_id" :label="item.title" :value="item.room_id" />
           </el-select>
         </el-form-item>
-        <el-form-item prop="title" label="会议室标题" label-width="100px">
-          <el-input v-model="meetForm.title" autocomplete="off" />
+        <el-form-item prop="name" label="会议室标题" label-width="100px" required>
+          <el-input v-model="meetForm.name" autocomplete="off" />
         </el-form-item>
-        <el-form-item prop="start_day" label="开始时间" style="margin-left: 20px" required>
+        <el-form-item prop="start_date" label="开始时间" style="margin-left: 20px" required>
           <el-col :span="11">
-            <el-form-item prop="start_day">
-              <el-date-picker v-model="meetForm.start_day" type="date" aria-label="Pick start day"
-                placeholder="Pick start day" style="width: 100%" />
+            <el-form-item prop="start_date">
+              <el-date-picker v-model="meetForm.start_date" type="date" value-format="YYYY-MM-DD"
+                aria-label="Pick start day" placeholder="Pick start day" style="width: 100%" />
             </el-form-item>
           </el-col>
           <el-col class="text-center" :span="1">
@@ -33,16 +31,16 @@
             <el-form-item prop="start_hour">
               <el-time-select v-model="meetForm.start_hour" style="width: 140px;margin-left: 20px" :start="minStartTime"
                 :step="minStep" :end="maxEndTime" :placeholder="$t('base.plzSelect')"
-                @change="choseDialogHour(0, start_hour, $event)" :min-time="currentHourMinute" />
+                @change="choseDialogHour(0, meetForm.start_hour, $event)" :min-time="currentHourMinute" />
             </el-form-item>
           </el-col>
         </el-form-item>
 
-        <el-form-item prop="end_day" label="结束时间" style="margin-left: 20px" required>
+        <el-form-item prop="end_date" label="结束时间" style="margin-left: 20px" required>
           <el-col :span="11">
-            <el-form-item prop="end_day">
-              <el-date-picker v-model="meetForm.start_day" type="date" aria-label="Pick end day"
-                placeholder="Pick end day" style="width: 100%" />
+            <el-form-item prop="end_date">
+              <el-date-picker v-model="meetForm.end_date" type="date" value-format="YYYY-MM-DD"
+                aria-label="Pick end day" placeholder="Pick end day" style="width: 100%" />
             </el-form-item>
           </el-col>
           <el-col class="text-center" :span="1">
@@ -52,38 +50,26 @@
             <el-form-item prop="end_hour">
               <el-time-select v-model="meetForm.end_hour" style="width: 140px;margin-left: 20px" :start="minStartTime"
                 :step="minStep" :end="maxEndTime" :placeholder="$t('base.plzSelect')"
-                @change="choseDialogHour(1, end_hour, $event)" :min-time="currentHourMinute" />
+                @change="choseDialogHour(1, meetForm.end_hour, $event)" :min-time="currentHourMinute" />
             </el-form-item>
           </el-col>
         </el-form-item>
 
-
-        <!-- <el-form-item prop="start_day" label="开始时间" style="margin-left: 20px" required>
-          <el-form-item prop="start_day">
-            <el-date-picker v-model="meetForm.start_day" type="date" aria-label="Pick start day"
-              placeholder="Pick start day" style="width: 100%" />
-          </el-form-item>
-        </el-form-item>
-        <el-form-item prop="end_day" label="结束时间" style="margin-left: 20px;" required>
-          <el-form-item prop="end_day">
-            <el-date-picker v-model="meetForm.end_day" type="date" aria-label="Pick end day"
-              placeholder="Pick end day" style="width: 100%" />
-          </el-form-item>
-        </el-form-item> -->
         <el-form-item label="备注" label-width="100px">
-          <el-input v-model="meetForm.remark" maxlength="100" style="width: 410px;" placeholder="Please input"
+          <el-input v-model="meetForm.description" maxlength="100" style="width: 410px;" placeholder="Please input"
             show-word-limit type="textarea" />
         </el-form-item>
       </el-form>
 
-
       <div class="dialog-footer">
-        <el-button type="primary" @click="$emit('close')">关闭</el-button>
+        <el-button type="primary" @click="commitForm">提交</el-button>
+        <el-button style="margin-left: 50px" @click="deleteMeet" v-if="mode == 1">删除</el-button>
+        <el-button style="margin-left: 50px" @click="$emit('close')">关闭</el-button>
+        <!-- <el-button type="primary" @click="$emit('close')">关闭</el-button> -->
       </div>
     </div>
   </div>
 </template>
-
 
 <script>
 import { Api } from "@/network/api.js";
@@ -92,6 +78,7 @@ import { STORAGE } from "@/const.js";
 import { ElMessage } from "element-plus";
 import { Search } from '@element-plus/icons-vue'
 import moment from "moment";
+import { Common } from "@/common/common";
 
 export default {
   computed: {
@@ -100,7 +87,7 @@ export default {
     }
   },
   mixins: [PageMixin],
-  props: ['entry_id'],
+  props: ['entry_id', 'mode', 'areas'],
   emits: ['close'],
   name: 'SingleMeetCMP',
   data() {
@@ -118,38 +105,70 @@ export default {
       isLoading: true,
       selectRow: null,
       meetForm: {
-        area: '',
-        room: '',
-        title: '',
-        start_day: '',
+        area_id: '',
+        room_id: '',
+        rooms: [],
+        name: '',
+        start_date: '',
         start_hour: '',
-        end_day: '',
+        start_seconds: 0,
+        end_date: '',
         end_hour: '',
-        repeat_week: '1',
+        end_seconds: 0,
+        description: '',
+        repeat_week: '0',
         check_list: [],
-        remark: '',
+        rep_end_date: "",
+        // 未知参数
+        all_day: "",
+        type: "E",
+        original_room_id: null,
+        ical_uid: "1123123",
+        ical_sequence: 1,
+        ical_recur_id: "asdfa",
+        allow_registration: "",
+        registrant_limit: 10,
+        registrant_limit_enabled: "1",
+        registration_opens_value: 1,
+        registration_open_units: "w",
+        registration_open_enabled: "",
+        registration_closes_value: 1,
+        registration_closes_units: "w",
+        registration_closes_enabled: "",
+        rep_id: null,
+        edit_series: 0,
+        rep_type: 2,
+        rep_day: [],
+        rep_interval: 1,
+        month_type: 0,
+        month_absolute: 2,
+        month_relative_ord: "",
+        month_relative_day: "",
+        skip: 0,
+        no_mail: 1,
+        private: ""
       },
       currentHourMinute: '',
       minStep: '00:30',
       minStartTime: '06:00',
       maxEndTime: '21:00',
       rules: {
-        area: [
+        area_id: [
           { required: true, message: '请选择区域', trigger: 'blur' }
         ],
-        room: [
+        room_id: [
           { required: true, message: '请选择房间', trigger: 'blur' }
         ],
-        title: [
+        name: [
           { required: true, message: '请输入会议标题', trigger: 'blur' }
         ],
-        start_day: [
+        start_date: [
           { required: true, message: '请选择开始时间', trigger: 'blur' }
         ],
         start_hour: [
           { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
         ],
-        end_day: [
+        end_date: [
           { required: true, message: '请选择结束时间', trigger: 'blur' }
         ],
         end_hour: [
@@ -161,18 +180,57 @@ export default {
         check_list: [
           { required: true, message: '请选择会议重复list时间', trigger: 'blur' }
         ],
-        remark: [
-          { required: false, message: this.$t('base.noDataHint'), trigger: 'blur' }
+        description: [
+          { required: false, message: '请输入会议信息', trigger: 'blur' }
         ],
       },
-
+      select_area_id: -1,
+      select_room_id: -1,
+      currentTimeZone: 'Asia/Shanghai',
+      roomOptions: [],
     }
   },
   methods: {
 
+    OnAreaChange(e) {
+      this.select_area_id = e
+      console.log('SingleMeetCMP OnAreaChange e', e)
+      if (this.select_area_id != -1) {
+        const area_rooms = this.areas.filter((item) =>
+          item.area_id === e
+        )
+        console.log('MeetList onAreaChange area_rooms', area_rooms[0])
+        const select_rooms = [];
+        area_rooms[0].rooms.forEach(room => {
+          select_rooms.push({
+            room_id: room.room_id,
+            room_name: room.room_name,
+            title: room.room_name,
+            disabled: room.disabled,
+          });
+        });
+        this.roomOptions = select_rooms
+      } else {
+        const select_rooms = [];
+        this.areas.forEach(area => {
+          area.rooms.forEach(room => {
+            select_rooms.push({
+              area_id: area.area_id,
+              area_name: area.area_name,
+              room_id: room.room_id,
+              room_name: room.room_name,
+              title: `${area.area_name}-${room.room_name}`,
+              disabled: room.disabled,
+            });
+          });
+        });
+        this.roomOptions = select_rooms
+      }
+    },
+
     choseDialogHour(mode, str, e) {
       console.log('SingleMeetCMP choseHour str e', str, e)
-      const ymd = this.form.start_date
+      const ymd = this.meetForm.start_date
       const lang = Common.getLocalLang()
       const appeedStr = ymd + ' ' + str
       const formatStr = Common.getAssignFormat(appeedStr, lang)
@@ -187,14 +245,14 @@ export default {
             message: this.$t('base.passTimeError'),
             type: 'warning',
           })
-          this.form.start_seconds = 0
+          this.meetForm.start_seconds = 0
           this.start_hour = ''
           return
         }
-        this.form.start_seconds = nextTimeStamp;
+        this.meetForm.start_seconds = nextTimeStamp;
         return
       }
-      this.form.end_seconds = nextTimeStamp;
+      this.meetForm.end_seconds = nextTimeStamp;
     },
 
     getMeetDetail() {
@@ -206,38 +264,58 @@ export default {
           return
         }
         console.log('SingleMeetCMP getMeetDetail data', data)
-        this.meetForm.title = data.name
+        this.meetForm.name = data.name
         this.meetForm.remark = data.description
-        this.meetForm.room = data.room_name
-        this.meetForm.area = data.area_name
-        this.meetForm.start_day = moment.tz(data.start_time * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
-        this.meetForm.start_hour =  moment.tz(data.start_time * 1000, 'Asia/Shanghai').format('HH:mm')
-        this.meetForm.end_day = moment.tz(data.end_time * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
-        this.meetForm.end_hour = this.start_hour =  moment.tz(data.end_time * 1000, 'Asia/Shanghai').format('HH:mm')
+        this.meetForm.room_id = data.room_id
+        this.meetForm.area_id = data.area_id
+        this.meetForm.start_date = moment.tz(data.start_time * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
+        this.meetForm.start_hour = moment.tz(data.start_time * 1000, 'Asia/Shanghai').format('HH:mm')
+        this.meetForm.end_date = moment.tz(data.end_time * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
+        this.meetForm.end_hour = this.start_hour = moment.tz(data.end_time * 1000, 'Asia/Shanghai').format('HH:mm')
       })
     },
-    getGroupMember() {
-      let params = {}
-      params['group_id'] = parseInt(this.groupId)
-      params['search'] = this.keyword || '',
-        params['page'] = this.pageNumber
-      if (this.adMore) {
-        params['in_group'] = 1
-      }
-      Api.getGroupMember(params).then(({ data, code, msg }) => {
-        this.isLoading = false
-        if (code == 0 && data && data.users) {
-          data.users.forEach(it => {
-            if (it['is_bind']) {
-              it['status'] = true
-            } else {
-              it['status'] = false
-            }
-          })
-          console.log('SingleMeetCMP getUserList data.users:', data.users)
-          this.groupMembers = data.users
-          this.total_num = data.total_num
+
+    commitForm() {
+      console.log('SingleMeetCMP commitForm this.meetForm', this.meetForm)
+      this.$refs.meetForm.validate((pass) => {
+        if (!pass) {
+          console.log('SingleMeetCMP commitForm !pass')
+          return
         }
+      })
+      this.meetForm.original_room_id = this.meetForm.room_id
+      this.meetForm.rooms = []
+      // this.meetForm.id = this.meetForm.room_id
+      this.meetForm.rooms.push(this.meetForm.room_id)
+      Api.editMeet(this.meetForm).then(({ data, code, msg }) => {
+        if (code == 0) {
+          $emit('close')
+          ElMessage({
+            message: this.$t('base.editSuccess'),
+            type: 'success',
+          })
+        } else {
+          ElMessage({
+            message: msg,
+            type: 'error',
+          })
+        }
+      })
+    },
+
+    deleteMeet() {
+      Api.deleteMeet({ entry_id: Number(this.entry_id) }).then(({ data, code, msg }) => {
+        if (code == 0) {
+          ElMessage({
+            message: this.$t('base.deleteSuccess'),
+            type: 'success',
+          })
+          $emit('close')
+        } else {
+          ElMessage.error(msg)
+        }
+      }).catch(() => {
+        ElMessage.error(this.$t('deleteError'))
       })
     },
   },

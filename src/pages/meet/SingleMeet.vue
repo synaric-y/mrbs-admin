@@ -99,6 +99,8 @@
           </el-scrollbar>
         </div>
 
+        <SingleMeetCMP v-if="dialogMeetForm" :mode="form_mode" :areas="page_cache_areas" :entry_id="entry_id" @close="dialogMeetForm = false" />
+
         <el-dialog v-model="dialogFormVisible" title="单次会议预定" width="550">
           <el-form :model="meetForm" :rules="rules">
             <div class="request-wrapper">
@@ -197,8 +199,10 @@ import { SELECT_DAY, ROOM_STATUS, USER_TYPE } from '@/const';
 import moment from 'moment';
 import { FilterDateStore } from '@/stores/filterDateStore';
 import { areaData, homeData, testAreas } from '.././home';
+import SingleMeetCMP from '@/components/SingleMeetCMP.vue';
 
 export default defineComponent({
+  components: {SingleMeetCMP},
   mixins: [PageMixin],
   data() {
     return {
@@ -294,6 +298,8 @@ export default defineComponent({
       },
 
       dialogFormVisible: false,
+      dialogMeetForm: false,
+      form_mode: 0,
       currentHourMinute: '',
       minStartTime: '06:00',
       maxEndTime: '21:00',
@@ -533,6 +539,19 @@ export default defineComponent({
         console.log('SingleMeet getCurrentAreaRooms return')
         return
       }
+      if (!this.page_cache_areas || this.page_cache_areas.length == 0) {
+        return
+      }
+      const area_rooms = this.page_cache_areas.filter((item) =>
+        item.area_id === area_id
+      )
+      if (this.dayRrangeVal != 0) {
+        this.dayRrange(this.dayRrangeVal)
+      }
+      console.log('Home getCurrentAreaRooms area_rooms', area_rooms)
+      this.rooms = this.getAllRoom(area_rooms)
+      return
+      
 
       Api.getAreaRooms({ id: area_id }).then(({ data, code, msg }) => {
         if (code != 0) {
@@ -737,7 +756,8 @@ export default defineComponent({
     },
 
     toMeet(time, room, day) {
-      this.dialogFormVisible = true
+      // this.dialogFormVisible = true
+      this.dialogMeetForm = true
       return
       console.log("Home toMeet room", room)
       const lang = Common.getLocalLang()
@@ -851,6 +871,7 @@ export default defineComponent({
     },
 
     getMeetRooms() {
+      console.log('Home getMeetRooms enter')
       if (this.startStamp && this.endStamp) {
       } else {
         const temp = Common.getThreeDaysTimestamps()
@@ -881,7 +902,7 @@ export default defineComponent({
 
       console.log('Home getMeetRooms currenArea:  start: end: ', this.currenArea, this.startStamp, this.endStamp);
       Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp, end_time: this.endStamp, timezone: this.currentTimeZone }).then(({ data, code, msg }) => {
-        if (!data) {
+        if (!data && code != 0) {
           ElMessage({
             message: this.$t('base.getMeetRoomError'),
             type: 'error'
@@ -889,9 +910,6 @@ export default defineComponent({
           return
         }
         console.log('Home getMeetRooms api data:', data)
-        if (this.lang == 'en') {
-
-        }
         this.currenTimestamp = data.timestamp
         this.nowTime = data.time
         this.getInMeeting(data)

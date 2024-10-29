@@ -19,8 +19,7 @@
             </el-select>
             <el-select class="account-status-select" v-model="roomVal" placeholder="Select" size="default"
               style="width: 140px;margin-left: 25px;min-height: 30px;" @change="onRoomChange">
-              <el-option style="height: 30px;" v-for="item in roomOptions" :key="item.room_id" :label="item.title"
-                :value="item.room_id" />
+              <el-option style="height: 30px;" v-for="item in roomOptions" :key="item.room_id" :label="item.title" :value="item.room_id" />
             </el-select>
             <!-- <el-date-picker style="margin-left: 20px;" v-model="baseTime" type="daterange" :range-separator="$t('base.to')"
               :start-placeholder="startTime" :end-placeholder="endTime" @change="choseDate" /> -->

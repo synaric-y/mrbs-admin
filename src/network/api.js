@@ -92,11 +92,11 @@ export class Api {
     }
 
     static async editMeet(params) {
-        return Request.post('edit_entry_handler',params)
+        return Request.post('entry/edit_entry_handler',params)
     }
 
     static async deleteMeet(params) {
-        return Request.post('del_entry',params)
+        return Request.post('entry/del_entry',params)
     }
 
     static async getUserList(params) {
