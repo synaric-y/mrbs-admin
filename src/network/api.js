@@ -184,6 +184,10 @@ export class Api {
         return Request.post('entry%2Fget_entry',params)
     }
 
+    static async unbindDevice(params){
+        return Request.post('device%2Funbind',params)
+    }
+
     // 引导页&系统设置
     static async getVariables(params){
         return Request.post('system_setting%2Fget_variables',params)

@@ -57,7 +57,7 @@
             layout="prev, pager, next" :default-page-size="20" :total="total_num" />
         </div>
 
-        <el-dialog v-model="dialogDeleteVisible" title="解绑设备" width="550">
+        <el-dialog v-model="dialogUnbindVisible" title="解绑设备" width="550">
           <div class="">
             是否解绑当前设备？
           </div>
@@ -66,7 +66,7 @@
               <el-button style="margin-left: 50px" type="primary" @click="unbindDevice">
                 确定
               </el-button>
-              <el-button @click="dialogDeleteVisible = false">取消</el-button>
+              <el-button @click="dialogUnbindVisible = false">取消</el-button>
             </div>
           </template>
         </el-dialog>
@@ -103,7 +103,7 @@ export default {
       roomOptions: [],
       pendingDeleteName: null,
       page_number: 1,
-      dialogDeleteVisible: false,
+      dialogUnbindVisible: false,
       selectRow: null,
       terminals: [],
       total_num: 0,
@@ -158,13 +158,21 @@ export default {
     },
 
     unbindDeviceDialog(row) {
-      this.dialogDeleteVisible = true
+      this.dialogUnbindVisible = true
       this.selectRow = row
     },
 
     unbindDevice() {
       // 解绑当前设备
-      
+      this.dialogUnbindVisible = false
+      Api.unbindDevice({device_id:this.selectRow.device_id}).then(({ data, code, msg }) => {
+        this.closedAlert()
+        if (code == 0) {
+          this.getTerminalList()
+        } else {
+          ElMessage.error(msg)
+        }
+      })
 
     },
 
