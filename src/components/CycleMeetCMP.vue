@@ -1,7 +1,7 @@
 <template>
   <div class="mask">
     <div class="content">
-      <div class="title">编辑会议</div>
+      <div class="title">{{ mode == 1 ? '编辑循环会议' : '新增循环会议' }}</div>
       <el-form  ref="meetForm" :model="meetForm" :rules="rules">
         <el-form-item prop="area_id" label="区域" label-width="100px" required>
           <el-select v-model="meetForm.area_id" placeholder="请选择区域" @change="OnAreaChange">
@@ -13,35 +13,35 @@
             <el-option v-for="item in roomOptions" :key="item.room_id" :label="item.title" :value="item.room_id" />
           </el-select>
         </el-form-item>
-        <el-form-item prop="title" label="会议室标题" label-width="100px">
-          <el-input v-model="meetForm.title" autocomplete="off" />
+        <el-form-item prop="name" label="会议室标题" label-width="100px" required >
+          <el-input v-model="meetForm.name" autocomplete="off" />
         </el-form-item>
         <el-form-item prop="start_date" label="开始时间" style="margin-left: 20px" required>
           <el-form-item prop="start_date">
-            <el-date-picker v-model="meetForm.start_date" type="date" aria-label="Pick start day"
+            <el-date-picker v-model="meetForm.start_date" type="date" value-format="YYYY-MM-DD" aria-label="Pick start day"
               placeholder="Pick start day" style="width: 100%" />
           </el-form-item>
         </el-form-item>
         <el-row style="margin-left: 97px">
-          <el-form-item prop="start_hour">
+          <el-form-item prop="start_hour" required >
             <el-time-select v-model="meetForm.start_hour" style="width: 140px;" :start="minStartTime" :step="minStep"
-              :end="maxEndTime" placeholder="会议开始" @change="choseDialogHour(0, start_hour, $event)"
+              :end="maxEndTime" placeholder="会议开始" @change="choseDialogHour(0, meetForm.start_hour, $event)"
               :min-time="currentHourMinute" />
           </el-form-item>
           <span style="line-height: 32px;width: 20px;text-align: center;"> - </span>
-          <el-form-item prop="end_hour">
-            <el-time-select v-model="meetForm.start_hour" style="width: 140px;" :start="minStartTime" :step="minStep"
-              :end="maxEndTime" placeholder="会议结束" @change="choseDialogHour(0, start_hour, $event)"
+          <el-form-item prop="end_hour" required >
+            <el-time-select v-model="meetForm.end_hour" style="width: 140px;" :start="minStartTime" :step="minStep"
+              :end="maxEndTime" placeholder="会议结束" @change="choseDialogHour(0, meetForm.end_hour, $event)"
               :min-time="currentHourMinute" />
           </el-form-item>
         </el-row>
-        <el-form-item label="重复间隔为" prop="repeat_week" style="margin-left: 7px">
-          <el-input-number style="width: 100px;" v-model="meetForm.repeat" :min="1" :max="4"
+        <el-form-item label="重复间隔为" prop="rep_interval" style="margin-left: 7px" required >
+          <el-input-number style="width: 100px;" v-model="meetForm.rep_interval" :min="1" :max="4"
             @change="handleWeekChange" />
           <span
             style="margin-left: 20px;color: #4E5969;font-family: PingFang SC;font-size: 14px;font-weight: normal;">周后的：</span>
         </el-form-item>
-        <el-form-item style="margin-left: 40px" prop="check_list">
+        <el-form-item style="margin-left: 40px" prop="check_list" required >
           <el-checkbox-group v-model="meetForm.check_list" size="small">
             <el-checkbox label="星一" value="1" />
             <el-checkbox label="星二" value="2" />
@@ -54,12 +54,12 @@
         </el-form-item>
         <el-form-item prop="rep_end_date" label="结束时间" style="margin-left: 20px;" required>
           <el-form-item prop="rep_end_date">
-            <el-date-picker v-model="meetForm.rep_end_date" type="date" aria-label="Pick end day"
+            <el-date-picker v-model="meetForm.rep_end_date" type="date" value-format="YYYY-MM-DD" aria-label="Pick end day"
               placeholder="Pick end day" style="width: 100%" />
           </el-form-item>
         </el-form-item>
-        <el-form-item label="备注" label-width="100px">
-          <el-input v-model="meetForm.remark" maxlength="100" style="width: 410px;" placeholder="Please input"
+        <el-form-item prop="description" label="备注" label-width="100px">
+          <el-input v-model="meetForm.description" maxlength="100" style="width: 410px;" placeholder="Please input"
             show-word-limit type="textarea" />
         </el-form-item>
       </el-form>
@@ -123,7 +123,8 @@ export default {
         description: '',
         repeat_week: '1',
         check_list: [],
-        rep_end_date: "",
+        rep_opt: 0,
+        rep_interval: 1,
         // 未知参数
         all_day: "",
         type: "E",
@@ -144,7 +145,6 @@ export default {
         edit_series: 1,
         rep_type: 2,
         rep_day: [],
-        rep_interval: 1,
         month_type: 0,
         month_absolute: 2,
         month_relative_ord: "",
@@ -169,17 +169,17 @@ export default {
         start_hour: [
           { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
         ],
-        end_date: [
+        rep_end_date: [
           { required: true, message: '请选择结束时间', trigger: 'blur' }
         ],
         end_hour: [
           { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
         ],
-        repeat_week: [
+        rep_interval: [
           { required: true, message: '请选择会议重复时间', trigger: 'blur' }
         ],
         check_list: [
-          { required: true, message: '请选择会议重复list时间', trigger: 'blur' }
+          { required: true, message: '请选择会议重复的周期时间', trigger: 'blur' }
         ],
         description: [
           { required: false, message: this.$t('base.noDataHint'), trigger: 'blur' }
@@ -246,13 +246,21 @@ export default {
             type: 'warning',
           })
           this.meetForm.start_seconds = 0
-          this.start_hour = ''
+          this.meetForm.start_hour = ''
           return
         }
         this.meetForm.start_seconds = nextTimeStamp;
         return
       }
       this.meetForm.end_seconds = nextTimeStamp;
+    },
+
+    convertToBinaryWithSundayLeft(checkList) {
+      let binaryRepresentation = 0;
+      checkList.forEach(value => {
+        binaryRepresentation |= (1 << (7 - value));
+      });
+      return binaryRepresentation;
     },
 
     getMeetDetail() {
@@ -286,6 +294,7 @@ export default {
       this.meetForm.rooms = []
       // this.meetForm.id = this.meetForm.room_id
       this.meetForm.rooms.push(this.meetForm.room_id)
+      this.meetForm.rep_opt = this.convertToBinaryWithSundayLeft(this.meetForm.check_list)
       Api.editMeet(this.meetForm).then(({ data, code, msg }) => {
         if (code == 0) {
           $emit('close')

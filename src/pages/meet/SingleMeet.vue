@@ -99,8 +99,8 @@
           </el-scrollbar>
         </div>
 
-        <SingleMeetCMP v-if="dialogMeetForm" :mode="form_mode" :areas="page_cache_areas" :entry_id="entry_id" @close="dialogMeetForm = false" />
-
+        <!-- <SingleMeetCMP v-if="dialogMeetForm" :mode="form_mode" :areas="page_cache_areas" :entry_id="entry_id" @close="dialogMeetForm = false" /> -->
+        <CycleMeetCMP v-if="dialogMeetForm" :mode="form_mode" :areas="page_cache_areas" :entry_id="entry_id" @close="dialogMeetForm = false" />
         <el-dialog v-model="dialogFormVisible" title="单次会议预定" width="550">
           <el-form :model="meetForm" :rules="rules">
             <div class="request-wrapper">
@@ -200,9 +200,10 @@ import moment from 'moment';
 import { FilterDateStore } from '@/stores/filterDateStore';
 import { areaData, homeData, testAreas } from '.././home';
 import SingleMeetCMP from '@/components/SingleMeetCMP.vue';
+import CycleMeetCMP from '@/components/CycleMeetCMP.vue';
 
 export default defineComponent({
-  components: {SingleMeetCMP},
+  components: {SingleMeetCMP,CycleMeetCMP},
   mixins: [PageMixin],
   data() {
     return {

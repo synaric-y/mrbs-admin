@@ -246,7 +246,7 @@ export default {
             type: 'warning',
           })
           this.meetForm.start_seconds = 0
-          this.start_hour = ''
+          this.meetForm.start_hour = ''
           return
         }
         this.meetForm.start_seconds = nextTimeStamp;
@@ -285,7 +285,9 @@ export default {
       })
       this.meetForm.original_room_id = this.meetForm.room_id
       this.meetForm.rooms = []
-      // this.meetForm.id = this.meetForm.room_id
+      if (this.entry_id) {
+        this.meetForm.id = Number(this.entry_id)
+      }
       this.meetForm.rooms.push(this.meetForm.room_id)
       Api.editMeet(this.meetForm).then(({ data, code, msg }) => {
         if (code == 0) {
