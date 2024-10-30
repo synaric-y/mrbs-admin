@@ -218,4 +218,9 @@ export class Api {
             }
         })
     }
+
+    // 版本
+    static async getVersions(params){
+        return Request.post('system_setting%2Fget_versions',params)
+    }
 }

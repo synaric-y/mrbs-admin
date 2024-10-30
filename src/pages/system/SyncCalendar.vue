@@ -137,6 +137,9 @@ export default {
               ElMessage.success({
                 message: '设置成功',
               })
+              setTimeout(()=>{
+                location.reload() // 刷新页面
+              },1000)
             }else{
               ElMessage.error({
                 message: '设置失败',

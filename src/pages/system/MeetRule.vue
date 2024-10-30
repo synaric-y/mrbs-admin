@@ -83,16 +83,15 @@
 
           <div class="section-content">
             <el-form ref="formRef" :model="form" label-width="auto" :rules="rules">
-              <el-form-item label="快速会议开始时间" prop="startTime">
-                <el-select style="min-width: 400px" v-model="form.startTime" placeholder="请选择">
-                  <el-option label="最近空闲时段马上开始" value="0"/>
-                  <el-option label="手动选择" value="1"/>
-                </el-select>
-              </el-form-item>
+<!--              <el-form-item label="快速会议开始时间" prop="startTime">-->
+<!--                <el-select style="min-width: 400px" v-model="form.startTime" placeholder="请选择">-->
+<!--                  <el-option label="最近空闲时段马上开始" value="0"/>-->
+<!--                  <el-option label="手动选择" value="1"/>-->
+<!--                </el-select>-->
+<!--              </el-form-item>-->
               <el-form-item label="预定时间最小间隔" prop="minScale">
                 <el-select style="min-width: 400px" v-model="form.minScale" placeholder="请选择">
-                  <el-option label="15分钟" value="0"/>
-                  <el-option label="30分钟" value="1"/>
+                  <el-option v-for="(item,index) in resolutionOptions" :key="index" :label="item.label" :value="item.value"/>
                 </el-select>
               </el-form-item>
             </el-form>
@@ -117,7 +116,7 @@ import {STORAGE} from "@/const.js";
 import {ElMessage} from "element-plus";
 import {Clock, Monitor, User} from "@element-plus/icons-vue";
 import {HOST} from "@/config.js";
-
+const SECOND_PER_MINUTE = 60
 export default {
   components: {User, Monitor, Clock},
   mixins: [PageMixin],
@@ -128,17 +127,27 @@ export default {
         bookerDisplay: true,
         meetingNameDisplay: true,
         quickMeetingDisplay: true,
-        startTime: '',
+        // startTime: '',
         minScale: '',
       },
 
+      resolutionOptions:[
+        {
+          label: '15分钟',
+          value: 15*SECOND_PER_MINUTE
+        },
+        {
+          label: '30分钟',
+          value: 30*SECOND_PER_MINUTE
+        }
+      ],
       timeline: [
         '10:00am', '10:30am', '11:00am', '11:30am', '12:00am', '12:30am', '01:00pm', '01:30pm',
       ],
       rules: {
-        startTime: [
-          {required: true, message: '请选择快速会议开始时间', trigger: 'blur'},
-        ],
+        // startTime: [
+        //   {required: true, message: '请选择快速会议开始时间', trigger: 'blur'},
+        // ],
         minScale: [
           {required: true, message: '请选择预定时间最小间隔', trigger: 'blur'},
         ],
@@ -151,6 +160,7 @@ export default {
       "show_book": 1,
       "show_meeting_name": 1,
       "temporary_meeting": 1,
+      "resolution": 1,
     }).then(({code, data, msg}) => {
       if (code == 0) {
         console.log(data)
@@ -160,6 +170,7 @@ export default {
           bookerDisplay: data.show_book===1,
           meetingNameDisplay: data.show_meeting_name===1,
           quickMeetingDisplay: data.temporary_meeting===1,
+          minScale: data.resolution
         }
       } else {
         ElMessage.error({
@@ -184,12 +195,16 @@ export default {
                 "show_book": this.form.bookerDisplay?1:0,
                 "show_meeting_name": this.form.meetingNameDisplay?1:0,
                 "temporary_meeting": this.form.quickMeetingDisplay?1:0,
+                "resolution": this.form.minScale
               }
           ).then(({code,data})=>{
             if(code==0){
               ElMessage.success({
                 message: '设置成功',
               })
+              setTimeout(()=>{
+                location.reload() // 刷新页面
+              },1000)
             }else{
               ElMessage.error({
                 message: '设置失败',

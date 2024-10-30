@@ -16,14 +16,18 @@
               </el-form-item>
               <el-form-item label="服务器地址" prop="requestUrl">
                 <div class="form-item-content">
-                  <el-input v-model="form.requestUrl" class="form-item-input"  placeholder="示例:172.16.88.180"/>
-                  <el-button type="primary" style="margin-left: 10px">测试</el-button>
+                  <el-input :disabled="urlStatus==='testing'" @input="urlStatus='untested'" v-model="form.requestUrl" class="form-item-input"  placeholder="示例:172.16.88.180"/>
+                  <el-button :disabled="urlStatus!=='untested'" :loading="urlStatus==='testing'" type="primary" style="margin-left: 10px" @click="verify">{{urlStatus==='untested'?'测试':(urlStatus==='testing'?'测试中':'已测试')}}</el-button>
+                  <div style="width: 20px;height: 20px" id="qrcode"></div>
                 </div>
               </el-form-item>
 
               <el-form-item label="管理后台Logo" prop="webLogo">
                 <div class="form-item-content">
-                  <img v-if="originalWebLogoURL!==''" class="form-item-logo" :src="originalWebLogoURL" alt="图片未加载">
+                  <div class="img-bg">
+                    <img v-if="originalWebLogoURL!==''" class="form-item-logo" :src="originalWebLogoURL" alt="图片未加载">
+                  </div>
+
                   <el-upload
                       :class="{ hide: form.webLogo && form.webLogo.length===1 }"
                       v-model:file-list="form.webLogo"
@@ -54,7 +58,10 @@
 
               <el-form-item label="平板端首页Logo" prop="appLogo">
                 <div class="form-item-content">
-                  <img v-if="originalAppLogoURL!==''" class="form-item-logo" :src="originalAppLogoURL" alt="图片未加载">
+                  <div class="img-bg">
+                    <img v-if="originalAppLogoURL!==''" class="form-item-logo" :src="originalAppLogoURL" alt="图片未加载">
+                  </div>
+
                   <el-upload
                       :class="{ hide: form.appLogo && form.appLogo.length===1 }"
                       v-model:file-list="form.appLogo"
@@ -106,14 +113,14 @@
           <div class="section-title">平板端升级</div>
 
           <div class="section-content">
-            <el-table :data="tableData" style="width: 100%">
-              <el-table-column prop="history" label="历史安装版本" width="180">
+            <el-table :data="versionData" style="width: 100%">
+              <el-table-column prop="version" label="历史安装版本" width="180">
                 <template #default="scope">
-                  <span>{{scope.row.history +  (scope.row.isCurrent?'（当前版本）':'')}}</span>
+                  <span>{{scope.row.version +  (scope.row.isCurrent?'（当前版本）':'')}}</span>
                 </template>
               </el-table-column>
-              <el-table-column prop="release" label="发布时间" width="180"/>
-              <el-table-column prop="update" label="更新时间"/>
+              <el-table-column prop="publish_time" label="发布时间" width="180"/>
+              <el-table-column prop="update_time" label="更新时间"/>
               <el-table-column label="操作">
                 <template #default="scope">
                   <el-button v-if="scope.row.isCurrent" type="primary">升级</el-button>
@@ -141,6 +148,9 @@ import {PageMixin} from "@/pages/PageMixin.js";
 import {STORAGE} from "@/const.js";
 import {ElMessage} from "element-plus";
 import {Minus, SemiSelect} from "@element-plus/icons-vue";
+import AraleQRCode from 'arale-qrcode'
+import axios from "@/network/axios.js";
+import * as dayjs from 'dayjs'
 
 export default {
   components: {SemiSelect, Minus},
@@ -155,24 +165,10 @@ export default {
         timeFormat:'',
         theme:''
       },
+      urlStatus: 'untested', //枚举值untested testing tested
       originalWebLogoURL: '',
       originalAppLogoURL: '',
-      tableData: [
-        {
-          id: 1,
-          history: '2.0.0',
-          release: '2024-08-15',
-          update: '2024-08-15',
-          isCurrent: true
-        },
-        {
-          id: 2,
-          history: '1.0.0',
-          release: '2024-08-10',
-          update: '2024-08-10',
-          isCurrent: false
-        }
-      ],
+      versionData: [],
       rules:{
         companyName: [
           { required: true, message: '请输入公司或组织名称', trigger: 'blur' },
@@ -230,8 +226,19 @@ export default {
           theme:data.theme_type
         }
 
-        that.originalWebLogoURL = data.logo_dir!=='' ? HOST + data.logo_dir : ''
-        that.originalAppLogoURL = data.app_logo_dir!=='' ? HOST + data.app_logo_dir : ''
+        if(that.form.requestUrl && that.form.requestUrl!==''){
+          const codeFigure = new AraleQRCode({
+            "render": "svg", // 生成的类型 'svg' or 'table'
+            "text": that.form.requestUrl, // 需要生成二维码的链接
+            "size": 100 // 生成二维码大小
+          });
+          document.querySelector('#qrcode').appendChild(codeFigure);
+        }
+
+
+
+        that.originalWebLogoURL = data.logo_dir!=='' ? (HOST + data.logo_dir + '?time=' + new Date().getTime()) : ''
+        that.originalAppLogoURL = data.app_logo_dir!=='' ? (HOST + data.app_logo_dir + '?time=' + new Date().getTime()) : ''
 
         console.log(that.originalWebLogoURL,that.originalWebLogoURL)
       }else{
@@ -243,10 +250,65 @@ export default {
     .catch(e=>{
       console.log(e)
     })
+
+    Api.getVersions({})
+    .then(({code,data})=>{
+      data.forEach((item, index, arr)=>{
+        arr[index].publish_time = dayjs.unix(item.publish_time).format('YYYY-MM-DD HH:mm:ss')
+      })
+      this.versionData = data
+
+    })
   },
   methods: {
-    HOST() {
-      return HOST
+    verify(){
+
+      if(!this.form.requestUrl || this.form.requestUrl===''){
+        ElMessage.error({
+          message: '请求地址不能为空！'
+        })
+        return
+      }
+
+      // 测试联通
+      this.urlStatus='testing'
+      axios({
+        url: `${this.form.requestUrl}/web/call.php?act=get_info%2Fadmin`,
+        method: 'POST',
+        data: {type:'area'},
+      }).then(({data})=>{
+        if(data.code!==0){
+          ElMessage.error({
+            message: '无效的请求地址'
+          })
+          this.urlStatus='untested'
+          return
+        }
+
+        this.urlStatus='tested'
+        ElMessage.success({
+          message: '请求地址验证成功！'
+        })
+
+        const codeFigure = new AraleQRCode({
+          "render": "svg", // 生成的类型 'svg' or 'table'
+          "text": this.form.requestUrl, // 需要生成二维码的链接
+          "size": 100 // 生成二维码大小
+        });
+        const qrcodeContainer = document.querySelector('#qrcode')
+        while (qrcodeContainer.firstChild) { // 移除所有子元素
+          qrcodeContainer.removeChild(qrcodeContainer.firstChild);
+        }
+        qrcodeContainer.appendChild(codeFigure); // 增加新的子元素
+
+      }).catch(e=>{
+        ElMessage.error({
+          message: '无效的请求地址'
+        })
+        this.urlStatus='untested'
+      })
+
+
     },
     removeImage(type,file){
       switch (type){
@@ -270,14 +332,27 @@ export default {
               if(this.form.webLogo.length!==0){
                 const webLogoData = new FormData();
                 webLogoData.append('logo',this.form.webLogo[0].raw)
-                requests.push(Api.uploadWebLogo(webLogoData))
+
+
+                requests.push(
+                    Api.uploadWebLogo(webLogoData)
+                    .then(res=>{
+                      if(res?.data?.code!==0) throw new Error('图片上传失败')
+                    })
+                )
               }
 
               // 平板端图片上传
               if(this.form.appLogo.length!==0){
                 const appLogoData = new FormData();
                 appLogoData.append('logo',this.form.appLogo[0].raw)
-                requests.push(Api.uploadAppLogo(appLogoData))
+
+                requests.push(
+                    Api.uploadAppLogo(appLogoData)
+                        .then(res=>{
+                          if(res?.data?.code!==0) throw new Error('图片上传失败')
+                        })
+                )
               }
 
 
@@ -300,10 +375,14 @@ export default {
                     ElMessage.success({
                       message: '设置成功',
                     })
+
+                    setTimeout(()=>{
+                      location.reload() // 刷新页面
+                    },1000)
                   })
                   .catch((error) => {
                     ElMessage.error({
-                      message: '设置失败',
+                      message: '设置失败! '+ (error.message?('原因：'+error.message):''),
                     })
                     console.log(error)
                   });
@@ -389,15 +468,34 @@ export default {
       align-items: center;
       gap: 20px;
 
+      /* copy: https://juejin.cn/post/7102784102637502478 */
+      .img-bg{
+        width: 90px;
+        height: 90px;
+        border: 1px solid #eee;
+        border-radius: 4px;
+        background-color: #d2d2d2;
+        background-image:
+            linear-gradient(45deg, #c9c9c9 25%, transparent 0, transparent 75%, #c9c9c9 0),
+            linear-gradient(45deg, #c9c9c9 25%, transparent 0, transparent 75%, #c9c9c9 0);
+        background-position: 0 0, 10px 10px;
+        background-size: 20px 20px;
+
+
+        .form-item-logo{
+          width:100%;
+          height: 100%;
+          object-fit: contain;
+        }
+      }
+
 
       .form-item-input {
         width: 350px;
         height: 33px;
       }
 
-      .form-item-logo{
-        height: 90px;
-      }
+
 
       ::v-deep .el-upload-list--picture-card{
         --el-upload-list-picture-card-size: 90px;
@@ -420,6 +518,12 @@ export default {
       position: relative;
       width: 100%;
       height: 100%;
+      background-color: #d2d2d2;
+      background-image:
+          linear-gradient(45deg, #c9c9c9 25%, transparent 0, transparent 75%, #c9c9c9 0),
+          linear-gradient(45deg, #c9c9c9 25%, transparent 0, transparent 75%, #c9c9c9 0);
+      background-position: 0 0, 10px 10px;
+      background-size: 20px 20px;
 
       .remove-btn{
         position: absolute;

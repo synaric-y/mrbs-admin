@@ -45,7 +45,7 @@
             <el-table-column prop="id" :label="$t('user.tableUser.operate')" width="200">
               <template #default="scope">
                 <div class="operate-wrapper" v-if="scope.row.status">
-                  <span class="operate-item" @click="unbindDeviceDialog(scope.row)">{{$t(base.unbind)}}</span>
+                  <span class="operate-item" @click="unbindDeviceDialog(scope.row)">{{$t('base.unbind')}}</span>
                 </div>
               </template>
             </el-table-column>
@@ -197,7 +197,7 @@ export default {
     
     getTerminalList() {
       let params = {}
-      params['device_id'] = this.keyword
+      // params['device_id'] = this.keyword
       params['pagenum'] = this.page_number
       params['pagesize'] = 20
       console.log('TerminalManager getTerminalList select_status_id',this.select_status_id)
@@ -219,6 +219,8 @@ export default {
             it['bind_room'] = it['is_set']?'已绑定':'未绑定'
             it['set_time'] = it['set_time']?it['set_time']:'无'
           })
+
+          console.log(data.devices)
 
           this.terminals = data.devices
           this.total_num = data.total_num
