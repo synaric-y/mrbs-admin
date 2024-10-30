@@ -2,9 +2,8 @@
   <el-container class="container-sub-page">
     <el-main class="container-sub-page-main">
       <div class="sub-title-wrapper">
-        <div class="sub-title">循环会议</div>
+        <div class="sub-title">单次会议</div>
       </div>
-
       <div class="menu-content-wrapper">
         <div class="toolbar" v-if="!showLoading">
           <div class="toolbar-filter">
@@ -14,7 +13,8 @@
             </div>
             <div class="all-area">
               <el-select v-model="currenAreaName" placeholder="All Areas" @change="choseArea">
-                <el-option v-for="(area, index) in areas" :label="area.area_name" :value="area.area_id" :key="index">
+                <el-option v-for="(area, index) in page_cache_areas" :label="area.area_name" :value="area.area_id"
+                  :key="index">
                 </el-option>
               </el-select>
             </div>
@@ -48,27 +48,38 @@
                     :style="{ height: timeSlots.length * 60 + 70 + 'px', width: itemWidth + 'px' }">
                     {{ room.room_name }}
                     <template v-for="(time, timeIndex) in localTimeSlots">
-                      <div v-if="timeIndex != localTimeSlots.length - 1"
+
+                      <!-- <template v-for="(item, index) in [0, 1]"> -->
+
+                        <div v-if="timeIndex != localTimeSlots.length - 1"
+                          :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div' : 'empty-meet-div']"
+                          :style="{ height: minItemHeight + 'px', width: itemWidth + 'px', top: ((timeIndex) * minItemHeight + 70) + 'px' }"
+                          @click="toMeet(time, room, day)">
+                          <text class="empty-meet-duration">{{ time }}</text>
+                          <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text>
+                        </div>
+
+                      <!-- </template> -->
+                      <!-- <div v-if="timeIndex != localTimeSlots.length - 1"
                         :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div' : 'empty-meet-div']"
                         :style="{ height: minItemHeight + 'px', width: itemWidth + 'px', top: (timeIndex * minItemHeight + 70) + 'px' }"
                         @click="toMeet(time, room, day)">
-                        <!-- <template> -->
                         <text class="empty-meet-duration">{{ time }}</text>
-                        <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text>
-                        <!-- </template> -->
+                        <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text> -->
 
-                        <!-- <template v-if="canHoverDiv(day, time, room)">
+
+                      <!-- <template v-if="canHoverDiv(day, time, room)">
                     <text class="empty-meet-duration">{{ time }}</text>
                     <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text>
                   </template> -->
-                        <!-- <template>
+                      <!-- <template>
                     <text class="empty-meet-duration">测试实施</text>
                     <text class="empty-meet-reason">不可hover</text>
                   </template> -->
-                      </div>
+                      <!-- </div> -->
                     </template>
                     <template v-for="(event, indexeve) in events">
-                      <template v-if="day.date == event.date && room.room_id == event.room_id">
+                      <template v-if="day.date === event.date && room.room_id === event.room_id">
                         <template v-if="event.status == 0 || event.status == 1 || event.status == 2">
                           <div :key="indexeve"
                             :class="[event.status == 0 ? 'room-meet-event' : event.status == 1 ? 'room-meet-in-event' : 'room-meet-timeout-event']"
@@ -98,7 +109,8 @@
             </div>
           </el-scrollbar>
         </div>
-        <CycleMeetCMP v-if="dialogMeetForm" :mode="form_mode" :areas="page_cache_areas" :entry_id="entry_id" @close="dialogMeetForm = false" />
+        <CycleMeetCMP v-if="dialogMeetForm" :mode="form_mode" :areas="page_cache_areas" :entry_id="entry_id"
+          @close="dialogMeetForm = false" />
       </div>
     </el-main>
     <el-skeleton v-if="showLoading" :rows="15" animated />
@@ -120,7 +132,7 @@ import SingleMeetCMP from '@/components/SingleMeetCMP.vue';
 import CycleMeetCMP from '@/components/CycleMeetCMP.vue';
 
 export default defineComponent({
-  components: {SingleMeetCMP,CycleMeetCMP},
+  components: { SingleMeetCMP, CycleMeetCMP },
   mixins: [PageMixin],
   data() {
     return {
@@ -178,17 +190,17 @@ export default defineComponent({
         "01:00PM", "01:30PM", "02:00PM", "02:30PM", "03:00PM", "03:30PM", "04:00PM", "04:30PM",
         "05:00PM", "05:30PM", "06:00PM", "06:30PM", "07:00PM", "07:30PM", "08:00PM", "08:30PM", "09:00PM"
       ],
-      dialogFormVisible: false,
       dialogMeetForm: false,
       form_mode: 0,
       currentHourMinute: '',
       currentTimeZone: 'Asia/Shanghai',
-      page_cache_areas:[],
+      page_cache_areas: [],
     };
   },
 
   mounted() {
     this.setTab('/')
+    this.getAllAreas()
     console.log('Home getBrowserLanguege:', Common.getBrowserLanguege())
     this.localLangFormat = Common.getBrowserLanguege()
     const screenWidth = window.screen.width
@@ -201,7 +213,6 @@ export default defineComponent({
     this.currentTimeZone = timeZone
     console.log('Home 获取当前设备的时区', timeZone)
     this.startSync()
-    this.getAllAreas()
     this.$nextTick(() => {
       this.showLoading = false
     })
@@ -219,7 +230,7 @@ export default defineComponent({
       this.getSyncInterval()
       this.interval = setInterval(() => {
         this.getSyncInterval()
-      }, 20000)
+      }, 20000000)
     },
     getSyncInterval() {
       this.filterDateStore = FilterDateStore()
@@ -248,19 +259,20 @@ export default defineComponent({
         }
       }
       if (selectArea && selectAreaName) {
-        console.log('Home selectAreaName:', selectAreaName)
+        // console.log('Home selectAreaName:', selectAreaName)
         this.currenAreaName = selectAreaName
         this.currenArea = selectArea
       }
       this.getCurrentAreaRooms(this.currenArea)
-      console.log('Home selectArea', selectArea)
-      console.log('Home selectStartDate', selectStartDate, selectEndDate)
-      console.log('Home selectDays', selectDays)
+      // console.log('Home selectArea', selectArea)
+      // console.log('Home selectStartDate', selectStartDate, selectEndDate)
+      // console.log('Home selectDays', selectDays)
     },
 
-    getAllRoom(data) {
+    getAllRoom(areas) {
+      console.log('Home getAllRoom areas 1111111', areas)
       const allRoom = [];
-      data.areas.forEach(area => {
+      areas.forEach(area => {
         const areaId = area.area_id
         const areaName = area.area_name
         area.rooms.forEach(room => {
@@ -283,41 +295,10 @@ export default defineComponent({
     },
 
     getAllAreas() {
-      // const areas = testAreas.data.areas
-      // console.log('home getAllAreas local areas', areas)
-      // // 获取最小的值
-      // if (areas) {
-      //   const minResolution = areas.reduce((min, area) => {
-      //     const resolution = parseInt(area.resolution, 10)
-      //     return resolution < min ? resolution : min
-      //   }, 900);
-      //   this.minDuration = minResolution
-      //   const firstArea = {
-      //     "area_id": "",
-      //     "area_name": this.$t('base.all'),
-      //     "resolution": '1800',
-      //     "rooms": []
-      //   }
-      //   this.minItemHeight = 60 / (1800 / parseInt(minResolution))
-      //   console.log('Home Minimum resolution: this.minItemHeight', minResolution, this.minItemHeight)
-      //   // 获取开始、结束时间
-      //   const { minStart, maxEnd } = this.getMaxAreaDuration()
-      //   console.log('Home Minimum minStart  maxEnd', minStart, maxEnd)
-      //   const { timeSlots, localTimeSlots } = Common.generateTimeSlots(minStart, maxEnd)
-      //   console.log('Home timeSlots localTimeSlots', timeSlots, localTimeSlots)
-      //   this.timeSlots = timeSlots
-      //   this.localTimeSlots = localTimeSlots
-      //   if (areas) {
-      //     areas.splice(0, 0, firstArea)
-      //   }
-      //   this.areas = areas
-      // }
-      // return
-
       if (this.page_cache_areas && this.page_cache_areas.length > 0) {
         return
       }
-      Api.getAreaRooms().then(({ data, code }) => {
+      Api.getAreaRooms().then(({ data, code, msg }) => {
         if (code != 0) {
           ElMessage({
             message: this.$t('base.getAreaError'),
@@ -325,13 +306,8 @@ export default defineComponent({
           })
           return
         }
-        // 网络数据
-        let areas = data.areas
-        this.page_cache_areas = areas
-        // 本地测试数据
-        // let areas = areaData.data.areas
-        // 获取最小的值
-        const minResolution = areas.reduce((min, area) => {
+        let temp_areas = data.areas
+        const minResolution = temp_areas.reduce((min, area) => {
           const resolution = parseInt(area.resolution, 10)
           return resolution < min ? resolution : min
         }, 900);
@@ -342,7 +318,8 @@ export default defineComponent({
           "resolution": '1800',
           "rooms": []
         }
-        this.minItemHeight = 60 / (1800 / parseInt(minResolution))
+        // this.minItemHeight = 60 / (1800 / parseInt(minResolution))
+        this.minItemHeight = 60
         console.log('Home Minimum resolution: this.minItemHeight', minResolution, this.minItemHeight)
         // 获取开始、结束时间
         const { minStart, maxEnd } = this.getMaxAreaDuration()
@@ -352,22 +329,25 @@ export default defineComponent({
         console.log('Home getAllAreas localTimeSlots', localTimeSlots)
         this.timeSlots = timeSlots
         this.localTimeSlots = localTimeSlots
-        if (areas) {
-          areas.splice(0, 0, firstArea)
+        if (temp_areas) {
+          temp_areas.splice(0, 0, firstArea)
         }
-        this.areas = areas
+        this.page_cache_areas = temp_areas
+        console.log('Home getAllAreas this.page_cache_areas', this.page_cache_areas)
+        this.getCurrentAreaRooms(this.area_id)
       })
     },
 
     getCurrentAreaRooms(area_id) {
-      // this.rooms = areaData.data.areas[0].rooms
-      // return
-      console.log('SingleMeet getCurrentAreaRooms area_id',area_id)
-      if (area_id == 0 || !area_id) {
-        console.log('SingleMeet getCurrentAreaRooms return')
+      if (!this.page_cache_areas || this.page_cache_areas.length == 0) {
+        console.log('SingleMeet getCurrentAreaRooms this.page_cache_areas', this.page_cache_areas)
+        this.getAllAreas()
         return
       }
-      if (!this.page_cache_areas || this.page_cache_areas.length == 0) {
+      console.log('SingleMeet getCurrentAreaRooms area_id', area_id)
+      if (area_id == 0 || !area_id) {
+        console.log('SingleMeet getCurrentAreaRooms area_id == 0 return')
+        this.rooms = this.getAllRoom(this.page_cache_areas)
         return
       }
       const area_rooms = this.page_cache_areas.filter((item) =>
@@ -377,10 +357,12 @@ export default defineComponent({
         this.dayRrange(this.dayRrangeVal)
       }
       console.log('Home getCurrentAreaRooms area_rooms', area_rooms)
-      this.rooms = this.getAllRoom(area_rooms)
+      const tmp_areas = []
+      tmp_areas.push(area_rooms)
+      this.rooms = this.getAllRoom(tmp_areas[0])
       console.log('Home getCurrentAreaRooms this.rooms', this.rooms)
       return
-      
+
 
       Api.getAreaRooms({ id: area_id }).then(({ data, code, msg }) => {
         if (code != 0) {
@@ -433,10 +415,14 @@ export default defineComponent({
     },
 
     getTimeSlotIndex(time) {
+      const slot_index = this.localTimeSlots.indexOf(time)
+      return slot_index
+      // startTime: "08:00PM"
       const [hour, minutePeriod] = time.split(":")
       const [minute, period] = [minutePeriod.slice(0, -2), minutePeriod.slice(-2)]
       const baseTime = `${hour.padStart(2, '0')}:00${period.toUpperCase()}`
       const multiple = (1800 / this.minDuration)
+      // const multiple = 1
       let baseIndex = this.timeSlots.indexOf(baseTime) * multiple
       if (baseIndex === -1) {
         // console.log('getTimeSlotIndex time baseTime',time,baseTime)
@@ -585,7 +571,6 @@ export default defineComponent({
     },
 
     toMeet(time, room, day) {
-      // this.dialogFormVisible = true
       this.dialogMeetForm = true
       return
       console.log("Home toMeet room", room)
@@ -612,6 +597,7 @@ export default defineComponent({
     },
 
     editMeet(event) {
+      console.log('SingleMeet editMeet event', event)
       if (this.normalUser()) {
         return
       }
@@ -622,7 +608,9 @@ export default defineComponent({
         console.log('Home editMeet disabled', event.disabled)
         return
       }
-      this.push(`/meet_detail/${event.entry_id}/${event.room_id}/${event.area_id}/0`)
+      this.form_mode = 1
+      this.entry_id = event.entry_id
+      this.dialogMeetForm = true
     },
 
     normalUser() {
@@ -637,27 +625,28 @@ export default defineComponent({
     choseArea(e) {
       this.currenArea = e;
       console.log('Home choseArea e')
-      const area = this.areas.filter(area => area.area_id == e)
+      const area = this.page_cache_areas.filter(area => area.area_id == e)
       console.log('Home choseArea areaName', area)
       const areaName = area[0].area_name
       this.currenAreaName = areaName
       this.filterDateStore.setArea(e)
       this.filterDateStore.setAreaName(areaName)
       this.getCurrentAreaRooms(this.currenArea)
-      this.getAreaRooms()
+      // this.getAreaRooms()
       this.getMeetRooms()
     },
 
     getAreaRooms() {
       console.log('Home getAreaRooms this.currenArea', this.currenArea)
       if (this.currenArea == 'All' || this.currenArea == '') {
-        const temprooms = this.areas.flatMap(area => area.rooms)
-        this.rooms = temprooms.flatMap(room => room.room_name)
-        console.log('Home getAreaRooms all rooms:', this.rooms)
+        const temp_areas = this.page_cache_areas.flatMap(area => area.rooms)
+        this.rooms = temp_areas.flatMap(room => room.room_name)
+        console.log('Home getAreaRooms 1111 all rooms:', this.rooms)
       } else {
-        const temprooms = this.areas.find(area => area.area_id == this.currenArea)
-        this.rooms = temprooms.rooms.flatMap(room => room.room_name)
-        console.log('Home getAreaRooms currenArea rooms:', this.rooms)
+        const temp_areas = this.page_cache_areas.filter(area => area.area_id == this.currenArea)
+        // this.rooms = temp_areas.rooms.flatMap(room => room.room_name)
+        this.rooms = temp_areas.rooms
+        console.log('Home getAreaRooms 22222 currenArea rooms:', this.rooms)
       }
     },
 
@@ -718,17 +707,6 @@ export default defineComponent({
       } else {
         this.itemWidth = 229
       }
-
-
-      // 本地测试数据
-      // this.currenTimestamp = homeData.data.timestamp
-      // this.nowTime = homeData.data.time
-      // this.getInMeeting(homeData.data)
-      // this.$nextTick(() => {
-      //   this.showLoading = false
-      // })
-      // return
-
       console.log('Home getMeetRooms currenArea:  start: end: ', this.currenArea, this.startStamp, this.endStamp);
       Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp, end_time: this.endStamp, timezone: this.currentTimeZone }).then(({ data, code, msg }) => {
         if (!data && code != 0) {
@@ -742,7 +720,6 @@ export default defineComponent({
         this.currenTimestamp = data.timestamp
         this.nowTime = data.time
         this.getInMeeting(data)
-
         this.$nextTick(() => {
           this.showLoading = false
         })
@@ -761,19 +738,21 @@ export default defineComponent({
         area.rooms.forEach(room => {
           const roomId = room.room_id
           const roomName = room.room_name
-          room.entries.forEach(entry => {
-            entriesRoom.push({
-              area_id: areaId,
-              area_name: areaName,
-              room_id: roomId,
-              room_name: roomName,
-              disabled: room.disabled,
-              date: Common.translateWeekDay(moment(Number(entry.start_time * 1000)).format(this.localLangFormat)),
-              startTime: entry.duration.split('-')[0].trim(),
-              endTime: entry.duration.split('-')[1].trim(),
-              ...entry
+          if (room && room.entries && room.entries.length > 0) {
+            room.entries.forEach(entry => {
+              entriesRoom.push({
+                area_id: areaId,
+                area_name: areaName,
+                room_id: roomId,
+                room_name: roomName,
+                disabled: room.disabled,
+                date: Common.translateWeekDay(moment(Number(entry.start_time * 1000)).format(this.localLangFormat)),
+                startTime: entry.duration.split('-')[0].trim(),
+                endTime: entry.duration.split('-')[1].trim(),
+                ...entry
+              });
             });
-          });
+          }
         });
       });
       this.events = entriesRoom
@@ -802,9 +781,7 @@ export default defineComponent({
   margin-bottom: 20px;
 }
 
-.el-table {
-
-}
+.el-table {}
 
 ::-webkit-scrollbar {
   display: none;

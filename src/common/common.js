@@ -255,16 +255,20 @@ export class Common {
         while (currentTime <= endTimeDate) {
             const formattedTime = Common.formatTime(currentTime);
             // Add to timeSlots (full hour only with separator "ㆍ")
-            if (currentTime.getMinutes() === 0) {
+            if (currentTime.getMinutes() === 0 || currentTime.getMinutes() === 30) {
+                
                 timeSlots.push(formattedTime);
+                // if (currentTime.getMinutes() === 15) {
+                //     timeSlots.push("ㆍ");
+                // }
                 if (currentTime.getTime() !== endTimeDate.getTime()) {
                     timeSlots.push("ㆍ");
                 }
             }
-            // Add to localTimeSlots (every 30 minutes)
+            // Add to localTimeSlots (every 15 minutes)
             localTimeSlots.push(formattedTime);
-            // Increment by 30 minutes
-            currentTime.setMinutes(currentTime.getMinutes() + 30);
+            // Increment by 15 minutes
+            currentTime.setMinutes(currentTime.getMinutes() + 15);
         }
         return { timeSlots, localTimeSlots };
     }

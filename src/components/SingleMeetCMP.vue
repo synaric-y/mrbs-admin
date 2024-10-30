@@ -299,7 +299,7 @@ export default {
       this.meetForm.rooms.push(this.meetForm.room_id)
       Api.editMeet(this.meetForm).then(({ data, code, msg }) => {
         if (code == 0) {
-          $emit('close')
+          this.$emit('close')
           ElMessage({
             message: this.$t('base.editSuccess'),
             type: 'success',
@@ -320,7 +320,7 @@ export default {
             message: this.$t('base.deleteSuccess'),
             type: 'success',
           })
-          $emit('close')
+          this.$emit('close')
         } else {
           ElMessage.error(msg)
         }
