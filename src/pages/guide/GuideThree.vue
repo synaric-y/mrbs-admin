@@ -14,8 +14,8 @@
             </el-form-item>
 
             <el-form-item prop="hosts" label="服务器地址(hosts)">
-              <el-input v-model="form.hosts" class="form-item-input" placeholder="示例:172.16.88.180" />
-              <el-button type="primary" style="margin-left: 10px;" @click="validate">测试</el-button>
+              <el-input :disabled="exchangeStatus==='testing'" @input="exchangeStatus='untested'" v-model="form.hosts" class="form-item-input" placeholder="示例:172.16.88.180" />
+              <TestButton :status="exchangeStatus" @test="verify"/>
             </el-form-item>
 
             <el-form-item prop="syncMethod" label="同步方式">
@@ -52,8 +52,9 @@ import { STORAGE } from "@/const.js";
 import { ElMessage } from "element-plus";
 import { Text } from "vue";
 import ProgressBar from "@/pages/guide/ProgressBar.vue";
+import TestButton from "@/components/TestButton.vue";
 export default {
-  components: {ProgressBar},
+  components: {TestButton, ProgressBar},
   mixins: [PageMixin],
   data() {
     return {
@@ -63,7 +64,12 @@ export default {
         syncMinute: '',
       },
 
-      rules: {
+      exchangeStatus: 'untested',
+
+      rules:{
+        hosts: [{ required:true, message: '服务器地址不能为空', trigger: 'blur' }],
+        syncMethod: [{required:true, message:'请选择同步方式', trigger: 'blur'}],
+        syncMinute: [{required:true, message:'请选择同步间隔', trigger: 'blur'}]
       },
 
       groupOptions: [
@@ -92,6 +98,36 @@ export default {
     }
   },
   methods: {
+    verify(){
+
+      if(!this.form.hosts || this.form.hosts===''){
+        ElMessage.error({
+          message: '服务器地址不能为空',
+        })
+        return
+      }
+
+      this.exchangeStatus = 'testing'
+      Api.testExchange({
+        server_address: this.form.hosts,
+      }).then(({code}) => {
+        if(code!==0){
+          throw new Error('测试失败')
+        }
+
+        this.exchangeStatus = 'tested'
+        ElMessage.success({
+          message: '测试成功',
+        })
+
+      }).catch(e=>{
+        this.exchangeStatus = 'untested'
+        ElMessage.error({
+          message: '测试失败',
+        })
+      })
+
+    },
     jumpGuide(){
       Api.setVariables(
           {"init_status": 3}
@@ -111,6 +147,13 @@ export default {
       })
     },
     nextStep() {
+      if(this.exchangeStatus!=='tested'){
+        ElMessage.error({
+          message: 'Exchange连通性未测试，请先测试',
+        })
+        return
+      }
+
       this.$refs.formRef.validate((valid) => {
         if (valid) {
           Api.setVariables(

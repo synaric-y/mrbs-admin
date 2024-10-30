@@ -8,10 +8,10 @@
         <div class="section">
           <el-form :model="form" :rules="rules" ref="formRef" label-width="150px">
             <el-form-item label="会议室名称" prop="room_name">
-              <el-input class="form-item-input" v-model="form.room_name" placeholder="请输入会议室名称"/>
+              <el-input maxlength="30" class="form-item-input" v-model="form.room_name" placeholder="请输入会议室名称"/>
             </el-form-item>
             <el-form-item label="容纳人数" prop="capacity">
-              <el-input class="form-item-input" v-model="form.capacity" placeholder="请输入会议室容纳人数"/>
+              <el-input maxlength="5" class="form-item-input" v-model="form.capacity" placeholder="请输入会议室容纳人数"/>
             </el-form-item>
 
             <el-divider/>
@@ -20,7 +20,7 @@
               <img class="form-item-img" src="../../../public/imgs/exchange.png" alt="#">
             </el-form-item>
             <el-form-item label="账号" prop="exchange_username">
-              <el-input :disabled="exchangeStatus==='testing'" class="form-item-input" v-model="form.exchange_username" placeholder="请输入三方账号"/>
+              <el-input :disabled="exchangeStatus==='testing'" @input="exchangeStatus='untested'" class="form-item-input" v-model="form.exchange_username" placeholder="请输入三方账号"/>
             </el-form-item>
             <el-form-item label="密码" prop="exchange_password">
               <el-input :disabled="exchangeStatus==='testing'" class="form-item-input" v-model="form.exchange_password" placeholder="请输入三方账号密码" />
