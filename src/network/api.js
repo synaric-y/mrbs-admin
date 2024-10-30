@@ -58,10 +58,10 @@ export class Api {
             params = {}
             params["type"] = "all"
         } else {
-            if(params.id > 0) {
+            // if(params.id > 0) {
                 params['id'] = params.id
                 params["type"] = "area"
-            }
+            // }
         }
         return Request.post('get_info%2Fget_all_rooms',params)
     }

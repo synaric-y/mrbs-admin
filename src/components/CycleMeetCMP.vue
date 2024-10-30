@@ -41,8 +41,8 @@
           <span
             style="margin-left: 20px;color: #4E5969;font-family: PingFang SC;font-size: 14px;font-weight: normal;">周后的：</span>
         </el-form-item>
-        <el-form-item style="margin-left: 40px" prop="check_list" required >
-          <el-checkbox-group v-model="meetForm.check_list" size="small">
+        <el-form-item style="margin-left: 40px" prop="rep_day" required >
+          <el-checkbox-group v-model="meetForm.rep_day" size="small">
             <el-checkbox label="星一" value="1" />
             <el-checkbox label="星二" value="2" />
             <el-checkbox label="星三" value="3" />
@@ -115,6 +115,7 @@ export default {
         rooms: [],
         name: '',
         start_date: '',
+        end_date: '',
         start_hour: '',
         start_seconds: 0,
         rep_end_date: '',
@@ -151,7 +152,8 @@ export default {
         month_relative_day: "",
         skip: 0,
         no_mail: 1,
-        private: ""
+        private: "",
+        create_by: ''
       },
       rules: {
         area_id: [
@@ -178,7 +180,7 @@ export default {
         rep_interval: [
           { required: true, message: '请选择会议重复时间', trigger: 'blur' }
         ],
-        check_list: [
+        rep_day: [
           { required: true, message: '请选择会议重复的周期时间', trigger: 'blur' }
         ],
         description: [
@@ -255,9 +257,9 @@ export default {
       this.meetForm.end_seconds = nextTimeStamp;
     },
 
-    convertToBinaryWithSundayLeft(checkList) {
+    convertToBinaryWithSundayLeft(rep_day) {
       let binaryRepresentation = 0;
-      checkList.forEach(value => {
+      rep_day.forEach(value => {
         binaryRepresentation |= (1 << (7 - value));
       });
       return binaryRepresentation;
@@ -293,8 +295,9 @@ export default {
       this.meetForm.original_room_id = this.meetForm.room_id
       this.meetForm.rooms = []
       // this.meetForm.id = this.meetForm.room_id
+      this.meetForm.end_date = this.meetForm.start_date
       this.meetForm.rooms.push(this.meetForm.room_id)
-      this.meetForm.rep_opt = this.convertToBinaryWithSundayLeft(this.meetForm.check_list)
+      this.meetForm.rep_opt = this.convertToBinaryWithSundayLeft(this.meetForm.rep_day)
       Api.editMeet(this.meetForm).then(({ data, code, msg }) => {
         if (code == 0) {
           $emit('close')
