@@ -3,14 +3,13 @@
     <div class="content">
       <div class="title">{{ mode == 1 ? '编辑会议' : '新增会议' }}</div>
       <el-form ref="meetForm" :model="meetForm" :rules="rules">
-
-        <el-form-item prop="area_id" label="区域" label-width="100px" required>
-          <el-select v-model="meetForm.area_id" placeholder="请选择区域" @change="OnAreaChange">
+        <el-form-item prop="area_name" label="区域" label-width="100px" required>
+          <el-select v-model="meetForm.area_name" placeholder="请选择区域" @change="OnAreaChange">
             <el-option v-for="item in areas" :key="item.area_id" :label="item.area_name" :value="item.area_id" />
           </el-select>
         </el-form-item>
-        <el-form-item prop="room_id" label="会议室" label-width="100px" required>
-          <el-select v-model="meetForm.room_id" placeholder="请选择会议室">
+        <el-form-item prop="room_name" label="会议室" label-width="100px" required>
+          <el-select v-model="meetForm.room_name" placeholder="请选择会议室" @change="onRoomChange">
             <el-option v-for="item in roomOptions" :key="item.room_id" :label="item.title" :value="item.room_id" />
           </el-select>
         </el-form-item>
@@ -35,7 +34,6 @@
             </el-form-item>
           </el-col>
         </el-form-item>
-
         <el-form-item prop="end_date" label="结束时间" style="margin-left: 20px" required>
           <el-col :span="11">
             <el-form-item prop="end_date">
@@ -54,18 +52,15 @@
             </el-form-item>
           </el-col>
         </el-form-item>
-
         <el-form-item label="备注" label-width="100px">
           <el-input v-model="meetForm.description" maxlength="100" style="width: 410px;" placeholder="Please input"
             show-word-limit type="textarea" />
         </el-form-item>
       </el-form>
-
       <div class="dialog-footer">
         <el-button type="primary" @click="commitForm">提交</el-button>
         <el-button style="margin-left: 50px" @click="deleteMeet" v-if="mode == 1">删除</el-button>
         <el-button style="margin-left: 50px" @click="$emit('close')">关闭</el-button>
-        <!-- <el-button type="primary" @click="$emit('close')">关闭</el-button> -->
       </div>
     </div>
   </div>
@@ -76,15 +71,12 @@ import { Api } from "@/network/api.js";
 import { PageMixin } from "@/pages/PageMixin.js";
 import { STORAGE } from "@/const.js";
 import { ElMessage } from "element-plus";
-import { Search } from '@element-plus/icons-vue'
 import moment from "moment";
 import { Common } from "@/common/common";
 
 export default {
   computed: {
-    Search() {
-      return Search
-    }
+    
   },
   mixins: [PageMixin],
   props: ['entry_id', 'mode', 'areas'],
@@ -106,7 +98,9 @@ export default {
       selectRow: null,
       meetForm: {
         area_id: '',
+        area_name: '',
         room_id: '',
+        room_name: '',
         rooms: [],
         name: '',
         start_date: '',
@@ -154,10 +148,10 @@ export default {
       minStartTime: '06:00',
       maxEndTime: '21:00',
       rules: {
-        area_id: [
+        area_name: [
           { required: true, message: '请选择区域', trigger: 'blur' }
         ],
-        room_id: [
+        room_name: [
           { required: true, message: '请选择房间', trigger: 'blur' }
         ],
         name: [
@@ -186,7 +180,7 @@ export default {
         ],
       },
       select_area_id: -1,
-      select_room_id: -1,
+      // select_room_id: -1,
       currentTimeZone: 'Asia/Shanghai',
       roomOptions: [],
     }
@@ -195,22 +189,10 @@ export default {
 
     OnAreaChange(e) {
       this.select_area_id = e
+      this.meetForm.area_id = e
       console.log('SingleMeetCMP OnAreaChange e', e)
       if (this.select_area_id != -1) {
-        const area_rooms = this.areas.filter((item) =>
-          item.area_id === e
-        )
-        console.log('MeetList onAreaChange area_rooms', area_rooms[0])
-        const select_rooms = [];
-        area_rooms[0].rooms.forEach(room => {
-          select_rooms.push({
-            room_id: room.room_id,
-            room_name: room.room_name,
-            title: room.room_name,
-            disabled: room.disabled,
-          });
-        });
-        this.roomOptions = select_rooms
+        this.roomOptions = this.getSelectedArea(e)
       } else {
         const select_rooms = [];
         this.areas.forEach(area => {
@@ -227,6 +209,10 @@ export default {
         });
         this.roomOptions = select_rooms
       }
+    },
+
+    onRoomChange(e) {
+      this.meetForm.room_id = e
     },
 
     choseDialogHour(mode, str, e) {
@@ -256,6 +242,22 @@ export default {
       this.meetForm.end_seconds = nextTimeStamp;
     },
 
+    getSelectedArea(area_id) {
+      const area_rooms = this.areas.filter((item) =>
+          item.area_id === area_id
+        )
+        console.log('MeetList onAreaChange area_rooms', area_rooms[0])
+        const select_rooms = [];
+        area_rooms[0].rooms.forEach(room => {
+          select_rooms.push({
+            room_id: room.room_id,
+            room_name: room.room_name,
+            title: room.room_name,
+            disabled: room.disabled,
+          });
+        });
+        return select_rooms
+    },
     getMeetDetail() {
       let params = {}
       params['id'] = Number(this.entry_id)
@@ -266,13 +268,18 @@ export default {
         }
         console.log('SingleMeetCMP getMeetDetail data', data)
         this.meetForm.name = data.name
-        this.meetForm.remark = data.description
+        this.meetForm.description = data.description
+        this.meetForm.room_name = data.room_name
+        this.meetForm.area_name = data.area_name
         this.meetForm.room_id = data.room_id
         this.meetForm.area_id = data.area_id
         this.meetForm.start_date = moment.tz(data.start_time * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
         this.meetForm.start_hour = moment.tz(data.start_time * 1000, 'Asia/Shanghai').format('HH:mm')
         this.meetForm.end_date = moment.tz(data.end_time * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
         this.meetForm.end_hour = this.start_hour = moment.tz(data.end_time * 1000, 'Asia/Shanghai').format('HH:mm')
+        this.meetForm.start_seconds = data.start_time
+        this.meetForm.end_seconds = data.end_time
+        this.roomOptions = this.getSelectedArea(data.area_id)
       })
     },
 

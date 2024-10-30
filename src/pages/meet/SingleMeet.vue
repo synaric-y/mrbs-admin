@@ -4,7 +4,6 @@
       <div class="sub-title-wrapper">
         <div class="sub-title">单次会议</div>
       </div>
-
       <div class="menu-content-wrapper">
         <div class="toolbar" v-if="!showLoading">
           <div class="toolbar-filter">
@@ -178,7 +177,6 @@ export default defineComponent({
         "01:00PM", "01:30PM", "02:00PM", "02:30PM", "03:00PM", "03:30PM", "04:00PM", "04:30PM",
         "05:00PM", "05:30PM", "06:00PM", "06:30PM", "07:00PM", "07:30PM", "08:00PM", "08:30PM", "09:00PM"
       ],
-      dialogFormVisible: false,
       dialogMeetForm: false,
       form_mode: 0,
       currentHourMinute: '',
@@ -590,7 +588,6 @@ export default defineComponent({
     },
 
     toMeet(time, room, day) {
-      // this.dialogFormVisible = true
       this.dialogMeetForm = true
       return
       console.log("Home toMeet room", room)
@@ -617,6 +614,7 @@ export default defineComponent({
     },
 
     editMeet(event) {
+      console.log('SingleMeet editMeet event',event)
       if (this.normalUser()) {
         return
       }
@@ -627,7 +625,10 @@ export default defineComponent({
         console.log('Home editMeet disabled', event.disabled)
         return
       }
-      this.push(`/meet_detail/${event.entry_id}/${event.room_id}/${event.area_id}/0`)
+      this.form_mode = 1
+      this.entry_id = event.entry_id
+      this.dialogMeetForm = true
+      // this.push(`/meet_detail/${event.entry_id}/${event.room_id}/${event.area_id}/0`)
     },
 
     normalUser() {
