@@ -137,7 +137,7 @@ export default {
         registration_closes_enabled: "",
         rep_id: null,
         edit_series: 0,
-        rep_type: 2,
+        rep_type: 0,
         rep_day: [],
         rep_interval: 1,
         month_type: 0,
@@ -146,7 +146,8 @@ export default {
         month_relative_day: "",
         skip: 0,
         no_mail: 1,
-        private: ""
+        private: "",
+        create_by: 'admin'
       },
       currentHourMinute: '',
       minStep: '00:30',

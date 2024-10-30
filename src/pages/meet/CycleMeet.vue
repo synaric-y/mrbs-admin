@@ -35,7 +35,7 @@
             <div class="calendar-header">
               <div class="time-header">
                 <div class="time-slots">
-                  <div v-for="(time, timeIndex) in timeSlots" :key="time" class="time-slot">
+                  <div v-for="(time, timeIndex) in timeSlots" :key="timeIndex" class="time-slot">
                     {{ time }}
                   </div>
                 </div>
@@ -98,6 +98,7 @@
             </div>
           </el-scrollbar>
         </div>
+        <CycleMeetCMP v-if="dialogMeetForm" :mode="form_mode" :areas="page_cache_areas" :entry_id="entry_id" @close="dialogMeetForm = false" />
       </div>
     </el-main>
     <el-skeleton v-if="showLoading" :rows="15" animated />
@@ -115,8 +116,11 @@ import { SELECT_DAY, ROOM_STATUS, USER_TYPE } from '@/const';
 import moment from 'moment';
 import { FilterDateStore } from '@/stores/filterDateStore';
 import { areaData, homeData, testAreas } from '.././home';
+import SingleMeetCMP from '@/components/SingleMeetCMP.vue';
+import CycleMeetCMP from '@/components/CycleMeetCMP.vue';
 
 export default defineComponent({
+  components: {SingleMeetCMP,CycleMeetCMP},
   mixins: [PageMixin],
   data() {
     return {
@@ -175,8 +179,11 @@ export default defineComponent({
         "05:00PM", "05:30PM", "06:00PM", "06:30PM", "07:00PM", "07:30PM", "08:00PM", "08:30PM", "09:00PM"
       ],
       dialogFormVisible: false,
+      dialogMeetForm: false,
+      form_mode: 0,
       currentHourMinute: '',
-      currentTimeZone: 'Asia/Shanghai'
+      currentTimeZone: 'Asia/Shanghai',
+      page_cache_areas:[],
     };
   },
 
@@ -276,40 +283,41 @@ export default defineComponent({
     },
 
     getAllAreas() {
-      const areas = testAreas.data.areas
-      console.log('home getAllAreas local areas', areas)
-      // 获取最小的值
-      if (areas) {
-        const minResolution = areas.reduce((min, area) => {
-          const resolution = parseInt(area.resolution, 10)
-          return resolution < min ? resolution : min
-        }, 900);
-        this.minDuration = minResolution
-        const firstArea = {
-          "area_id": "",
-          "area_name": this.$t('base.all'),
-          "resolution": '1800',
-          "rooms": []
-        }
-        this.minItemHeight = 60 / (1800 / parseInt(minResolution))
-        console.log('Home Minimum resolution: this.minItemHeight', minResolution, this.minItemHeight)
-        // 获取开始、结束时间
-        const { minStart, maxEnd } = this.getMaxAreaDuration()
-        console.log('Home Minimum minStart  maxEnd', minStart, maxEnd)
-        const { timeSlots, localTimeSlots } = Common.generateTimeSlots(minStart, maxEnd)
-        console.log('Home timeSlots localTimeSlots', timeSlots, localTimeSlots)
-        this.timeSlots = timeSlots
-        this.localTimeSlots = localTimeSlots
-        if (areas) {
-          areas.splice(0, 0, firstArea)
-        }
-        this.areas = areas
+      // const areas = testAreas.data.areas
+      // console.log('home getAllAreas local areas', areas)
+      // // 获取最小的值
+      // if (areas) {
+      //   const minResolution = areas.reduce((min, area) => {
+      //     const resolution = parseInt(area.resolution, 10)
+      //     return resolution < min ? resolution : min
+      //   }, 900);
+      //   this.minDuration = minResolution
+      //   const firstArea = {
+      //     "area_id": "",
+      //     "area_name": this.$t('base.all'),
+      //     "resolution": '1800',
+      //     "rooms": []
+      //   }
+      //   this.minItemHeight = 60 / (1800 / parseInt(minResolution))
+      //   console.log('Home Minimum resolution: this.minItemHeight', minResolution, this.minItemHeight)
+      //   // 获取开始、结束时间
+      //   const { minStart, maxEnd } = this.getMaxAreaDuration()
+      //   console.log('Home Minimum minStart  maxEnd', minStart, maxEnd)
+      //   const { timeSlots, localTimeSlots } = Common.generateTimeSlots(minStart, maxEnd)
+      //   console.log('Home timeSlots localTimeSlots', timeSlots, localTimeSlots)
+      //   this.timeSlots = timeSlots
+      //   this.localTimeSlots = localTimeSlots
+      //   if (areas) {
+      //     areas.splice(0, 0, firstArea)
+      //   }
+      //   this.areas = areas
+      // }
+      // return
+
+      if (this.page_cache_areas && this.page_cache_areas.length > 0) {
+        return
       }
-
-      return
-
-
-      Api.getAreaRooms({}).then(({ data, code }) => {
+      Api.getAreaRooms().then(({ data, code }) => {
         if (code != 0) {
           ElMessage({
             message: this.$t('base.getAreaError'),
@@ -318,9 +326,10 @@ export default defineComponent({
           return
         }
         // 网络数据
-        // let areas = data.areas
+        let areas = data.areas
+        this.page_cache_areas = areas
         // 本地测试数据
-        let areas = areaData.data.areas
+        // let areas = areaData.data.areas
         // 获取最小的值
         const minResolution = areas.reduce((min, area) => {
           const resolution = parseInt(area.resolution, 10)
@@ -335,12 +344,12 @@ export default defineComponent({
         }
         this.minItemHeight = 60 / (1800 / parseInt(minResolution))
         console.log('Home Minimum resolution: this.minItemHeight', minResolution, this.minItemHeight)
-
         // 获取开始、结束时间
         const { minStart, maxEnd } = this.getMaxAreaDuration()
         console.log('Home Minimum minStart  maxEnd', minStart, maxEnd)
         const { timeSlots, localTimeSlots } = Common.generateTimeSlots(minStart, maxEnd)
-        console.log('Home timeSlots localTimeSlots', timeSlots, localTimeSlots)
+        console.log('Home getAllAreas timeSlots', timeSlots)
+        console.log('Home getAllAreas localTimeSlots', localTimeSlots)
         this.timeSlots = timeSlots
         this.localTimeSlots = localTimeSlots
         if (areas) {
@@ -351,10 +360,29 @@ export default defineComponent({
     },
 
     getCurrentAreaRooms(area_id) {
-      this.rooms = areaData.data.areas[0].rooms
+      // this.rooms = areaData.data.areas[0].rooms
+      // return
+      console.log('SingleMeet getCurrentAreaRooms area_id',area_id)
+      if (area_id == 0 || !area_id) {
+        console.log('SingleMeet getCurrentAreaRooms return')
+        return
+      }
+      if (!this.page_cache_areas || this.page_cache_areas.length == 0) {
+        return
+      }
+      const area_rooms = this.page_cache_areas.filter((item) =>
+        item.area_id === area_id
+      )
+      if (this.dayRrangeVal != 0) {
+        this.dayRrange(this.dayRrangeVal)
+      }
+      console.log('Home getCurrentAreaRooms area_rooms', area_rooms)
+      this.rooms = this.getAllRoom(area_rooms)
+      console.log('Home getCurrentAreaRooms this.rooms', this.rooms)
       return
+      
 
-      Api.getAreaRooms({ id: area_id }).then(({ data, code }) => {
+      Api.getAreaRooms({ id: area_id }).then(({ data, code, msg }) => {
         if (code != 0) {
           ElMessage({
             message: this.$t('base.getAreaError'),
@@ -373,7 +401,7 @@ export default defineComponent({
 
     getMaxAreaDuration() {
       const minStart = '06:00'
-      const maxEnd = '10:30'
+      const maxEnd = '22:30'
       return { minStart, maxEnd }
       if (testAreas && testAreas.data && testAreas.data.areas) {
         const localAreas = testAreas.data.areas
@@ -557,7 +585,8 @@ export default defineComponent({
     },
 
     toMeet(time, room, day) {
-      this.dialogFormVisible = true
+      // this.dialogFormVisible = true
+      this.dialogMeetForm = true
       return
       console.log("Home toMeet room", room)
       const lang = Common.getLocalLang()
@@ -671,6 +700,7 @@ export default defineComponent({
     },
 
     getMeetRooms() {
+      console.log('Home getMeetRooms enter')
       if (this.startStamp && this.endStamp) {
       } else {
         const temp = Common.getThreeDaysTimestamps()
@@ -691,17 +721,17 @@ export default defineComponent({
 
 
       // 本地测试数据
-      this.currenTimestamp = homeData.data.timestamp
-      this.nowTime = homeData.data.time
-      this.getInMeeting(homeData.data)
-      this.$nextTick(() => {
-        this.showLoading = false
-      })
-      return
+      // this.currenTimestamp = homeData.data.timestamp
+      // this.nowTime = homeData.data.time
+      // this.getInMeeting(homeData.data)
+      // this.$nextTick(() => {
+      //   this.showLoading = false
+      // })
+      // return
 
       console.log('Home getMeetRooms currenArea:  start: end: ', this.currenArea, this.startStamp, this.endStamp);
-      Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp, end_time: this.endStamp, timezone: this.currentTimeZone }).then(({ data, code }) => {
-        if (!data) {
+      Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp, end_time: this.endStamp, timezone: this.currentTimeZone }).then(({ data, code, msg }) => {
+        if (!data && code != 0) {
           ElMessage({
             message: this.$t('base.getMeetRoomError'),
             type: 'error'
@@ -709,9 +739,6 @@ export default defineComponent({
           return
         }
         console.log('Home getMeetRooms api data:', data)
-        if (this.lang == 'en') {
-
-        }
         this.currenTimestamp = data.timestamp
         this.nowTime = data.time
         this.getInMeeting(data)
