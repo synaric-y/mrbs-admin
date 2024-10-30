@@ -153,7 +153,7 @@ export default {
         skip: 0,
         no_mail: 1,
         private: "",
-        create_by: 'admin'
+        create_by: ''
       },
       rules: {
         area_id: [
