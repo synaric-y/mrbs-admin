@@ -14,7 +14,7 @@
             </div>
             <div class="all-area">
               <el-select v-model="currenAreaName" placeholder="All Areas" @change="choseArea">
-                <el-option v-for="(area, index) in areas" :label="area.area_name" :value="area.area_id" :key="index">
+                <el-option v-for="(area, index) in page_cache_areas" :label="area.area_name" :value="area.area_id" :key="index">
                 </el-option>
               </el-select>
             </div>
@@ -189,6 +189,7 @@ export default defineComponent({
 
   mounted() {
     this.setTab('/')
+    this.getAllAreas()
     console.log('Home getBrowserLanguege:', Common.getBrowserLanguege())
     this.localLangFormat = Common.getBrowserLanguege()
     const screenWidth = window.screen.width
@@ -201,7 +202,6 @@ export default defineComponent({
     this.currentTimeZone = timeZone
     console.log('Home 获取当前设备的时区', timeZone)
     this.startSync()
-    this.getAllAreas()
     this.$nextTick(() => {
       this.showLoading = false
     })
@@ -219,7 +219,7 @@ export default defineComponent({
       this.getSyncInterval()
       this.interval = setInterval(() => {
         this.getSyncInterval()
-      }, 20000)
+      }, 20000000)
     },
     getSyncInterval() {
       this.filterDateStore = FilterDateStore()
@@ -248,19 +248,20 @@ export default defineComponent({
         }
       }
       if (selectArea && selectAreaName) {
-        console.log('Home selectAreaName:', selectAreaName)
+        // console.log('Home selectAreaName:', selectAreaName)
         this.currenAreaName = selectAreaName
         this.currenArea = selectArea
       }
       this.getCurrentAreaRooms(this.currenArea)
-      console.log('Home selectArea', selectArea)
-      console.log('Home selectStartDate', selectStartDate, selectEndDate)
-      console.log('Home selectDays', selectDays)
+      // console.log('Home selectArea', selectArea)
+      // console.log('Home selectStartDate', selectStartDate, selectEndDate)
+      // console.log('Home selectDays', selectDays)
     },
 
-    getAllRoom(data) {
+    getAllRoom(areas) {
+      console.log('Home getAllRoom areas 1111111',areas)
       const allRoom = [];
-      data.areas.forEach(area => {
+      areas.forEach(area => {
         const areaId = area.area_id
         const areaName = area.area_name
         area.rooms.forEach(room => {
@@ -317,7 +318,7 @@ export default defineComponent({
       if (this.page_cache_areas && this.page_cache_areas.length > 0) {
         return
       }
-      Api.getAreaRooms().then(({ data, code }) => {
+      Api.getAreaRooms().then(({ data, code, msg }) => {
         if (code != 0) {
           ElMessage({
             message: this.$t('base.getAreaError'),
@@ -325,13 +326,12 @@ export default defineComponent({
           })
           return
         }
-        // 网络数据
-        let areas = data.areas
-        this.page_cache_areas = areas
+        let temp_areas = data.areas
+        // this.page_cache_areas = areas
         // 本地测试数据
         // let areas = areaData.data.areas
         // 获取最小的值
-        const minResolution = areas.reduce((min, area) => {
+        const minResolution = temp_areas.reduce((min, area) => {
           const resolution = parseInt(area.resolution, 10)
           return resolution < min ? resolution : min
         }, 900);
@@ -352,22 +352,25 @@ export default defineComponent({
         console.log('Home getAllAreas localTimeSlots', localTimeSlots)
         this.timeSlots = timeSlots
         this.localTimeSlots = localTimeSlots
-        if (areas) {
-          areas.splice(0, 0, firstArea)
+        if (temp_areas) {
+          temp_areas.splice(0, 0, firstArea)
         }
-        this.areas = areas
+        this.page_cache_areas = temp_areas
+        console.log('Home getAllAreas this.page_cache_areas', this.page_cache_areas)
+        this.getCurrentAreaRooms(this.area_id)
       })
     },
 
     getCurrentAreaRooms(area_id) {
-      // this.rooms = areaData.data.areas[0].rooms
-      // return
-      console.log('SingleMeet getCurrentAreaRooms area_id',area_id)
-      if (area_id == 0 || !area_id) {
-        console.log('SingleMeet getCurrentAreaRooms return')
+      if (!this.page_cache_areas || this.page_cache_areas.length == 0) {
+        console.log('SingleMeet getCurrentAreaRooms this.page_cache_areas',this.page_cache_areas)
+        this.getAllAreas()
         return
       }
-      if (!this.page_cache_areas || this.page_cache_areas.length == 0) {
+      console.log('SingleMeet getCurrentAreaRooms area_id',area_id)
+      if (area_id == 0 || !area_id) {
+        console.log('SingleMeet getCurrentAreaRooms area_id == 0 return')
+        this.rooms = this.getAllRoom(this.page_cache_areas)
         return
       }
       const area_rooms = this.page_cache_areas.filter((item) =>
@@ -377,10 +380,12 @@ export default defineComponent({
         this.dayRrange(this.dayRrangeVal)
       }
       console.log('Home getCurrentAreaRooms area_rooms', area_rooms)
-      this.rooms = this.getAllRoom(area_rooms)
+      const tmp_areas = []
+      tmp_areas.push(area_rooms)
+      this.rooms = this.getAllRoom(tmp_areas[0])
       console.log('Home getCurrentAreaRooms this.rooms', this.rooms)
       return
-      
+
 
       Api.getAreaRooms({ id: area_id }).then(({ data, code, msg }) => {
         if (code != 0) {
@@ -637,27 +642,28 @@ export default defineComponent({
     choseArea(e) {
       this.currenArea = e;
       console.log('Home choseArea e')
-      const area = this.areas.filter(area => area.area_id == e)
+      const area = this.page_cache_areas.filter(area => area.area_id == e)
       console.log('Home choseArea areaName', area)
       const areaName = area[0].area_name
       this.currenAreaName = areaName
       this.filterDateStore.setArea(e)
       this.filterDateStore.setAreaName(areaName)
       this.getCurrentAreaRooms(this.currenArea)
-      this.getAreaRooms()
+      // this.getAreaRooms()
       this.getMeetRooms()
     },
 
     getAreaRooms() {
       console.log('Home getAreaRooms this.currenArea', this.currenArea)
       if (this.currenArea == 'All' || this.currenArea == '') {
-        const temprooms = this.areas.flatMap(area => area.rooms)
-        this.rooms = temprooms.flatMap(room => room.room_name)
-        console.log('Home getAreaRooms all rooms:', this.rooms)
+        const temp_areas = this.page_cache_areas.flatMap(area => area.rooms)
+        this.rooms = temp_areas.flatMap(room => room.room_name)
+        console.log('Home getAreaRooms 1111 all rooms:', this.rooms)
       } else {
-        const temprooms = this.areas.find(area => area.area_id == this.currenArea)
-        this.rooms = temprooms.rooms.flatMap(room => room.room_name)
-        console.log('Home getAreaRooms currenArea rooms:', this.rooms)
+        const temp_areas = this.page_cache_areas.filter(area => area.area_id == this.currenArea)
+        // this.rooms = temp_areas.rooms.flatMap(room => room.room_name)
+        this.rooms = temp_areas.rooms
+        console.log('Home getAreaRooms 22222 currenArea rooms:', this.rooms)
       }
     },
 
@@ -761,7 +767,8 @@ export default defineComponent({
         area.rooms.forEach(room => {
           const roomId = room.room_id
           const roomName = room.room_name
-          room.entries.forEach(entry => {
+          if (room && room.entries && room.entries.length > 0) {
+            room.entries.forEach(entry => {
             entriesRoom.push({
               area_id: areaId,
               area_name: areaName,
@@ -774,6 +781,7 @@ export default defineComponent({
               ...entry
             });
           });
+          }
         });
       });
       this.events = entriesRoom
