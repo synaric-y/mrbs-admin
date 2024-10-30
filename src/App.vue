@@ -47,7 +47,7 @@
           <el-col>
             <el-menu default-active="1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
               <el-menu-item index="1">
-                <img class="menu_icon" src="../public/imgs/dashboard_manager_default.png" alt="#">
+                <img class="menu_icon" :src="activeIndex.startsWith(1)?'/imgs/dashboard_manager_selected.png':'/imgs/dashboard_manager.png'" alt="#">
                 <span @click="switchTab('/guide_one')">Dashboard</span>
               </el-menu-item>
               <el-sub-menu index="2">
@@ -55,7 +55,7 @@
                   <!-- <el-icon>
                     <location  />
                   </el-icon> -->
-                  <img class="menu_icon" src="../public/imgs/user_manager.png" alt="#">
+                  <img class="menu_icon" :src="activeIndex.startsWith(2)?'/imgs/user_manager_selected.png':'/imgs/user_manager.png'" alt="#">
                   <span>用户管理</span>
                 </template>
                 <el-menu-item index="2-1" @click="switchTab('/user_list')">用户列表</el-menu-item>
@@ -67,7 +67,7 @@
                   <!-- <el-icon>
                     <location />
                   </el-icon> -->
-                  <img class="menu_icon" src="../public/imgs/meet_manager.png" alt="#">
+                  <img class="menu_icon" :src="activeIndex.startsWith(3)?'imgs/meet_manager_selected.png':'imgs/meet_manager.png'" alt="#">
                   <span>会议预定</span>
                 </template>
                 <el-menu-item index="3-1" @click="switchTab('/single_meet')">单次会议预定</el-menu-item>
@@ -79,7 +79,7 @@
                   <!-- <el-icon>
                     <location />
                   </el-icon> -->
-                  <img class="menu_icon" src="../public/imgs/area_manager.png" alt="#">
+                  <img class="menu_icon" :src="activeIndex.startsWith(4)?'/imgs/area_manager_selected.png':'/imgs/area_manager.png'" alt="#">
                   <span>区域&会议管理</span>
                 </template>
                 <el-menu-item index="4-1" @click="switchTab('/edit_area')">编辑区域</el-menu-item>
@@ -88,7 +88,7 @@
 
               <el-menu-item index="5">
                 <!-- <el-icon><icon-menu /></el-icon> -->
-                <img class="menu_icon" src="../public/imgs/terminal_manager.png" alt="#">
+                <img class="menu_icon" :src="activeIndex.startsWith(5)?'/imgs/terminal_manager_selected.png':'/imgs/terminal_manager.png'" alt="#">
                 <span @click="switchTab('/terminal_manager')">终端设备管理</span>
               </el-menu-item>
 
@@ -97,7 +97,7 @@
                   <!-- <el-icon>
                     <location />
                   </el-icon> -->
-                  <img class="menu_icon" src="../public/imgs/check_circle.png" alt="#">
+                  <img class="menu_icon" :src="activeIndex.startsWith(6)?'/imgs/check_circle_selected.png':'/imgs/check_circle.png'" alt="#">
                   <span>系统设置</span>
                 </template>
                 <el-menu-item index="6-1" @click="switchTab('/meet_rule')">会议规则设置</el-menu-item>
@@ -110,7 +110,7 @@
                   <!-- <el-icon>
                     <location />
                   </el-icon> -->
-                  <img class="menu_icon" src="../public/imgs/help_manager.png" alt="#">
+                  <img class="menu_icon" :src="activeIndex.startsWith(7)?'/imgs/help_manager_selected.png':'/imgs/help_manager.png'" alt="#">
                   <span>帮助中心</span>
                 </template>
                 <el-menu-item index="7-1" @click="switchTab('/manual')">操作手册下载</el-menu-item>
@@ -154,12 +154,14 @@ export default {
   mixins: [PageMixin],
   data() {
     return {
-      showPop: false
+      showPop: false,
+      activeIndex: "1",
     }
   },
   methods: {
     handleOpen(key, path) {
       console.log('App handleOpen', key, path)
+      this.activeIndex = String(key)
     },
     handleClose(key, path) {
       console.log('App handleClose', key, path)
@@ -305,7 +307,7 @@ body {
 }
 
 .nav-left {
-  /* margin-left: -60px; */
+  margin-left: -60px;
   font-size: 20px;
   line-height: 75px;
 }
