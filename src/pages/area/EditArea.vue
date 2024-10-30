@@ -76,7 +76,8 @@ export default {
       showAddAreaDialog: false,
       showDeleteAreaDialog: false,
       form: {
-        name: ''
+        name: '',
+        group_ids: [-1],
       },
       rules: {
         name: [
@@ -115,12 +116,13 @@ export default {
     },
     pendingAddArea() {
       this.form = {
-        name: ''
+        name: '',
+        group_ids: [-1]
       }
       this.showAddAreaDialog = true
     },
     addArea() {
-      this.$refs.areaForm.validate((pass) => {
+      this.$refs.form.validate((pass) => {
         if (!pass) {
           return
         }

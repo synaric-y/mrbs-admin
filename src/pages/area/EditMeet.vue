@@ -120,6 +120,7 @@ export default {
         name: '',
         description: '',
         capacity: '',
+        group_ids: [-1],
         // room_admin_email: ''
       },
       rules: {
