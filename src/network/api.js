@@ -223,4 +223,13 @@ export class Api {
     static async getVersions(params){
         return Request.post('system_setting%2Fget_versions',params)
     }
+
+    // 测试连通性
+    static async testAD(params){
+        return Request.post('test%2Ftest_ad',params)
+    }
+
+    static async testExchange(params){
+        return Request.post('test%2Ftest_exchange',params)
+    }
 }

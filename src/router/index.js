@@ -89,8 +89,8 @@ const router = createRouter({
       name: 'terminal_manager',
       component: () => import('@/pages/terminal/TerminalManager.vue')
     },{
-      path: '/application_seeting',
-      name: 'application_seeting',
+      path: '/application_setting',
+      name: 'application_setting',
       component: () => import('@/pages/system/ApplicationSetting.vue')
     },{
       path: '/meet_rule',

@@ -17,7 +17,7 @@
               <el-form-item label="服务器地址" prop="requestUrl">
                 <div class="form-item-content">
                   <el-input :disabled="urlStatus==='testing'" @input="urlStatus='untested'" v-model="form.requestUrl" class="form-item-input"  placeholder="示例:172.16.88.180"/>
-                  <el-button :disabled="urlStatus!=='untested'" :loading="urlStatus==='testing'" type="primary" style="margin-left: 10px" @click="verify">{{urlStatus==='untested'?'测试':(urlStatus==='testing'?'测试中':'已测试')}}</el-button>
+                  <TestButton :status="urlStatus" @test="verify"/>
                   <div style="width: 20px;height: 20px" id="qrcode"></div>
                 </div>
               </el-form-item>
@@ -151,9 +151,10 @@ import {Minus, SemiSelect} from "@element-plus/icons-vue";
 import AraleQRCode from 'arale-qrcode'
 import axios from "@/network/axios.js";
 import * as dayjs from 'dayjs'
+import TestButton from "@/components/TestButton.vue";
 
 export default {
-  components: {SemiSelect, Minus},
+  components: {TestButton, SemiSelect, Minus},
   mixins: [PageMixin],
   data() {
     return {
@@ -362,7 +363,7 @@ export default {
                     "init_status": 3,
                     "time_type": this.form.timeFormat,
                     "company_name": this.form.companyName,
-                    "server_address": this.form.requestUrl,
+                    "server_address": encodeURIComponent(this.form.requestUrl),
                     "theme_type": this.form.theme,
                   }
               ))
@@ -376,9 +377,9 @@ export default {
                       message: '设置成功',
                     })
 
-                    setTimeout(()=>{
-                      location.reload() // 刷新页面
-                    },1000)
+                    // setTimeout(()=>{
+                    //   location.reload() // 刷新页面
+                    // },1000)
                   })
                   .catch((error) => {
                     ElMessage.error({
