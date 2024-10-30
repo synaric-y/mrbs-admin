@@ -98,98 +98,6 @@
             </div>
           </el-scrollbar>
         </div>
-
-        <el-dialog v-model="dialogFormVisible" title="循环会议预定" width="600">
-          <el-form :model="meetForm" :rules="rules">
-            <div class="request-wrapper">
-              <el-form-item prop="area" label="区域" label-width="100px">
-                <!-- :disabled="dialogUserDetailForm" -->
-                <el-select v-model="meetForm.area" placeholder="请选择区域">
-                  <el-option label="上海" value="1" />
-                  <el-option label="北京" value="2" />
-                </el-select>
-              </el-form-item>
-            </div>
-
-            <div class="request-wrapper">
-              <el-form-item prop="room" label="会议室" label-width="100px">
-                <el-select v-model="meetForm.room" placeholder="请选择会议室">
-                  <el-option label="Room A" value="1" />
-                  <el-option label="Room B" value="2" />
-                </el-select>
-              </el-form-item>
-            </div>
-            <div class="request-wrapper">
-              <el-form-item prop="title" label="会议室标题" label-width="100px" >
-                <el-input v-model="meetForm.title" autocomplete="off" />
-              </el-form-item>
-            </div>
-
-            <el-form-item prop="start_day" label="开始时间" style="margin-left: 20px" required>
-              <el-form-item prop="start_day">
-                <el-date-picker v-model="meetForm.start_day" type="date" aria-label="Pick start day"
-                  placeholder="Pick start day" style="width: 100%" />
-              </el-form-item>
-            </el-form-item>
-
-            <el-row style="margin-left: 97px">
-              <el-form-item prop="start_hour">
-                <el-time-select v-model="start_hour" style="width: 140px;" :start="minStartTime"
-                  :step="minStep" :end="maxEndTime" placeholder="会议开始"
-                  @change="choseDialogHour(0, start_hour, $event)" :min-time="currentHourMinute" />
-              </el-form-item>
-              <span style="line-height: 32px;width: 20px;text-align: center;"> - </span>
-              <el-form-item prop="end_hour">
-                <el-time-select v-model="start_hour" style="width: 140px;" :start="minStartTime"
-                  :step="minStep" :end="maxEndTime" placeholder="会议结束"
-                  @change="choseDialogHour(0, start_hour, $event)" :min-time="currentHourMinute" />
-              </el-form-item>
-            </el-row>
-
-            <el-form-item label="重复间隔为" prop="repeat_week" style="margin-left: 7px">
-              <el-input-number style="width: 100px;" v-model="meetForm.repeat" :min="1" :max="4" @change="handleWeekChange" />
-              <span style="margin-left: 20px;color: #4E5969;font-family: PingFang SC;font-size: 14px;font-weight: normal;">周后的：</span>
-            </el-form-item>
-
-            <el-form-item style="margin-left: 40px" prop="check_list">
-              <el-checkbox-group v-model="meetForm.check_list" size="small">
-                <el-checkbox label="星一" value="1" />
-                <el-checkbox label="星二" value="2" />
-                <el-checkbox label="星三" value="3" />
-                <el-checkbox label="星四" value="4"/>
-                <el-checkbox label="星五" value="5"/>
-                <el-checkbox label="星六" value="6"/>
-                <el-checkbox label="星日" value="7"/>
-              </el-checkbox-group>
-            </el-form-item>
-
-
-
-
-            <el-form-item prop="end_day" label="结束时间" style="margin-left: 20px;" required>
-              <el-form-item prop="end_day">
-                <el-date-picker v-model="meetForm.start_day" type="date" aria-label="Pick end day"
-                  placeholder="Pick end day" style="width: 100%" />
-              </el-form-item>
-            </el-form-item>
-
-            <el-form-item label="备注" label-width="100px" >
-              <el-input v-model="meetForm.remark" maxlength="100" style="width: 410px;" placeholder="Please input"
-                show-word-limit type="textarea" />
-            </el-form-item>
-          </el-form>
-          <template #footer>
-            <div class="dialog-footer" style="text-align: center;">
-              <el-button type="primary" @click="commitAddForm">提交</el-button>
-              <el-button style="margin-left: 50px" @click="deleteMeet">
-                删除
-              </el-button>
-              <el-button style="margin-left: 50px" @click="dialogFormVisible = false">
-                取消
-              </el-button>
-            </div>
-          </template>
-        </el-dialog>
       </div>
     </el-main>
     <el-skeleton v-if="showLoading" :rows="15" animated />
@@ -266,55 +174,8 @@ export default defineComponent({
         "01:00PM", "01:30PM", "02:00PM", "02:30PM", "03:00PM", "03:30PM", "04:00PM", "04:30PM",
         "05:00PM", "05:30PM", "06:00PM", "06:30PM", "07:00PM", "07:30PM", "08:00PM", "08:30PM", "09:00PM"
       ],
-      meetForm: {
-        area: '',
-        room: '',
-        title: '',
-        start_day: '',
-        start_hour: '',
-        end_day: '',
-        end_hour: '',
-        repeat_week: '1',
-        check_list: [],
-        remark: '',
-      },
-      rules: {
-        area: [
-          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
-        ],
-        room: [
-          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
-        ],
-        title: [
-          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
-        ],
-        start_day: [
-          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
-        ],
-        start_hour: [
-          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
-        ],
-        end_day: [
-          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
-        ],
-        end_hour: [
-          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
-        ],
-        repeat_week: [
-          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
-        ],
-        check_list: [
-          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
-        ],
-        remark: [
-          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
-        ],
-      },
-
       dialogFormVisible: false,
       currentHourMinute: '',
-      minStartTime: '06:00',
-      maxEndTime: '21:00',
       currentTimeZone: 'Asia/Shanghai'
     };
   },
@@ -340,60 +201,8 @@ export default defineComponent({
   },
 
   methods: {
-    commitAddForm() {
-      this.$refs.meetForm.validate((pass) => {
-        if (!pass) {
-          return
-        }
-      })
-    },
     disabledDate(time) {
       return time.getTime() < Date.now() - 86400000;
-    },
-    choseDialogDate(mode, e) {
-      console.log('Meet Detail Dialog e', e)
-      const date = moment.tz(e, this.currentTimeZone).format('YYYY-MM-DD')
-      const newDate = moment.tz(this.form.start_day, this.currentTimeZone).format('YYYY-MM-DD')
-      console.log('Meet Detail choseDate date', date, newDate)
-      if (date != newDate) {
-        this.currentHourMinute = '03:00'
-      } else {
-        this.currentHourMinute = this.getNearestHalfHour()
-      }
-      if (mode == 0) {
-        this.form.start_date = date
-        this.form.end_date = date
-        return
-      }
-      this.form.start_date = date
-      this.form.end_date = date
-    },
-
-    choseDialogHour(mode, str, e) {
-      console.log('Meet Detail choseHour str e', str, e)
-      const ymd = this.form.start_date
-      const lang = Common.getLocalLang()
-      const appeedStr = ymd + ' ' + str
-      const formatStr = Common.getAssignFormat(appeedStr, lang)
-      console.log('Meet choseHour this.currentTimeZone lang appeedStr', this.currentTimeZone, lang, appeedStr)
-      const nextTimeStamp = moment.tz(formatStr, this.currentTimeZone).unix();
-      console.log('Meet choseHour formatStr nextTimeStamp ', formatStr, nextTimeStamp)
-      if (mode == 0) {
-        const currenDay = Common.getYearToDay()
-        const currenStamp = Common.getCurrenTimeZoneStamp(this.currentTimeZone)
-        if (currenDay == ymd && currenStamp > nextTimeStamp) {
-          ElMessage({
-            message: this.$t('base.passTimeError'),
-            type: 'warning',
-          })
-          this.form.start_seconds = 0
-          this.start_hour = ''
-          return
-        }
-        this.form.start_seconds = nextTimeStamp;
-        return
-      }
-      this.form.end_seconds = nextTimeStamp;
     },
     startSync() {
       if (this.interval) {
