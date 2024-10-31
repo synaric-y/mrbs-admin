@@ -2,7 +2,7 @@
   <el-container class="container-sub-page">
     <el-main class="container-sub-page-main">
       <div class="sub-title-wrapper">
-        <div class="sub-title">单次会议</div>
+        <div class="sub-title">循环会议</div>
       </div>
       <div class="menu-content-wrapper">
         <div class="toolbar" v-if="!showLoading">
