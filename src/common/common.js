@@ -3,6 +3,16 @@ import moment from "moment";
 
 export class Common {
 
+    static getTimestamp(dateStr, type = 'start') {
+        const date = new Date(dateStr)
+        if (type === 'start') {
+          date.setHours(0, 0, 0, 0)
+        } else if (type === 'end') {
+          date.setHours(23, 59, 59, 999)
+        }
+        return parseInt(date.getTime() / 1000)
+      }
+
     static getLocalLang() {
         let lang = navigator.language || navigator.userLanguage
         if (lang == 'zh-CN') {

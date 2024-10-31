@@ -685,6 +685,8 @@ export default defineComponent({
         }
         this.startTime = start_date
         this.endTime = end_date
+        this.startStamp = Common.getTimestamp(start_date,'start')
+        this.endStamp = Common.getTimestamp(end_date,'end')
 
         this.filterDateStore.setStartDate(start_date)
         this.filterDateStore.setEndDate(end_date)

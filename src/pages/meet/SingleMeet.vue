@@ -660,8 +660,13 @@ export default defineComponent({
           this.endTime = ''
           return
         }
+        // 2024-11-01(2024-11-01 00:00:00) 2024-11-09(2024-11-09 23:59:59)
         this.startTime = start_date
         this.endTime = end_date
+        console.log('Home choseDate start_date-end_date',start_date,end_date)
+        this.startStamp = Common.getTimestamp(start_date,'start')
+        this.endStamp = Common.getTimestamp(end_date,'end')
+        console.log('Home choseDate this.startStamp-this.endStamp',this.startStamp,this.endStamp)
 
         this.filterDateStore.setStartDate(start_date)
         this.filterDateStore.setEndDate(end_date)
