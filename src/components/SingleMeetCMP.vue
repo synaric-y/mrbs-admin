@@ -20,7 +20,7 @@
           <el-col :span="11">
             <el-form-item prop="start_date">
               <el-date-picker v-model="meetForm.start_date" type="date" :disabled-date="disabledDate"  value-format="YYYY-MM-DD"
-                aria-label="Pick start day" placeholder="Pick start day" style="width: 100%" />
+                aria-label="Pick start day" placeholder="Pick start day" style="width: 100%" @change="choseDate(0, $event)"/>
             </el-form-item>
           </el-col>
           <el-col class="text-center" :span="1">
@@ -245,6 +245,16 @@ export default {
       this.meetForm.end_seconds = nextTimeStamp;
     },
 
+    choseDate(mode, e) {
+      const selected_date = moment.tz(e, this.currentTimeZone).format('YYYY-MM-DD')
+      if (mode == 0) {
+        this.limitSelectHour(selected_date)
+        this.meetForm.start_date = selected_date
+        return
+      }
+      this.meetForm.end_date = selected_date
+    },
+
     getSelectedArea(area_id) {
       const area_rooms = this.areas.filter((item) =>
           item.area_id === area_id
@@ -260,6 +270,15 @@ export default {
           });
         });
         return select_rooms
+    },
+    limitSelectHour(selected_date) {
+      const now_date = moment.tz(Date.now(), this.currentTimeZone).format('YYYY-MM-DD')
+      console.log('CycleMeetCMP choseDate selected_date', selected_date)
+      if (now_date != selected_date) {
+        this.minStartTime = '06:00'
+      } else {
+        this.minStartTime = Common.formatLast15Minute()
+      }
     },
     getMeetDetail() {
       let params = {}
@@ -283,6 +302,7 @@ export default {
         this.meetForm.start_seconds = data.start_time
         this.meetForm.end_seconds = data.end_time
         this.roomOptions = this.getSelectedArea(data.area_id)
+        this.limitSelectHour(data.start_date)
       })
     },
 

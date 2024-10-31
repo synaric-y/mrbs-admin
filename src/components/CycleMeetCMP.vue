@@ -19,7 +19,7 @@
         <el-form-item prop="start_date" label="开始时间" style="margin-left: 20px" required>
           <el-form-item prop="start_date">
             <el-date-picker v-model="meetForm.start_date" type="date" :disabled-date="disabledDate" value-format="YYYY-MM-DD"
-              aria-label="Pick start day" placeholder="Pick start day" style="width: 100%" />
+              aria-label="Pick start day" placeholder="Pick start day" style="width: 100%" @change="choseDate(0, $event)"/>
           </el-form-item>
         </el-form-item>
         <el-row style="margin-left: 97px">
@@ -211,7 +211,7 @@ export default {
         const area_rooms = this.areas.filter((item) =>
           item.area_id === e
         )
-        console.log('MeetList onAreaChange area_rooms', area_rooms[0])
+        console.log('CycleMeetCMP onAreaChange area_rooms', area_rooms[0])
         const select_rooms = [];
         area_rooms[0].rooms.forEach(room => {
           select_rooms.push({
@@ -241,6 +241,12 @@ export default {
     },
     onRoomChange(e) {
       this.meetForm.room_id = e
+    },
+
+    choseDate(mode, e) {
+      const selected_date = moment.tz(e, this.currentTimeZone).format('YYYY-MM-DD')
+      this.limitSelectHour(selected_date)
+      this.meetForm.start_date = selected_date
     },
 
     choseDialogHour(mode, str, e) {
@@ -285,6 +291,16 @@ export default {
         });
       });
       return select_rooms
+    },
+
+    limitSelectHour(selected_date) {
+      const now_date = moment.tz(Date.now(), this.currentTimeZone).format('YYYY-MM-DD')
+      console.log('CycleMeetCMP choseDate selected_date', selected_date)
+      if (now_date != selected_date) {
+        this.minStartTime = '06:00'
+      } else {
+        this.minStartTime = Common.formatLast15Minute()
+      }
     },
 
     getCheckBoxList(binaryString) {
@@ -336,6 +352,7 @@ export default {
         // rep_opt: 1010100
         this.meetForm.rep_opt = data.rep_opt
         this.meetForm.rep_day = this.getCheckBoxList(data.rep_opt.toString())
+        this.limitSelectHour(data.start_date)
       })
     },
     commitForm() {
