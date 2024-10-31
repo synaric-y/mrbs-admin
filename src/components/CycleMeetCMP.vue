@@ -350,7 +350,7 @@ export default {
         this.meetForm.end_seconds = data.end_time
         this.meetForm.rep_day = data.rep_day
         // rep_opt: 1010100
-        this.meetForm.rep_opt = data.rep_opt
+        this.meetForm.rep_opt = data.rep_opt.substring(0).replace(/\D/g, "")
         this.meetForm.rep_day = this.getCheckBoxList(data.rep_opt.toString())
         this.limitSelectHour(data.start_date)
       })
