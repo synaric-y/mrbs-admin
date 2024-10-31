@@ -109,7 +109,7 @@
             </div>
           </el-scrollbar>
         </div>
-        <CycleMeetCMP v-if="dialogMeetForm" :mode="form_mode" :areas="page_cache_areas" :entry_id="entry_id"
+        <CycleMeetCMP v-if="dialogMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas" :entry_id="entry_id"
           @close="dialogMeetForm = false" />
       </div>
     </el-main>
@@ -195,6 +195,13 @@ export default defineComponent({
       currentHourMinute: '',
       currentTimeZone: 'Asia/Shanghai',
       page_cache_areas: [],
+      addParams:{
+        area_id: '',
+        area_name: '',
+        room_id: '',
+        room_name: '',
+        timeStamp: 0,
+      }
     };
   },
 
@@ -361,6 +368,7 @@ export default defineComponent({
       tmp_areas.push(area_rooms)
       this.rooms = this.getAllRoom(tmp_areas[0])
       console.log('Home getCurrentAreaRooms this.rooms', this.rooms)
+      // this.getMeetRooms()
       return
 
 
@@ -385,8 +393,8 @@ export default defineComponent({
       const minStart = '06:00'
       const maxEnd = '22:30'
       return { minStart, maxEnd }
-      if (testAreas && testAreas.data && testAreas.data.areas) {
-        const localAreas = testAreas.data.areas
+      if (this.page_cache_areas && this.page_cache_areas.areas) {
+        const localAreas = this.page_cache_areas.areas
         let minStart = localAreas[0].start_time
         let [startTime, amstr] = minStart.split(' ')
         let maxEnd = localAreas[0].end_time
@@ -571,9 +579,15 @@ export default defineComponent({
     },
 
     toMeet(time, room, day) {
-      this.dialogMeetForm = true
-      return
       console.log("Home toMeet room", room)
+      console.log("Home toMeet time", time)
+      console.log("Home toMeet day", day)
+      this.form_mode = 0
+      this.addParams.room_id = room.room_id
+      const [tmp_area_name, tmp_room_name] = room.room_name.split(" ")
+      this.addParams.room_name = tmp_room_name
+      this.addParams.area_id = room.area_id
+      this.addParams.area_name = room.area_name
       const lang = Common.getLocalLang()
       console.log("Home toMeet day.date timeZone lang", day.date, this.currentTimeZone, this.localLangFormat)
       console.log("Home toMeet formatTime date", day.date)
@@ -583,6 +597,9 @@ export default defineComponent({
       console.log('Home toMeet formatStr', formatStr)
       const nextTimeStamp = moment.tz(formatStr, this.currentTimeZone).unix();
       console.log('Home toMeet nextTimeStamp currenTimestamp', nextTimeStamp, this.currenTimestamp)
+      this.addParams.timeStamp = nextTimeStamp
+      this.dialogMeetForm = true
+      return
       if (nextTimeStamp < this.currenTimestamp) {
         return
       }
@@ -593,7 +610,6 @@ export default defineComponent({
         console.log('Home toMeet disabled', room.disabled)
         return
       }
-      this.push(`/meet_detail/0/${room.room_id}/${room.area_id}/${nextTimeStamp}`)
     },
 
     editMeet(event) {

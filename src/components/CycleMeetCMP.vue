@@ -88,7 +88,7 @@ export default {
     }
   },
   mixins: [PageMixin],
-  props: ['entry_id','is_series', 'mode', 'areas'],
+  props: ['entry_id','is_series', 'mode', 'areas','add_params'],
   emits: ['close'],
   name: 'CycleMeetCMP',
   data() {
@@ -257,6 +257,23 @@ export default {
       this.meetForm.end_seconds = nextTimeStamp;
     },
 
+    getSelectedArea(area_id) {
+      const area_rooms = this.areas.filter((item) =>
+          item.area_id === area_id
+        )
+        console.log('MeetList onAreaChange area_rooms', area_rooms[0])
+        const select_rooms = [];
+        area_rooms[0].rooms.forEach(room => {
+          select_rooms.push({
+            room_id: room.room_id,
+            room_name: room.room_name,
+            title: room.room_name,
+            disabled: room.disabled,
+          });
+        });
+        return select_rooms
+    },
+
     convertToBinaryWithSundayLeft(rep_day) {
       let binaryRepresentation = 0;
       rep_day.forEach(value => {
@@ -268,7 +285,7 @@ export default {
     getMeetDetail() {
       let params = {}
       params['id'] = Number(this.entry_id)
-      params['is_series'] = Number(this.is_series)
+      params['is_series'] = 1
       Api.getMeetDetail(params).then(({ data, code, msg }) => {
         if (code != 0 && !data) {
           return
@@ -332,6 +349,20 @@ export default {
   },
   created() {
     console.log('CycleMeetCMP created:', this.entry_id)
+    if (this.add_params && this.mode == 0) {
+      this.meetForm.room_id = this.add_params.room_id
+      this.meetForm.room_name = this.add_params.room_name
+      this.meetForm.area_id = this.add_params.area_id
+      this.meetForm.area_name = this.add_params.area_name
+      this.meetForm.start_date = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
+      this.meetForm.start_hour = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('HH:mm')
+      this.meetForm.end_date = moment.tz((this.add_params.timeStamp + 1800) * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
+      this.meetForm.end_hour = moment.tz((this.add_params.timeStamp + 1800) * 1000, 'Asia/Shanghai').format('HH:mm')
+      this.meetForm.start_seconds = this.add_params.timeStamp
+      this.meetForm.end_seconds = this.add_params.timeStamp + 1800
+      this.roomOptions = this.getSelectedArea(this.add_params.area_id)
+      return
+    }
     this.getMeetDetail()
   },
 
