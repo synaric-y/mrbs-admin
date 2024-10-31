@@ -411,18 +411,6 @@ export default {
   display: none;
 }
 
-::v-deep .el-table thead th{
-  font-family: PingFang SC;
-  font-size: 16px;
-  font-weight: 500;
-  color:#737980;
-}
-
-.el-table {
-  --el-table-header-bg-color: #f5f6f7;
-  --el-table-border: 1px solid #E1E1E1;
-  --el-table-tr-bg-color: #fff;
-}
 
 .section-title {
   color: var(--el-color-primary);

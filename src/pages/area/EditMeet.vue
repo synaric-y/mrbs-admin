@@ -1,25 +1,25 @@
 <template>
-  <el-container class="container-sub-page">
-    <el-main class="container-sub-page-main">
-      <div class="sub-title-wrapper">
-        <div class="sub-title">{{ $t("base.roomManagement") }}</div>
-      </div>
-      <el-form-item>
-        <el-select v-model="areaId" style="width: 240px;margin-top: 30px;" :empty-values="[null, undefined]"
-          @change="getRoomList">
-          <el-option v-for="item in areaList" :key="item.id" :label="item.area_name" :value="item.id" />
-        </el-select>
-        <!-- <div style="flex: 1"></div> -->
-        <el-button style="margin-top: 30px;margin-left: 30px;" type="primary" size="default" @click="pendingAddRoom">{{
-          $t("base.add") }}</el-button>
-      </el-form-item>
+  <Layout :title="$t('base.roomManagement')">
+    <template #filter>
+      <el-select v-model="areaId" :empty-values="[null, undefined]" style="max-width: 180px;"
+                 @change="getRoomList">
+        <el-option v-for="item in areaList" :key="item.id" :label="item.area_name" :value="item.id" />
+      </el-select>
+      <el-button type="primary" @click="pendingAddRoom">{{$t("base.add") }}</el-button>
+    </template>
+    <template #table>
       <el-table :data="tableData" style="width: 100%" header-cell-class-name="tb-header" header-align="center"
-        max-height="600">
+                max-height="600">
         <el-table-column fixed prop="room_name" :label="$t('room.tableRoom.name')" width="330">
         </el-table-column>
         <el-table-column prop="disabled" :label="$t('room.tableRoom.state')" width="150">
+<!--          <template #default="scope">-->
+<!--            <div :class="['tb-state', scope.row.disabled == 1 ? 'tb-state-disable' : '']"></div>-->
+<!--          </template>-->
           <template #default="scope">
-            <div :class="['tb-state', scope.row.disabled == 1 ? 'tb-state-disable' : '']"></div>
+            <el-switch v-model="scope.row.disabled"
+                       :active-value="0"
+                       :inactive-value="1" @change="handleSwitchChange(scope.row)" />
           </template>
         </el-table-column>
         <el-table-column prop="id" :label="$t('room.tableRoom.id')" width="150">
@@ -42,63 +42,65 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-dialog v-model="showAddRoomDialog" :title="$t('area.addArea')" width="500">
-        <el-form :model="form" :rules="rules" ref="roomForm" label-width="auto">
-          <el-form-item prop="name" :label="$t('room.formRoom.name')" label-position="right">
-            <el-input v-model="form.name" />
-          </el-form-item>
-          <el-form-item prop="area" :label="$t('room.formRoom.area')" label-position="right">
-            <el-select v-model="form.area" :empty-values="[null, undefined]">
-              <el-option v-for="item in areaListNoAll" :key="item.id" :label="item.area_name" :value="item.id" />
-            </el-select>
-          </el-form-item>
-          <el-form-item prop="description" :label="$t('room.formRoom.description')" label-position="right">
-            <el-input v-model="form.description" autocomplete="off" />
-          </el-form-item>
-          <el-form-item prop="capacity" :label="$t('room.formRoom.capacity')" label-position="right">
-            <el-input v-model="form.capacity" autocomplete="off" />
-          </el-form-item>
-        </el-form>
-        <template #footer>
-          <div class="dialog-footer">
-            <el-button @click="showAddRoomDialog = false">{{ $t('base.cancel') }}</el-button>
-            <el-button type="primary" @click="addRoom">
-              {{ $t('base.confirm') }}
-            </el-button>
-          </div>
-        </template>
-      </el-dialog>
-      <el-dialog v-model="showDeleteRoomDialog" title="Tips" width="500">
-        <span>{{ $t('room.deleteRoomHint') }}</span>
-        <template #footer>
-          <div class="dialog-footer">
-            <el-button @click="showDeleteRoomDialog = false">{{ $t('base.cancel') }}</el-button>
-            <el-button type="primary" @click="deleteRoom">
-              {{ $t('base.confirm') }}
-            </el-button>
-          </div>
-        </template>
-      </el-dialog>
+    </template>
+  </Layout>
 
-      <el-dialog v-model="showTerminalDialog" title="终端绑定" width="550">
-        <el-form :model="terminalForm" :rules="terminal_rules">
-          <el-form-item label="终端"  prop="terminal" required >
-            <el-select style="min-width: 120px" v-model="select_terminal" placeholder="终端">
-              <el-option v-for="item in avaliableDevices" style="min-width: 120px;z-index: 99999" :key="item.device_id"
-                :label="item.device_name" :value="item.device_id" />
-            </el-select></el-form-item>
-        </el-form>
-        <template #footer>
-          <div class="dialog-footer">
-            <el-button style="margin-left: 50px" type="primary" @click="sureBindTerminal">
-              确定
-            </el-button>
-            <el-button @click="showTerminalDialog = false">取消</el-button>
-          </div>
-        </template>
-      </el-dialog>
-    </el-main>
-  </el-container>
+
+  <el-dialog v-model="showAddRoomDialog" :title="$t('area.addArea')" width="500">
+    <el-form :model="form" :rules="rules" ref="roomForm" label-width="auto">
+      <el-form-item prop="name" :label="$t('room.formRoom.name')" label-position="right">
+        <el-input v-model="form.name" />
+      </el-form-item>
+      <el-form-item prop="area" :label="$t('room.formRoom.area')" label-position="right">
+        <el-select v-model="form.area" :empty-values="[null, undefined]">
+          <el-option v-for="item in areaListNoAll" :key="item.id" :label="item.area_name" :value="item.id" />
+        </el-select>
+      </el-form-item>
+      <el-form-item prop="description" :label="$t('room.formRoom.description')" label-position="right">
+        <el-input v-model="form.description" autocomplete="off" />
+      </el-form-item>
+      <el-form-item prop="capacity" :label="$t('room.formRoom.capacity')" label-position="right">
+        <el-input v-model="form.capacity" autocomplete="off" />
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button @click="showAddRoomDialog = false">{{ $t('base.cancel') }}</el-button>
+        <el-button type="primary" @click="addRoom">
+          {{ $t('base.confirm') }}
+        </el-button>
+      </div>
+    </template>
+  </el-dialog>
+  <el-dialog v-model="showDeleteRoomDialog" title="Tips" width="500">
+    <span>{{ $t('room.deleteRoomHint') }}</span>
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button @click="showDeleteRoomDialog = false">{{ $t('base.cancel') }}</el-button>
+        <el-button type="primary" @click="deleteRoom">
+          {{ $t('base.confirm') }}
+        </el-button>
+      </div>
+    </template>
+  </el-dialog>
+
+  <el-dialog v-model="showTerminalDialog" title="终端绑定" width="550">
+    <el-form :model="terminalForm" :rules="terminal_rules">
+      <el-form-item label="终端"  prop="terminal" required >
+        <el-select style="min-width: 120px" v-model="select_terminal" placeholder="终端">
+          <el-option v-for="item in avaliableDevices" style="min-width: 120px;z-index: 99999" :key="item.device_id"
+                     :label="item.device_name" :value="item.device_id" />
+        </el-select></el-form-item>
+    </el-form>
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button style="margin-left: 50px" type="primary" @click="sureBindTerminal">
+          确定
+        </el-button>
+        <el-button @click="showTerminalDialog = false">取消</el-button>
+      </div>
+    </template>
+  </el-dialog>
 </template>
 
 <script>
@@ -106,8 +108,10 @@ import { PageMixin } from "@/pages/PageMixin.js";
 import { Api } from "@/network/api.js";
 import router from "@/router/index.js";
 import { ElMessage } from "element-plus/es";
+import Layout from "@/components/Layout.vue";
 
 export default {
+  components: {Layout},
   mixins: [PageMixin],
   data() {
     return {

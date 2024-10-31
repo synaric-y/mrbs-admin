@@ -26,9 +26,22 @@ defineProps({
         <div class="title">{{title}}</div>
 
         <div class="section" :style="`padding-left:${sectionLeftPadding}px;`+(sectionCenter?'justify-content:center':'')">
-          <slot name="section"></slot>
+          <slot name="section">
+
+          </slot>
+
+          <div class="filter-wrapper">
+            <slot name="filter"></slot>
+          </div>
+
+          <slot name="table"></slot>
+
+          <div class="table-pagination-block">
+            <slot name="pagination"></slot>
+          </div>
 
         </div>
+
 
 
 
@@ -144,5 +157,30 @@ defineProps({
   height: 36px;
   line-height: 36px;
   margin: 0;
+}
+
+/*表格*/
+.el-table thead th{
+  font-family: PingFang SC;
+  font-size: 14px;
+  font-weight: normal!important;
+  color:#737980;
+}
+
+.el-table thead th .cell{
+  line-height: 2;
+}
+
+.el-table {
+  --el-table-header-bg-color: #f5f6f7;
+  --el-table-border: 1px solid #E1E1E1;
+  --el-table-tr-bg-color: #fff;
+}
+
+/*分页*/
+.table-pagination-block {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
 }
 </style>

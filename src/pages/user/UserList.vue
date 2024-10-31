@@ -1,24 +1,23 @@
 <template>
   <Layout :title="$t('user.userList')">
-    <template #section>
-      <div class="filter-wrapper">
-        <el-input v-model="keyword" style="width: 140px" :placeholder="$t('user.plzEnterUsernameHint')" />
-        <el-select class="account-status-select" v-model="accountStatusVal" placeholder="Select" size="large"
-                   style="width: 140px;min-height: 30px;">
-          <el-option style="height: 30px;" v-for="item in accountStatusOptions" :key="item.value"
-                     :label="item.label" :value="item.value" />
-        </el-select>
-        <el-button type="primary" class="btn" :icon="Search" @click="searchUser">
-          {{ $t('base.search') }}
-        </el-button>
-        <el-button type="primary" class="btn" :icon="Plus" @click="addUser(1, null)">
-          {{ $t('base.add2') }}
-        </el-button>
-        <el-button type="primary" class="btn" :icon="Refresh" style="width: 112px;">
-          {{ $t('base.userSync') }}
-        </el-button>
-      </div>
-
+    <template #filter>
+      <el-input v-model="keyword" style="width: 140px" :placeholder="$t('user.plzEnterUsernameHint')" />
+      <el-select class="account-status-select" v-model="accountStatusVal" placeholder="Select" size="large"
+                 style="width: 140px;min-height: 30px;">
+        <el-option style="height: 30px;" v-for="item in accountStatusOptions" :key="item.value"
+                   :label="item.label" :value="item.value" />
+      </el-select>
+      <el-button type="primary" class="btn" :icon="Search" @click="searchUser">
+        {{ $t('base.search') }}
+      </el-button>
+      <el-button type="primary" class="btn" :icon="Plus" @click="addUser(1, null)">
+        {{ $t('base.add2') }}
+      </el-button>
+      <el-button type="primary" class="btn" :icon="Refresh" style="width: 112px;">
+        {{ $t('base.userSync') }}
+      </el-button>
+    </template>
+    <template #table>
       <div class="table-wrapper" style="height: auto;">
         <el-table :data="userListData" header-cell-class-name="tb-header" max-height="450"
                   table-layout="auto">
@@ -55,11 +54,11 @@
           </el-table-column>
         </el-table>
       </div>
-      <div class="table-pagination-block">
-        <el-text>{{ $t('base.tableBottomCount', total_num) }}</el-text>
-        <el-pagination v-model:current-page="page_number" @current-change="handleCurrentChange"
-                       layout="prev, pager, next" :default-page-size="20" :total="total_num" />
-      </div>
+    </template>
+    <template #pagination>
+      <el-text>{{ $t('base.tableBottomCount', total_num) }}</el-text>
+      <el-pagination v-model:current-page="page_number" @current-change="handleCurrentChange"
+                     layout="prev, pager, next" :default-page-size="20" :total="total_num" />
     </template>
   </Layout>
 
@@ -433,9 +432,5 @@ export default {
   width: 300px;
 }
 
-.table-pagination-block {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-}
+
 </style>
