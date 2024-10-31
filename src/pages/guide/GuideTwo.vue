@@ -32,6 +32,7 @@
 
             <el-form-item prop="password" label="密码(password)">
               <el-input type="password" v-model="form.password" class="form-item-input" placeholder="请输入包含数字、字母、特殊符号最低8位密码" />
+              <TestButton :status="adStatus" @test="verify"/>
             </el-form-item>
 
             <el-form-item prop="autoSync" label="开启定时同步">
@@ -67,9 +68,10 @@ import { STORAGE } from "@/const.js";
 import { ElMessage } from "element-plus";
 import { Text } from "vue";
 import ProgressBar from "@/pages/guide/ProgressBar.vue";
+import TestButton from "@/components/TestButton.vue";
 
 export default {
-  components: {ProgressBar},
+  components: {TestButton, ProgressBar},
   mixins: [PageMixin],
   data() {
     return {
@@ -84,9 +86,17 @@ export default {
         autoSync: true,
         syncDay: 1
       },
-      rules: {
-        port: [
-          {validator: this.portValidator, message: '端口号必须是大于0且小于65536的整数', trigger: 'blur'}],
+      adStatus: 'untested',
+      rules:{
+        hosts: [{ required:true, message: '服务器地址不能为空', trigger: 'blur' }],
+        port: [{ required:true, message: '端口号不能为空', trigger: 'blur' },
+          { validator: this.portValidator, message: '端口号必须是大于0且小于65536的整数', trigger: 'blur' }],
+        base_dn: [{ required:true, message: '请填写基础地址',trigger: 'blur' }],
+        username: [
+          { required:true, message: '用户名不能为空', trigger: 'blur' },
+          { min: 2, max: 200, message: '用户名的字符个数必须在2到200之间', trigger: 'blur' },
+        ],
+        password: [{ required:true, message:'请输入密码', trigger: 'blur' }]
       },
       adDatasource: [
         {
@@ -225,6 +235,41 @@ export default {
         else callback()
       }
     },
+    verify(){
+
+      this.$refs.formRef.validate(valid=>{
+        if(!valid){
+          ElMessage.error({
+            message: '表单格式错误',
+          })
+        }else{
+          this.adStatus = 'testing'
+          Api.testAD({
+            server: this.form.hosts,
+            port: this.form.port,
+            base_dn: this.form.base_dn,
+            username: this.form.username,
+            password: this.form.password,
+          }).then(({code}) => {
+            if(code!==0){
+              throw new Error('测试失败')
+            }
+
+            this.adStatus = 'tested'
+            ElMessage.success({
+              message: '测试成功',
+            })
+
+          }).catch(e=>{
+            this.adStatus = 'untested'
+            ElMessage.error({
+              message: '测试失败',
+            })
+          })
+        }
+      })
+
+    },
     jumpGuide(){
       Api.setVariables(
           {"init_status": 3}
@@ -246,6 +291,14 @@ export default {
     nextStep(){
       this.$refs.formRef.validate((valid) => {
         if (valid) {
+
+          if(this.adStatus!=='tested'){
+            ElMessage.error({
+              message: 'AD连通性未测试，请先测试',
+            })
+            return
+          }
+
           Api.setVariables(
               {
                 "init_status": 1,

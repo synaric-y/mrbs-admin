@@ -12,8 +12,8 @@
             </el-form-item>
 
             <el-form-item prop="hosts" label="服务器地址(hosts)">
-              <el-input v-model="form.hosts" class="form-item-input" placeholder="示例:172.16.88.180" />
-              <el-button type="primary" style="margin-left: 10px;" @click="validate">测试</el-button>
+              <el-input :disabled="exchangeStatus==='testing'" @input="exchangeStatus='untested'" v-model="form.hosts" class="form-item-input" placeholder="示例:172.16.88.180" />
+              <TestButton :status="exchangeStatus" @test="verify"/>
             </el-form-item>
 
             <el-form-item prop="syncMethod" label="同步方式">
@@ -47,8 +47,10 @@ import { Api } from "@/network/api.js";
 import { PageMixin } from "@/pages/PageMixin.js";
 import { STORAGE } from "@/const.js";
 import { ElMessage } from "element-plus";
+import TestButton from "@/components/TestButton.vue";
 
 export default {
+  components: {TestButton},
   mixins: [PageMixin],
   data() {
     return {
@@ -58,6 +60,7 @@ export default {
         syncMethod:'',
         syncMinute:'',
       },
+      exchangeStatus: 'untested',
 
       rules:{
         hosts: [{ required:true, message: '服务器地址不能为空', trigger: 'blur' }],
@@ -116,11 +119,46 @@ export default {
     })
   },
   methods: {
-    validate(){
-      console.log(100)
+    verify(){
+
+      if(!this.form.hosts || this.form.hosts===''){
+        ElMessage.error({
+          message: '服务器地址不能为空',
+        })
+        return
+      }
+
+      this.exchangeStatus = 'testing'
+      Api.testExchange({
+        server_address: this.form.hosts,
+      }).then(({code}) => {
+        if(code!==0){
+          throw new Error('测试失败')
+        }
+
+        this.exchangeStatus = 'tested'
+        ElMessage.success({
+          message: '测试成功',
+        })
+
+      }).catch(e=>{
+        this.exchangeStatus = 'untested'
+        ElMessage.error({
+          message: '测试失败',
+        })
+      })
+
     },
     submit(){
       console.log(this.form)
+
+      if(this.exchangeStatus!=='tested'){
+        ElMessage.error({
+          message: 'Exchange连通性未测试，请先测试',
+        })
+        return
+      }
+
       this.$refs.formRef.validate((valid) => {
         if (valid) {
           console.log('submit!')

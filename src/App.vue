@@ -45,79 +45,33 @@
       <div class="left-menu" v-if="!isLoginPage">
         <el-scrollbar height="100%">
           <el-col>
-            <el-menu default-active="1" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose">
-              <el-menu-item index="1">
-                <img class="menu_icon" :src="activeIndex.startsWith(1)?'/imgs/dashboard_manager_selected.png':'/imgs/dashboard_manager.png'" alt="#">
-                <span @click="switchTab('/guide_one')">Dashboard</span>
-              </el-menu-item>
-              <el-sub-menu index="2">
-                <template #title>
-                  <!-- <el-icon>
-                    <location  />
-                  </el-icon> -->
-                  <img class="menu_icon" :src="activeIndex.startsWith(2)?'/imgs/user_manager_selected.png':'/imgs/user_manager.png'" alt="#">
-                  <span>用户管理</span>
-                </template>
-                <el-menu-item index="2-1" @click="switchTab('/user_list')">用户列表</el-menu-item>
-                <el-menu-item index="2-2" @click="switchTab('/user_group')">用户组配置</el-menu-item>
-              </el-sub-menu>
+            <el-menu default-active="1" class="el-menu-vertical-demo" @open="handleOpen">
 
-              <el-sub-menu index="3">
-                <template #title>
-                  <!-- <el-icon>
-                    <location />
-                  </el-icon> -->
-                  <img class="menu_icon" :src="activeIndex.startsWith(3)?'imgs/meet_manager_selected.png':'imgs/meet_manager.png'" alt="#">
-                  <span>会议预定</span>
-                </template>
-                <el-menu-item index="3-1" @click="switchTab('/single_meet')">单次会议预定</el-menu-item>
-                <el-menu-item index="3-2" @click="switchTab('/cycle_meet')">循环会议预定</el-menu-item>
-                <el-menu-item index="3-3" @click="switchTab('/meet_list')">历史会议</el-menu-item>
-              </el-sub-menu>
-              <el-sub-menu index="4">
-                <template #title>
-                  <!-- <el-icon>
-                    <location />
-                  </el-icon> -->
-                  <img class="menu_icon" :src="activeIndex.startsWith(4)?'/imgs/area_manager_selected.png':'/imgs/area_manager.png'" alt="#">
-                  <span>区域&会议管理</span>
-                </template>
-                <el-menu-item index="4-1" @click="switchTab('/edit_area')">编辑区域</el-menu-item>
-                <el-menu-item index="4-2" @click="switchTab('/edit_meet')">编辑会议室</el-menu-item>
-              </el-sub-menu>
+              <template v-for="(menu,i) in adminMenu" :key="menu.index">
+                <el-menu-item
+                    v-if="menu.path"
+                    :index="menu.index"
+                    @click="()=>{activeIndex=menu.index;switchTab(menu.path)}">
+                  <img class="menu_icon" :src="activeIndex===menu.index?menu.active_icon:menu.icon" alt="#">
+                  <el-text :type="activeIndex===menu.index?'primary':''">{{menu.title}}</el-text>
+                </el-menu-item>
+                <el-sub-menu v-else :index="menu.index">
+                  <template #title>
+                    <img class="menu_icon" :src="activeIndex===menu.index?menu.active_icon:menu.icon" alt="#">
+                    <el-text :type="activeIndex===menu.index?'primary':''">{{menu.title}}</el-text>
+                  </template>
+                  <el-menu-item
+                      v-for="submenu in menu.children"
+                      :key="submenu.index"
+                      :index="menu.index+'-'+submenu.index"
+                      @click="()=>{activeIndex=menu.index;switchTab(submenu.path)}">
+                    {{submenu.title}}
+                  </el-menu-item>
+                </el-sub-menu>
+              </template>
 
-              <el-menu-item index="5">
-                <!-- <el-icon><icon-menu /></el-icon> -->
-                <img class="menu_icon" :src="activeIndex.startsWith(5)?'/imgs/terminal_manager_selected.png':'/imgs/terminal_manager.png'" alt="#">
-                <span @click="switchTab('/terminal_manager')">终端设备管理</span>
-              </el-menu-item>
-
-              <el-sub-menu index="6">
-                <template #title>
-                  <!-- <el-icon>
-                    <location />
-                  </el-icon> -->
-                  <img class="menu_icon" :src="activeIndex.startsWith(6)?'/imgs/check_circle_selected.png':'/imgs/check_circle.png'" alt="#">
-                  <span>系统设置</span>
-                </template>
-                <el-menu-item index="6-1" @click="switchTab('/meet_rule')">会议规则设置</el-menu-item>
-                <el-menu-item index="6-2" @click="switchTab('/application_seeting')">应用设置</el-menu-item>
-                <el-menu-item index="6-3" @click="switchTab('/sync_user')">用户同步</el-menu-item>
-                <el-menu-item index="6-4" @click="switchTab('/sync_calendar')">日历同步</el-menu-item>
-              </el-sub-menu>
-              <el-sub-menu index="7">
-                <template #title>
-                  <!-- <el-icon>
-                    <location />
-                  </el-icon> -->
-                  <img class="menu_icon" :src="activeIndex.startsWith(7)?'/imgs/help_manager_selected.png':'/imgs/help_manager.png'" alt="#">
-                  <span>帮助中心</span>
-                </template>
-                <el-menu-item index="7-1" @click="switchTab('/manual')">操作手册下载</el-menu-item>
-                <el-menu-item index="7-2" @click="switchTab('/questions')">常见问题</el-menu-item>
-                <el-menu-item index="7-3" @click="switchTab('/feedback')">问题反馈</el-menu-item>
-              </el-sub-menu>
             </el-menu>
+
           </el-col>
         </el-scrollbar>
       </div>
@@ -155,16 +109,141 @@ export default {
   data() {
     return {
       showPop: false,
-      activeIndex: "1",
+      activeIndex: 1,
+      adminMenu:[
+        {
+          index: 1,
+          icon: '/imgs/dashboard_manager.png',
+          active_icon: '/imgs/dashboard_manager_selected.png',
+          title: 'Dashboard',
+          path: '/guide_one',
+          children:[]
+        },
+        {
+          index: 2,
+          icon: '/imgs/user_manager.png',
+          active_icon: '/imgs/user_manager_selected.png',
+          title: '用户管理',
+          children:[
+            {
+              index: 1,
+              title: '用户列表',
+              path: '/user_list'
+            },
+            {
+              index: 2,
+              title: '用户组配置',
+              path: '/user_group'
+            }
+          ]
+        },
+        {
+          index: 3,
+          icon: '/imgs/meet_manager.png',
+          active_icon: '/imgs/meet_manager_selected.png',
+          title: '会议预定',
+          children:[
+            {
+              index: 1,
+              title: '单次会议预定',
+              path: '/single_meet'
+            },
+            {
+              index: 2,
+              title: '循环会议预定',
+              path: '/cycle_meet'
+            },
+            {
+              index: 3,
+              title: '历史会议',
+              path: '/meet_list'
+            }
+          ]
+        },
+        {
+          index: 4,
+          icon: '/imgs/area_manager.png',
+          active_icon: '/imgs/area_manager_selected.png',
+          title: '区域&会议管理',
+          children:[
+            {
+              index: 1,
+              title: '编辑区域',
+              path: '/edit_area'
+            },
+            {
+              index: 2,
+              title: '编辑会议室',
+              path: '/edit_meet'
+            },
+          ]
+        },
+        {
+          index: 5,
+          icon: '/imgs/terminal_manager.png',
+          active_icon: '/imgs/terminal_manager_selected.png',
+          title: '终端设备管理',
+          path: '/terminal_manager',
+          children:[]
+        },
+        {
+          index: 6,
+          icon: '/imgs/check_circle.png',
+          active_icon: '/imgs/check_circle_selected.png',
+          title: '系统设置',
+          children:[
+            {
+              index: 1,
+              title: '会议规则设置',
+              path: '/meet_rule'
+            },
+            {
+              index: 2,
+              title: '应用设置',
+              path: '/application_setting'
+            },
+            {
+              index: 3,
+              title: '用户同步',
+              path: '/sync_user'
+            },
+            {
+              index: 4,
+              title: '日历同步',
+              path: '/sync_calendar'
+            },
+          ]
+        },
+        {
+          index: 7,
+          icon: '/imgs/help_manager.png',
+          active_icon: '/imgs/help_manager_selected.png',
+          title: '帮助中心',
+          children:[
+            {
+              index: 1,
+              title: '操作手册下载',
+              path: '/manual'
+            },
+            {
+              index: 2,
+              title: '常见问题',
+              path: '/questions'
+            },
+            {
+              index: 3,
+              title: '问题反馈',
+              path: '/feedback'
+            }
+          ]
+        },
+      ]
     }
   },
   methods: {
-    handleOpen(key, path) {
-      console.log('App handleOpen', key, path)
-      this.activeIndex = String(key)
-    },
-    handleClose(key, path) {
-      console.log('App handleClose', key, path)
+    handleOpen(val) {
+      console.log(val)
+      this.activeIndex = val
     },
     toProfile() {
       console.log('App toProfile Enter')
