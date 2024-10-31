@@ -109,7 +109,7 @@
             </div>
           </el-scrollbar>
         </div>
-        <CycleMeetCMP v-if="dialogMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas" :entry_id="entry_id"
+        <CycleMeetCMP v-if="dialogMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas" :repeat_id="repeat_id" :entry_id="entry_id"
           @close="dialogMeetForm = false" />
       </div>
     </el-main>
@@ -625,7 +625,8 @@ export default defineComponent({
         return
       }
       this.form_mode = 1
-      this.entry_id = event.repeat_id? event.repeat_id:event.entry_id
+      this.entry_id = event.entry_id
+      this.repeat_id = event.repeat_id
       this.dialogMeetForm = true
     },
 

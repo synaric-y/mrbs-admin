@@ -43,13 +43,13 @@
         </el-form-item>
         <el-form-item style="margin-left: 40px" prop="rep_day" required >
           <el-checkbox-group v-model="meetForm.rep_day" size="small">
-            <el-checkbox label="星一" value="1" />
-            <el-checkbox label="星二" value="2" />
-            <el-checkbox label="星三" value="3" />
-            <el-checkbox label="星四" value="4" />
-            <el-checkbox label="星五" value="5" />
-            <el-checkbox label="星六" value="6" />
-            <el-checkbox label="星日" value="7" />
+            <el-checkbox label="周一" :value="1" />
+            <el-checkbox label="周二" :value="2" />
+            <el-checkbox label="周三" :value="3" />
+            <el-checkbox label="周四" :value="4" />
+            <el-checkbox label="周五" :value="5" />
+            <el-checkbox label="周六" :value="6" />
+            <el-checkbox label="周日" :value="0" />
           </el-checkbox-group>
         </el-form-item>
         <el-form-item prop="rep_end_date" label="结束时间" style="margin-left: 20px;" required>
@@ -88,7 +88,7 @@ export default {
     }
   },
   mixins: [PageMixin],
-  props: ['entry_id','is_series', 'mode', 'areas','add_params'],
+  props: ['entry_id','repeat_id','is_series', 'mode', 'areas','add_params'],
   emits: ['close'],
   name: 'CycleMeetCMP',
   data() {
@@ -110,7 +110,8 @@ export default {
       minStartTime: '06:00',
       maxEndTime: '21:00',
       meetForm: {
-        id:0,
+        tmp_repeat_id: 0,
+        id: 0,
         area_id: '',
         area_name:'',
         room_id: '',
@@ -236,7 +237,6 @@ export default {
       this.meetForm.room_id = e
     },
 
-
     choseDialogHour(mode, str, e) {
       console.log('CycleMeetCMP choseHour str e', str, e)
       const ymd = this.meetForm.start_date
@@ -291,14 +291,16 @@ export default {
 
     getMeetDetail() {
       let params = {}
-      params['id'] = Number(this.entry_id)
+      params['id'] = Number(this.repeat_id)
       params['is_series'] = 1
       Api.getMeetDetail(params).then(({ data, code, msg }) => {
         if (code != 0 && !data) {
           return
         }
         console.log('CycleMeetCMP getMeetDetail data', data)
-        this.meetForm.id = data.id
+        // 编辑循环会议需要的id的普通会议的id
+        this.meetForm.tmp_repeat_id = this.repeat_id
+        this.meetForm.id = this.entry_id
         this.meetForm.name = data.name
         this.meetForm.description = data.description
         this.meetForm.room_id = data.room_id
@@ -345,7 +347,7 @@ export default {
     },
 
     deleteMeet() {
-      Api.deleteMeet({ entry_id: Number(this.entry_id), entry_series: 1}).then(({ data, code, msg }) => {
+      Api.deleteMeet({ entry_id: Number(this.repeat_id), entry_series: 1}).then(({ data, code, msg }) => {
         if (code == 0) {
           ElMessage({
             message: this.$t('base.deleteSuccess'),
