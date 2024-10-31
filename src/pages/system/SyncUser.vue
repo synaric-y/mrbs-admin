@@ -37,11 +37,11 @@
               <el-switch v-model="form.autoSync" />
             </el-form-item>
 
-            <el-form-item prop="syncDay" label="同步时间">
-              <el-select :disabled="!form.autoSync" v-model="form.syncDay" placeholder="Select" size="large" style="width: 100px;margin-right: 10px;">
-                <el-option v-for="item in everyDayOptions" :key="item.value" :label="item.label" :value="item.value" />
-              </el-select>
-            </el-form-item>
+<!--            <el-form-item prop="syncDay" label="同步时间">-->
+<!--              <el-select :disabled="!form.autoSync" v-model="form.syncDay" placeholder="Select" size="large" style="width: 100px;margin-right: 10px;">-->
+<!--                <el-option v-for="item in everyDayOptions" :key="item.value" :label="item.label" :value="item.value" />-->
+<!--              </el-select>-->
+<!--            </el-form-item>-->
 
           </el-form>
         </div>
@@ -85,12 +85,12 @@ export default {
         base_dn: [{ required:true, message: '请填写基础地址',trigger: 'blur' }],
         username: [
             { required:true, message: '用户名不能为空', trigger: 'blur' },
-            { min: 2, max: 30, message: '用户名的字符个数必须在2到30之间', trigger: 'blur' },
+            { min: 2, max: 200, message: '用户名的字符个数必须在2到30之间', trigger: 'blur' },
         ],
         password: [{ required:true, message:'请输入密码', trigger: 'blur' },
                   // {validator: this.pwdValidator, message:'密码强度过低！请输入包含数字、字母、特殊符号最低8位密码', trigger: 'blur' }
         ],
-        syncDay: [{required:true, message:'请选择同步时间', trigger: 'blur'}]
+        // syncDay: [{required:true, message:'请选择同步时间', trigger: 'blur'}]
       },
       adDatasource: [
         {
