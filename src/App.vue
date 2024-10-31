@@ -494,7 +494,6 @@ body {
 
 /*表格外间距*/
 .table-wrapper {
-  padding: 20px;
   width: 100%;
   box-sizing: border-box;
 }

@@ -221,5 +221,20 @@ export const langZh = {
             online: '上线',
             all: '所有',
         }
+    },
+    setting:{
+        title: '系统设置',
+        meeting_rule_setting: {
+            title: '会议规则设置'
+        },
+        application_setting: {
+            title: '应用设置'
+        },
+        user_synchronize_setting: {
+            title: '用户同步'
+        },
+        calendar_synchronize_setting: {
+            title: '日历同步'
+        },
     }
 }

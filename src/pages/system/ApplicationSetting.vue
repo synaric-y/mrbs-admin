@@ -1,143 +1,139 @@
 <template>
-  <el-container class="container-sub-page">
-    <el-main class="container-sub-page-main">
-      <div class="sub-page-content">
-        <div class="title">应用设置</div>
+  <Layout :title="$t('setting.application_setting.title')" section-left-padding="50">
+    <template #section>
+      <div>
+        <div class="section-title">基本</div>
 
-        <div class="section">
-          <div class="section-title">基本</div>
+        <div class="section-content">
+          <el-form ref="formRef" :model="form" :rules="rules" label-width="auto" style="max-width: 650px">
+            <el-form-item label="公司/组织名称" prop="companyName">
+              <div class="form-item-content">
+                <el-input class="form-item-input" v-model="form.companyName"/>
+              </div>
+            </el-form-item>
+            <el-form-item label="服务器地址" prop="requestUrl">
+              <div class="form-item-content">
+                <el-input :disabled="urlStatus==='testing'" @input="urlStatus='untested'" v-model="form.requestUrl" class="form-item-input"  placeholder="示例:172.16.88.180"/>
+                <TestButton :status="urlStatus" @test="verify"/>
+                <div style="width: 20px;height: 20px" id="qrcode"></div>
+              </div>
+            </el-form-item>
 
-          <div class="section-content">
-            <el-form ref="formRef" :model="form" :rules="rules" label-width="auto" style="max-width: 650px">
-              <el-form-item label="公司/组织名称" prop="companyName">
-                <div class="form-item-content">
-                  <el-input class="form-item-input" v-model="form.companyName"/>
+            <el-form-item label="管理后台Logo" prop="webLogo">
+              <div class="form-item-content">
+                <div class="img-bg">
+                  <img v-if="originalWebLogoURL!==''" class="form-item-logo" :src="originalWebLogoURL" alt="图片未加载">
                 </div>
-              </el-form-item>
-              <el-form-item label="服务器地址" prop="requestUrl">
-                <div class="form-item-content">
-                  <el-input :disabled="urlStatus==='testing'" @input="urlStatus='untested'" v-model="form.requestUrl" class="form-item-input"  placeholder="示例:172.16.88.180"/>
-                  <TestButton :status="urlStatus" @test="verify"/>
-                  <div style="width: 20px;height: 20px" id="qrcode"></div>
-                </div>
-              </el-form-item>
 
-              <el-form-item label="管理后台Logo" prop="webLogo">
-                <div class="form-item-content">
-                  <div class="img-bg">
-                    <img v-if="originalWebLogoURL!==''" class="form-item-logo" :src="originalWebLogoURL" alt="图片未加载">
-                  </div>
+                <el-upload
+                    :class="{ hide: form.webLogo && form.webLogo.length===1 }"
+                    v-model:file-list="form.webLogo"
+                    ref="webLogo"
+                    action="#"
+                    list-type="picture-card"
+                    :auto-upload="false"
+                    :limit="1"
+                    :max-size="1024"
+                    :accept="'image/*'"
+                >
+                  <el-icon class="el-icon--upload">
+                    <Plus/>
+                  </el-icon>
 
-                  <el-upload
-                      :class="{ hide: form.webLogo && form.webLogo.length===1 }"
-                      v-model:file-list="form.webLogo"
-                      ref="webLogo"
-                      action="#"
-                      list-type="picture-card"
-                      :auto-upload="false"
-                      :limit="1"
-                      :max-size="1024"
-                      :accept="'image/*'"
-                  >
-                    <el-icon class="el-icon--upload">
-                      <Plus/>
-                    </el-icon>
-
-                    <template #file="{ file }">
-                      <div class="image-wrapper">
-                        <img class="el-upload-list__item-thumbnail" :src="file.url" alt=""/>
-                        <div class="remove-btn" @click="removeImage('web',file)">
-                          <el-icon><SemiSelect /></el-icon>
-                        </div>
+                  <template #file="{ file }">
+                    <div class="image-wrapper">
+                      <img class="el-upload-list__item-thumbnail" :src="file.url" alt=""/>
+                      <div class="remove-btn" @click="removeImage('web',file)">
+                        <el-icon><SemiSelect /></el-icon>
                       </div>
-                    </template>
-                  </el-upload>
-                  <span class="form-item-tip">推荐尺寸300x300，彩色Logo透明底</span>
+                    </div>
+                  </template>
+                </el-upload>
+                <span class="form-item-tip">推荐尺寸300x300，彩色Logo透明底</span>
+              </div>
+            </el-form-item>
+
+            <el-form-item label="平板端首页Logo" prop="appLogo">
+              <div class="form-item-content">
+                <div class="img-bg">
+                  <img v-if="originalAppLogoURL!==''" class="form-item-logo" :src="originalAppLogoURL" alt="图片未加载">
                 </div>
-              </el-form-item>
 
-              <el-form-item label="平板端首页Logo" prop="appLogo">
-                <div class="form-item-content">
-                  <div class="img-bg">
-                    <img v-if="originalAppLogoURL!==''" class="form-item-logo" :src="originalAppLogoURL" alt="图片未加载">
-                  </div>
+                <el-upload
+                    :class="{ hide: form.appLogo && form.appLogo.length===1 }"
+                    v-model:file-list="form.appLogo"
+                    ref="appLogo"
+                    action="#"
+                    list-type="picture-card"
+                    :auto-upload="false"
+                    :limit="1"
+                    :max-size="1024"
+                    :accept="'image/*'"
+                >
+                  <el-icon class="el-icon--upload">
+                    <Plus/>
+                  </el-icon>
 
-                  <el-upload
-                      :class="{ hide: form.appLogo && form.appLogo.length===1 }"
-                      v-model:file-list="form.appLogo"
-                      ref="appLogo"
-                      action="#"
-                      list-type="picture-card"
-                      :auto-upload="false"
-                      :limit="1"
-                      :max-size="1024"
-                      :accept="'image/*'"
-                  >
-                    <el-icon class="el-icon--upload">
-                      <Plus/>
-                    </el-icon>
-
-                    <template #file="{ file }">
-                      <div class="image-wrapper">
-                        <img class="el-upload-list__item-thumbnail" :src="file.url" alt=""/>
-                        <div class="remove-btn" @click="removeImage('app',file)">
-                          <el-icon><SemiSelect /></el-icon>
-                        </div>
+                  <template #file="{ file }">
+                    <div class="image-wrapper">
+                      <img class="el-upload-list__item-thumbnail" :src="file.url" alt=""/>
+                      <div class="remove-btn" @click="removeImage('app',file)">
+                        <el-icon><SemiSelect /></el-icon>
                       </div>
-                    </template>
-                  </el-upload>
-                  <span class="form-item-tip">推荐尺寸450x50，白色Logo透明底</span>
-                </div>
-              </el-form-item>
-              <el-form-item label="时间格式" prop="timeFormat">
-                <el-select v-model="form.timeFormat" style="width: 200px" placeholder="请选择">
-                  <el-option label="12小时制" :value="0"/>
-                  <el-option label="24小时制" :value="1"/>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="主题" prop="theme">
-                <el-radio-group v-model="form.theme">
-                  <el-radio :value="0">
-                    <div class="theme theme-0"></div>
-                  </el-radio>
-                  <el-radio :value="1">
-                    <div class="theme theme-1"></div>
-                  </el-radio>
-                </el-radio-group>
-              </el-form-item>
-            </el-form>
-          </div>
-        </div>
-
-        <div class="section">
-          <div class="section-title">平板端升级</div>
-
-          <div class="section-content">
-            <el-table :data="versionData" style="width: 100%">
-              <el-table-column prop="version" label="历史安装版本" width="180">
-                <template #default="scope">
-                  <span>{{scope.row.version +  (scope.row.isCurrent?'（当前版本）':'')}}</span>
-                </template>
-              </el-table-column>
-              <el-table-column prop="publish_time" label="发布时间" width="180"/>
-              <el-table-column prop="update_time" label="更新时间"/>
-              <el-table-column label="操作">
-                <template #default="scope">
-                  <el-button v-if="scope.row.isCurrent" type="primary">升级</el-button>
-                  <el-button color="#b31e1e" v-else type="primary" :dark="true">回退</el-button>
-                </template>
-              </el-table-column>
-            </el-table>
-          </div>
-        </div>
-
-        <div class="btns">
-          <el-button type="default">取消</el-button>
-          <el-button type="primary" @click="submit">保存</el-button>
+                    </div>
+                  </template>
+                </el-upload>
+                <span class="form-item-tip">推荐尺寸450x50，白色Logo透明底</span>
+              </div>
+            </el-form-item>
+            <el-form-item label="时间格式" prop="timeFormat">
+              <el-select v-model="form.timeFormat" style="width: 200px" placeholder="请选择">
+                <el-option label="12小时制" :value="0"/>
+                <el-option label="24小时制" :value="1"/>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="主题" prop="theme">
+              <el-radio-group v-model="form.theme">
+                <el-radio :value="0">
+                  <div class="theme theme-0"></div>
+                </el-radio>
+                <el-radio :value="1">
+                  <div class="theme theme-1"></div>
+                </el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-form>
         </div>
       </div>
-    </el-main>
-  </el-container>
+      <div>
+        <div class="section-title">平板端升级</div>
+
+        <div class="section-content">
+          <el-table :data="versionData" style="width: 100%">
+            <el-table-column prop="version" label="历史安装版本" width="180">
+              <template #default="scope">
+                <span>{{scope.row.version +  (scope.row.isCurrent?'（当前版本）':'')}}</span>
+              </template>
+            </el-table-column>
+            <el-table-column prop="publish_time" label="发布时间" width="180"/>
+            <el-table-column prop="update_time" label="更新时间"/>
+            <el-table-column label="操作">
+              <template #default="scope">
+                <el-button v-if="scope.row.isCurrent" type="primary">升级</el-button>
+                <el-button color="#b31e1e" v-else type="primary" :dark="true">回退</el-button>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </div>
+
+
+    </template>
+    <template #btns>
+      <el-button type="default">取消</el-button>
+      <el-button type="primary" @click="submit">保存</el-button>
+    </template>
+  </Layout>
 </template>
 
 
@@ -152,9 +148,10 @@ import AraleQRCode from 'arale-qrcode'
 import axios from "@/network/axios.js";
 import * as dayjs from 'dayjs'
 import TestButton from "@/components/TestButton.vue";
+import Layout from "@/components/Layout.vue";
 
 export default {
-  components: {TestButton, SemiSelect, Minus},
+  components: {TestButton, SemiSelect, Minus, Layout},
   mixins: [PageMixin],
   data() {
     return {
@@ -410,7 +407,6 @@ export default {
 
 <style lang="scss" scoped>
 
-
 ::v-deep .hide .el-upload--picture-card {
   display: none;
 }
@@ -422,203 +418,101 @@ export default {
   color:#737980;
 }
 
-.logo {
-  width: 207px;
-  height: 51px;
-  margin-top: 80px;
-  margin-bottom: 50px;
-}
-
-.sub-page-content {
-  width: 100%;
-  height: auto;
-  padding: 20px;
-  box-sizing: border-box;
-  margin: 0;
-  position: relative;
-  font-size: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-  background-color: #fff;
-
-  .title {
-    font-family: PingFang SC;
-    font-size: 20px;
-    font-weight: 500;
-  }
-
-  .section {
-
-    .section-title {
-      color: var(--el-color-primary);
-      font-family: PingFang SC;
-      font-size: 16px;
-      font-weight: 700;
-      line-height: 2;
-      margin-bottom: 20px;
-    }
-
-    .section-content{
-      padding-left: 30px;
-    }
-
-    .form-item-content{
-
-      display: flex;
-      align-items: center;
-      gap: 20px;
-
-      /* copy: https://juejin.cn/post/7102784102637502478 */
-      .img-bg{
-        width: 90px;
-        height: 90px;
-        border: 1px solid #eee;
-        border-radius: 4px;
-        background-color: #d2d2d2;
-        background-image:
-            linear-gradient(45deg, #c9c9c9 25%, transparent 0, transparent 75%, #c9c9c9 0),
-            linear-gradient(45deg, #c9c9c9 25%, transparent 0, transparent 75%, #c9c9c9 0);
-        background-position: 0 0, 10px 10px;
-        background-size: 20px 20px;
-
-
-        .form-item-logo{
-          width:100%;
-          height: 100%;
-          object-fit: contain;
-        }
-      }
-
-
-      .form-item-input {
-        width: 350px;
-        height: 33px;
-      }
-
-
-
-      ::v-deep .el-upload-list--picture-card{
-        --el-upload-list-picture-card-size: 90px;
-      }
-
-      ::v-deep .el-upload--picture-card{
-        --el-upload-picture-card-size: 90px;
-      }
-
-      .form-item-tip {
-        font-family: PingFang SC;
-        font-size: 13px;
-        letter-spacing: 0px;
-        color: #4E5969;
-        /* background-color: red; */
-      }
-    }
-
-    .image-wrapper{
-      position: relative;
-      width: 100%;
-      height: 100%;
-      background-color: #d2d2d2;
-      background-image:
-          linear-gradient(45deg, #c9c9c9 25%, transparent 0, transparent 75%, #c9c9c9 0),
-          linear-gradient(45deg, #c9c9c9 25%, transparent 0, transparent 75%, #c9c9c9 0);
-      background-position: 0 0, 10px 10px;
-      background-size: 20px 20px;
-
-      .remove-btn{
-        position: absolute;
-        top:0;
-        right:0;
-        background-color: red;
-        width: 16px;
-        height: 16px;
-        border-radius: 8px;
-        color: #fff;
-        font-size: 10px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-      }
-
-      .remove-btn:hover{
-        background-color: #e40707;
-      }
-    }
-
-  }
-
-
-
-  .form-item {
-    display: flex;
-    flex-direction: row;
-    height: 50px;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .form-ad {
-    display: flex;
-    flex-direction: row;
-    height: 50px;
-    align-items: center;
-  }
-
-
-
-  .form-item-img {
-    width: 153px;
-    height: 53px;
-  }
-
-
-
-  .form-item-btn {
-    border-radius: 2px;
-    opacity: 1;
-    background: #591BB7;
-    box-sizing: border-box;
-    padding: 0 15px;
-    border: 1px solid #000000;
-    font-family: PingFang SC;
-    font-size: 14px;
-    font-weight: normal;
-    height: 33px;
-    line-height: 33px;
-    text-align: right;
-    display: flex;
-    align-items: center;
-    letter-spacing: 0px;
-    font-variation-settings: "opsz" auto;
-    color: #FFFFFF;
-    margin-left: 20px;
-  }
-
-  .theme {
-    width: 20px;
-    height: 20px;
-    background-color: #591bb7;
-  }
-
-  .theme-1 {
-    background-color: #f53f3f;
-  }
-
-  .btns {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 20px;
-    margin-top: 15px;
-    padding-bottom: 15px;
-  }
-}
-
 .el-table {
   --el-table-header-bg-color: #f5f6f7;
   --el-table-border: 1px solid #E1E1E1;
   --el-table-tr-bg-color: #fff;
 }
+
+.section-title {
+  color: var(--el-color-primary);
+  font-family: PingFang SC;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 2;
+  margin-bottom: 20px;
+}
+
+.section-content{
+  padding-left: 30px;
+}
+
+.theme {
+  width: 20px;
+  height: 20px;
+  background-color: #591bb7;
+}
+
+.theme-1 {
+  background-color: #f53f3f;
+}
+
+.form-item-content{
+
+  display: flex;
+  //align-items: center;
+  gap: 20px;
+}
+
+/* copy: https://juejin.cn/post/7102784102637502478 */
+.img-bg{
+  width: 90px;
+  height: 90px;
+  border: 1px solid #eee;
+  border-radius: 4px;
+  background-color: #d2d2d2;
+  background-image:
+      linear-gradient(45deg, #c9c9c9 25%, transparent 0, transparent 75%, #c9c9c9 0),
+      linear-gradient(45deg, #c9c9c9 25%, transparent 0, transparent 75%, #c9c9c9 0);
+  background-position: 0 0, 10px 10px;
+  background-size: 20px 20px;
+
+
+  .form-item-logo{
+    width:100%;
+    height: 100%;
+    object-fit: contain;
+  }
+}
+
+
+::v-deep .el-upload-list--picture-card{
+  --el-upload-list-picture-card-size: 90px;
+}
+
+::v-deep .el-upload--picture-card{
+  --el-upload-picture-card-size: 90px;
+}
+
+.image-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: #d2d2d2;
+  background-image: linear-gradient(45deg, #c9c9c9 25%, transparent 0, transparent 75%, #c9c9c9 0),
+  linear-gradient(45deg, #c9c9c9 25%, transparent 0, transparent 75%, #c9c9c9 0);
+  background-position: 0 0, 10px 10px;
+  background-size: 20px 20px;
+
+  .remove-btn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: red;
+    width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+  }
+
+  .remove-btn:hover {
+    background-color: #e40707;
+  }
+}
+
 </style>
