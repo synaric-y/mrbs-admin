@@ -184,7 +184,6 @@ export default defineComponent({
   },
 
   mounted() {
-    this.setTab('/')
     this.getAllAreas()
     console.log('Home getBrowserLanguege:', Common.getBrowserLanguege())
     this.localLangFormat = Common.getBrowserLanguege()
@@ -249,6 +248,7 @@ export default defineComponent({
         this.currenArea = selectArea
       }
       this.getCurrentAreaRooms(this.currenArea)
+      this.getMeetRooms()
       // console.log('Home selectArea', selectArea)
       // console.log('Home selectStartDate', selectStartDate, selectEndDate)
       // console.log('Home selectDays', selectDays)
