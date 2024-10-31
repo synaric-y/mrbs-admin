@@ -121,7 +121,7 @@ export default {
       user_ids.push(parseInt(this.selectRow.id))
       params['user_ids'] = user_ids
       params['group_id'] = parseInt(this.groupId)
-      Api.bindUserToGoup(params).then(({ data, code, msg }) => {
+      Api.bindUserToGroup(params).then(({ data, code, msg }) => {
         if (code == 0) {
           this.getGroupMember()
         } else {
@@ -137,7 +137,7 @@ export default {
       user_ids.push(parseInt(this.selectRow.id))
       params['user_ids'] = user_ids
       params['group_id'] = parseInt(this.groupId)
-      Api.unbindUserToGoup(params).then(({ data, code, msg }) => {
+      Api.unbindUserToGroup(params).then(({ data, code, msg }) => {
         if (code == 0) {
           this.getGroupMember()
         } else {

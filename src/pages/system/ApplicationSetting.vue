@@ -52,7 +52,7 @@
                       </div>
                     </template>
                   </el-upload>
-                  <span class="form-item-tip">推荐尺寸300x300，白色Logo透明底</span>
+                  <span class="form-item-tip">推荐尺寸300x300，彩色Logo透明底</span>
                 </div>
               </el-form-item>
 

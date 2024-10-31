@@ -200,7 +200,7 @@ export default {
       })
     },
     getAvaliableDevices() {
-      Api.getAvaliableDevices().then(({ data, code, msg }) => {
+      Api.getAvailableDevices().then(({ data, code, msg }) => {
         if (code == 0 && data) {
           this.avaliableDevices = data
         }

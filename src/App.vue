@@ -3,7 +3,9 @@
     <div class="nav_wrapper" v-if="!isLoginPage">
       <div class="nav" >
         <div class="nav-inner">
-          <div class="nav-left">XX公司 会议预约平台管理</div>
+          <img class="nav-left-logo" :src="logo">
+          <div class="nav-left">{{companyName}}</div>
+          <div style="flex: 1"></div>
           <div class="nav-right">
             <div class="nav-time">2024年9月10日 12:23</div>
             <div class="nav-alert" style="margin-left: 20px;margin-top: 5px;">
@@ -103,6 +105,7 @@
 import router from "@/router/index.js"
 import { PageMixin } from "@/pages/PageMixin.js";
 import { STORAGE } from "@/const.js";
+import {Api} from "@/network/api.js";
 
 export default {
   mixins: [PageMixin],
@@ -110,6 +113,8 @@ export default {
     return {
       showPop: false,
       activeIndex: 1,
+      logo: '',
+      companyName: '',
       adminMenu:[
         {
           index: 1,
@@ -255,6 +260,16 @@ export default {
         this.showPop = !this.showPop
       }
     },
+    getSetting() {
+      Api.getVariables({
+        "logo_dir": 1,
+        "company_name": 1,
+        "server_address": 1,
+      }).then(({code,data,msg})=>{
+        this.logo = data.server_address + data.logo_dir
+        this.companyName = data.company_name
+      })
+    },
     toLogout() {
       this.showPop = false
       this.logout(() => {
@@ -279,6 +294,7 @@ export default {
   },
   mounted() {
     console.log('App mounted user:', this.userInfo.username)
+    this.getSetting()
     this.$forceUpdate()
   }
 }
@@ -381,12 +397,17 @@ body {
   width: 100%;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   /* align-items: center; */
 }
 
+.nav-left-logo {
+  width: 55px;
+  height: 55px;
+  margin-right: 20px;
+  margin-top: 10px;
+}
+
 .nav-left {
-  margin-left: -60px;
   font-size: 20px;
   line-height: 75px;
 }

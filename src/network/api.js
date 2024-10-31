@@ -157,11 +157,11 @@ export class Api {
         return Request.post('user_group/del_group',params)
     }
 
-    static async bindUserToGoup(params){
+    static async bindUserToGroup(params){
         return Request.post('user_group/bind_user_to_group',params)
     }
 
-    static async unbindUserToGoup(params){
+    static async unbindUserToGroup(params){
         return Request.post('user_group/unbind_user_to_group',params)
     }
 
@@ -177,7 +177,7 @@ export class Api {
         return Request.post('device%2Fdevice_info',params)
     }
 
-    static async getAvaliableDevices(params){
+    static async getAvailableDevices(params){
         return Request.post('device%2Fget_avaliable_device',params)
     }
 
