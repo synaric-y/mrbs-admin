@@ -76,10 +76,9 @@ import { Common } from "@/common/common";
 
 export default {
   computed: {
-    
   },
   mixins: [PageMixin],
-  props: ['entry_id', 'mode', 'areas'],
+  props: ['entry_id', 'mode', 'areas','add_params'],
   emits: ['close'],
   name: 'SingleMeetCMP',
   data() {
@@ -301,7 +300,7 @@ export default {
         if (code == 0) {
           this.$emit('close')
           ElMessage({
-            message: this.$t('base.editSuccess'),
+            message: msg,
             type: 'success',
           })
         } else {
@@ -330,8 +329,26 @@ export default {
     },
   },
   created() {
-    console.log('SingleMeetCMP created:', this.entry_id)
+    console.log('SingleMeetCMP created params:', this.entry_id,this.add_params)
+    if (this.add_params && this.mode == 0) {
+      this.meetForm.room_id = this.add_params.room_id
+      this.meetForm.room_name = this.add_params.room_name
+      this.meetForm.area_id = this.add_params.area_id
+      this.meetForm.area_name = this.add_params.area_name
+      this.meetForm.start_date = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
+      this.meetForm.start_hour = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('HH:mm')
+      this.meetForm.end_date = moment.tz((this.add_params.timeStamp + 1800) * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
+      this.meetForm.end_hour = moment.tz((this.add_params.timeStamp + 1800) * 1000, 'Asia/Shanghai').format('HH:mm')
+      this.meetForm.start_seconds = this.add_params.timeStamp
+      this.meetForm.end_seconds = this.add_params.timeStamp + 1800
+      this.roomOptions = this.getSelectedArea(this.add_params.area_id)
+      return
+    }
     this.getMeetDetail()
+  },
+
+  mounted(params) {
+    // console.log('SingleMeetCMP mounted params:',params)
   },
 
   unmounted() {
