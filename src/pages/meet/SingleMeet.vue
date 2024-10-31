@@ -48,9 +48,6 @@
                     :style="{ height: timeSlots.length * 60 + 70 + 'px', width: itemWidth + 'px' }">
                     {{ room.room_name }}
                     <template v-for="(time, timeIndex) in localTimeSlots">
-
-                      <!-- <template v-for="(item, index) in [0, 1]"> -->
-
                         <div v-if="timeIndex != localTimeSlots.length - 1"
                           :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div' : 'empty-meet-div']"
                           :style="{ height: minItemHeight + 'px', width: itemWidth + 'px', top: ((timeIndex) * minItemHeight + 70) + 'px' }"
@@ -58,25 +55,6 @@
                           <text class="empty-meet-duration">{{ time }}</text>
                           <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text>
                         </div>
-
-                      <!-- </template> -->
-                      <!-- <div v-if="timeIndex != localTimeSlots.length - 1"
-                        :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div' : 'empty-meet-div']"
-                        :style="{ height: minItemHeight + 'px', width: itemWidth + 'px', top: (timeIndex * minItemHeight + 70) + 'px' }"
-                        @click="toMeet(time, room, day)">
-                        <text class="empty-meet-duration">{{ time }}</text>
-                        <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text> -->
-
-
-                      <!-- <template v-if="canHoverDiv(day, time, room)">
-                    <text class="empty-meet-duration">{{ time }}</text>
-                    <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text>
-                  </template> -->
-                      <!-- <template>
-                    <text class="empty-meet-duration">测试实施</text>
-                    <text class="empty-meet-reason">不可hover</text>
-                  </template> -->
-                      <!-- </div> -->
                     </template>
                     <template v-for="(event, indexeve) in events">
                       <template v-if="day.date === event.date && room.room_id === event.room_id">

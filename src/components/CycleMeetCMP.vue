@@ -18,7 +18,7 @@
         </el-form-item>
         <el-form-item prop="start_date" label="开始时间" style="margin-left: 20px" required>
           <el-form-item prop="start_date">
-            <el-date-picker v-model="meetForm.start_date" type="date" value-format="YYYY-MM-DD"
+            <el-date-picker v-model="meetForm.start_date" type="date" :disabled-date="disabledDate" value-format="YYYY-MM-DD"
               aria-label="Pick start day" placeholder="Pick start day" style="width: 100%" />
           </el-form-item>
         </el-form-item>
@@ -47,7 +47,7 @@
         </el-form-item>
         <el-form-item prop="rep_end_date" label="结束时间" style="margin-left: 20px;" required>
           <el-form-item prop="rep_end_date">
-            <el-date-picker v-model="meetForm.rep_end_date" type="date" value-format="YYYY-MM-DD"
+            <el-date-picker v-model="meetForm.rep_end_date" type="date" :disabled-date="disabledDate" value-format="YYYY-MM-DD"
               aria-label="Pick end day" placeholder="Pick end day" style="width: 100%" />
           </el-form-item>
         </el-form-item>
@@ -99,7 +99,7 @@ export default {
       isLoading: true,
       selectRow: null,
       currentHourMinute: '',
-      minStep: '00:30',
+      minStep: '00:15',
       minStartTime: '06:00',
       maxEndTime: '21:00',
       check_box_list: [
@@ -200,6 +200,10 @@ export default {
     }
   },
   methods: {
+    disabledDate(time) {
+      return time.getTime() < Date.now() - 86400000;
+    },
+
     OnAreaChange(e) {
       this.select_area_id = e
       console.log('SingleMeetCMP OnAreaChange e', e)
@@ -381,6 +385,7 @@ export default {
     },
   },
   created() {
+    this.minStartTime = Common.formatLast15Minute()
     console.log('CycleMeetCMP created:', this.entry_id)
     if (this.add_params && this.mode == 0) {
       this.meetForm.room_id = this.add_params.room_id
