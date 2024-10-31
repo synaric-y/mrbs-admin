@@ -3,14 +3,14 @@
     <div class="content">
       <div class="title">{{ mode == 1 ? '编辑循环会议' : '新增循环会议' }}</div>
       <el-form  ref="meetForm" :model="meetForm" :rules="rules">
-        <el-form-item prop="area_id" label="区域" label-width="100px" required>
-          <el-select v-model="meetForm.area_id" placeholder="请选择区域" @change="OnAreaChange">
+        <el-form-item prop="area_name" label="区域" label-width="100px" required>
+          <el-select v-model="meetForm.area_name" placeholder="请选择区域" @change="OnAreaChange">
             <el-option v-for="item in areas" :key="item.area_id" :label="item.area_name" :value="item.area_id" />
           </el-select>
         </el-form-item>
-        <el-form-item prop="room_id" label="会议室" label-width="100px" required>
-          <el-select v-model="meetForm.room_id" placeholder="请选择会议室">
-            <el-option v-for="item in roomOptions" :key="item.room_id" :label="item.title" :value="item.room_id" />
+        <el-form-item prop="room_name" label="会议室" label-width="100px" required>
+          <el-select v-model="meetForm.room_name" placeholder="请选择会议室" @change="onRoomChange">
+            <el-option v-for="item in roomOptions" :key="item.room_name" :label="item.title" :value="item.room_id" />
           </el-select>
         </el-form-item>
         <el-form-item prop="name" label="会议室标题" label-width="100px" required >
@@ -110,8 +110,11 @@ export default {
       minStartTime: '06:00',
       maxEndTime: '21:00',
       meetForm: {
+        id:0,
         area_id: '',
+        area_name:'',
         room_id: '',
+        room_name: '',
         rooms: [],
         name: '',
         start_date: '',
@@ -156,10 +159,10 @@ export default {
         create_by: ''
       },
       rules: {
-        area_id: [
+        area_name: [
           { required: true, message: '请选择区域', trigger: 'blur' }
         ],
-        room_id: [
+        room_name: [
           { required: true, message: '请选择房间', trigger: 'blur' }
         ],
         name: [
@@ -229,6 +232,10 @@ export default {
         this.roomOptions = select_rooms
       }
     },
+    onRoomChange(e) {
+      this.meetForm.room_id = e
+    },
+
 
     choseDialogHour(mode, str, e) {
       console.log('CycleMeetCMP choseHour str e', str, e)
@@ -291,14 +298,20 @@ export default {
           return
         }
         console.log('CycleMeetCMP getMeetDetail data', data)
+        this.meetForm.id = data.id
         this.meetForm.name = data.name
-        this.meetForm.remark = data.description
+        this.meetForm.description = data.description
         this.meetForm.room_id = data.room_id
+        this.meetForm.room_name = data.room_name
         this.meetForm.area_id = data.area_id
+        this.meetForm.area_name = data.area_name
         this.meetForm.start_date = moment.tz(data.start_time * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
         this.meetForm.start_hour = moment.tz(data.start_time * 1000, 'Asia/Shanghai').format('HH:mm')
-        this.meetForm.end_date = moment.tz(data.end_time * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
+        this.meetForm.start_seconds = data.start_time
+        this.meetForm.rep_end_date = data.end_date
         this.meetForm.end_hour = this.start_hour = moment.tz(data.end_time * 1000, 'Asia/Shanghai').format('HH:mm')
+        this.meetForm.end_seconds = data.end_time
+        this.meetForm.rep_day = data.rep_day
       })
     },
     commitForm() {
@@ -356,7 +369,7 @@ export default {
       this.meetForm.area_name = this.add_params.area_name
       this.meetForm.start_date = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
       this.meetForm.start_hour = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('HH:mm')
-      this.meetForm.end_date = moment.tz((this.add_params.timeStamp + 1800) * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
+      this.meetForm.rep_end_date = moment.tz((this.add_params.timeStamp + 1800) * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
       this.meetForm.end_hour = moment.tz((this.add_params.timeStamp + 1800) * 1000, 'Asia/Shanghai').format('HH:mm')
       this.meetForm.start_seconds = this.add_params.timeStamp
       this.meetForm.end_seconds = this.add_params.timeStamp + 1800

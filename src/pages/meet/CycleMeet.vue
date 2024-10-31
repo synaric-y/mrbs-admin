@@ -625,7 +625,7 @@ export default defineComponent({
         return
       }
       this.form_mode = 1
-      this.entry_id = event.entry_id
+      this.entry_id = event.repeat_id? event.repeat_id:event.entry_id
       this.dialogMeetForm = true
     },
 
