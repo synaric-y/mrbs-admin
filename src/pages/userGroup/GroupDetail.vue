@@ -1,16 +1,16 @@
 <template>
   <div class="mask">
     <div class="content">
-      <div class="title">查看组成员</div>
+      <div class="title">{{$t('userGroup.viewMember')}}</div>
       <el-form :inline="true" class="demo-form-inline">
-        <el-form-item><el-input v-model="keyword" placeholder="请输入用户名称" /></el-form-item>
+        <el-form-item><el-input v-model="keyword" :placeholder="$t('user.plzEnterUsernameHint')" /></el-form-item>
         <!--        <el-form-item><el-select style="min-width: 120px" v-model="sourceVal" placeholder="来源">-->
         <!--          <el-option v-for="item in sourceOptions" style="min-width: 120px;z-index: 99999" :key="item.value" :label="item.label"-->
         <!--                     :value="item.value" />-->
         <!--        </el-select></el-form-item>-->
         <el-form-item>
           <el-button type="primary" :color="'#591bb7'" :dark="true" :icon="Search"
-            @click="searchGroupMember">搜索</el-button>
+            @click="searchGroupMember">{{$t('base.search')}}</el-button>
         </el-form-item>
       </el-form>
 
@@ -19,10 +19,10 @@
           style="--el-table-tr-bg-color:#fff!important;width: 100%;height: auto; margin-bottom: 20px;" row-key="id"
           default-expand-all>
           <template v-if="isEdit">
-            <el-table-column prop="id" label="序号" label-width="100px" />
-            <el-table-column prop="display_name" label="用户名" label-width="120px" />
-            <el-table-column prop="source" label="来源" label-width="100px" />
-            <el-table-column prop="status" label="状态" width="100"  v-if="!isLoading">
+            <el-table-column prop="id" :label="$t('user.tableUser.id')" label-width="100px" />
+            <el-table-column prop="display_name" :label="$t('user.tableUser.displayName')" label-width="120px" />
+            <el-table-column prop="source" :label="$t('user.tableUser.source')" label-width="100px" />
+            <el-table-column prop="status" :label="$t('user.tableUser.status')" width="100"  v-if="!isLoading">
               <template #default="scope">
                 <el-switch v-model="scope.row.status"
                   style="--el-switch-on-color: #591BB7; --el-switch-off-color: #A8ABB2" :active-value="true"
@@ -32,22 +32,22 @@
             </el-table-column>
           </template>
           <template v-else>
-            <el-table-column prop="id" label="序号" label-width="100px" />
-            <el-table-column prop="group" label="组名" label-width="100px">
+            <el-table-column prop="id" :label="$t('user.tableUser.id')" label-width="100px" />
+            <el-table-column prop="group" :label="$t('userGroup.userGroup')" label-width="100px">
               {{ groupName }}
             </el-table-column>
-            <el-table-column prop="display_name" label="用户名" label-width="120px" />
-            <el-table-column prop="source" label="来源" label-width="100px" />
+            <el-table-column prop="display_name" :label="$t('user.tableUser.displayName')" label-width="120px" />
+            <el-table-column prop="source" :label="$t('user.tableUser.source')" label-width="100px" />
           </template>
         </el-table>
         <div class="table-pagination-block">
-          <div class="table-demonstration">共{{ total_num }}条</div>
+          <div class="table-demonstration">{{$t('base.tableBottomCount', {count: total_num})}}</div>
           <el-pagination :current-page="pageNumber" background @current-change="handleCurrentChange"
             layout="prev, pager, next" :default-page-size="20" :total="total_num" />
         </div>
       </div>
       <div class="dialog-footer">
-        <el-button type="primary" @click="$emit('close')">关闭</el-button>
+        <el-button type="primary" @click="$emit('close')">{{$t('base.close')}}</el-button>
       </div>
     </div>
   </div>
@@ -81,10 +81,10 @@ export default {
       sourceOptions: [
         {
           value: 'system',
-          label: '系统创建',
+          label: this.$t('userGroup.local'),
         }, {
           value: 'ad',
-          label: 'AD绑定',
+          label: this.$t('userGroup.fromAD'),
         }],
         isLoading: true,
       selectRow: null,

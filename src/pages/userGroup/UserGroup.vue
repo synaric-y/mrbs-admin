@@ -62,13 +62,13 @@
                 <div v-else>
                   <template v-if="!scope.row.children">
                     <div class="operate-wrapper">
-                      <span class="operate-item" @click="moreGroupMember(scope.row)">{{ $t('base.viewMore') }}</span>
+                      <span class="operate-item" @click="moreGroupMember(scope.row)">{{ $t('userGroup.viewMember') }}</span>
                     </div>
                   </template>
                   <template v-else>
                     <div class="operate-wrapper">
                       <!-- 高度占位 -->
-                      <span class="operate-item" style="visibility: hidden">{{ $t('base.viewMore') }}</span>
+                      <span class="operate-item" style="visibility: hidden">{{ $t('userGroup.viewMember') }}</span>
                     </div>
                   </template>
                 </div>

@@ -20,6 +20,7 @@ export const langZh = {
         edit: '编辑',
         detail: '查看',
         delete: '删除',
+        close: '关闭',
         generate: '生成',
         copy: '复制',
         bind: '绑定',
@@ -155,6 +156,7 @@ export const langZh = {
             status: '状态',
             operate: '操作',
             remark: '备注',
+            source: '来源',
         },
         formUser: {
             name: '账号',
@@ -187,6 +189,7 @@ export const langZh = {
         groupMy: '我的分组',
         groupAD: 'AD分组',
         editMember: '编辑组成员',
+        viewMember: '查看组成员',
         confirmDeleteUserGroup: '是否删除当前选中的用户/用户组？',
         editUserGroup: '编辑用户组',
         lastSyncTime: `上次同步时间：{time}`,

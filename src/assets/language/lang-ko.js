@@ -20,6 +20,7 @@ export const langKo = {
         edit: '편집',
         detail: '세부',
         delete: '삭제',
+        close: '폐쇄',
         generate: '생성하다',
         copy: '복사',
         bind: '묶다',
@@ -154,6 +155,7 @@ export const langKo = {
             status: '상태',
             operate: '작동하다',
             remark: '주목',
+            source: '원천',
         },
         formUser: {
             name: '이름',
@@ -186,6 +188,7 @@ export const langKo = {
         groupMy: '나의 분리',
         groupAD: 'AD분할',
         editMember: '회원 편집',
+        viewMember: '회원 보기',
         confirmDeleteUserGroup: '현재 선택된 사용자/사용자 그룹을 삭제하시겠습니까?',
         editUserGroup: '사용자 그룹 편집',
         lastSyncTime: '마지막 동기화 시간：',
