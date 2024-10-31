@@ -23,9 +23,9 @@
                 <!-- <div class="group-title-wrapper"> -->
                 <span class="group-title" :style="{ 'font-weight': scope.row.children ? 'bold' : 'normal' }">{{
                   scope.row.name }}</span>
-                <template v-if="scope.row.source !== 'system'">
-                <span class="group-more" @click="moreGroupMember(scope.row)">{{$t('base.viewMore')}}</span>
-                </template>
+<!--                <template v-if="scope.row.source !== 'system'">-->
+<!--                <span class="group-more" @click="moreGroupMember(scope.row)">{{$t('base.viewMore')}}</span>-->
+<!--                </template>-->
                 <!-- </div> -->
               </template>
             </el-table-column>
@@ -60,7 +60,17 @@
                   </template>
                 </div>
                 <div v-else>
-                  <span class="default-group-btn">{{$t('base.none')}}</span>
+                  <template v-if="!scope.row.children">
+                    <div class="operate-wrapper">
+                      <span class="operate-item" @click="moreGroupMember(scope.row)">{{ $t('base.viewMore') }}</span>
+                    </div>
+                  </template>
+                  <template v-else>
+                    <div class="operate-wrapper">
+                      <!-- 高度占位 -->
+                      <span class="operate-item" style="visibility: hidden">{{ $t('base.viewMore') }}</span>
+                    </div>
+                  </template>
                 </div>
               </template>
             </el-table-column>
