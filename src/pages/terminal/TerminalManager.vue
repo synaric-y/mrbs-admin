@@ -1,78 +1,68 @@
 <template>
-  <el-container class="container-sub-page">
-    <el-main class="container-sub-page-main">
-      <div class="sub-page-content">
-        <div class="sub-title-wrapper" style="margin-left: 20px;">
-          <!-- <div class="sub-title">{{ $t("base.userManagement") }}</div> -->
-          <div class="page-title">{{$t('terminal.terminalManage')}}</div>
-          <div class="filter-wrapper" style="margin-top: 20px;height: 30px;">
-            <el-input v-model="keyword" style="width: 140px;height: 30px" :placeholder="$t('terminal.plzInputDeviceId')" />
-            <el-select class="account-status-select" v-model="statusVal" placeholder="Select" size="default"
-              style="width: 140px;margin-left: 25px;min-height: 30px;" @change="onStatusChange">
-              <el-option style="height: 30px;" v-for="item in statusOptions" :key="item.value"
-                :label="item.label" :value="item.value" />
-            </el-select>
+  <Layout :title="$t('terminal.terminalManage')">
+    <template #filter>
+      <el-input v-model="keyword" style="width: 140px;height: 30px" :placeholder="$t('terminal.plzInputDeviceId')" />
+      <el-select class="account-status-select" v-model="statusVal" placeholder="Select" size="default"
+                 style="width: 140px;min-height: 30px;" @change="onStatusChange">
+        <el-option style="height: 30px;" v-for="item in statusOptions" :key="item.value"
+                   :label="item.label" :value="item.value" />
+      </el-select>
 
-            <el-select class="account-status-select" v-model="roomVal" placeholder="Select" size="default"
-              style="width: 140px;margin-left: 25px;min-height: 30px;" @change="onRoomChange">
-              <el-option style="height: 30px;" v-for="item in roomOptions" :key="item.room_id" :label="item.title"
-                :value="item.room_id" />
-            </el-select>
+      <el-select class="account-status-select" v-model="roomVal" placeholder="Select" size="default"
+                 style="width: 140px;min-height: 30px;" @change="onRoomChange">
+        <el-option style="height: 30px;" v-for="item in roomOptions" :key="item.room_id" :label="item.title"
+                   :value="item.room_id" />
+      </el-select>
 
-            <el-button size="large" class="el-button-content" @click="searchUser">
-              <img src="/imgs/button_search.png" alt="Search Icon" class="el-button-img" />
-              {{$t('base.search')}}
-            </el-button>
-          </div>
-        </div>
-
-        <div class="table-wrapper" style="height: auto;">
-          <el-table :data="terminals" style="margin-top: 56px;" header-cell-class-name="tb-header" max-height="450">
-            <el-table-column prop="number" :label="$t('terminal.tableTerminal.id')" width="60">
-              <template #default="scope">
-                {{ scope.$index + 1 }}
-              </template>
-            </el-table-column>
-            <el-table-column prop="device_id" :label="$t('terminal.tableTerminal.deviceId')" width="200"></el-table-column>
-            <el-table-column prop="version" :label="$t('terminal.tableTerminal.version')" width="100"></el-table-column>
-            <el-table-column prop="description" :label="$t('terminal.tableTerminal.deviceInfo')"></el-table-column>
-            <el-table-column prop="resolution" :label="$t('terminal.tableTerminal.resolution')" width="150"></el-table-column>
-            <el-table-column prop="battry_text" :label="$t('terminal.tableTerminal.battery')" width="130"></el-table-column>
-            <el-table-column prop="status" :label="$t('terminal.tableTerminal.status')" width="130"></el-table-column>
-            <el-table-column prop="bind_room" :label="$t('terminal.tableTerminal.bindStatus')" width="80"></el-table-column>
-            <el-table-column prop="room_name" :label="$t('terminal.tableTerminal.room')" width="100"></el-table-column>
-            <el-table-column prop="set_time" :label="$t('terminal.tableTerminal.setTime')" width="100"></el-table-column>
-            <el-table-column prop="id" :label="$t('user.tableUser.operate')" width="200">
-              <template #default="scope">
-                <div class="operate-wrapper" v-if="scope.row.status">
-                  <span class="operate-item" @click="unbindDeviceDialog(scope.row)">{{$t('base.unbind')}}</span>
-                </div>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
-        <div class="table-pagination-block">
-          <div class="table-demonstration">{{$t('base.tableBottomCount', {count: total_num})}}</div>
-          <el-pagination v-model:current-page="page_number" @current-change="handleCurrentChange"
-            layout="prev, pager, next" :default-page-size="20" :total="total_num" />
-        </div>
-
-        <el-dialog v-model="dialogUnbindVisible" :title="$t('terminal.unbindDevice')" width="550">
-          <div class="">
-            {{$t('terminal.confirmUnbindHint')}}
-          </div>
-          <template #footer>
-            <div class="dialog-footer">
-              <el-button style="margin-left: 50px" type="primary" @click="unbindDevice">
-                {{$t('base.confirm')}}
-              </el-button>
-              <el-button @click="dialogUnbindVisible = false">{{$t('base.cancel')}}</el-button>
+      <el-button type="primary" class="el-button-content" :icon="Search" @click="searchUser">
+        {{$t('base.search')}}
+      </el-button>
+    </template>
+    <template #table>
+      <el-table :data="terminals" header-cell-class-name="tb-header" max-height="450">
+        <el-table-column prop="number" :label="$t('terminal.tableTerminal.id')" width="60">
+          <template #default="scope">
+            {{ scope.$index + 1 }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="device_id" :label="$t('terminal.tableTerminal.deviceId')" width="200"></el-table-column>
+        <el-table-column prop="version" :label="$t('terminal.tableTerminal.version')" width="100"></el-table-column>
+        <el-table-column prop="description" :label="$t('terminal.tableTerminal.deviceInfo')"></el-table-column>
+        <el-table-column prop="resolution" :label="$t('terminal.tableTerminal.resolution')" width="150"></el-table-column>
+        <el-table-column prop="battry_text" :label="$t('terminal.tableTerminal.battery')" width="130"></el-table-column>
+        <el-table-column prop="status" :label="$t('terminal.tableTerminal.status')" width="130"></el-table-column>
+        <el-table-column prop="bind_room" :label="$t('terminal.tableTerminal.bindStatus')" width="80"></el-table-column>
+        <el-table-column prop="room_name" :label="$t('terminal.tableTerminal.room')" width="100"></el-table-column>
+        <el-table-column prop="set_time" :label="$t('terminal.tableTerminal.setTime')" width="100"></el-table-column>
+        <el-table-column prop="id" :label="$t('user.tableUser.operate')" width="200">
+          <template #default="scope">
+            <div class="operate-wrapper" v-if="scope.row.status">
+              <span class="operate-item" @click="unbindDeviceDialog(scope.row)">{{$t('base.unbind')}}</span>
             </div>
           </template>
-        </el-dialog>
+        </el-table-column>
+      </el-table>
+    </template>
+    <template #pagination>
+      <el-text>{{ $t('base.tableBottomCount', total_num) }}</el-text>
+      <el-pagination v-model:current-page="page_number" @current-change="handleCurrentChange"
+                     layout="prev, pager, next" :default-page-size="20" :total="total_num" />
+    </template>
+  </Layout>
+
+  <el-dialog v-model="dialogUnbindVisible" :title="$t('terminal.unbindDevice')" width="550">
+    <div class="">
+      {{$t('terminal.confirmUnbindHint')}}
+    </div>
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button style="margin-left: 50px" type="primary" @click="unbindDevice">
+          {{$t('base.confirm')}}
+        </el-button>
+        <el-button @click="dialogUnbindVisible = false">{{$t('base.cancel')}}</el-button>
       </div>
-    </el-main>
-  </el-container>
+    </template>
+  </el-dialog>
 </template>
 
 <script>
@@ -80,7 +70,16 @@ import { PageMixin } from "@/pages/PageMixin.js";
 import { Api } from "@/network/api.js";
 import { ElMessage } from "element-plus/es";
 import { Common } from "@/common/common";
+import Layout from "@/components/Layout.vue";
+import {Search} from '@element-plus/icons-vue'
+
 export default {
+  computed: {
+    Search() {
+      return Search
+    }
+  },
+  components: {Layout},
   mixins: [PageMixin],
   data() {
     return {
@@ -236,136 +235,136 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.sub-page-content {
-  display: flex;
-  // justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  // height: calc(100vh - 95px);
-  height: auto;
-  min-height: calc(100vh - 95px);
-  background-color: white;
-  padding: 0;
-  margin: 0;
-  // margin-top: 20px;
-  position: relative;
-}
-
-.sub-title-wrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  margin-left: 20px;
-}
-
-.page-title {
-  font-family: PingFang SC;
-  font-size: 20px;
-  font-weight: 500;
-  line-height: 28px;
-  letter-spacing: 0px;
-  color: #1D2129;
-  margin-top: 20px;
-  margin-left: 20px;
-}
-
-.filter-wrapper {
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  align-items: flex-start;
-  margin-left: 20px;
-  padding: 0 5px;
-}
-
-.el-main {
-  margin: 0;
-}
-
-.tb-header {
-  font-size: 14px !important;
-}
-
-.el-table {
-  --el-table-tr-bg-color: white;
-  padding: 0;
-  margin: 0;
-}
-
-::v-deep .el-input {
-  height: 40px;
-  line-height: 40px;
-}
-
-::v-deep .el-input__inner {
-  height: 40px;
-  line-height: 40px;
-}
-
-.el-button-content {
-  width: 84px;
-  height: 30px;
-  background: #591BB7;
-  font-family: PingFang SC;
-  font-size: 14px;
-  font-weight: normal;
-  line-height: 30px;
-  letter-spacing: 0px;
-  color: #FFFFFF;
-  margin-left: 20px;
-  padding: 4px 0;
-}
-
-.el-button-img {
-  width: 16px;
-  height: 16px;
-  margin-right: 6px;
-  margin-top: 2px;
-}
-
-.tb-op-icon {
-  width: 25px;
-  height: 25px;
-}
-
-.tb-op-icon-span {
-  margin-right: 10px;
-}
-
-.tb-state {
-  width: 18px;
-  height: 18px;
-  border-radius: 20px;
-  background: #08D50A;
-  margin-left: 15px;
-}
-
-.tb-state-disable {
-  background: red;
-}
-
-.table-pagination-block {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  // background-color: rebeccapurple;
-}
-
-.table-demonstration {
-  line-height: 50px;
-  margin-right: 30px;
-}
-
-.dialog-footer {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-}
-
-.reset-password {
-  display: flex;
-  flex-direction: row;
-}
+//.sub-page-content {
+//  display: flex;
+//  // justify-content: center;
+//  align-items: center;
+//  flex-direction: column;
+//  // height: calc(100vh - 95px);
+//  height: auto;
+//  min-height: calc(100vh - 95px);
+//  background-color: white;
+//  padding: 0;
+//  margin: 0;
+//  // margin-top: 20px;
+//  position: relative;
+//}
+//
+//.sub-title-wrapper {
+//  display: flex;
+//  flex-direction: column;
+//  justify-content: flex-start;
+//  align-items: flex-start;
+//  margin-left: 20px;
+//}
+//
+//.page-title {
+//  font-family: PingFang SC;
+//  font-size: 20px;
+//  font-weight: 500;
+//  line-height: 28px;
+//  letter-spacing: 0px;
+//  color: #1D2129;
+//  margin-top: 20px;
+//  margin-left: 20px;
+//}
+//
+//.filter-wrapper {
+//  display: flex;
+//  flex-direction: row;
+//  justify-content: flex-start;
+//  align-items: flex-start;
+//  margin-left: 20px;
+//  padding: 0 5px;
+//}
+//
+//.el-main {
+//  margin: 0;
+//}
+//
+//.tb-header {
+//  font-size: 14px !important;
+//}
+//
+//.el-table {
+//  --el-table-tr-bg-color: white;
+//  padding: 0;
+//  margin: 0;
+//}
+//
+//::v-deep .el-input {
+//  height: 40px;
+//  line-height: 40px;
+//}
+//
+//::v-deep .el-input__inner {
+//  height: 40px;
+//  line-height: 40px;
+//}
+//
+//.el-button-content {
+//  width: 84px;
+//  height: 30px;
+//  background: #591BB7;
+//  font-family: PingFang SC;
+//  font-size: 14px;
+//  font-weight: normal;
+//  line-height: 30px;
+//  letter-spacing: 0px;
+//  color: #FFFFFF;
+//  margin-left: 20px;
+//  padding: 4px 0;
+//}
+//
+//.el-button-img {
+//  width: 16px;
+//  height: 16px;
+//  margin-right: 6px;
+//  margin-top: 2px;
+//}
+//
+//.tb-op-icon {
+//  width: 25px;
+//  height: 25px;
+//}
+//
+//.tb-op-icon-span {
+//  margin-right: 10px;
+//}
+//
+//.tb-state {
+//  width: 18px;
+//  height: 18px;
+//  border-radius: 20px;
+//  background: #08D50A;
+//  margin-left: 15px;
+//}
+//
+//.tb-state-disable {
+//  background: red;
+//}
+//
+//.table-pagination-block {
+//  display: flex;
+//  flex-direction: row;
+//  justify-content: center;
+//  // background-color: rebeccapurple;
+//}
+//
+//.table-demonstration {
+//  line-height: 50px;
+//  margin-right: 30px;
+//}
+//
+//.dialog-footer {
+//  display: flex;
+//  flex-direction: row;
+//  justify-content: center;
+//  align-items: center;
+//}
+//
+//.reset-password {
+//  display: flex;
+//  flex-direction: row;
+//}
 </style>

@@ -1,12 +1,10 @@
 <template>
-  <el-container class="container-sub-page">
-    <el-main class="container-sub-page-main" style="background-color: white;padding: 20px;">
-      <div class="sub-title-wrapper">
-        <div class="sub-title">{{ $t("base.areaManagement") }}</div>
-        <el-button style="margin-top: 20px;" type="primary" size="default" @click="pendingAddArea">{{ $t("base.add") }}</el-button>
-      </div>
+  <Layout :title="$t('base.areaManagement')">
+    <template #filter>
+      <el-button type="primary" @click="pendingAddArea">{{ $t("base.add") }}</el-button>
+    </template>
+    <template #table>
       <el-table :data="tableData"
-                style="margin-top: 30px;"
                 header-cell-class-name="tb-header"
                 header-align="center"
                 table-layout="auto"
@@ -15,7 +13,9 @@
         </el-table-column>
         <el-table-column prop="disabled" :label="$t('area.tableArea.state')" width="150">
           <template #default="scope">
-            <div :class="['tb-state', scope.row.disabled == 1 ? 'tb-state-disable' : '']"></div>
+            <el-switch v-model="scope.row.disabled"
+                       :active-value="0"
+                       :inactive-value="1" @change="handleSwitchChange(scope.row)" />
           </template>
         </el-table-column>
         <el-table-column prop="id" :label="$t('area.tableArea.id')" width="150">
@@ -31,34 +31,37 @@
           </template>
         </el-table-column>
       </el-table>
-      <el-dialog v-model="showAddAreaDialog" :title="$t('area.addArea')" width="500">
-        <el-form :model="form" ref="areaForm" :rules="rules">
-          <el-form-item prop="name" :label="$t('area.formArea.name')">
-            <el-input v-model="form.name" autocomplete="off" />
-          </el-form-item>
-        </el-form>
-        <template #footer>
-          <div class="dialog-footer">
-            <el-button @click="showAddAreaDialog = false">{{ $t('base.cancel') }}</el-button>
-            <el-button type="primary" @click="addArea">
-              {{ $t('base.confirm') }}
-            </el-button>
-          </div>
-        </template>
-      </el-dialog>
-      <el-dialog v-model="showDeleteAreaDialog" title="Tips" width="500">
-        <span>{{ $t('area.deleteAreaHint') }}</span>
-        <template #footer>
-          <div class="dialog-footer">
-            <el-button @click="showDeleteAreaDialog = false">{{ $t('base.cancel') }}</el-button>
-            <el-button type="primary" @click="deleteArea">
-              {{ $t('base.confirm') }}
-            </el-button>
-          </div>
-        </template>
-      </el-dialog>
-    </el-main>
-  </el-container>
+    </template>
+    <template #btns>
+
+    </template>
+  </Layout>
+  <el-dialog v-model="showAddAreaDialog" :title="$t('area.addArea')" width="500">
+    <el-form :model="form" ref="areaForm" :rules="rules">
+      <el-form-item prop="name" :label="$t('area.formArea.name')">
+        <el-input v-model="form.name" autocomplete="off" />
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button @click="showAddAreaDialog = false">{{ $t('base.cancel') }}</el-button>
+        <el-button type="primary" @click="addArea">
+          {{ $t('base.confirm') }}
+        </el-button>
+      </div>
+    </template>
+  </el-dialog>
+  <el-dialog v-model="showDeleteAreaDialog" title="Tips" width="500">
+    <span>{{ $t('area.deleteAreaHint') }}</span>
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button @click="showDeleteAreaDialog = false">{{ $t('base.cancel') }}</el-button>
+        <el-button type="primary" @click="deleteArea">
+          {{ $t('base.confirm') }}
+        </el-button>
+      </div>
+    </template>
+  </el-dialog>
 </template>
 
 
@@ -67,7 +70,9 @@ import { PageMixin } from "@/pages/PageMixin.js";
 import { Api } from "@/network/api.js";
 import router from "@/router/index.js";
 import { ElMessage } from "element-plus";
+import Layout from "@/components/Layout.vue";
 export default {
+  components: {Layout},
   mixins: [PageMixin],
   data() {
     return {

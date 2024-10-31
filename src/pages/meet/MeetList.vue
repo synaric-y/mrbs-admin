@@ -1,71 +1,61 @@
 <template>
-  <el-container class="container-sub-page">
-    <el-main class="container-sub-page-main">
-      <div class="sub-page-content">
-        <div class="sub-title-wrapper" style="margin-left: 20px;">
-          <!-- <div class="sub-title">{{ $t("base.userManagement") }}</div> -->
-          <div class="page-title">历史会议</div>
-          <div class="filter-wrapper" style="margin-top: 20px;height: 30px;">
-            <!-- <el-input v-model="keyword" style="width: 140px" placeholder="请输入用户名称" /> -->
-            <el-select class="account-status-select" v-model="statusVal" placeholder="Select" size="default"
-              style="width: 140px;margin-left: 25px;min-height: 30px;">
-              <el-option style="height: 30px;" v-for="item in statusOptions" :key="item.value" :label="item.label"
-                :value="item.value" />
-            </el-select>
-            <el-select class="account-status-select" v-model="areaStatusVal" placeholder="Select" size="default"
-              style="width: 140px;margin-left: 25px;min-height: 30px;" @change="onAreaChange">
-              <el-option style="height: 30px;" v-for="item in page_cache_areas" :key="item.area_id"
-                :label="item.area_name" :value="item.area_id" />
-            </el-select>
-            <el-select class="account-status-select" v-model="roomVal" placeholder="Select" size="default"
-              style="width: 140px;margin-left: 25px;min-height: 30px;" @change="onRoomChange">
-              <el-option style="height: 30px;" v-for="item in roomOptions" :key="item.room_id" :label="item.title"
-                :value="item.room_id" />
-            </el-select>
-            <!-- <el-date-picker style="margin-left: 20px;" v-model="baseTime" type="daterange" :range-separator="$t('base.to')"
-              :start-placeholder="startTime" :end-placeholder="endTime" @change="choseDate" /> -->
-            <el-button size="large" class="el-button-content" @click="searchMeet">
-              <img src="/imgs/button_search.png" alt="Search Icon" class="el-button-img" />
-              查询
-            </el-button>
-          </div>
-        </div>
-        <div class="table-wrapper" style="height: auto;">
-          <el-table :data="meetListData" style="margin-top: 56px;" header-cell-class-name="tb-header" max-height="450">
-            <el-table-column prop="number" label="序号" width="60">
-              <template #default="scope">
-                {{ scope.$index + 1 }}
-              </template>
-            </el-table-column>
-            <el-table-column prop="area_name" label="区域" width="100"></el-table-column>
-            <el-table-column prop="room_name" label="会议室" width="100"></el-table-column>
-            <el-table-column prop="startTime" label="预约开始时间" width="150"></el-table-column>
-            <el-table-column prop="endTime" label="预约结束时间" width="150"></el-table-column>
-            <el-table-column prop="duration" label="会议时间" width="200"></el-table-column>
-            <el-table-column prop="is_repeat_text" label="是否周期会议" width="130"></el-table-column>
-            <el-table-column prop="status_text" label="会议状态" width="80"></el-table-column>
-            <el-table-column prop="create_by" label="预约人" width="100">
-            </el-table-column>
-            <el-table-column prop="id" :label="$t('user.tableUser.operate')" width="200">
-              <template #default="scope">
-                <div class="operate-wrapper">
-                  <span class="operate-item" @click="editMeetDislog(scope.row)">编辑</span>
-                </div>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
-        <div class="table-pagination-block">
-          <div class="table-demonstration">共{{ total_num }}条</div>
-          <el-pagination v-model:current-page="page_number" @current-change="handleCurrentChange"
-            layout="prev, pager, next" :default-page-size="20" :total="total_num" />
-        </div>
+  <Layout title="历史会议">
+    <template #filter>
+      <el-select class="account-status-select" v-model="statusVal" placeholder="Select" size="default"
+                 style="width: 140px;min-height: 30px;">
+        <el-option style="height: 30px;" v-for="item in statusOptions" :key="item.value" :label="item.label"
+                   :value="item.value" />
+      </el-select>
+      <el-select class="account-status-select" v-model="areaStatusVal" placeholder="Select" size="default"
+                 style="width: 140px;min-height: 30px;" @change="onAreaChange">
+        <el-option style="height: 30px;" v-for="item in page_cache_areas" :key="item.area_id"
+                   :label="item.area_name" :value="item.area_id" />
+      </el-select>
+      <el-select class="account-status-select" v-model="roomVal" placeholder="Select" size="default"
+                 style="width: 140px;min-height: 30px;" @change="onRoomChange">
+        <el-option style="height: 30px;" v-for="item in roomOptions" :key="item.room_id" :label="item.title"
+                   :value="item.room_id" />
+      </el-select>
+      <!-- <el-date-picker style="margin-left: 20px;" v-model="baseTime" type="daterange" :range-separator="$t('base.to')"
+        :start-placeholder="startTime" :end-placeholder="endTime" @change="choseDate" /> -->
+      <el-button type="primary" @click="searchMeet" :icon="Search">
+        查询
+      </el-button>
+    </template>
+    <template #table>
+      <el-table :data="meetListData" header-cell-class-name="tb-header" max-height="450">
+        <el-table-column prop="number" label="序号" width="60">
+          <template #default="scope">
+            {{ scope.$index + 1 }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="area_name" label="区域" width="100"></el-table-column>
+        <el-table-column prop="room_name" label="会议室" width="100"></el-table-column>
+        <el-table-column prop="startTime" label="预约开始时间" width="150"></el-table-column>
+        <el-table-column prop="endTime" label="预约结束时间" width="150"></el-table-column>
+        <el-table-column prop="duration" label="会议时间" width="200"></el-table-column>
+        <el-table-column prop="is_repeat_text" label="是否周期会议" width="130"></el-table-column>
+        <el-table-column prop="status_text" label="会议状态" width="80"></el-table-column>
+        <el-table-column prop="create_by" label="预约人" width="100">
+        </el-table-column>
+        <el-table-column prop="id" :label="$t('user.tableUser.operate')" width="200">
+          <template #default="scope">
+            <div class="operate-wrapper">
+              <span class="operate-item" @click="editMeetDislog(scope.row)">编辑</span>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </template>
+    <template #pagination>
+      <el-text>{{ $t('base.tableBottomCount', total_num) }}</el-text>
+      <el-pagination v-model:current-page="page_number" @current-change="handleCurrentChange"
+                     layout="prev, pager, next" :default-page-size="20" :total="total_num" />
+    </template>
+  </Layout>
 
-        <CycleMeetCMP v-if="dialogCycleMeet" :entry_id="entry_id" @close="dialogCycleMeet = false" />
-        <SingleMeetCMP v-if="dialogSingleMeet" :entry_id="entry_id" @close="dialogSingleMeet = false" />
-      </div>
-    </el-main>
-  </el-container>
+  <CycleMeetCMP v-if="dialogCycleMeet" :entry_id="entry_id" @close="dialogCycleMeet = false" />
+  <SingleMeetCMP v-if="dialogSingleMeet" :entry_id="entry_id" @close="dialogSingleMeet = false" />
 </template>
 
 <script>
@@ -76,8 +66,15 @@ import { Common } from "@/common/common";
 import moment from "moment";
 import CycleMeetCMP from "@/components/CycleMeetCMP.vue";
 import SingleMeetCMP from "@/components/SingleMeetCMP.vue";
+import Layout from "@/components/Layout.vue";
+import {Search} from "@element-plus/icons-vue";
 export default {
-  components: { CycleMeetCMP, SingleMeetCMP },
+  computed: {
+    Search() {
+      return Search
+    }
+  },
+  components: {Layout, CycleMeetCMP, SingleMeetCMP },
   mixins: [PageMixin],
   data() {
     return {

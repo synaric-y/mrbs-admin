@@ -1,48 +1,7 @@
 <template>
   <div class="container">
-    <div class="nav_wrapper" v-if="!isLoginPage">
-      <div class="nav" >
-        <div class="nav-inner">
-          <img class="nav-left-logo" :src="logo">
-          <div class="nav-left">{{companyName}}</div>
-          <div style="flex: 1"></div>
-          <div class="nav-right">
-            <div class="nav-time">2024年9月10日 12:23</div>
-            <div class="nav-alert" style="margin-left: 20px;margin-top: 5px;">
-              <img style="width: 20px; height: 20px" src="../public/imgs/notification.png" />
-            </div>
-            <div class="nav-setting" style="margin-left: 20px;margin-top: 5px;">
-              <img style="width: 20px; height: 20px" src="../public/imgs/setting.png" />
-            </div>
-            <template v-if="userInfo && userInfo.display_name">
-              <!-- <div class="nav-user" style="margin-left: 20px;margin-top: 0px;" @click="toProfile">
-                {{userInfo.username}}
-              </div> -->
-            </template>
-            <template v-else>
-              <!-- <div class="nav-user" style="margin-left: 20px;margin-top: 0px;" @click="toLogout">
-                login
-              </div> -->
-            </template>
-
-            <el-popover :visible="showPop" placement="bottom" :width="160">
-              <el-button style="width: 135px" size="small" type="primary" @click="toLogout">
-                {{ $t('base.logout') }}
-              </el-button>
-              <template #reference>
-                <div class="username-wrapper" @click="toProfile">
-                  <img style="width: 30px; height: 30px" src="/imgs/profile.png"
-                    v-if="!userInfo || !userInfo.display_name" />
-                  <div class="username">{{ userInfo ? userInfo.display_name : '' }}</div>
-                </div>
-              </template>
-            </el-popover>
-
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="nav-placeholder" v-if="!isLoginPage"></div>
+    <NavBar v-if="!isLoginPage" :companyName="companyName" :logo="logo" :time="time"/>
+    <div style="height: 75px;" v-if="!isLoginPage"></div>
     <div class="menu-content-wrapper" >
       <div class="left-menu" v-if="!isLoginPage">
         <el-scrollbar height="100%">
@@ -106,8 +65,10 @@ import router from "@/router/index.js"
 import { PageMixin } from "@/pages/PageMixin.js";
 import { STORAGE } from "@/const.js";
 import {Api} from "@/network/api.js";
+import NavBar from "@/components/NavBar.vue";
 
 export default {
+  components: {NavBar},
   mixins: [PageMixin],
   data() {
     return {
@@ -115,6 +76,7 @@ export default {
       activeIndex: 1,
       logo: '',
       companyName: '',
+      time: '',
       adminMenu:[
         {
           index: 1,
@@ -245,7 +207,26 @@ export default {
       ]
     }
   },
+  mounted() {
+    console.log('App mounted user:', this.userInfo.username)
+    this.syncTime()
+    this.getSetting()
+    this.$forceUpdate()
+  },
   methods: {
+    syncTime(){
+      this.getTime()
+      setInterval(()=>{
+        this.getTime()
+      },30000)
+    },
+    getTime(){
+      Api.getMeetRooms({})
+          .then(({data})=>{
+            console.log(data)
+            this.time = data.time
+          })
+    },
     handleOpen(val) {
       console.log(val)
       this.activeIndex = val
@@ -266,7 +247,7 @@ export default {
         "company_name": 1,
         "server_address": 1,
       }).then(({code,data,msg})=>{
-        this.logo = data.server_address + data.logo_dir
+        this.logo = data.server_address + data.logo_dir + '?time='+ new Date().getTime() // 强制刷新logo
         this.companyName = data.company_name
       })
     },
@@ -292,11 +273,7 @@ export default {
       }
     },
   },
-  mounted() {
-    console.log('App mounted user:', this.userInfo.username)
-    this.getSetting()
-    this.$forceUpdate()
-  }
+
 }
 </script>
 
@@ -307,6 +284,8 @@ body {
   padding: 0 !important;
   background: #EFEFEF;
 }
+
+
 
 /*总容器*/
 .container {
@@ -358,75 +337,7 @@ body {
   display: none;
 }
 
-/*顶部导航栏*/
-.nav {
-  min-width: 100vw;
-  height: 75px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  background: white;
-  box-sizing: border-box;
-  padding: 0 75px 0 75px;
-}
 
-.nav_wrapper {
-  width: 100%;
-  /* background: red; */
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  position: fixed;
-  z-index: 2003;
-  top: 0;
-  border-bottom: 0.06rem solid rgba(187, 187, 187, 1);
-}
-
-.nav-placeholder{
-  height: 75px;
-}
-
-.nav-block {
-  /* height: 75px;
-  padding: 0 75px 0 75px; */
-}
-
-.nav-inner {
-  width: 100%;
-  display: flex;
-  flex-direction: row;
-  /* align-items: center; */
-}
-
-.nav-left-logo {
-  width: 55px;
-  height: 55px;
-  margin-right: 20px;
-  margin-top: 10px;
-}
-
-.nav-left {
-  font-size: 20px;
-  line-height: 75px;
-}
-
-.nav-time {
-  font-size: 14px;
-  font-weight: 500;
-  color: #4E5969;
-}
-
-.nav-right {
-  /* width: 400px; */
-  justify-content: space-evenly;
-  display: flex;
-  flex-direction: row;
-  /* background-color: red; */
-  height: 75px;
-  line-height: 75px;
-}
 
 .el-main {
   /* background-color: aqua; */
@@ -472,24 +383,6 @@ body {
   display: flex;
   width: 100%;
   height: 100%;
-}
-
-/*顶部导航按钮*/
-.nav-button {
-  min-width: 128px;
-  height: 32px;
-  line-height: 32px;
-  box-shadow: 0px 2px 6px 0px rgba(0, 0, 0, 0.4);
-  margin-right: 22px;
-  font-size: 20px;
-  border-radius: 126px;
-  font-weight: bold;
-}
-
-.nav-button-inactive {
-  border: 1px solid var(--el-color-primary);
-  background: white;
-  color: var(--el-color-primary);
 }
 
 /*表格外间距*/
