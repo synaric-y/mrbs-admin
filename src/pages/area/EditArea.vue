@@ -13,7 +13,9 @@
         </el-table-column>
         <el-table-column prop="disabled" :label="$t('area.tableArea.state')" width="150">
           <template #default="scope">
-            <div :class="['tb-state', scope.row.disabled == 1 ? 'tb-state-disable' : '']"></div>
+            <el-switch v-model="scope.row.disabled"
+                       :active-value="0"
+                       :inactive-value="1" @change="handleSwitchChange(scope.row)" />
           </template>
         </el-table-column>
         <el-table-column prop="id" :label="$t('area.tableArea.id')" width="150">
