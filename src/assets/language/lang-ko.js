@@ -220,5 +220,20 @@ export const langKo = {
             online: '온라인',
             all: '모두',
         }
+    },
+    setting:{
+        title: 'System Setting',
+        meeting_rule_setting: {
+            title: 'Meeting Rule Setting'
+        },
+        application_setting: {
+            title: 'Application Setting'
+        },
+        user_synchronize_setting: {
+            title: 'User Synchronize'
+        },
+        calendar_synchronize_setting: {
+            title: 'Calendar Synchronize'
+        },
     }
 }
