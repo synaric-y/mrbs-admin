@@ -13,9 +13,9 @@
       <el-button type="primary" class="btn" :icon="Plus" @click="addUser(1, null)">
         {{ $t('base.add2') }}
       </el-button>
-      <el-button type="primary" class="btn" :icon="Refresh" style="width: 112px;">
+      <!-- <el-button type="primary" class="btn" :icon="Refresh" style="width: 112px;">
         {{ $t('base.userSync') }}
-      </el-button>
+      </el-button> -->
     </template>
     <template #table>
       <div class="table-wrapper" style="height: auto;">
