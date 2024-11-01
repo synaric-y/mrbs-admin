@@ -4,11 +4,11 @@
       <div class="sub-page-content">
         <div class="sub-title-wrapper" style="margin-left: 20px;">
           <!-- <div class="sub-title">{{ $t("base.userManagement") }}</div> -->
-          <div class="page-title">{{$t('userGroup.userGroupSettings')}}</div>
+          <div class="page-title">{{ $t('userGroup.userGroupSettings') }}</div>
           <div class="async-wrapper" style="margin-top: 20px;height: 30px;">
-            <el-button size="large" class="el-button-content" style="width: 112px;">
+            <el-button :disabled="!enable_sync" size="large" type="primary" style="width: 112px;" @click="OnSyncUsers">
               <img src="/imgs/button_reflesh.png" alt="Search Icon" class="el-button-img" />
-              {{$t('base.userSync')}}
+              {{ $t('base.userSync') }}
             </el-button>
             <span class="async-last-time">{{ syncTime }}</span>
           </div>
@@ -16,16 +16,16 @@
 
         <div class="table-wrapper" style="height: auto">
           <!-- default-expand-all -->
-          <el-table :data="tableData" lazy style="width: 100%;height: auto; margin-bottom: 20px;" row-key="id"
+          <el-table :v-loading="true" :data="tableData" lazy style="width: 100%;height: auto; margin-bottom: 20px;" row-key="id"
             :tree-props="{ children: 'children', hasChildren: 'has_child' }" :load="loadSubGroup" max-height="550">
             <el-table-column prop="group" :label="$t('userGroup.userGroup')" label-width="400px">
               <template #default="scope">
                 <!-- <div class="group-title-wrapper"> -->
                 <span class="group-title" :style="{ 'font-weight': scope.row.children ? 'bold' : 'normal' }">{{
                   scope.row.name }}</span>
-<!--                <template v-if="scope.row.source !== 'system'">-->
-<!--                <span class="group-more" @click="moreGroupMember(scope.row)">{{$t('base.viewMore')}}</span>-->
-<!--                </template>-->
+                <!--                <template v-if="scope.row.source !== 'system'">-->
+                <!--                <span class="group-more" @click="moreGroupMember(scope.row)">{{$t('base.viewMore')}}</span>-->
+                <!--                </template>-->
                 <!-- </div> -->
               </template>
             </el-table-column>
@@ -55,14 +55,16 @@
                       <!-- <span class="group-btn" @click="editGroupBtn(0, scope.row)">{{ $t('base.new') }}</span> -->
                       <span class="operate-item" @click="editGroupBtn(1, scope.row)">{{ $t('base.edit') }}</span>
                       <span class="operate-item" @click="deleteGroupDialog(scope.row)">{{ $t('base.delete') }}</span>
-                      <span class="operate-item" @click="editGroupMember(scope.row)">{{$t('userGroup.editMember')}}</span>
+                      <span class="operate-item" @click="editGroupMember(scope.row)">{{ $t('userGroup.editMember')
+                        }}</span>
                     </div>
                   </template>
                 </div>
                 <div v-else>
                   <template v-if="!scope.row.children">
                     <div class="operate-wrapper">
-                      <span class="operate-item" @click="moreGroupMember(scope.row)">{{ $t('userGroup.viewMember') }}</span>
+                      <span class="operate-item" @click="moreGroupMember(scope.row)">{{ $t('userGroup.viewMember')
+                        }}</span>
                     </div>
                   </template>
                   <template v-else>
@@ -81,14 +83,14 @@
           :is-edit="isEdit" :ad-more="ad_more_member" @close="dialogGroupMember = false" />
         <el-dialog v-model="dialogDeleteVisible" :title="$t('user.deleteUser')" width="550">
           <div class="">
-            {{$t('userGroup.confirmDeleteUserGroup')}}
+            {{ $t('userGroup.confirmDeleteUserGroup') }}
           </div>
           <template #footer>
             <div class="dialog-footer">
               <el-button style="margin-left: 50px" type="primary" @click="sureDeleteUser">
-                {{$t('base.confirm')}}
+                {{ $t('base.confirm') }}
               </el-button>
-              <el-button @click="dialogDeleteVisible = false">{{$t('base.cancel')}}</el-button>
+              <el-button @click="dialogDeleteVisible = false">{{ $t('base.cancel') }}</el-button>
             </div>
           </template>
         </el-dialog>
@@ -100,16 +102,18 @@
                 <el-input v-model="addGroupForm.name" autocomplete="off" />
               </el-form-item>
             </div>
-            <el-form-item :label="$t('userGroup.tableUserGroup.syncFromAD')" label-width="140px" style="margin-right: 50px;">
-              <el-tree-select lazy v-model="addGroupForm.sync_group_name" :load="loadGroup" :props="groupProps" :disabled="mode"  @change="handleTreeSelect"/>
+            <el-form-item :label="$t('userGroup.tableUserGroup.syncFromAD')" label-width="140px"
+              style="margin-right: 50px;">
+              <el-tree-select lazy v-model="addGroupForm.sync_group_name" :load="loadGroup" :props="groupProps"
+                :disabled="mode" @change="handleTreeSelect" />
             </el-form-item>
           </el-form>
           <template #footer>
             <div class="dialog-footer">
               <el-button style="margin-left: 50px" type="primary" @click="commitGroupForm">
-                {{$t('base.confirm')}}
+                {{ $t('base.confirm') }}
               </el-button>
-              <el-button @click="dialogAddGroup = false">{{$t('base.cancel')}}</el-button>
+              <el-button @click="dialogAddGroup = false">{{ $t('base.cancel') }}</el-button>
             </div>
           </template>
         </el-dialog>
@@ -193,19 +197,38 @@ export default {
         isLeaf: 'isLeaf',
         disabled: 'disabled',
       },
-      treeData:[],
+      treeData: [],
       rules: {
         name: [
           { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
         ]
       },
       // mode=0为新增 1为编辑
-      mode:0,
+      mode: 0,
       selectedItem: null,
       ad_more_member: false,
+      enable_sync: true,
+      is_loading: false,
     }
   },
   methods: {
+
+    OnSyncUsers() {
+      this.getADStatus(false)
+    },
+
+    startSyncUser() {
+      this.is_loading = true
+      Api.syncAD().then(({ data, code, msg }) => {
+        if (code == 0) {
+          ElMessage.success({
+            message: data['status']
+          })
+        } else {
+          ElMessage.error(msg)
+        }
+      })
+    },
 
     loadSubGroup(row, treeNode, resolve) {
       let childrenData = []
@@ -235,7 +258,7 @@ export default {
       } else if (node.level === 1) {
         console.log('loadGroup sync level1', node.level)
         this.getAdTreeWithId(-1).then(childrenData => {
-          console.log('getAdTreeWithId 1 groups',childrenData)
+          console.log('getAdTreeWithId 1 groups', childrenData)
           // this.treeData = childrenData
           resolve(childrenData);
         }).catch(() => {
@@ -244,7 +267,7 @@ export default {
       } else {
         console.log('loadGroup sync level2', node.level)
         this.getAdTreeWithId(node.data.id).then(childrenData => {
-          console.log('getAdTreeWithId 3 childrenData',childrenData)
+          console.log('getAdTreeWithId 3 childrenData', childrenData)
           resolve(childrenData);
         }).catch(() => {
           resolve([]);
@@ -287,7 +310,7 @@ export default {
     },
 
     handleTreeSelect(id) {
-      console.log('UserGroup handleTreeSelect',id)
+      console.log('UserGroup handleTreeSelect', id)
       const selectedItem = this.findNodeById(this.treeData, id);
       console.log('选中的 item 数据:', selectedItem);
       this.selectedItem = selectedItem
@@ -311,7 +334,7 @@ export default {
 
     editGroupBtn(mode, row) {
       // 0新增、1编辑
-      console.log('editGroupBtn row',row)
+      console.log('editGroupBtn row', row)
       this.dialogAddGroup = true
       this.selectedGroupId = row.third_id
       this.mode = mode
@@ -319,7 +342,7 @@ export default {
         this.selectedGroupId = row.id
         this.addGroupForm.name = row.name
         const selectedItem = this.findNodeById(this.treeData, row.third_id);
-        console.log('editGroupBtn selectedItem',selectedItem,this.treeData)
+        console.log('editGroupBtn selectedItem', selectedItem, this.treeData)
         this.addGroupForm.sync_group_name = selectedItem.name
         this.selectedItem = selectedItem
       } else {
@@ -352,7 +375,7 @@ export default {
     },
 
     commitGroupForm() {
-      console.log('commitGroupForm mode',this.mode)
+      console.log('commitGroupForm mode', this.mode)
       if (this.mode == 1) {
         this.editGroup(this.selectedItem.third_id)
         return
@@ -366,7 +389,7 @@ export default {
       params['parent_id'] = -1
       params['third_id'] = third_id
       console.log('UserGroup updateUserStatus params', params)
-      Api.addGroup(params ).then(({ data, code, msg }) => {
+      Api.addGroup(params).then(({ data, code, msg }) => {
         if (code == 0) {
           this.dialogAddGroup = false
           this.getTableData()
@@ -382,7 +405,7 @@ export default {
       params['group_id'] = this.selectedGroupId
       params['third_id'] = third_id
       console.log('UserGroup updateUserStatus params', params)
-      Api.editGroup(params ).then(({ data, code, msg }) => {
+      Api.editGroup(params).then(({ data, code, msg }) => {
         if (code == 0) {
           this.dialogAddGroup = false
           this.getTableData()
@@ -403,16 +426,47 @@ export default {
       })
     },
 
-    getADStatus() {
+    getADStatus(is_initalize) {
+      this.enable_sync = false
       Api.getADSyncStatus().then(({ data, code, msg }) => {
         if (code == 0) {
           console.log('UserGroup getADStatus:', data)
           if (data.sync_time == 0) {
-            this.syncTime = this.$t('userGroup.lastSyncTime', {time: '/'})
+            this.syncTime = this.$t('userGroup.lastSyncTime', { time: '/' })
           } else {
-            // 时间戳转化当前时间
-            const time = moment(parseInt(data.sync_time)).format('YYYY/MM/DD hh:mm:ss')
-            this.syncTime = this.$t('userGroup.lastSyncTime', {time})
+            const time = moment(parseInt(data.sync_time * 1000)).format('YYYY/MM/DD hh:mm:ss')
+            this.syncTime = this.$t('userGroup.lastSyncTime', { time })
+          }
+          console.log('UserGroup getADStatus data:',data)
+          console.log('UserGroup getADStatus data.task:',data.task)
+          console.log('UserGroup getADStatus data.complete:',data.task.complete)
+          if (data.task === undefined || data.task === null) {
+            this.enable_sync = true
+            this.is_loading = false
+            console.log('UserGroup getADStatus complete:null')
+            if (!is_initalize) {
+              this.startSyncUser()
+            }
+            return
+          }
+          else if (data.task.complete === 1) {
+            this.enable_sync = true
+            this.is_loading = false
+            console.log('UserGroup getADStatus complete:1')
+            if (!is_initalize) {
+              this.startSyncUser()
+            }
+            return
+          }
+          else if (data.task.complete === 0) {
+            this.enable_sync = false
+            console.log('UserGroup getADStatus complete:0')
+            if (!is_initalize) {
+              this.startSyncUser()
+            }
+            return
+          } else {
+            ElMessage.error(msg)
           }
         }
       })
@@ -461,7 +515,7 @@ export default {
             let groups = data.group.child_groups
             groups.forEach(item => {
               item['source'] = 'ad'
-              item['isLeaf'] = item['has_child'] == 1?false:true
+              item['isLeaf'] = item['has_child'] == 1 ? false : true
               item['lable'] = item['name']
               item['children'] = []
             })
@@ -500,7 +554,6 @@ export default {
               resolve(res)
               return
             }
-
             resolve(groups)
             console.log('UserGroup tableData', this.tableData)
           } else {
@@ -521,8 +574,9 @@ export default {
   },
   mounted() {
     this.setTab('/user')
-    this.getADStatus()
+    this.getADStatus(true)
     this.getTableData()
+    // this.syncADState(true)
   }
 }
 </script>

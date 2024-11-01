@@ -232,4 +232,12 @@ export class Api {
     static async testExchange(params){
         return Request.post('test%2Ftest_exchange',params)
     }
+
+    static async syncADState(params){
+        return Request.post('user_group/get_sync_ad_state',params)
+    }
+
+    static async syncAD(params){
+        return Request.post('user_group/sync_ad',params)
+    }
 }
