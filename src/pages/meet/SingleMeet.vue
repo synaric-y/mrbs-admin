@@ -45,7 +45,7 @@
                 {{ day.date }}
                 <div class="room-header">
                   <div v-for="(room, roomIndex) in rooms" :key="roomIndex" class="room-name"
-                    :style="{ height: timeSlots.length * 60 + 70 + 'px', width: itemWidth + 'px' }">
+                    :style="{ height: timeSlots.length * 40 + 70 + 'px', width: itemWidth + 'px' }">
                     {{ room.room_name }}
                     <template v-for="(time, timeIndex) in localTimeSlots">
                         <div v-if="timeIndex != localTimeSlots.length - 1"
@@ -88,7 +88,7 @@
           </el-scrollbar>
         </div>
         <SingleMeetCMP v-if="dialogMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas" :entry_id="entry_id"
-          @close="dialogMeetForm = false" />
+          @close="closeDialogMeetForm" />
       </div>
     </el-main>
     <el-skeleton v-if="showLoading" :rows="15" animated />
@@ -138,7 +138,7 @@ export default defineComponent({
       showLoading: true,
       filterDateStore: null,
       minDuration: 1800,
-      minItemHeight: 60,
+      minItemHeight: 40,
       groupButtons: [
         {
           name: this.$t('base.today'),
@@ -254,6 +254,11 @@ export default defineComponent({
       // console.log('Home selectDays', selectDays)
     },
 
+    closeDialogMeetForm() {
+      this.dialogMeetForm = false
+      this.getMeetRooms()
+    },
+
     getAllRoom(areas) {
       console.log('Home getAllRoom areas 1111111', areas)
       const allRoom = [];
@@ -304,7 +309,7 @@ export default defineComponent({
           "rooms": []
         }
         // this.minItemHeight = 60 / (1800 / parseInt(minResolution))
-        this.minItemHeight = 60
+        this.minItemHeight = 40
         console.log('Home Minimum resolution: this.minItemHeight', minResolution, this.minItemHeight)
         // 获取开始、结束时间
         const { minStart, maxEnd } = this.getMaxAreaDuration()
@@ -415,7 +420,7 @@ export default defineComponent({
         return -1
       }
       // 适配5、10、15、20、25、30分钟
-      const divideItems = 60 / (multiple * 2)
+      const divideItems = 40 / (multiple * 2)
       for (let i = 0; i < (multiple * 2); i++) {
         if (minute == divideItems * i) {
           baseIndex = baseIndex + i
@@ -938,7 +943,7 @@ export default defineComponent({
 }
 
 .time-slot {
-  height: 60px;
+  height: 40px;
   color: #000;
   font-size: 12px;
   color: #000000;
@@ -955,7 +960,7 @@ export default defineComponent({
   position: absolute;
   top: 100px;
   width: 60px;
-  height: 60px;
+  height: 40px;
   transition: all 0.3s ease;
   padding: 0px 10px;
 }
@@ -968,7 +973,7 @@ export default defineComponent({
   position: absolute;
   top: 100px;
   width: 60px;
-  height: 60px;
+  height: 40px;
   transition: background-color 0.3s ease, color 0.3s ease;
   padding: 0px 10px;
 }

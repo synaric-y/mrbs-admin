@@ -14,7 +14,7 @@
           </el-select>
         </el-form-item>
         <el-form-item prop="name" label="会议室标题" label-width="100px" required>
-          <el-input v-model="meetForm.name" autocomplete="off" />
+          <el-input v-model="meetForm.name" autocomplete="off" show-word-limit  maxlength="20"/>
         </el-form-item>
         <el-form-item prop="start_date" label="开始时间" style="margin-left: 20px" required>
           <el-col :span="11">
