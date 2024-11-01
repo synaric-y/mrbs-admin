@@ -98,7 +98,7 @@ export default {
           value: 1,
           label: this.$t('terminal.bind.online'),
         }],
-      roomVal: 'all',
+      roomVal: '全部',
       roomOptions: [],
       pendingDeleteName: null,
       page_number: 1,
@@ -196,7 +196,7 @@ export default {
     
     getTerminalList() {
       let params = {}
-      // params['device_id'] = this.keyword
+      params['device_id'] = this.keyword
       params['pagenum'] = this.page_number
       params['pagesize'] = 20
       console.log('TerminalManager getTerminalList select_status_id',this.select_status_id)
