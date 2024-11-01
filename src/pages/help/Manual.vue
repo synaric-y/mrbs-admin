@@ -8,11 +8,15 @@
 
       <div class="manual-wrapper">
         <div class="manual-pdf">
-          <div class="preview-pdf-placeholder"></div>
-          <div class="preview-pdf-name">操作手册</div>
+          <!-- <div class="preview-pdf-placeholder"></div> -->
+          <iframe  class="preview-pdf-name"
+          src='https://meeting-manage-test.businessconnectchina.com:12443/mrbs_help_cn.pdf'
+          width='100%' height='100%' frameborder='1'>
+          操作手册</iframe>
+          <!-- <div class="preview-pdf-name">操作手册</div> -->
         </div>
-        <div class="preview-pdf">在线浏览</div>
-        <div class="download-pdf">PDF下载</div>
+        <!-- <div class="preview-pdf">在线浏览</div> -->
+        <!-- <div class="download-pdf">PDF下载</div> -->
       </div>
 
 
@@ -131,14 +135,16 @@ export default {
 }
 
 .preview-pdf-placeholder {
-  width: 150px;
-  height: 200px;
+  width: 100%;
+  height: 100%;
   background-color: #D8D8D8;
 }
 
 .preview-pdf-name {
   margin-top: 22px;
-  width: 100%;
+  width: 1000px;
+  height: 800px;
+  // width: 100%;
   text-align: center;
 }
 
