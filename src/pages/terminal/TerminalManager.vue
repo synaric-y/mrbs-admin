@@ -3,19 +3,17 @@
     <template #filter>
       <el-input v-model="keyword" style="width: 140px;height: 30px" :placeholder="$t('terminal.plzInputDeviceId')" />
       <el-select class="account-status-select" v-model="statusVal" placeholder="Select" size="default"
-                 style="width: 140px;min-height: 30px;" @change="onStatusChange">
-        <el-option style="height: 30px;" v-for="item in statusOptions" :key="item.value"
-                   :label="item.label" :value="item.value" />
+        style="width: 140px;min-height: 30px;" @change="onStatusChange">
+        <el-option style="height: 30px;" v-for="item in statusOptions" :key="item.value" :label="item.label"
+          :value="item.value" />
       </el-select>
-
       <el-select class="account-status-select" v-model="roomVal" placeholder="Select" size="default"
-                 style="width: 140px;min-height: 30px;" @change="onRoomChange">
+        style="width: 140px;min-height: 30px;" @change="onRoomChange">
         <el-option style="height: 30px;" v-for="item in roomOptions" :key="item.room_id" :label="item.title"
-                   :value="item.room_id" />
+          :value="item.room_id" />
       </el-select>
-
       <el-button type="primary" class="el-button-content" :icon="Search" @click="searchUser">
-        {{$t('base.search')}}
+        {{ $t('base.search') }}
       </el-button>
     </template>
     <template #table>
@@ -28,7 +26,8 @@
         <el-table-column prop="device_id" :label="$t('terminal.tableTerminal.deviceId')" width="200"></el-table-column>
         <el-table-column prop="version" :label="$t('terminal.tableTerminal.version')" width="100"></el-table-column>
         <el-table-column prop="description" :label="$t('terminal.tableTerminal.deviceInfo')"></el-table-column>
-        <el-table-column prop="resolution" :label="$t('terminal.tableTerminal.resolution')" width="150"></el-table-column>
+        <el-table-column prop="resolution" :label="$t('terminal.tableTerminal.resolution')"
+          width="150"></el-table-column>
         <el-table-column prop="battry_text" :label="$t('terminal.tableTerminal.battery')" width="130"></el-table-column>
         <el-table-column prop="status" :label="$t('terminal.tableTerminal.status')" width="130"></el-table-column>
         <el-table-column prop="bind_room" :label="$t('terminal.tableTerminal.bindStatus')" width="80"></el-table-column>
@@ -36,30 +35,30 @@
         <el-table-column prop="set_time" :label="$t('terminal.tableTerminal.setTime')" width="100"></el-table-column>
         <el-table-column prop="id" :label="$t('user.tableUser.operate')" width="200">
           <template #default="scope">
-            <div class="operate-wrapper" v-if="scope.row.status">
-              <span class="operate-item" @click="unbindDeviceDialog(scope.row)">{{$t('base.unbind')}}</span>
+            <div class="operate-wrapper" v-if="scope.row.is_set == 1">
+              <span class="operate-item" @click="unbindDeviceDialog(scope.row)">{{ $t('base.unbind') }}</span>
             </div>
+            <div v-else>{{ $t('base.none')}}</div>
           </template>
         </el-table-column>
       </el-table>
     </template>
     <template #pagination>
       <el-text>{{ $t('base.tableBottomCount', total_num) }}</el-text>
-      <el-pagination v-model:current-page="page_number" @current-change="handleCurrentChange"
-                     layout="prev, pager, next" :default-page-size="20" :total="total_num" />
+      <el-pagination v-model:current-page="page_number" @current-change="handleCurrentChange" layout="prev, pager, next"
+        :default-page-size="20" :total="total_num" />
     </template>
   </Layout>
-
   <el-dialog v-model="dialogUnbindVisible" :title="$t('terminal.unbindDevice')" width="550">
     <div class="">
-      {{$t('terminal.confirmUnbindHint')}}
+      {{ $t('terminal.confirmUnbindHint') }}
     </div>
     <template #footer>
       <div class="dialog-footer">
         <el-button style="margin-left: 50px" type="primary" @click="unbindDevice">
-          {{$t('base.confirm')}}
+          {{ $t('base.confirm') }}
         </el-button>
-        <el-button @click="dialogUnbindVisible = false">{{$t('base.cancel')}}</el-button>
+        <el-button @click="dialogUnbindVisible = false">{{ $t('base.cancel') }}</el-button>
       </div>
     </template>
   </el-dialog>
@@ -71,7 +70,7 @@ import { Api } from "@/network/api.js";
 import { ElMessage } from "element-plus/es";
 import { Common } from "@/common/common";
 import Layout from "@/components/Layout.vue";
-import {Search} from '@element-plus/icons-vue'
+import { Search } from '@element-plus/icons-vue'
 
 export default {
   computed: {
@@ -79,15 +78,15 @@ export default {
       return Search
     }
   },
-  components: {Layout},
+  components: { Layout },
   mixins: [PageMixin],
   data() {
     return {
-      keyword:'',
+      keyword: '',
       statusVal: -1,
       accountSwitch: 1,
       statusOptions: [
-      {
+        {
           value: -1,
           label: this.$t('terminal.bind.all'),
         },
@@ -106,9 +105,9 @@ export default {
       selectRow: null,
       terminals: [],
       total_num: 0,
-      select_status_id:-1,
+      select_status_id: -1,
       select_room_id: -1,
-      page_cache_areas:[],
+      page_cache_areas: [],
     }
   },
   methods: {
@@ -151,7 +150,7 @@ export default {
             });
           });
         });
-        select_rooms.unshift({title: '全部',room_id: -1,room_name: '全部'})
+        select_rooms.unshift({ title: '全部', room_id: -1, room_name: '全部' })
         this.roomOptions = select_rooms
       })
     },
@@ -164,7 +163,7 @@ export default {
     unbindDevice() {
       // 解绑当前设备
       this.dialogUnbindVisible = false
-      Api.unbindDevice({device_id:this.selectRow.device_id}).then(({ data, code, msg }) => {
+      Api.unbindDevice({ device_id: this.selectRow.device_id }).then(({ data, code, msg }) => {
         this.closedAlert()
         if (code == 0) {
           this.getTerminalList()
@@ -193,30 +192,29 @@ export default {
         }
       })
     },
-    
+
     getTerminalList() {
       let params = {}
-      params['device_id'] = this.keyword
+      // params['device_id'] = this.keyword
       params['pagenum'] = this.page_number
       params['pagesize'] = 20
-      console.log('TerminalManager getTerminalList select_status_id',this.select_status_id)
+      console.log('TerminalManager getTerminalList select_status_id', this.select_status_id)
       if (this.select_status_id != -1) {
         params['status'] = this.select_status_id
       }
       if (this.select_room_id != -1) {
         params['room_id'] = this.select_room_id
       }
-      console.log('TerminalManager getTerminalList params',params)
+      console.log('TerminalManager getTerminalList params', params)
       Api.getTerminalList(params).then(({ data, code, msg }) => {
         if (code == 0) {
-
           data.devices.forEach(it => {
-            it["version"] = !it["version"]?'无':it["version"]
-            it['description'] = !it['description']?'无':it['description']
-            it['status'] = !it['status']?'下线':'上线'
-            it['battry_text'] = it['is_charging']?`充电中${it['battery_level']}`:it['battery_level']
-            it['bind_room'] = it['is_set']?'已绑定':'未绑定'
-            it['set_time'] = it['set_time']?it['set_time']:'无'
+            it["version"] = !it["version"] ? '无' : it["version"]
+            it['description'] = !it['description'] ? '无' : it['description']
+            it['status'] = !it['status'] ? '下线' : '上线'
+            it['battry_text'] = it['is_charging'] ? `充电中${it['battery_level']}` : it['battery_level']
+            it['bind_room'] = it['is_set'] ? '已绑定' : '未绑定'
+            it['set_time'] = it['set_time'] ? it['set_time'] : '无'
           })
 
           console.log(data.devices)
@@ -366,5 +364,4 @@ export default {
 //.reset-password {
 //  display: flex;
 //  flex-direction: row;
-//}
-</style>
+//}</style>
