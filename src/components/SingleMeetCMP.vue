@@ -140,7 +140,8 @@ export default {
         skip: 0,
         no_mail: 1,
         private: "",
-        create_by: ''
+        create_by: '',
+        book_by: ''
       },
       currentHourMinute: '',
       minStep: '00:15',
@@ -319,6 +320,10 @@ export default {
       if (this.entry_id) {
         this.meetForm.id = Number(this.entry_id)
       }
+      if (this.userInfo && this.userInfo.display_name) {
+        this.meetForm.create_by = this.userInfo.display_name
+        this.meetForm.book_by = this.userInfo.display_name
+      }
       this.meetForm.rooms.push(this.meetForm.room_id)
       Api.editMeet(this.meetForm).then(({ data, code, msg }) => {
         if (code == 0) {
@@ -373,7 +378,7 @@ export default {
   },
 
   mounted(params) {
-    // console.log('SingleMeetCMP mounted params:',params)
+    console.log('SingleMeetCMP mounted params:',this.userInfo.display_name)
   },
 
   unmounted() {
