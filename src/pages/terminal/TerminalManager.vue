@@ -195,7 +195,9 @@ export default {
 
     getTerminalList() {
       let params = {}
-      // params['device_id'] = this.keyword
+      if (this.keyword) {
+        params['device_id'] = this.keyword
+      }
       params['pagenum'] = this.page_number
       params['pagesize'] = 20
       console.log('TerminalManager getTerminalList select_status_id', this.select_status_id)
