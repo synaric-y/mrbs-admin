@@ -240,12 +240,12 @@ export default defineComponent({
     },
     getSyncInterval() {
       this.filterDateStore = FilterDateStore()
-      console.log('Home getSyncInterval this.filterDateStore', this.filterDateStore.area)
-      const selectDays = this.filterDateStore.days
-      const selectStartDate = this.filterDateStore.startDate
-      const selectEndDate = this.filterDateStore.endDate
-      const selectArea = this.filterDateStore.area
-      const selectAreaName = this.filterDateStore.areaName
+      console.log('Home getSyncInterval this.filterDateStore', this.filterDateStore.cycleArea)
+      const selectDays = this.filterDateStore.cycleDays
+      const selectStartDate = this.filterDateStore.cycleStartDate
+      const selectEndDate = this.filterDateStore.cycleEndDate
+      const selectArea = this.filterDateStore.cycleArea
+      const selectAreaName = this.filterDateStore.cycleAreaName
       // this.getAllAreas()
       this.dayRrangeVal = selectDays
       if (selectStartDate && selectEndDate) {
@@ -472,13 +472,13 @@ export default defineComponent({
         tempTime = Common.getThreeDaysTimestamps(this.currentTimeZone)
         console.log(tempTime)
       }
-      this.filterDateStore.setDays(day)
+      this.filterDateStore.setCycleDays(day)
       this.startStamp = tempTime.start
       this.endStamp = tempTime.end
       this.startTime = moment.tz(tempTime.start * 1000, this.currentTimeZone).format('YYYY-MM-DD')
       this.endTime = moment.tz(tempTime.end * 1000, this.currentTimeZone).format('YYYY-MM-DD')
-      this.filterDateStore.setStartDate(this.startTime)
-      this.filterDateStore.setEndDate(this.endTime)
+      this.filterDateStore.setCycleStartDate(this.startTime)
+      this.filterDateStore.setCycleEndDate(this.endTime)
       console.log('Home dayRrange tempTime', this.startTime, this.endTime)
       this.dayRrangeVal = day
       this.days = this.formatDays(days)
@@ -646,8 +646,8 @@ export default defineComponent({
       console.log('Home choseArea areaName', area)
       const areaName = area[0].area_name
       this.currenAreaName = areaName
-      this.filterDateStore.setArea(e)
-      this.filterDateStore.setAreaName(areaName)
+      this.filterDateStore.setCycleArea(e)
+      this.filterDateStore.setCycleAreaName(areaName)
       this.getCurrentAreaRooms(this.currenArea)
       // this.getAreaRooms()
       this.getMeetRooms()
@@ -688,8 +688,8 @@ export default defineComponent({
         this.startStamp = Common.getTimestamp(start_date,'start')
         this.endStamp = Common.getTimestamp(end_date,'end')
 
-        this.filterDateStore.setStartDate(start_date)
-        this.filterDateStore.setEndDate(end_date)
+        this.filterDateStore.setCycleStartDate(start_date)
+        this.filterDateStore.setCycleEndDate(end_date)
         this.getMeetRooms()
         const days = this.getDaysBetween(start_date, end_date)
         const tempdays = this.formatDays(days)
