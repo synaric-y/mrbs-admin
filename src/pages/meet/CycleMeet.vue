@@ -49,8 +49,6 @@
                     {{ room.room_name }}
                     <template v-for="(time, timeIndex) in localTimeSlots">
 
-                      <!-- <template v-for="(item, index) in [0, 1]"> -->
-
                         <div v-if="timeIndex != localTimeSlots.length - 1"
                           :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div' : 'empty-meet-div']"
                           :style="{ height: minItemHeight + 'px', width: itemWidth + 'px', top: ((timeIndex) * minItemHeight + 70) + 'px' }"
@@ -58,25 +56,6 @@
                           <text class="empty-meet-duration">{{ time }}</text>
                           <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text>
                         </div>
-
-                      <!-- </template> -->
-                      <!-- <div v-if="timeIndex != localTimeSlots.length - 1"
-                        :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div' : 'empty-meet-div']"
-                        :style="{ height: minItemHeight + 'px', width: itemWidth + 'px', top: (timeIndex * minItemHeight + 70) + 'px' }"
-                        @click="toMeet(time, room, day)">
-                        <text class="empty-meet-duration">{{ time }}</text>
-                        <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text> -->
-
-
-                      <!-- <template v-if="canHoverDiv(day, time, room)">
-                    <text class="empty-meet-duration">{{ time }}</text>
-                    <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text>
-                  </template> -->
-                      <!-- <template>
-                    <text class="empty-meet-duration">测试实施</text>
-                    <text class="empty-meet-reason">不可hover</text>
-                  </template> -->
-                      <!-- </div> -->
                     </template>
                     <template v-for="(event, indexeve) in events">
                       <template v-if="day.date === event.date && room.room_id === event.room_id">
@@ -87,10 +66,10 @@
                             :style="{ top: minItemHeight * getTimeSlotIndex(event.startTime) + 70 + 'px', left: ((itemWidth + 20) * roomIndex) + roomIndex * 0.5 + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * minItemHeight + 'px' }">
                             <div class="event-center">
                               <template
-                                v-if="(getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) == 3">
+                                v-if="(getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) == 1">
                                 <div class="event-title" :style="{ margin: 1 + 'px' }">{{ event.entry_name
-                                  }}{{ $t('base.minMinuteTitle') }}</div>
-                                <div class="event-person" :style="{ margin: 2 + 'px' }">{{ event.book_by }}</div>
+                                  }}</div>
+                                <div class="event-person" :style="{ margin: 2 + 'px' }">{{ event.duration }}{{ event.book_by }}</div>
                               </template>
                               <template v-else>
                                 <div class="event-title">{{ event.entry_name }}</div>
@@ -1147,6 +1126,10 @@ export default defineComponent({
 .event-title {
   font-weight: bold;
   margin-bottom: 2px;
+  width: 220px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .event-time,

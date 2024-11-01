@@ -65,10 +65,10 @@
                             :style="{ top: minItemHeight * getTimeSlotIndex(event.startTime) + 70 + 'px', left: ((itemWidth + 20) * roomIndex) + roomIndex * 0.5 + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * minItemHeight + 'px' }">
                             <div class="event-center">
                               <template
-                                v-if="(getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) == 3">
+                                v-if="(getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) == 1">
                                 <div class="event-title" :style="{ margin: 1 + 'px' }">{{ event.entry_name
-                                  }}{{ $t('base.minMinuteTitle') }}</div>
-                                <div class="event-person" :style="{ margin: 2 + 'px' }">{{ event.book_by }}</div>
+                                  }}</div>
+                                <div class="event-person" :style="{ margin: 2 + 'px' }">{{ event.duration }}{{ event.book_by }}</div>
                               </template>
                               <template v-else>
                                 <div class="event-title">{{ event.entry_name }}</div>
@@ -1126,6 +1126,10 @@ export default defineComponent({
 .event-title {
   font-weight: bold;
   margin-bottom: 2px;
+  width: 220px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .event-time,
