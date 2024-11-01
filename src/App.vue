@@ -197,11 +197,11 @@ export default {
               title: '常见问题',
               path: '/questions'
             },
-            {
-              index: 3,
-              title: '问题反馈',
-              path: '/feedback'
-            }
+            // {
+            //   index: 3,
+            //   title: '问题反馈',
+            //   path: '/feedback'
+            // }
           ]
         },
       ]

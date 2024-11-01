@@ -7,9 +7,9 @@
     <div style="flex: 1"></div>
     <div class="nav-right">
       <div class="nav-time">{{time}}</div>
-      <div class="icon-container">
+      <!-- <div class="icon-container">
         <el-icon color="#4e5969"><BellFilled /></el-icon>
-      </div>
+      </div> -->
       <div class="icon-container">
         <el-icon color="#4e5969"><Tools /></el-icon>
       </div>
