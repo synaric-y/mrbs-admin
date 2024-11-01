@@ -13,7 +13,7 @@
         </el-table-column>
         <el-table-column prop="disabled" :label="$t('room.tableRoom.state')" width="150">
           <template #default="scope">
-            <el-switch v-model="scope.row.disabled" :active-value="0" :inactive-value="1"
+            <el-switch v-model="scope.row.disabled" disabled :active-value="0" :inactive-value="1"
               @change="handleSwitchChange(scope.row)" />
           </template>
         </el-table-column>
