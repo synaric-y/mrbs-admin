@@ -37,7 +37,7 @@
     </template>
   </Layout>
   <el-dialog v-model="showAddAreaDialog" :title="$t('area.addArea')" width="500">
-    <el-form :model="form" ref="areaForm" :rules="rules">
+    <el-form :model="form" ref="form" :rules="rules">
       <el-form-item prop="name" :label="$t('area.formArea.name')">
         <el-input v-model="form.name" autocomplete="off" />
       </el-form-item>

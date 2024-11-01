@@ -3,7 +3,6 @@
     <el-main class="container-sub-page-main">
       <div class="sub-page-content">
         <div class="sub-title-wrapper" style="margin-left: 20px;">
-          <!-- <div class="sub-title">{{ $t("base.userManagement") }}</div> -->
           <div class="page-title">{{ $t('userGroup.userGroupSettings') }}</div>
           <div class="async-wrapper" style="margin-top: 20px;height: 30px;">
             <el-button :disabled="!enable_sync" size="large" type="primary" style="width: 112px;" @click="OnSyncUsers">
@@ -13,20 +12,13 @@
             <span class="async-last-time">{{ syncTime }}</span>
           </div>
         </div>
-
         <div class="table-wrapper" style="height: auto">
-          <!-- default-expand-all -->
           <el-table :v-loading="true" :data="tableData" lazy style="width: 100%;height: auto; margin-bottom: 20px;" row-key="id"
             :tree-props="{ children: 'children', hasChildren: 'has_child' }" :load="loadSubGroup" max-height="550">
             <el-table-column prop="group" :label="$t('userGroup.userGroup')" label-width="400px">
               <template #default="scope">
-                <!-- <div class="group-title-wrapper"> -->
                 <span class="group-title" :style="{ 'font-weight': scope.row.children ? 'bold' : 'normal' }">{{
                   scope.row.name }}</span>
-                <!--                <template v-if="scope.row.source !== 'system'">-->
-                <!--                <span class="group-more" @click="moreGroupMember(scope.row)">{{$t('base.viewMore')}}</span>-->
-                <!--                </template>-->
-                <!-- </div> -->
               </template>
             </el-table-column>
             <el-table-column prop="source" :label="$t('userGroup.tableUserGroup.source')" label-width="200px">
@@ -42,7 +34,6 @@
             <el-table-column prop="name" label="操作" label-width="400px">
               <template #default="scope">
                 <div v-if="scope.row.source === 'system'">
-                  <!-- <span class="group-btn" v-for="(item,func) in scope.row.btns" @click="func">{{ item }}</span> -->
                   <template v-if="scope.row.children">
                     <div class="operate-wrapper">
                       <span class="operate-item" @click="editGroupBtn(0, scope.row)">{{ $t('base.new') }}</span>
@@ -52,7 +43,6 @@
                   </template>
                   <template v-else>
                     <div class="operate-wrapper">
-                      <!-- <span class="group-btn" @click="editGroupBtn(0, scope.row)">{{ $t('base.new') }}</span> -->
                       <span class="operate-item" @click="editGroupBtn(1, scope.row)">{{ $t('base.edit') }}</span>
                       <span class="operate-item" @click="deleteGroupDialog(scope.row)">{{ $t('base.delete') }}</span>
                       <span class="operate-item" @click="editGroupMember(scope.row)">{{ $t('userGroup.editMember')
@@ -69,7 +59,6 @@
                   </template>
                   <template v-else>
                     <div class="operate-wrapper">
-                      <!-- 高度占位 -->
                       <span class="operate-item" style="visibility: hidden">{{ $t('userGroup.viewMember') }}</span>
                     </div>
                   </template>
@@ -78,7 +67,6 @@
             </el-table-column>
           </el-table>
         </div>
-
         <GroupDetail v-if="dialogGroupMember" :groupId="selectedGroupId" :groupName="selectedGroupName"
           :is-edit="isEdit" :ad-more="ad_more_member" @close="dialogGroupMember = false" />
         <el-dialog v-model="dialogDeleteVisible" :title="$t('user.deleteUser')" width="550">
@@ -94,7 +82,6 @@
             </div>
           </template>
         </el-dialog>
-
         <el-dialog v-model="dialogAddGroup" :title="$t('userGroup.editUserGroup')" width="550">
           <el-form :model="addGroupForm" :rules="rules">
             <div class="request-wrapper">
@@ -259,7 +246,6 @@ export default {
         console.log('loadGroup sync level1', node.level)
         this.getAdTreeWithId(-1).then(childrenData => {
           console.log('getAdTreeWithId 1 groups', childrenData)
-          // this.treeData = childrenData
           resolve(childrenData);
         }).catch(() => {
           resolve([]);
@@ -277,7 +263,7 @@ export default {
     addUser(val, row) {
       this.dialogFormVisible = true
       if (val === 1) {
-        this.dialogUserDetailForm = false// Editable for adding a user
+        this.dialogUserDetailForm = false
         this.userDetailTitle = this.$t('user.addUser')
         this.userForm.name = ''
         this.userForm.region = ''
@@ -286,7 +272,7 @@ export default {
         this.userForm.email = ''
         this.userForm.remark = ''
       } else {
-        this.dialogUserDetailForm = true // Read-only for viewing user details
+        this.dialogUserDetailForm = true
         this.userDetailTitle = this.$t('user.viewUser')
         this.userForm.name = row.name
         this.userForm.account = row.account
@@ -449,7 +435,7 @@ export default {
             }
             return
           }
-          else if (data.task.complete === 1) {
+          else if (data.task && data.task.complete === 1) {
             this.enable_sync = true
             this.is_loading = false
             console.log('UserGroup getADStatus complete:1')
@@ -458,8 +444,8 @@ export default {
             }
             return
           }
-          else if (data.task.complete === 0) {
-            this.enable_sync = false
+          else if (data.task && data.task.complete === 0) {
+            this.enable_sync = true
             console.log('UserGroup getADStatus complete:0')
             if (!is_initalize) {
               this.startSyncUser()
