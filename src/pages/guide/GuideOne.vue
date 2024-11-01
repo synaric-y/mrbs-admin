@@ -1,9 +1,7 @@
 <template>
   <el-container class="container-sub-page">
     <el-main class="container-sub-page-main">
-      
       <div class="sub-page-content">
-
         <div class="page-title">会议系统配置向导</div>
         <div class="sub-content">
           <div class="sub-text">

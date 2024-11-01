@@ -1,25 +1,20 @@
 <template>
   <Layout :title="$t('base.roomManagement')">
     <template #filter>
-      <el-select v-model="areaId" :empty-values="[null, undefined]" style="max-width: 180px;"
-                 @change="getRoomList">
+      <el-select v-model="areaId" :empty-values="[null, undefined]" style="max-width: 180px;" @change="getRoomList">
         <el-option v-for="item in areaList" :key="item.id" :label="item.area_name" :value="item.id" />
       </el-select>
-      <el-button type="primary" @click="pendingAddRoom">{{$t("base.add") }}</el-button>
+      <el-button type="primary" @click="pendingAddRoom">{{ $t("base.add") }}</el-button>
     </template>
     <template #table>
       <el-table :data="tableData" style="width: 100%" header-cell-class-name="tb-header" header-align="center"
-                max-height="600">
+        max-height="600">
         <el-table-column fixed prop="room_name" :label="$t('room.tableRoom.name')" width="330">
         </el-table-column>
         <el-table-column prop="disabled" :label="$t('room.tableRoom.state')" width="150">
-<!--          <template #default="scope">-->
-<!--            <div :class="['tb-state', scope.row.disabled == 1 ? 'tb-state-disable' : '']"></div>-->
-<!--          </template>-->
           <template #default="scope">
-            <el-switch v-model="scope.row.disabled"
-                       :active-value="0"
-                       :inactive-value="1" @change="handleSwitchChange(scope.row)" />
+            <el-switch v-model="scope.row.disabled" :active-value="0" :inactive-value="1"
+              @change="handleSwitchChange(scope.row)" />
           </template>
         </el-table-column>
         <el-table-column prop="id" :label="$t('room.tableRoom.id')" width="150">
@@ -28,11 +23,7 @@
         </el-table-column>
         <el-table-column prop="battery_level" :label="$t('room.tableRoom.battery')" width="200">
         </el-table-column>
-        <el-table-column
-            prop="id"
-            :label="$t('room.tableRoom.operate')"
-            width="200">
-
+        <el-table-column prop="id" :label="$t('room.tableRoom.operate')" width="200">
           <template #default="scope">
             <div class="operate-wrapper">
               <span class="operate-item" @click="toRoomDetail(scope.row.id)">编辑</span>
@@ -44,15 +35,13 @@
       </el-table>
     </template>
   </Layout>
-
-
   <el-dialog v-model="showAddRoomDialog" :title="$t('area.addArea')" width="500">
-    <el-form :model="form" :rules="rules" ref="roomForm" label-width="auto">
+    <el-form :model="form" :rules="rules" ref="form" label-width="auto">
       <el-form-item prop="name" :label="$t('room.formRoom.name')" label-position="right">
         <el-input v-model="form.name" />
       </el-form-item>
-      <el-form-item prop="area" :label="$t('room.formRoom.area')" label-position="right">
-        <el-select v-model="form.area" :empty-values="[null, undefined]">
+      <el-form-item prop="area_id" :label="$t('room.formRoom.area')" label-position="right">
+        <el-select v-model="form.area_id" :empty-values="[null, undefined]">
           <el-option v-for="item in areaListNoAll" :key="item.id" :label="item.area_name" :value="item.id" />
         </el-select>
       </el-form-item>
@@ -83,13 +72,12 @@
       </div>
     </template>
   </el-dialog>
-
   <el-dialog v-model="showTerminalDialog" title="终端绑定" width="550">
     <el-form :model="terminalForm" :rules="terminal_rules">
-      <el-form-item label="终端"  prop="terminal" required >
+      <el-form-item label="终端" prop="terminal" required>
         <el-select style="min-width: 120px" v-model="select_terminal" placeholder="终端">
           <el-option v-for="item in avaliableDevices" style="min-width: 120px;z-index: 99999" :key="item.device_id"
-                     :label="item.device_name" :value="item.device_id" />
+            :label="item.device_name" :value="item.device_id" />
         </el-select></el-form-item>
     </el-form>
     <template #footer>
@@ -111,7 +99,7 @@ import { ElMessage } from "element-plus/es";
 import Layout from "@/components/Layout.vue";
 
 export default {
-  components: {Layout},
+  components: { Layout },
   mixins: [PageMixin],
   data() {
     return {
@@ -120,6 +108,7 @@ export default {
       showDeleteRoomDialog: false,
       showTerminalDialog: false,
       form: {
+        area_id: '',
         area: '',
         name: '',
         description: '',
@@ -131,7 +120,7 @@ export default {
         name: [
           { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
         ],
-        area: [
+        area_id: [
           { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
         ],
         capacity: [
@@ -141,14 +130,14 @@ export default {
       terminalForm: {
         terminal: ''
       },
-      terminal_rules:{
+      terminal_rules: {
         terminal: [
           { required: true, message: '请选择终端设备', trigger: 'blur' }
         ],
       },
-      select_terminal:'请选择',
+      select_terminal: '请选择',
       select_row: null,
-      avaliableDevices:[],
+      avaliableDevices: [],
       areaList: [],
       areaListNoAll: [],
       areaId: '',
@@ -221,25 +210,26 @@ export default {
       }
     },
     pendingBindTerminal(row) {
-      console.log('pendingBindTerminal row',row)
+      console.log('pendingBindTerminal row', row)
       this.showTerminalDialog = true
       this.select_row = row
     },
     sureBindTerminal() {
-      Api.bindDevice({device_id:this.select_row.device_id,room_id:this.select_row.id}).then(({ data, code, msg }) => {
-          if (code == 0) {
-            this.getRoomList()
-          } else {
-            ElMessage.error(msg)
-          }
-        })
+      Api.bindDevice({ device_id: this.select_row.device_id, room_id: this.select_row.id }).then(({ data, code, msg }) => {
+        if (code == 0) {
+          this.getRoomList()
+        } else {
+          ElMessage.error(msg)
+        }
+      })
     },
     addRoom() {
-      this.$refs.roomForm.validate((pass) => {
+      this.$refs.form.validate((pass) => {
         if (!pass) {
           return
         }
         this.showAddRoomDialog = false
+        this.form.area = this.form.area_id
         Api.addRoom(this.form).then(({ data, code, msg }) => {
           if (code == 0) {
             this.getRoomList()
@@ -270,9 +260,7 @@ export default {
   margin-bottom: 20px;
 }
 
-.el-table {
-
-}
+.el-table {}
 
 .tb-op-icon {
   width: 25px;
