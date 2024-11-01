@@ -89,6 +89,8 @@
         </div>
         <SingleMeetCMP v-if="dialogMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas" :entry_id="entry_id"
           @close="closeDialogMeetForm" />
+        <CycleMeetCMP v-if="dialogCycleMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas" :repeat_id="repeat_id" :entry_id="entry_id"
+          @close="closeDialogCycleMeetForm" />
       </div>
     </el-main>
     <el-skeleton v-if="showLoading" :rows="15" animated />
@@ -169,6 +171,7 @@ export default defineComponent({
         "05:00PM", "05:30PM", "06:00PM", "06:30PM", "07:00PM", "07:30PM", "08:00PM", "08:30PM", "09:00PM"
       ],
       dialogMeetForm: false,
+      dialogCycleMeetForm: false,
       form_mode: 0,
       currentHourMinute: '',
       currentTimeZone: 'Asia/Shanghai',
@@ -179,7 +182,8 @@ export default defineComponent({
         room_id: '',
         room_name: '',
         timeStamp: 0,
-      }
+      },
+      repeat_id: 0,
     };
   },
 
@@ -256,6 +260,11 @@ export default defineComponent({
 
     closeDialogMeetForm() {
       this.dialogMeetForm = false
+      this.getMeetRooms()
+    },
+
+    closeDialogCycleMeetForm() {
+      this.dialogCycleMeetForm = false
       this.getMeetRooms()
     },
 
@@ -581,8 +590,6 @@ export default defineComponent({
       const nextTimeStamp = moment.tz(formatStr, this.currentTimeZone).unix();
       console.log('Home toMeet nextTimeStamp currenTimestamp', nextTimeStamp, this.currenTimestamp)
       this.addParams.timeStamp = nextTimeStamp
-      this.dialogMeetForm = true
-      return
       if (nextTimeStamp < this.currenTimestamp) {
         return
       }
@@ -593,6 +600,7 @@ export default defineComponent({
         console.log('Home toMeet disabled', room.disabled)
         return
       }
+      this.dialogMeetForm = true
     },
 
     editMeet(event) {
@@ -609,6 +617,11 @@ export default defineComponent({
       }
       this.form_mode = 1
       this.entry_id = event.entry_id
+      if (event.repeat_id) {
+        this.repeat_id = event.repeat_id
+        this.dialogCycleMeetForm = true
+        return
+      }
       this.dialogMeetForm = true
     },
 
