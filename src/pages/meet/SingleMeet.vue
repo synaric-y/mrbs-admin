@@ -137,6 +137,8 @@ export default defineComponent({
       localLangFormat: 'dddd, MMMM Do YYYY',
       interval: null,
       currenTimestamp: 0,
+      min_start: '06:00',
+      max_end: '21:00',
       showLoading: true,
       filterDateStore: null,
       minDuration: 1800,
@@ -382,36 +384,9 @@ export default defineComponent({
     },
 
     getMaxAreaDuration() {
-      const minStart = '06:00'
-      const maxEnd = '22:30'
+      const minStart = this.min_start
+      const maxEnd = this.max_end
       return { minStart, maxEnd }
-      if (this.page_cache_areas && this.page_cache_areas.areas) {
-        const localAreas = this.page_cache_areas.areas
-        let minStart = localAreas[0].start_time
-        let [startTime, amstr] = minStart.split(' ')
-        let maxEnd = localAreas[0].end_time
-        let [endTime, pmstr] = maxEnd.split(' ')
-        console.log('Home getMaxAreaDuration startTime amstr', startTime, amstr)
-        console.log('Home getMaxAreaDuration endTime pmstr', endTime, pmstr)
-        for (let i = 1; i < localAreas.length; i++) {
-          const otherStart = localAreas[i].start_time
-          const [otherStartTime, otherAMstr] = otherStart.split(' ');
-          const otherEnd = localAreas[i].end_time
-          const [otherEndTime, otherPMstr] = otherEnd.split(' ');
-          if (parseInt(otherStartTime) < parseInt(startTime)) {
-            minStart = otherStart
-            startTime = otherStartTime
-            amstr = otherAMstr
-          }
-          if (parseInt(otherEndTime) > parseInt(endTime)) {
-            maxEnd = otherEnd
-            endTime = otherEndTime
-            pmstr = otherPMstr
-          }
-        }
-        return { minStart, maxEnd }
-      }
-      return {}
     },
 
     getTimeSlotIndex(time) {
@@ -733,8 +708,13 @@ export default defineComponent({
           })
           return
         }
-        console.log('Home getMeetRooms api data:', data)
         this.currenTimestamp = data.timestamp
+        // max_time: "05:00 AM"
+        // min_time: "02:00 PM"
+        this.min_start = Common.convertTo24Hour(data.min_time)
+        this.max_end = Common.convertTo24Hour(data.max_time)
+        console.log('Home getMeetRooms api this.min_start:', this.min_start,data.min_time)
+        console.log('Home getMeetRooms api this.max_end:', this.max_end,data.max_time)
         this.nowTime = data.time
         this.getInMeeting(data)
         this.$nextTick(() => {

@@ -138,6 +138,8 @@ export default defineComponent({
       nowTime: '',
       screenHeight: 700,
       localLangFormat: 'dddd, MMMM Do YYYY',
+      min_start: '06:00',
+      max_end: '21:00',
       interval: null,
       currenTimestamp: 0,
       showLoading: true,
@@ -385,36 +387,9 @@ export default defineComponent({
     },
 
     getMaxAreaDuration() {
-      const minStart = '06:00'
-      const maxEnd = '22:30'
+      const minStart = this.min_start
+      const maxEnd = this.max_end
       return { minStart, maxEnd }
-      if (this.page_cache_areas && this.page_cache_areas.areas) {
-        const localAreas = this.page_cache_areas.areas
-        let minStart = localAreas[0].start_time
-        let [startTime, amstr] = minStart.split(' ')
-        let maxEnd = localAreas[0].end_time
-        let [endTime, pmstr] = maxEnd.split(' ')
-        console.log('Home getMaxAreaDuration startTime amstr', startTime, amstr)
-        console.log('Home getMaxAreaDuration endTime pmstr', endTime, pmstr)
-        for (let i = 1; i < localAreas.length; i++) {
-          const otherStart = localAreas[i].start_time
-          const [otherStartTime, otherAMstr] = otherStart.split(' ');
-          const otherEnd = localAreas[i].end_time
-          const [otherEndTime, otherPMstr] = otherEnd.split(' ');
-          if (parseInt(otherStartTime) < parseInt(startTime)) {
-            minStart = otherStart
-            startTime = otherStartTime
-            amstr = otherAMstr
-          }
-          if (parseInt(otherEndTime) > parseInt(endTime)) {
-            maxEnd = otherEnd
-            endTime = otherEndTime
-            pmstr = otherPMstr
-          }
-        }
-        return { minStart, maxEnd }
-      }
-      return {}
     },
 
     getTimeSlotIndex(time) {
@@ -735,6 +710,8 @@ export default defineComponent({
         }
         console.log('Home getMeetRooms api data:', data)
         this.currenTimestamp = data.timestamp
+        this.min_start = Common.convertTo24Hour(data.min_time)
+        this.max_end = Common.convertTo24Hour(data.max_time)
         this.nowTime = data.time
         this.getInMeeting(data)
         this.$nextTick(() => {

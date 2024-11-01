@@ -299,6 +299,18 @@ export class Common {
         return date;
     }
 
+    static convertTo24Hour(timeStr) {
+        const [_, hours, minutes, period] = timeStr.match(/(\d+):(\d+)\s?(AM|PM)/i);
+        let hours24 = parseInt(hours, 10);
+        if (period.toUpperCase() === "PM" && hours24 !== 12) {
+            hours24 += 12;
+        }
+        if (period.toUpperCase() === "AM" && hours24 === 12) {
+            hours24 = 0;
+        }
+        return `${String(hours24).padStart(2, '0')}:${minutes}`;
+    }
+
     static formatTime(date) {
         let hours = date.getHours();
         const minutes = date.getMinutes();
