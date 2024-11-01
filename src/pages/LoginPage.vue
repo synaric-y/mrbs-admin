@@ -66,7 +66,7 @@ export default {
       Api.login(this.form).then(({data, code, msg}) => {
         if (code == 0) {
           this.login(data)
-          this.switchTab('/')
+          this.switchTab('../single_meet')
         } else {
           ElMessage.error('登录失败！')
         }

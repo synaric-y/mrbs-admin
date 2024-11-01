@@ -12,7 +12,7 @@
             仅需数分钟，您将迅速熟悉系统，并完成配置。</div>
           <div class="sub-buttons">
             <el-button class="btn" type="primary" @click="switchTab('/guide_two')">开始</el-button>
-            <el-button class="btn" @click="switchTab('/')">下次再说</el-button>
+            <el-button class="btn" @click="switchTab('../single_meet')">下次再说</el-button>
           </div>
         </div>
       </div>

@@ -132,7 +132,7 @@ export default {
       Api.setVariables(
           {"init_status": 3}
       ).then(res => {
-        this.switchTab('/')
+        this.switchTab('../single_meet')
       }).catch(e=>{
         console.log(e)
       })

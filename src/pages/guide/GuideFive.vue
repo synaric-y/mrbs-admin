@@ -14,8 +14,8 @@
         </div>
 
         <div class="sub-buttons">
-            <el-button class="btn" @click="switchTab('/')">结束向导</el-button>
-            <el-button class="btn" type="primary" @click="switchTab('/')">预约会议</el-button>
+            <el-button class="btn" @click="switchTab('../single_meet')">结束向导</el-button>
+            <el-button class="btn" type="primary" @click="switchTab('../single_meet')">预约会议</el-button>
             <el-button class="btn">继续添加会议室</el-button>
         </div>
       </div>
