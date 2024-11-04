@@ -130,8 +130,8 @@
 
     </template>
     <template #btns>
-      <el-button type="default">取消</el-button>
       <el-button type="primary" @click="submit">保存</el-button>
+      <el-button type="default">取消</el-button>
     </template>
   </Layout>
 </template>

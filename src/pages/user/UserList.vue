@@ -47,7 +47,7 @@
             <template #default="scope">
               <div class="operate-wrapper">
                 <span class="operate-item" @click="resetPassword(scope.row)">{{ $t('base.resetPassword') }}</span>
-                <span class="operate-item" @click="addUser(0, scope.row)">{{ $t('base.detail') }}</span>
+                <span class="operate-item" @click="addUser(0, scope.row)">编辑</span>
                 <span class="operate-item" @click="deleteUserPop(scope.row)">{{ $t('base.delete') }}</span>
               </div>
             </template>
@@ -93,7 +93,7 @@
       </el-form-item>
     </el-form>
     <template #footer>
-      <div class="dialog-footer">
+      <div class="dialog-footer" style="text-align: center">
         <el-button @click="commitAddForm" type="primary">{{ $t('base.submit') }}</el-button>
         <el-button @click="closedAlert">{{ $t('base.cancel') }}</el-button>
       </div>
@@ -392,7 +392,7 @@ export default {
         if (code == 0 && data && data.users) {
           data.users.forEach(it => {
             if (!it['email']) {
-              it["email"] = this.$t('base.none')
+              it["email"] = ''
             }
             if (!it['create_time']) {
               it["create_time"] = this.$t('base.none')

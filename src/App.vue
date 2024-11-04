@@ -82,7 +82,7 @@ export default {
           index: 1,
           icon: '/admin/imgs/dashboard_manager.png',
           active_icon: '/admin/imgs/dashboard_manager_selected.png',
-          title: 'Dashboard',
+          title: '仪表盘',//Dashboard
           path: '/guide_one',
           children:[]
         },
