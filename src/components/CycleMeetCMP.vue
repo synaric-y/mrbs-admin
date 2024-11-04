@@ -191,8 +191,34 @@ export default {
           },
         ],
         rep_end_date: [
-          { required: true, message: '请选择结束时间', trigger: 'blur' }
+          {
+            validator: (rule, value, callback) => {
+              const startDate = this.meetForm.start_date;
+              if (!value) {
+                callback(new Error(this.$t('请选择结束时间')));
+              } else if (value <= startDate) {
+                callback(new Error(this.$t('结束时间必须大于开始时间')));
+              } else {
+                callback(); // 校验通过
+              }
+            },
+            trigger: 'blur'
+          }
         ],
+          // { required: true, message: '请选择结束时间', trigger: 'blur' }
+          // {
+          //   validator: (rule, value, callback, source, options) => {
+          //     const errors = [];
+          //     if (!value) {
+          //       errors.push(new Error(this.$t('请选择结束时间')))
+          //     }
+          //     if (value.endsWith('5')) {
+          //       errors.push(new Error(this.$t('结束时间必须大于开始时间')))
+          //     }
+          //     return errors;
+          //   },
+          // },
+        // ],
         end_hour: [
           // { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
           {

@@ -37,8 +37,8 @@
                   <template v-if="scope.row.children">
                     <div class="operate-wrapper">
                       <span class="operate-item" @click="editGroupBtn(0, scope.row)">{{ $t('base.new') }}</span>
-                      <span class="operate-item" @click="editGroupBtn(1, scope.row)">{{ $t('base.edit') }}</span>
-                      <span class="operate-item" @click="deleteGroupDialog(scope.row)">{{ $t('base.delete') }}</span>
+                      <!-- <span class="operate-item" @click="editGroupBtn(1, scope.row)">{{ $t('base.edit') }}</span>
+                      <span class="operate-item" @click="deleteGroupDialog(scope.row)">{{ $t('base.delete') }}</span> -->
                     </div>
                   </template>
                   <template v-else>

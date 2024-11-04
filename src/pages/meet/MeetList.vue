@@ -38,16 +38,16 @@
         <el-table-column prop="status_text" label="会议状态" width="80"></el-table-column>
         <el-table-column prop="create_by" label="预约人" width="100">
         </el-table-column>
-        <!-- <el-table-column prop="id" :label="$t('user.tableUser.operate')" width="200">
+        <el-table-column prop="id" :label="$t('user.tableUser.operate')" width="200">
           <template #default="scope">
-            <div class="operate-wrapper" v-if="scope.row.status == 2">
+            <div class="operate-wrapper">
               <span class="operate-item" style="color: #000000;" disable>无</span>
             </div>
-            <div class="operate-wrapper" v-else>
+            <!-- <div class="operate-wrapper" v-else>
               <span class="operate-item" @click="editMeetDislog(scope.row)">编辑</span>
-            </div>
+            </div> -->
           </template>
-        </el-table-column> -->
+        </el-table-column>
       </el-table>
     </template>
     <template #pagination>
