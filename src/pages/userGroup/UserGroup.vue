@@ -43,6 +43,7 @@
                   </template>
                   <template v-else>
                     <div class="operate-wrapper">
+                      <span class="operate-item" @click="editGroupBtn(0, scope.row)">{{ $t('base.new') }}</span>
                       <span class="operate-item" @click="editGroupBtn(1, scope.row)">{{ $t('base.edit') }}</span>
                       <span class="operate-item" @click="deleteGroupDialog(scope.row)">{{ $t('base.delete') }}</span>
                       <span class="operate-item" @click="editGroupMember(scope.row)">{{ $t('userGroup.editMember')
@@ -169,6 +170,7 @@ export default {
       addGroupForm: {
         name: '',
         sync_group_name: '',
+        parent_id: -1,
       },
       userRow: null,
       deleteRow: null,
@@ -334,6 +336,7 @@ export default {
       } else {
         this.addGroupForm.name = ''
         this.addGroupForm.sync_group_name = ''
+        this.addGroupForm.parent_id = row.id
       }
     },
 
@@ -366,13 +369,14 @@ export default {
         this.editGroup(this.selectedItem.third_id)
         return
       }
-      this.addGroup(this.selectedItem.third_id)
+      console.log('commitGroupForm selectedItem', this.selectedItem)
+      this.addGroup(this.selectedItem)
     },
 
     addGroup(third_id) {
       let params = {}
       params['name'] = this.addGroupForm.name
-      params['parent_id'] = -1
+      params['parent_id'] = this.addGroupForm.parent_id
       params['third_id'] = third_id
       console.log('UserGroup updateUserStatus params', params)
       Api.addGroup(params).then(({ data, code, msg }) => {
