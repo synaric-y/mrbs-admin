@@ -163,6 +163,7 @@ export default {
       Api.unbindDevice({ device_id: this.selectRow.device_id }).then(({ data, code, msg }) => {
         if (code == 0) {
           this.dialogUnbindVisible = false
+          ElMessage.success('解绑操作成功')
           this.getTerminalList()
         } else {
           ElMessage.error(msg)
@@ -176,18 +177,6 @@ export default {
     handleCurrentChange(newPage) {
       console.log('TerminalManager handleCurrentChange newPage:', newPage, this.page_number)
       this.page_number = newPage
-    },
-
-    unBindDevice() {
-      console.log('TerminalManager unbindDevice')
-      Api.editUser(params).then(({ data, code, msg }) => {
-        if (code == 0) {
-          ElMessage.success('解绑操作成功')
-          this.getUserList()
-        } else {
-          ElMessage.error(msg)
-        }
-      })
     },
 
     getTerminalList() {
