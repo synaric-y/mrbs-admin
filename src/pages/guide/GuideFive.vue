@@ -26,7 +26,6 @@ import { STORAGE } from "@/const.js";
 import { ElMessage } from "element-plus";
 import { Text } from "vue";
 import ProgressBar from "@/pages/guide/ProgressBar.vue";
-import { Finished } from "@element-plus/icons-vue/dist/types";
 export default {
   components: {ProgressBar},
   mixins: [PageMixin],
@@ -41,7 +40,6 @@ export default {
   },
   methods: {
     finishedGuide() {
-      // 结束向导
       this.switchTab('../single_meet')
     },
   },
