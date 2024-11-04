@@ -23,7 +23,7 @@
       </el-button>
     </template>
     <template #table>
-      <el-table :data="meetListData" header-cell-class-name="tb-header" max-height="450">
+      <el-table :data="meetListData" header-cell-class-name="tb-header" max-height="450" width="auto">
         <el-table-column prop="number" label="序号" width="60">
           <template #default="scope">
             {{ scope.$index + 1 }}
@@ -31,8 +31,8 @@
         </el-table-column>
         <el-table-column prop="area_name" label="区域" width="100"></el-table-column>
         <el-table-column prop="room_name" label="会议室" width="100"></el-table-column>
-        <el-table-column prop="startTime" label="预约开始时间" width="150"></el-table-column>
-        <el-table-column prop="endTime" label="预约结束时间" width="150"></el-table-column>
+        <el-table-column prop="startTime" label="预约开始时间" width="250"></el-table-column>
+        <el-table-column prop="endTime" label="预约结束时间" width="250"></el-table-column>
         <el-table-column prop="duration" label="会议时间" width="200"></el-table-column>
         <el-table-column prop="is_repeat_text" label="是否周期会议" width="130"></el-table-column>
         <el-table-column prop="status_text" label="会议状态" width="80"></el-table-column>
