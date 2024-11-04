@@ -57,8 +57,12 @@
     </template>
   </Layout>
 
-  <CycleMeetCMP v-if="dialogCycleMeet" :entry_id="entry_id" @close="dialogCycleMeet = false" />
-  <SingleMeetCMP v-if="dialogSingleMeet" :entry_id="entry_id" @close="dialogSingleMeet = false" />
+  <!-- <CycleMeetCMP v-if="dialogCycleMeet" :entry_id="entry_id" @close="dialogCycleMeet = false" />
+  <SingleMeetCMP v-if="dialogSingleMeet" :entry_id="entry_id" @close="dialogSingleMeet = false" /> -->
+  <SingleMeetCMP v-if="dialogMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas"
+    :entry_id="entry_id" @close="closeDialogMeetForm" />
+  <CycleMeetCMP v-if="dialogCycleMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas"
+    :repeat_id="repeat_id" :entry_id="entry_id" @close="closeDialogCycleMeetForm" />
 </template>
 
 <script>
@@ -117,19 +121,42 @@ export default {
       dialogCycleMeet: false,
       entry_id: -1,
       dialogSingleMeet: false,
-      page_cache_areas: [],
       select_area_id: -1,
       select_room_id: -1,
+      form_mode: 0,
+      page_cache_areas: [],
+      addParams:{
+        area_id: '',
+        area_name: '',
+        room_id: '',
+        room_name: '',
+        timeStamp: 0,
+        resolution: 1800,
+      },
+      repeat_id: 0,
     }
   },
   methods: {
 
     editMeetDislog(row) {
       this.dialogSingleMeet = true
-      // this.dialogCycleMeet = true
       this.entry_id = row.id
-      // this.passwordForm.name = row.name
-      // this.passwordForm.newPassword = ''
+      console.log('MeetList editMeetDislog row',row)
+      // this.form_mode = 1
+      // this.entry_id = event.entry_id
+      // this.form_mode = 1
+      // this.addParams.room_id = room.room_id
+      // this.addParams.room_name = tmp_room_name
+      // this.addParams.resolution = room.resolution
+      // this.addParams.area_id = room.area_id
+      // this.addParams.area_name = room.area_name
+      // this.addParams.timeStamp = nextTimeStamp
+      // if (row.is_repeat) {
+      //   this.repeat_id = row.id
+      //   this.dialogCycleMeetForm = true
+      //   return
+      // }
+      // this.dialogMeetForm = true
     },
     searchMeet() {
       this.getMeetList()
@@ -251,8 +278,8 @@ export default {
         this.initialized = true
         if (code == 0 && data) {
           data.entries.forEach(it => {
-            it["startTime"] = moment.tz(it['start_time'] * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
-            it['endTime'] = moment.tz(it['end_time'] * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
+            it["startTime"] = moment.tz(it['start_time'] * 1000, 'Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss')
+            it['endTime'] = moment.tz(it['end_time'] * 1000, 'Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss')
             it['is_repeat_text'] = it['is_repeat'] == 0 ? '否' : '是'
             it['status_text'] = it['status'] == 0 ? '未开始' : it['status'] == 1 ? '进行中' : '已结束'
             // it['meet_time'] = '无'
