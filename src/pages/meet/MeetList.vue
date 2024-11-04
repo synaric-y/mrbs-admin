@@ -2,19 +2,19 @@
   <Layout title="历史会议">
     <template #filter>
       <el-select class="account-status-select" v-model="statusVal" placeholder="Select" size="default"
-                 style="width: 140px;min-height: 30px;">
+        style="width: 140px;min-height: 30px;">
         <el-option style="height: 30px;" v-for="item in statusOptions" :key="item.value" :label="item.label"
-                   :value="item.value" />
+          :value="item.value" />
       </el-select>
       <el-select class="account-status-select" v-model="areaStatusVal" placeholder="Select" size="default"
-                 style="width: 140px;min-height: 30px;" @change="onAreaChange">
-        <el-option style="height: 30px;" v-for="item in page_cache_areas" :key="item.area_id"
-                   :label="item.area_name" :value="item.area_id" />
+        style="width: 140px;min-height: 30px;" @change="onAreaChange">
+        <el-option style="height: 30px;" v-for="item in page_cache_areas" :key="item.area_id" :label="item.area_name"
+          :value="item.area_id" />
       </el-select>
       <el-select class="account-status-select" v-model="roomVal" placeholder="Select" size="default"
-                 style="width: 140px;min-height: 30px;" @change="onRoomChange">
+        style="width: 140px;min-height: 30px;" @change="onRoomChange">
         <el-option style="height: 30px;" v-for="item in roomOptions" :key="item.room_id" :label="item.title"
-                   :value="item.room_id" />
+          :value="item.room_id" />
       </el-select>
       <!-- <el-date-picker style="margin-left: 20px;" v-model="baseTime" type="daterange" :range-separator="$t('base.to')"
         :start-placeholder="startTime" :end-placeholder="endTime" @change="choseDate" /> -->
@@ -40,7 +40,10 @@
         </el-table-column>
         <el-table-column prop="id" :label="$t('user.tableUser.operate')" width="200">
           <template #default="scope">
-            <div class="operate-wrapper">
+            <div class="operate-wrapper" v-if="scope.row.status == 2">
+              <span class="operate-item" style="color: #000000;" disable>无</span>
+            </div>
+            <div class="operate-wrapper" v-else>
               <span class="operate-item" @click="editMeetDislog(scope.row)">编辑</span>
             </div>
           </template>
@@ -49,8 +52,8 @@
     </template>
     <template #pagination>
       <el-text>{{ $t('base.tableBottomCount', total_num) }}</el-text>
-      <el-pagination v-model:current-page="page_number" @current-change="handleCurrentChange"
-                     layout="prev, pager, next" :default-page-size="20" :total="total_num" />
+      <el-pagination v-model:current-page="page_number" @current-change="handleCurrentChange" layout="prev, pager, next"
+        :default-page-size="20" :total="total_num" />
     </template>
   </Layout>
 
@@ -67,14 +70,14 @@ import moment from "moment";
 import CycleMeetCMP from "@/components/CycleMeetCMP.vue";
 import SingleMeetCMP from "@/components/SingleMeetCMP.vue";
 import Layout from "@/components/Layout.vue";
-import {Search} from "@element-plus/icons-vue";
+import { Search } from "@element-plus/icons-vue";
 export default {
   computed: {
     Search() {
       return Search
     }
   },
-  components: {Layout, CycleMeetCMP, SingleMeetCMP },
+  components: { Layout, CycleMeetCMP, SingleMeetCMP },
   mixins: [PageMixin],
   data() {
     return {
