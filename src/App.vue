@@ -80,16 +80,16 @@ export default {
       adminMenu:[
         {
           index: 1,
-          icon: '/imgs/dashboard_manager.png',
-          active_icon: '/imgs/dashboard_manager_selected.png',
+          icon: '/admin/imgs/dashboard_manager.png',
+          active_icon: '/admin/imgs/dashboard_manager_selected.png',
           title: 'Dashboard',
           path: '/guide_one',
           children:[]
         },
         {
           index: 2,
-          icon: '/imgs/user_manager.png',
-          active_icon: '/imgs/user_manager_selected.png',
+          icon: '/admin/imgs/user_manager.png',
+          active_icon: '/admin/imgs/user_manager_selected.png',
           title: '用户管理',
           children:[
             {
@@ -106,8 +106,8 @@ export default {
         },
         {
           index: 3,
-          icon: '/imgs/meet_manager.png',
-          active_icon: '/imgs/meet_manager_selected.png',
+          icon: '/admin/imgs/meet_manager.png',
+          active_icon: '/admin/imgs/meet_manager_selected.png',
           title: '会议预定',
           children:[
             {
@@ -129,8 +129,8 @@ export default {
         },
         {
           index: 4,
-          icon: '/imgs/area_manager.png',
-          active_icon: '/imgs/area_manager_selected.png',
+          icon: '/admin/imgs/area_manager.png',
+          active_icon: '/admin/imgs/area_manager_selected.png',
           title: '区域&会议管理',
           children:[
             {
@@ -147,16 +147,16 @@ export default {
         },
         {
           index: 5,
-          icon: '/imgs/terminal_manager.png',
-          active_icon: '/imgs/terminal_manager_selected.png',
+          icon: '/admin/imgs/terminal_manager.png',
+          active_icon: '/admin/imgs/terminal_manager_selected.png',
           title: '终端设备管理',
           path: '/terminal_manager',
           children:[]
         },
         {
           index: 6,
-          icon: '/imgs/check_circle.png',
-          active_icon: '/imgs/check_circle_selected.png',
+          icon: '/admin/imgs/check_circle.png',
+          active_icon: '/admin/imgs/check_circle_selected.png',
           title: '系统设置',
           children:[
             {
@@ -183,8 +183,8 @@ export default {
         },
         {
           index: 7,
-          icon: '/imgs/help_manager.png',
-          active_icon: '/imgs/help_manager_selected.png',
+          icon: '/admin/imgs/help_manager.png',
+          active_icon: '/admin/imgs/help_manager_selected.png',
           title: '帮助中心',
           children:[
             {
@@ -204,14 +204,17 @@ export default {
             // }
           ]
         },
+        
       ]
     }
   },
   mounted() {
+    // import.meta.env.VITE_BASE_PATH
     console.log('App mounted user:', this.userInfo.username)
     this.syncTime()
     this.getSetting()
     this.$forceUpdate()
+    
   },
   methods: {
     syncTime(){

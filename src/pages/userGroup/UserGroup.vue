@@ -6,7 +6,7 @@
           <div class="page-title">{{ $t('userGroup.userGroupSettings') }}</div>
           <div class="async-wrapper" style="margin-top: 20px;height: 30px;">
             <el-button :disabled="!enable_sync" size="large" type="primary" style="width: 112px;" @click="OnSyncUsers">
-              <img src="/imgs/button_reflesh.png" alt="Search Icon" class="el-button-img" />
+              <img src="../../../public/imgs/button_reflesh.png" alt="Search Icon" class="el-button-img" />
               {{ $t('base.userSync') }}
             </el-button>
             <span class="async-last-time">{{ syncTime }}</span>

@@ -54,7 +54,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style  lang="scss" scoped>
 .sub-page-content {
   display: flex;
   justify-content: center;

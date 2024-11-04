@@ -87,7 +87,7 @@ export default {
             </el-button>
             <template #reference>
               <div class="username-wrapper" @click="toProfile">
-                <img style="width: 30px; height: 30px" src="/imgs/profile.png" v-if="!userInfo || !userInfo.display_name" />
+                <img style="width: 30px; height: 30px" src="../../../public/imgs/profile.png" v-if="!userInfo || !userInfo.display_name" />
                 <div class="username">{{userInfo ? userInfo.display_name : ''}}</div>
               </div>
             </template>

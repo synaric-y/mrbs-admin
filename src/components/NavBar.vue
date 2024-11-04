@@ -16,7 +16,7 @@
 
       <el-dropdown placement="bottom" @command="handleCommand">
         <div class="username-wrapper" @click="toProfile">
-          <img style="width: 30px; height: 30px" src="/imgs/profile.png"
+          <img style="width: 30px; height: 30px" src="../../public/imgs/profile.png"
                v-if="!userInfo || !userInfo.display_name" />
           <div class="username" style="color: #4E5969;font-size: 14px;">{{ userInfo ? userInfo.display_name : '' }}</div>
         </div>
