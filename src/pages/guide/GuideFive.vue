@@ -1,10 +1,7 @@
 <template>
   <el-container class="container-sub-page">
     <el-main class="container-sub-page-main">
-
-
       <div class="sub-page-content">
-
         <div class="page-title">会议系统配置向导</div>
         <ProgressBar :active-index="4"/>
         <div class="guide-success">
@@ -12,9 +9,8 @@
           <div class="guide-success-text">您已经完成初始化配置！<br>
             现在，您可以继续添加会议室，或者尝试预约一个会议。</div>
         </div>
-
         <div class="sub-buttons">
-            <el-button class="btn" @click="switchTab('../single_meet')">结束向导</el-button>
+            <el-button class="btn" @click="finishedGuide">结束向导</el-button>
             <el-button class="btn" type="primary" @click="switchTab('../single_meet')">预约会议</el-button>
             <el-button class="btn">继续添加会议室</el-button>
         </div>
@@ -30,6 +26,7 @@ import { STORAGE } from "@/const.js";
 import { ElMessage } from "element-plus";
 import { Text } from "vue";
 import ProgressBar from "@/pages/guide/ProgressBar.vue";
+import { Finished } from "@element-plus/icons-vue/dist/types";
 export default {
   components: {ProgressBar},
   mixins: [PageMixin],
@@ -43,7 +40,10 @@ export default {
     }
   },
   methods: {
-
+    finishedGuide() {
+      // 结束向导
+      this.switchTab('../single_meet')
+    },
   },
   mounted() {
 

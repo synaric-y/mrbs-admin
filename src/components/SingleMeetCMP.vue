@@ -14,13 +14,14 @@
           </el-select>
         </el-form-item>
         <el-form-item prop="name" label="会议室标题" label-width="100px" required>
-          <el-input v-model="meetForm.name" autocomplete="off" show-word-limit  maxlength="20"/>
+          <el-input v-model="meetForm.name" autocomplete="off" show-word-limit maxlength="20" />
         </el-form-item>
         <el-form-item prop="start_date" label="开始时间" style="margin-left: 20px" required>
           <el-col :span="11">
             <el-form-item prop="start_date">
-              <el-date-picker v-model="meetForm.start_date" type="date" :disabled-date="disabledDate"  value-format="YYYY-MM-DD"
-                aria-label="Pick start day" placeholder="Pick start day" style="width: 100%" @change="choseDate(0, $event)"/>
+              <el-date-picker v-model="meetForm.start_date" type="date" :disabled-date="disabledDate"
+                value-format="YYYY-MM-DD" aria-label="Pick start day" placeholder="Pick start day" style="width: 100%"
+                @change="choseDate(0, $event)" />
             </el-form-item>
           </el-col>
           <el-col class="text-center" :span="1">
@@ -37,8 +38,8 @@
         <el-form-item prop="end_date" label="结束时间" style="margin-left: 20px" required>
           <el-col :span="11">
             <el-form-item prop="end_date">
-              <el-date-picker v-model="meetForm.end_date" type="date" :disabled-date="disabledDate" value-format="YYYY-MM-DD"
-                aria-label="Pick end day" placeholder="Pick end day" style="width: 100%" />
+              <el-date-picker v-model="meetForm.end_date" type="date" :disabled-date="disabledDate"
+                value-format="YYYY-MM-DD" aria-label="Pick end day" placeholder="Pick end day" style="width: 100%" />
             </el-form-item>
           </el-col>
           <el-col class="text-center" :span="1">
@@ -78,7 +79,7 @@ export default {
   computed: {
   },
   mixins: [PageMixin],
-  props: ['entry_id', 'mode', 'areas','add_params'],
+  props: ['entry_id', 'mode', 'areas', 'add_params'],
   emits: ['close'],
   name: 'SingleMeetCMP',
   data() {
@@ -258,19 +259,31 @@ export default {
 
     getSelectedArea(area_id) {
       const area_rooms = this.areas.filter((item) =>
-          item.area_id === area_id
-        )
-        console.log('MeetList onAreaChange area_rooms', area_rooms[0])
-        const select_rooms = [];
-        area_rooms[0].rooms.forEach(room => {
-          select_rooms.push({
-            room_id: room.room_id,
-            room_name: room.room_name,
-            title: room.room_name,
-            disabled: room.disabled,
-          });
+        item.area_id === area_id
+      )
+      console.log('MeetList onAreaChange area_rooms', area_rooms[0])
+      const select_rooms = [];
+      const duration = area_rooms[0].resolution
+      // 为半个小时
+      if (duration == 1800) {
+        console.log('CycleMeetCMP onAreaChange area_rooms 00:30')
+        this.minStep = '00:30'
+      } else {
+        console.log('CycleMeetCMP onAreaChange area_rooms 00:15')
+        this.minStep = '00:15'
+      }
+      // 设置选择开始结束时间
+      // this.minStartTime = Common.convertTo24Hour(area_rooms[0].start_time)
+      this.maxEndTime = Common.convertTo24Hour(area_rooms[0].end_time)
+      area_rooms[0].rooms.forEach(room => {
+        select_rooms.push({
+          room_id: room.room_id,
+          room_name: room.room_name,
+          title: room.room_name,
+          disabled: room.disabled,
         });
-        return select_rooms
+      });
+      return select_rooms
     },
     limitSelectHour(selected_date) {
       const now_date = moment.tz(Date.now(), this.currentTimeZone).format('YYYY-MM-DD')
@@ -278,7 +291,7 @@ export default {
       if (now_date != selected_date) {
         this.minStartTime = '06:00'
       } else {
-        this.minStartTime = Common.formatLast15Minute()
+        this.minStartTime = Common.formatLastMinute(15)
       }
     },
     getMeetDetail() {
@@ -358,8 +371,8 @@ export default {
     },
   },
   created() {
-    this.minStartTime = Common.formatLast15Minute()
-    console.log('SingleMeetCMP created params:', this.entry_id,this.add_params)
+    // this.minStartTime = Common.formatLastMinute(15)
+    console.log('SingleMeetCMP created params:', this.entry_id, this.add_params)
     if (this.add_params && this.mode == 0) {
       this.meetForm.room_id = this.add_params.room_id
       this.meetForm.room_name = this.add_params.room_name
@@ -367,10 +380,37 @@ export default {
       this.meetForm.area_name = this.add_params.area_name
       this.meetForm.start_date = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
       this.meetForm.start_hour = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('HH:mm')
-      this.meetForm.end_date = moment.tz((this.add_params.timeStamp + 1800) * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
-      this.meetForm.end_hour = moment.tz((this.add_params.timeStamp + 1800) * 1000, 'Asia/Shanghai').format('HH:mm')
-      this.meetForm.start_seconds = this.add_params.timeStamp
-      this.meetForm.end_seconds = this.add_params.timeStamp + 1800
+      if (this.add_params.resolution == 1800) {
+        const invaild_time = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('HH:mm')
+        // 处理15、45分钟
+        if (invaild_time.endsWith('15') || invaild_time.endsWith('45')) {
+          const time_stamp = this.add_params.timeStamp - 900
+          this.meetForm.start_date = moment.tz(time_stamp * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
+          this.meetForm.start_hour = moment.tz(time_stamp * 1000, 'Asia/Shanghai').format('HH:mm')
+          this.meetForm.rep_end_date = moment.tz((time_stamp + 1800) * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
+          this.meetForm.end_hour = moment.tz((time_stamp + 1800) * 1000, 'Asia/Shanghai').format('HH:mm')
+          this.meetForm.start_seconds = time_stamp
+          this.meetForm.end_seconds = time_stamp + 1800
+        } else {
+          this.meetForm.start_date = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
+          this.meetForm.start_hour = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('HH:mm')
+          this.meetForm.rep_end_date = moment.tz((this.add_params.timeStamp + 1800) * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
+          this.meetForm.end_hour = moment.tz((this.add_params.timeStamp + 1800) * 1000, 'Asia/Shanghai').format('HH:mm')
+          this.meetForm.start_seconds = this.add_params.timeStamp
+          this.meetForm.end_seconds = this.add_params.timeStamp + 1800
+        }
+        this.minStep = '00:30'
+        this.minStartTime = Common.formatLastMinute(30)
+      } else {
+        this.meetForm.start_date = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
+        this.meetForm.start_hour = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('HH:mm')
+        this.meetForm.rep_end_date = moment.tz((this.add_params.timeStamp + 900) * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
+        this.meetForm.end_hour = moment.tz((this.add_params.timeStamp + 900) * 1000, 'Asia/Shanghai').format('HH:mm')
+        this.meetForm.start_seconds = this.add_params.timeStamp
+        this.meetForm.end_seconds = this.add_params.timeStamp + 900
+        this.minStep = '00:15'
+        this.minStartTime = Common.formatLastMinute(15)
+      }
       this.roomOptions = this.getSelectedArea(this.add_params.area_id)
       return
     }
@@ -378,7 +418,7 @@ export default {
   },
 
   mounted(params) {
-    console.log('SingleMeetCMP mounted params:',this.userInfo.display_name)
+    console.log('SingleMeetCMP mounted params:', this.userInfo.display_name)
   },
 
   unmounted() {

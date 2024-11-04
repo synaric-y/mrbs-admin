@@ -176,13 +176,37 @@ export default {
           { required: true, message: '请选择开始时间', trigger: 'blur' }
         ],
         start_hour: [
-          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
+          // { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' },
+          {
+            validator: (rule, value, callback, source, options) => {
+              const errors = [];
+              if (!value) {
+                errors.push(new Error(this.$t('请选择会议开始时间')))
+              }
+              if (!value && value.endsWith('5')) {
+                errors.push(new Error(this.$t('当前选择的时间间隔异常')))
+              }
+              return errors;
+            },
+          },
         ],
         rep_end_date: [
           { required: true, message: '请选择结束时间', trigger: 'blur' }
         ],
         end_hour: [
-          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
+          // { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
+          {
+            validator: (rule, value, callback, source, options) => {
+              const errors = [];
+              if (!value) {
+                errors.push(new Error(this.$t('请选择会议结束时间')))
+              }
+              if (!value && value.endsWith('5')) {
+                errors.push(new Error(this.$t('当前选择的时间间隔异常')))
+              }
+              return errors;
+            },
+          },
         ],
         rep_interval: [
           { required: true, message: '请选择会议重复时间', trigger: 'blur' }
@@ -207,7 +231,7 @@ export default {
 
     OnAreaChange(e) {
       this.select_area_id = e
-      console.log('SingleMeetCMP OnAreaChange e', e)
+      console.log('CycleMeetCMP OnAreaChange e', e)
       if (this.select_area_id != -1) {
         const area_rooms = this.areas.filter((item) =>
           item.area_id === e
@@ -281,8 +305,20 @@ export default {
       const area_rooms = this.areas.filter((item) =>
         item.area_id === area_id
       )
-      console.log('MeetList onAreaChange area_rooms', area_rooms[0])
+      console.log('CycleMeetCMP onAreaChange area_rooms', area_rooms[0],area_rooms[0].resolution)
       const select_rooms = [];
+      const duration =  area_rooms[0].resolution
+      // 为半个小时
+      if (duration == 1800) {
+        console.log('CycleMeetCMP onAreaChange area_rooms 00:30')
+        this.minStep = '00:30'
+      } else {
+        console.log('CycleMeetCMP onAreaChange area_rooms 00:15')
+        this.minStep = '00:15'
+      }
+      // 设置选择开始结束时间
+      // this.minStartTime = Common.convertTo24Hour(area_rooms[0].start_time)
+      this.maxEndTime = Common.convertTo24Hour(area_rooms[0].end_time)
       area_rooms[0].rooms.forEach(room => {
         select_rooms.push({
           room_id: room.room_id,
@@ -300,7 +336,11 @@ export default {
       if (now_date != selected_date) {
         this.minStartTime = '06:00'
       } else {
-        this.minStartTime = Common.formatLast15Minute()
+        if (this.minStep == '00:30') {
+          this.minStartTime = Common.formatLastMinute(30)
+        } else {
+          this.minStartTime = Common.formatLastMinute(15)
+        }
       }
     },
 
@@ -353,6 +393,11 @@ export default {
         // rep_opt: 1010100
         this.meetForm.rep_opt = data.rep_opt.substring(0).replace(/\D/g, "")
         this.meetForm.rep_day = this.getCheckBoxList(data.rep_opt.toString())
+        if (data.resolution == 1800) {
+          this.minStartTime = Common.formatLastMinute(30)
+        } else {
+          this.minStartTime = Common.formatLastMinute(15)
+        }
         this.limitSelectHour(data.start_date)
       })
     },
@@ -407,19 +452,43 @@ export default {
     },
   },
   created() {
-    this.minStartTime = Common.formatLast15Minute()
-    console.log('CycleMeetCMP created:', this.entry_id)
+    console.log('CycleMeetCMP created:', this.entry_id, this.add_params)
     if (this.add_params && this.mode == 0) {
       this.meetForm.room_id = this.add_params.room_id
       this.meetForm.room_name = this.add_params.room_name
       this.meetForm.area_id = this.add_params.area_id
       this.meetForm.area_name = this.add_params.area_name
-      this.meetForm.start_date = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
-      this.meetForm.start_hour = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('HH:mm')
-      this.meetForm.rep_end_date = moment.tz((this.add_params.timeStamp + 1800) * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
-      this.meetForm.end_hour = moment.tz((this.add_params.timeStamp + 1800) * 1000, 'Asia/Shanghai').format('HH:mm')
-      this.meetForm.start_seconds = this.add_params.timeStamp
-      this.meetForm.end_seconds = this.add_params.timeStamp + 1800
+      if (this.add_params.resolution == 1800) {
+        const invaild_time = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('HH:mm')
+        // 处理15、45分钟
+        if (invaild_time.endsWith('15') || invaild_time.endsWith('45')) {
+          const time_stamp = this.add_params.timeStamp - 900
+          this.meetForm.start_date = moment.tz(time_stamp * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
+          this.meetForm.start_hour = moment.tz(time_stamp * 1000, 'Asia/Shanghai').format('HH:mm')
+          this.meetForm.rep_end_date = moment.tz((time_stamp + 1800) * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
+          this.meetForm.end_hour = moment.tz((time_stamp + 1800) * 1000, 'Asia/Shanghai').format('HH:mm')
+          this.meetForm.start_seconds = time_stamp
+          this.meetForm.end_seconds = time_stamp + 1800
+        } else {
+          this.meetForm.start_date = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
+          this.meetForm.start_hour = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('HH:mm')
+          this.meetForm.rep_end_date = moment.tz((this.add_params.timeStamp + 1800) * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
+          this.meetForm.end_hour = moment.tz((this.add_params.timeStamp + 1800) * 1000, 'Asia/Shanghai').format('HH:mm')
+          this.meetForm.start_seconds = this.add_params.timeStamp
+          this.meetForm.end_seconds = this.add_params.timeStamp + 1800
+        }
+        this.minStep = '00:30'
+        this.minStartTime = Common.formatLastMinute(30)
+      } else {
+        this.meetForm.start_date = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
+        this.meetForm.start_hour = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('HH:mm')
+        this.meetForm.rep_end_date = moment.tz((this.add_params.timeStamp + 900) * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
+        this.meetForm.end_hour = moment.tz((this.add_params.timeStamp + 900) * 1000, 'Asia/Shanghai').format('HH:mm')
+        this.meetForm.start_seconds = this.add_params.timeStamp
+        this.meetForm.end_seconds = this.add_params.timeStamp + 900
+        this.minStep = '00:15'
+        this.minStartTime = Common.formatLastMinute(15)
+      }
       this.roomOptions = this.getSelectedArea(this.add_params.area_id)
       return
     }

@@ -187,6 +187,7 @@ export default defineComponent({
         room_id: '',
         room_name: '',
         timeStamp: 0,
+        resolution: 1800,
       },
       repeat_id: 0,
     };
@@ -557,6 +558,7 @@ export default defineComponent({
       const [tmp_area_name, tmp_room_name] = room.room_name.split(" ")
       this.addParams.room_name = tmp_room_name
       this.addParams.area_id = room.area_id
+      this.addParams.resolution = room.resolution
       this.addParams.area_name = room.area_name
       const lang = Common.getLocalLang()
       console.log("Home toMeet day.date timeZone lang", day.date, this.currentTimeZone, this.localLangFormat)

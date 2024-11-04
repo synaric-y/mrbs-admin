@@ -324,11 +324,11 @@ export class Common {
         return hours + ':' + minutesStr + ampm;
     }
 
-    static formatLast15Minute() {
+    static formatLastMinute(minute) {
         const now = new Date();
         let hours = now.getHours();
         let minutes = now.getMinutes();
-        minutes = Math.floor(minutes / 15) * 15;
+        minutes = Math.floor(minutes / minute) * minute;
         const formattedHours = hours.toString().padStart(2, '0');
         const formattedMinutes = minutes.toString().padStart(2, '0');
         return `${formattedHours}:${formattedMinutes}`;
