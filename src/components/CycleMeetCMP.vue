@@ -109,7 +109,7 @@ export default {
         { label: '周四', value: '4' },
         { label: '周五', value: '5' },
         { label: '周六', value: '6' },
-        { label: '周日', value: '0' },
+        { label: '周日', value: '7' },
       ],
       meetForm: {
         tmp_repeat_id: 0,
@@ -418,7 +418,9 @@ export default {
         this.meetForm.rep_day = data.rep_day
         // rep_opt: 1010100
         this.meetForm.rep_opt = data.rep_opt.substring(0).replace(/\D/g, "")
+        console.log('getMeetDetail this.meetForm.rep_opt',this.meetForm.rep_opt)
         this.meetForm.rep_day = this.getCheckBoxList(data.rep_opt.toString())
+        console.log('getMeetDetail this.meetForm.rep_day',this.meetForm.rep_day)
         if (data.resolution == 1800) {
           this.minStartTime = Common.formatLastMinute(30)
         } else {

@@ -165,7 +165,23 @@ export default {
           { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
         ],
         end_date: [
-          { required: true, message: '请选择结束时间', trigger: 'blur' }
+          { required: true, message: '请选择结束时间', trigger: 'blur' },
+          {
+            validator: (rule, value, callback) => {
+              const startDate = this.meetForm.start_date;
+              if (!value || !startDate) {
+                callback();
+                return;
+              }
+              const isSameDay = new Date(startDate).toDateString() === new Date(value).toDateString();
+              if (!isSameDay) {
+                callback(new Error('结束时间必须与开始时间为同一天'));
+              } else {
+                callback();
+              }
+            },
+            trigger: 'blur'
+          }
         ],
         end_hour: [
           { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
