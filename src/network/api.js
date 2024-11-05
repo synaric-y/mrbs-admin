@@ -131,79 +131,82 @@ export class Api {
         return Request.post('user%2Fdisable_user',params)
     }
 
+    static async resetPassword(params) {
+        return Request.post('user%2Freset_password',params)
+    }
+
     static async editUser(params) {
         return Request.post('user%2Fedit_users',params)
     }
 
     // 用户组
-    static async getAdGroupTree(params){
+    static async getAdGroupTree(params) {
         return Request.post('user_group%2Fget_ad_group_tree',params)
     }
 
-    static async getSystemGroupTree(params){
+    static async getSystemGroupTree(params) {
         return Request.post('user_group%2Fget_group_tree',params)
     }
 
-    static async getGroupMember(params){
+    static async getGroupMember(params) {
         return Request.post('user_group%2Fget_group_member',params)
     }
 
-    
-    static async getADSyncStatus(params){
+    static async getADSyncStatus(params) {
         return Request.post('user_group/get_sync_ad_state',params)
     }
-    
-    static async deleteGroup(params){
+
+    static async deleteGroup(params) {
         return Request.post('user_group/del_group',params)
     }
 
-    static async bindUserToGroup(params){
+    static async bindUserToGroup(params) {
         return Request.post('user_group/bind_user_to_group',params)
     }
 
-    static async unbindUserToGroup(params){
+    static async unbindUserToGroup(params) {
         return Request.post('user_group/unbind_user_to_group',params)
     }
 
-    static async addGroup(params){
+    static async addGroup(params) {
         return Request.post('user_group/add_group',params)
     }
 
-    static async editGroup(params){
+    static async editGroup(params) {
         return Request.post('user_group/edit_group',params)
     }
 
-    static async getTerminalList(params){
+    static async getTerminalList(params) {
         return Request.post('device%2Fdevice_info',params)
     }
 
-    static async getAvailableDevices(params){
+    static async getAvailableDevices(params) {
         return Request.post('device%2Fget_avaliable_device',params)
     }
 
-    static async bindDevice(params){
+    static async bindDevice(params) {
         return Request.post('device%2Fbind',params)
     }
 
-    static async getMeetList(params){
+    static async getMeetList(params) {
         return Request.post('entry%2Fget_entry',params)
     }
 
-    static async unbindDevice(params){
+    static async unbindDevice(params) {
         return Request.post('device%2Funbind',params)
     }
 
     // 引导页&系统设置
-    static async getVariables(params){
+    static async getVariables(params) {
         return Request.post('system_setting%2Fget_variables',params)
     }
 
-    static async setVariables(params){
+    static async setVariables(params) {
         return Request.post('system_setting%2Fset_variables',params)
     }
 
 
-    static async uploadAppLogo(formData){
+    static async uploadAppLogo(formData) {
         return axios.post(`${HOST}/web/call.php?act=upload%2Fapp_logo`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
@@ -211,7 +214,7 @@ export class Api {
         })
     }
 
-    static async uploadWebLogo(formData){
+    static async uploadWebLogo(formData) {
         return axios.post(`${HOST}/web/call.php?act=upload%2Fweb_logo`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data'
@@ -220,24 +223,24 @@ export class Api {
     }
 
     // 版本
-    static async getVersions(params){
+    static async getVersions(params) {
         return Request.post('system_setting%2Fget_versions',params)
     }
 
     // 测试连通性
-    static async testAD(params){
+    static async testAD(params) {
         return Request.post('test%2Ftest_ad',params)
     }
 
-    static async testExchange(params){
+    static async testExchange(params) {
         return Request.post('test%2Ftest_exchange',params)
     }
 
-    static async syncADState(params){
+    static async syncADState(params) {
         return Request.post('user_group/get_sync_ad_state',params)
     }
 
-    static async syncAD(params){
+    static async syncAD(params) {
         return Request.post('user_group/sync_ad',params)
     }
 }

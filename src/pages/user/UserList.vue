@@ -62,7 +62,7 @@
   </Layout>
 
   <el-dialog v-model="dialogFormVisible" :title="userDetailTitle" width="550">
-    <el-form :model="userForm" :rules="rules">
+    <el-form ref="userForm" :model="userForm" :rules="rules">
       <el-form-item prop="name" :label="$t('user.tableUser.name')" label-width="140px" style="margin-right: 50px;">
         <el-input v-model="userForm.name" autocomplete="off" />
       </el-form-item>
@@ -79,10 +79,8 @@
         <el-input v-model="userForm.email" autocomplete="off" />
       </el-form-item>
       <el-form-item :label="$t('user.tableUser.level')" prop="level" label-width="140px" style="margin-right: 50px;">
-        <!-- :disabled="dialogUserDetailForm" -->
-        <el-select v-model="userForm.levelName" :placeholder="$t('user.plzSelectLevel')">
-          <el-option :label="$t('user.role.level1')" value="1" />
-          <el-option :label="$t('user.role.level2')" value="2" />
+        <el-select v-model="userForm.levelName" :placeholder="$t('user.plzSelectLevel')" @change="onLevelChange">
+          <el-option v-for="(item, index) in levels" :label="item.label" :value="item.value" />
         </el-select>
       </el-form-item>
       <el-form-item :label="$t('user.tableUser.remark')" label-width="140px" style="margin-right: 50px;">
@@ -100,19 +98,19 @@
 
   <!--  重置密码  -->
   <el-dialog v-model="dialogResetPasswordForm" :title="$t('base.resetPassword')" width="550">
-    <el-form :model="passwordForm" :rules="passwordRules" label-width="auto">
+    <el-form ref="passwordForm" :model="passwordForm" :rules="passwordRules" label-width="auto">
       <el-form-item :label="$t('user.tableUser.name')">
         <el-input class="form-item-input" v-model="passwordForm.name" autocomplete="off" readonly />
       </el-form-item>
-      <el-form-item prop="newPassword" :label="$t('user.formUser.password0')">
+      <el-form-item prop="password0" :label="$t('user.formUser.password0')">
         <div class="form-item">
-          <el-input class="form-item-input" v-model="passwordForm.newPassword" autocomplete="off" />
+          <el-input class="form-item-input" v-model="passwordForm.password0" autocomplete="off" />
           <el-button type="primary" @click="createPassword">{{ $t('base.generate') }}</el-button>
           <el-button style="margin-left: 0" @click="copyPassword">{{ $t('base.copy') }}</el-button>
         </div>
       </el-form-item>
-      <el-form-item prop="againPassword" :label="$t('user.formUser.password1')">
-        <el-input class="form-item-input" v-model="passwordForm.againPassword" autocomplete="off" />
+      <el-form-item prop="password1" :label="$t('user.formUser.password1')">
+        <el-input class="form-item-input" v-model="passwordForm.password1" autocomplete="off" />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -178,10 +176,9 @@ export default {
           label: this.$t('base.disabled'),
         }],
       pendingDeleteName: null,
-      role: [
-        this.$t('user.role.level0'),
-        this.$t('user.role.level1'),
-        this.$t('user.role.level2'),
+      levels: [
+        { label: this.$t('user.role.level1'), value: 1 },
+        { label: this.$t('user.role.level2'), value: 2 }
       ],
       rules: {
         name: [
@@ -213,13 +210,14 @@ export default {
         levelName: this.$t('user.role.level1'),
       },
       passwordForm: {
+        id: 0,
         name: '',
-        newPassword: '',
-        againPassword: ''
+        password0: '',
+        password1: ''
       },
       passwordRules: {
-        newPassword: { required: true, message: this.$t('base.noDataHint'), trigger: 'blur', validator: this.validateNewPassword },
-        againPassword: { required: true, message: this.$t('base.noDataHint'), trigger: 'blur', validator: this.validateAgainPassword },
+        password0: { required: true, message: this.$t('base.noDataHint'), trigger: 'blur', validator: this.validatePassword0 },
+        password1: { required: true, message: this.$t('base.noDataHint'), trigger: 'blur', validator: this.validatePassword1 },
       },
       keyword: '',
       page_number: 1,
@@ -231,20 +229,20 @@ export default {
     }
   },
   methods: {
-    validateNewPassword: (rule, value, callback, source, options) => {
+    validatePassword0(rule, value, callback) {
       if (value === '') {
-        callback(new Error(this.$t('base.noDataHint')))
+        callback(new Error(this.$t('base.noDataHint')));
       } else {
-        callback()
+        callback();
       }
     },
-    validateAgainPassword: (rule, value, callback, source, options) => {
+    validatePassword1(rule, value, callback) {
       if (value === '') {
-        callback(new Error(this.$t('base.noDataHint')))
-      } else if (this.passwordForm.newPassword !== value) {
-        callback(new Error(this.$t('user.password1Hint')))
+        callback(new Error(this.$t('base.noDataHint')));
+      } else if (this.passwordForm.password0 !== value) {
+        callback(new Error(this.$t('user.password1Hint')));
       } else {
-        callback()
+        callback();
       }
     },
     validateEmail(rule, value, callback) {
@@ -257,6 +255,11 @@ export default {
       } else {
         callback(); // 校验通过
       }
+    },
+
+    onLevelChange(e) {
+      this.userForm.level = e
+      console.log('addUser onLevelChange - e', e)
     },
     addUser(val, row) {
       this.dialogFormVisible = true
@@ -298,21 +301,25 @@ export default {
         // 接口修复报错
       }
       params['level'] = this.userForm.level
-      if (params['levelName'] == this.$t('user.role.level2')) {
-        params['level'] = '2'
-      }
       delete params['levelName']
       params['name'] = this.userForm.name
       params['display_name'] = this.userForm.display_name
       params['email'] = this.userForm.email
       params['password'] = this.userForm.password
       params['remark'] = this.userForm.remark
-      this.editUser(params)
+      this.$refs.userForm.validate((pass) => {
+        if (!pass) {
+          console.log('CycleMeetCMP commitForm !pass')
+          return
+        }
+        this.editUser(params)
+      })
     },
     resetPassword(row) {
       this.dialogResetPasswordForm = true
       this.passwordForm.name = row.name
-      this.passwordForm.newPassword = ''
+      this.passwordForm.id = row.id
+      this.passwordForm.password0 = ''
     },
     deleteUserPop(row) {
       this.dialogDeleteVisible = true
@@ -344,25 +351,35 @@ export default {
     },
 
     createPassword() {
-      this.passwordForm.newPassword = Common.generateRandomString(20)
-      console.log('UserList createPassword', this.passwordForm.newPassword)
+      this.passwordForm.password0 = Common.generateRandomString(20)
+      console.log('UserList createPassword', this.passwordForm.password0)
     },
     copyPassword() {
-      console.log('UserList copyPassword:', this.passwordForm.newPassword)
-      if (this.passwordForm.newPassword) {
-        navigator.clipboard.writeText(this.passwordForm.newPassword).then(function () {
-          ElMessage(this.$t('base.copiedToClipboard'))
-        }, function (error) {
-
-        })
+      console.log('UserList copyPassword:', this.passwordForm.password0)
+      if (this.passwordForm.password0) {
+        navigator.clipboard.writeText(this.passwordForm.password0).then(() => {
+          ElMessage(this.$t('base.copiedToClipboard'));
+        }).catch((error) => {
+          console.error('Failed to copy text to clipboard:', error);
+        });
       }
     },
 
     commitNewPassword() {
-      if (this.passwordForm.newPassword != this.passwordForm.againPassword) {
-        ElMessage.error(this.$t('user.password1Hint'))
-        return
-      }
+      this.$refs.passwordForm.validate((pass) => {
+        if (!pass) {
+          console.log('UserList commitNewPassword !pass')
+          return
+        }
+        Api.resetPassword(this.passwordForm).then(({ data, code, msg }) => {
+          if (code == 0) {
+            this.dialogResetPasswordForm = false
+            this.getUserList()
+          } else {
+
+          }
+        })
+      })
     },
 
     updateUserDisabled(row) {
@@ -407,7 +424,7 @@ export default {
             if (!it['email']) {
               it["email"] = ''
             }
-            it['create_time'] =  it['timestamp']
+            it['create_time'] = it['timestamp']
             it['levelName'] = (it['level'] == '1' ? this.$t('user.role.level1') : this.$t('user.role.level2'))
             it["permissions"] = (it['level'] == '1' ? this.$t('user.role.level1') : this.$t('user.role.level2'))
             it['disabled'] = !parseInt(it['disabled'])
