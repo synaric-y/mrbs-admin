@@ -32,7 +32,7 @@
         <el-table-column prop="status" :label="$t('terminal.tableTerminal.status')" width="130"></el-table-column>
         <el-table-column prop="bind_room" :label="$t('terminal.tableTerminal.bindStatus')" width="80"></el-table-column>
         <el-table-column prop="room_name" :label="$t('terminal.tableTerminal.room')" width="100"></el-table-column>
-        <el-table-column prop="set_time" :label="$t('terminal.tableTerminal.setTime')" width="100"></el-table-column>
+        <el-table-column prop="set_time" :label="$t('terminal.tableTerminal.setTime')" width="250"></el-table-column>
         <el-table-column prop="id" :label="$t('user.tableUser.operate')" width="200">
           <template #default="scope">
             <div class="operate-wrapper" v-if="scope.row.is_set == 1">
@@ -71,6 +71,7 @@ import { ElMessage } from "element-plus/es";
 import { Common } from "@/common/common";
 import Layout from "@/components/Layout.vue";
 import { Search } from '@element-plus/icons-vue'
+import moment from "moment";
 
 export default {
   computed: {
@@ -202,7 +203,7 @@ export default {
             it['status'] = !it['status'] ? '下线' : '上线'
             it['battry_text'] = it['is_charging'] ? `充电中${it['battery_level']}` : it['battery_level']
             it['bind_room'] = it['is_set'] ? '已绑定' : '未绑定'
-            it['set_time'] = it['set_time'] ? it['set_time'] : '无'
+            it['set_time'] = moment(parseInt(it['set_time'] * 1000)).format('YYYY/MM/DD hh:mm:ss')
           })
           console.log(data.devices)
           this.terminals = data.devices

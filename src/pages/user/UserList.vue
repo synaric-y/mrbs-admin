@@ -332,10 +332,7 @@ export default {
     },
     handleCurrentChange(newPage) {
       console.log('UserList handleCurrentChange newPage:', newPage, this.page_number)
-      // if (newPage != this.page_number) {
-      // this.page_number = newPage
       this.getUserList()
-      // }
     },
     handleSwitchChange(row) {
       if (this.isLoading) {
