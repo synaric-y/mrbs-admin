@@ -28,7 +28,7 @@
             <div class="operate-wrapper">
               <span class="operate-item" @click="toRoomDetail(scope.row.id)">编辑</span>
               <span class="operate-item" @click="pendingDeleteRoom(scope.row.id)">删除</span>
-              <span class="operate-item" @click="pendingBindTerminal(scope.row.id)">终端绑定</span>
+              <span class="operate-item" @click="pendingBindTerminal(scope.row)">终端绑定</span>
             </div>
           </template>
         </el-table-column>

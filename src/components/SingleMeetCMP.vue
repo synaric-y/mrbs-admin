@@ -343,30 +343,30 @@ export default {
           console.log('SingleMeetCMP commitForm !pass')
           return
         }
-      })
-      this.meetForm.original_room_id = this.meetForm.room_id
-      this.meetForm.rooms = []
-      if (this.entry_id) {
-        this.meetForm.id = Number(this.entry_id)
-      }
-      if (this.userInfo && this.userInfo.display_name) {
-        this.meetForm.create_by = this.userInfo.display_name
-        this.meetForm.book_by = this.userInfo.display_name
-      }
-      this.meetForm.rooms.push(this.meetForm.room_id)
-      Api.editMeet(this.meetForm).then(({ data, code, msg }) => {
-        if (code == 0) {
-          this.$emit('close')
-          ElMessage({
-            message: msg,
-            type: 'success',
-          })
-        } else {
-          ElMessage({
-            message: msg,
-            type: 'error',
-          })
+        this.meetForm.original_room_id = this.meetForm.room_id
+        this.meetForm.rooms = []
+        if (this.entry_id) {
+          this.meetForm.id = Number(this.entry_id)
         }
+        if (this.userInfo && this.userInfo.display_name) {
+          this.meetForm.create_by = this.userInfo.display_name
+          this.meetForm.book_by = this.userInfo.display_name
+        }
+        this.meetForm.rooms.push(this.meetForm.room_id)
+        Api.editMeet(this.meetForm).then(({ data, code, msg }) => {
+          if (code == 0) {
+            this.$emit('close')
+            ElMessage({
+              message: msg,
+              type: 'success',
+            })
+          } else {
+            ElMessage({
+              message: msg,
+              type: 'error',
+            })
+          }
+        })
       })
     },
 

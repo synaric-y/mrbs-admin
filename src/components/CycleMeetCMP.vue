@@ -14,12 +14,13 @@
           </el-select>
         </el-form-item>
         <el-form-item prop="name" label="会议室标题" label-width="100px" required>
-          <el-input v-model="meetForm.name" autocomplete="off"  show-word-limit  maxlength="20"/>
+          <el-input v-model="meetForm.name" autocomplete="off" show-word-limit maxlength="20" />
         </el-form-item>
         <el-form-item prop="start_date" label="开始时间" style="margin-left: 20px" required>
           <el-form-item prop="start_date">
-            <el-date-picker v-model="meetForm.start_date" type="date" :disabled-date="disabledDate" value-format="YYYY-MM-DD"
-              aria-label="Pick start day" placeholder="Pick start day" style="width: 100%" @change="choseDate(0, $event)"/>
+            <el-date-picker v-model="meetForm.start_date" type="date" :disabled-date="disabledDate"
+              value-format="YYYY-MM-DD" aria-label="Pick start day" placeholder="Pick start day" style="width: 100%"
+              @change="choseDate(0, $event)" />
           </el-form-item>
         </el-form-item>
         <el-row style="margin-left: 97px">
@@ -47,8 +48,8 @@
         </el-form-item>
         <el-form-item prop="rep_end_date" label="结束时间" style="margin-left: 20px;" required>
           <el-form-item prop="rep_end_date">
-            <el-date-picker v-model="meetForm.rep_end_date" type="date" :disabled-date="disabledDate" value-format="YYYY-MM-DD"
-              aria-label="Pick end day" placeholder="Pick end day" style="width: 100%" />
+            <el-date-picker v-model="meetForm.rep_end_date" type="date" :disabled-date="disabledDate"
+              value-format="YYYY-MM-DD" aria-label="Pick end day" placeholder="Pick end day" style="width: 100%" />
           </el-form-item>
         </el-form-item>
         <el-form-item prop="description" label="备注" label-width="100px">
@@ -109,7 +110,7 @@ export default {
         { label: '周四', value: '4' },
         { label: '周五', value: '5' },
         { label: '周六', value: '6' },
-        { label: '周日', value: '7' },
+        { label: '周日', value: '0' },
       ],
       meetForm: {
         tmp_repeat_id: 0,
@@ -160,7 +161,7 @@ export default {
         no_mail: 1,
         private: "",
         create_by: '',
-         book_by: ''
+        book_by: ''
       },
       rules: {
         area_name: [
@@ -205,20 +206,6 @@ export default {
             trigger: 'blur'
           }
         ],
-          // { required: true, message: '请选择结束时间', trigger: 'blur' }
-          // {
-          //   validator: (rule, value, callback, source, options) => {
-          //     const errors = [];
-          //     if (!value) {
-          //       errors.push(new Error(this.$t('请选择结束时间')))
-          //     }
-          //     if (value.endsWith('5')) {
-          //       errors.push(new Error(this.$t('结束时间必须大于开始时间')))
-          //     }
-          //     return errors;
-          //   },
-          // },
-        // ],
         end_hour: [
           // { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
           {
@@ -331,9 +318,9 @@ export default {
       const area_rooms = this.areas.filter((item) =>
         item.area_id === area_id
       )
-      console.log('CycleMeetCMP onAreaChange area_rooms', area_rooms[0],area_rooms[0].resolution)
+      console.log('CycleMeetCMP onAreaChange area_rooms', area_rooms[0], area_rooms[0].resolution)
       const select_rooms = [];
-      const duration =  area_rooms[0].resolution
+      const duration = area_rooms[0].resolution
       // 为半个小时
       if (duration == 1800) {
         console.log('CycleMeetCMP onAreaChange area_rooms 00:30')
@@ -418,9 +405,10 @@ export default {
         this.meetForm.rep_day = data.rep_day
         // rep_opt: 1010100
         this.meetForm.rep_opt = data.rep_opt.substring(0).replace(/\D/g, "")
-        console.log('getMeetDetail this.meetForm.rep_opt',this.meetForm.rep_opt)
+        console.log('getMeetDetail this.meetForm.rep_opt', this.meetForm.rep_opt)
         this.meetForm.rep_day = this.getCheckBoxList(data.rep_opt.toString())
-        console.log('getMeetDetail this.meetForm.rep_day',this.meetForm.rep_day)
+        this.meetForm.rep_day = this.meetForm.rep_day.map(item => item === '7' ? '0' : item);
+        console.log('getMeetDetail this.meetForm.rep_day', this.meetForm.rep_day)
         if (data.resolution == 1800) {
           this.minStartTime = Common.formatLastMinute(30)
         } else {
@@ -436,30 +424,30 @@ export default {
           console.log('CycleMeetCMP commitForm !pass')
           return
         }
-      })
-      this.meetForm.original_room_id = this.meetForm.room_id
-      this.meetForm.rooms = []
-      // this.meetForm.id = this.meetForm.room_id
-      this.meetForm.end_date = this.meetForm.start_date
-      this.meetForm.rooms.push(this.meetForm.room_id)
-      this.meetForm.rep_opt = this.toBinary(this.meetForm.rep_day)
-      if (this.userInfo && this.userInfo.display_name) {
-        this.meetForm.create_by = this.userInfo.display_name
-        this.meetForm.book_by = this.userInfo.display_name
-      }
-      Api.editMeet(this.meetForm).then(({ data, code, msg }) => {
-        if (code == 0) {
-          this.$emit('close')
-          ElMessage({
-            message: this.$t('base.editSuccess'),
-            type: 'success',
-          })
-        } else {
-          ElMessage({
-            message: msg,
-            type: 'error',
-          })
+        this.meetForm.original_room_id = this.meetForm.room_id
+        this.meetForm.rooms = []
+        // this.meetForm.id = this.meetForm.room_id
+        this.meetForm.end_date = this.meetForm.start_date
+        this.meetForm.rooms.push(this.meetForm.room_id)
+        this.meetForm.rep_opt = this.toBinary(this.meetForm.rep_day)
+        if (this.userInfo && this.userInfo.display_name) {
+          this.meetForm.create_by = this.userInfo.display_name
+          this.meetForm.book_by = this.userInfo.display_name
         }
+        Api.editMeet(this.meetForm).then(({ data, code, msg }) => {
+          if (code == 0) {
+            this.$emit('close')
+            ElMessage({
+              message: this.$t('base.editSuccess'),
+              type: 'success',
+            })
+          } else {
+            ElMessage({
+              message: msg,
+              type: 'error',
+            })
+          }
+        })
       })
     },
 
