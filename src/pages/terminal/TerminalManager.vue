@@ -25,7 +25,7 @@
         </el-table-column>
         <el-table-column prop="device_id" :label="$t('terminal.tableTerminal.deviceId')" width="200"></el-table-column>
         <el-table-column prop="version" :label="$t('terminal.tableTerminal.version')" width="100"></el-table-column>
-        <el-table-column prop="description" :label="$t('terminal.tableTerminal.deviceInfo')"></el-table-column>
+        <!-- <el-table-column prop="description" :label="$t('terminal.tableTerminal.deviceInfo')"></el-table-column> -->
         <el-table-column prop="resolution" :label="$t('terminal.tableTerminal.resolution')"
           width="150"></el-table-column>
         <el-table-column prop="battry_text" :label="$t('terminal.tableTerminal.battery')" width="130"></el-table-column>
