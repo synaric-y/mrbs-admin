@@ -13,8 +13,10 @@
           </div>
         </div>
         <div class="table-wrapper" style="height: auto">
-          <el-table :v-loading="true" :data="tableData" lazy style="width: 100%;height: auto; margin-bottom: 20px;" row-key="id"
-            :tree-props="{ children: 'children', hasChildren: 'has_child' }" :load="loadSubGroup" max-height="550">
+          <el-table :v-loading="true" :data="tableData" lazy style="width: 100%;height: auto; margin-bottom: 20px;"
+            row-key="id" :tree-props="{ children: 'children', hasChildren: 'has_child' }" :load="loadSubGroup"
+            max-height="550" :default-expanded-keys="expandedKeys" @node-expand="handleNodeExpand"
+            @node-collapse="handleNodeCollapse">
             <el-table-column prop="group" :label="$t('userGroup.userGroup')" label-width="400px">
               <template #default="scope">
                 <span class="group-title" :style="{ 'font-weight': scope.row.children ? 'bold' : 'normal' }">{{
@@ -198,6 +200,7 @@ export default {
       ad_more_member: false,
       enable_sync: true,
       is_loading: false,
+      expandedKeys: [],
     }
   },
   methods: {
@@ -207,6 +210,8 @@ export default {
     },
 
     startSyncUser() {
+      const storedKeys = JSON.parse(localStorage.getItem('expandedNodes')) || [];
+      this.expandedKeys.value = storedKeys;
       this.is_loading = true
       Api.syncAD().then(({ data, code, msg }) => {
         if (code == 0) {
@@ -331,7 +336,7 @@ export default {
         this.addGroupForm.name = row.name
         const selectedItem = this.findNodeById(this.treeData, row.third_id);
         console.log('editGroupBtn selectedItem', selectedItem, this.treeData)
-        this.addGroupForm.sync_group_name = selectedItem.name
+        this.addGroupForm.sync_group_name = selectedItem?selectedItem.name: ''
         this.selectedItem = selectedItem
       } else {
         this.addGroupForm.name = ''
@@ -364,9 +369,13 @@ export default {
     },
 
     commitGroupForm() {
-      console.log('commitGroupForm mode', this.mode)
+      console.log('commitGroupForm mode', this.mode,this.selectedItem)
       if (this.mode == 1) {
-        this.editGroup(this.selectedItem.third_id)
+        if (this.selectedItem) {
+          this.editGroup(this.selectedItem.third_id)
+          return
+        }
+        this.editGroup(0)
         return
       }
       console.log('commitGroupForm selectedItem', this.selectedItem)
@@ -393,7 +402,9 @@ export default {
       let params = {}
       params['name'] = this.addGroupForm.name
       params['group_id'] = this.selectedGroupId
-      params['third_id'] = third_id
+      if (third_id) {
+        params['third_id'] = third_id
+      }
       console.log('UserGroup updateUserStatus params', params)
       Api.editGroup(params).then(({ data, code, msg }) => {
         if (code == 0) {
@@ -427,9 +438,9 @@ export default {
             const time = moment(parseInt(data.sync_time * 1000)).format('YYYY/MM/DD hh:mm:ss')
             this.syncTime = this.$t('userGroup.lastSyncTime', { time })
           }
-          console.log('UserGroup getADStatus data:',data)
-          console.log('UserGroup getADStatus data.task:',data.task)
-          console.log('UserGroup getADStatus data.complete:',data.task.complete)
+          console.log('UserGroup getADStatus data:', data)
+          console.log('UserGroup getADStatus data.task:', data.task)
+          console.log('UserGroup getADStatus data.complete:', data.task.complete)
           if (data.task === undefined || data.task === null) {
             this.enable_sync = true
             this.is_loading = false
@@ -560,7 +571,20 @@ export default {
       this.tableData = []
       await this.getSystemGroupTreeWithId(-1)
       this.getAdGroupTreeWithId(-1)
-    }
+    },
+
+    handleNodeExpand(node) {
+      const expandedNodes = JSON.parse(localStorage.getItem('expandedNodes')) || [];
+      if (!expandedNodes.includes(nodeData.id)) {
+        expandedNodes.push(nodeData.id);
+        localStorage.setItem('expandedNodes', JSON.stringify(expandedNodes));
+      }
+    },
+    handleNodeCollapse(node) {
+      let expandedNodes = JSON.parse(localStorage.getItem('expandedNodes')) || [];
+      expandedNodes = expandedNodes.filter(id => id !== nodeData.id);
+      localStorage.setItem('expandedNodes', JSON.stringify(expandedNodes));
+    },
   },
   mounted() {
     this.setTab('/user')
