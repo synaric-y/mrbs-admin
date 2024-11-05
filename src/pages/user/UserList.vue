@@ -3,9 +3,9 @@
     <template #filter>
       <el-input v-model="keyword" style="width: 140px" :placeholder="$t('user.plzEnterUsernameHint')" />
       <el-select class="account-status-select" v-model="accountStatusVal" placeholder="Select" size="large"
-                 style="width: 140px;min-height: 30px;">
-        <el-option style="height: 30px;" v-for="item in accountStatusOptions" :key="item.value"
-                   :label="item.label" :value="item.value" />
+        style="width: 140px;min-height: 30px;">
+        <el-option style="height: 30px;" v-for="item in accountStatusOptions" :key="item.value" :label="item.label"
+          :value="item.value" />
       </el-select>
       <el-button type="primary" class="btn" :icon="Search" @click="searchUser">
         {{ $t('base.search') }}
@@ -19,8 +19,7 @@
     </template>
     <template #table>
       <div class="table-wrapper" style="height: auto;">
-        <el-table :data="userListData" header-cell-class-name="tb-header" max-height="450"
-                  table-layout="auto">
+        <el-table :data="userListData" header-cell-class-name="tb-header" max-height="450" table-layout="auto">
           <el-table-column prop="number" :label="$t('user.tableUser.id')" width="120">
             <template #default="scope">
               {{ scope.$index + 1 }}
@@ -35,8 +34,8 @@
           <el-table-column prop="status" :label="$t('user.tableUser.status')" width="100" v-if="!isLoading">
             <template #default="scope">
               <el-switch v-model="scope.row.status"
-                         style="--el-switch-on-color: #591BB7; --el-switch-off-color: #A8ABB2" :active-value="true"
-                         :inactive-value="false" @change="handleSwitchChange(scope.row)" />
+                style="--el-switch-on-color: #591BB7; --el-switch-off-color: #A8ABB2" :active-value="true"
+                :inactive-value="false" @change="handleSwitchChange(scope.row)" />
             </template>
           </el-table-column>
           <el-table-column prop="permissions" :label="$t('user.tableUser.level')" width="150">
@@ -57,30 +56,29 @@
     </template>
     <template #pagination>
       <el-text>{{ $t('base.tableBottomCount', total_num) }}</el-text>
-      <el-pagination v-model:current-page="page_number" @current-change="handleCurrentChange"
-                     layout="prev, pager, next" :default-page-size="20" :total="total_num" />
+      <el-pagination v-model:current-page="page_number" @current-change="handleCurrentChange" layout="prev, pager, next"
+        :default-page-size="20" :total="total_num" />
     </template>
   </Layout>
 
   <el-dialog v-model="dialogFormVisible" :title="userDetailTitle" width="550">
     <el-form :model="userForm" :rules="rules">
-      <el-form-item prop="name" :label="$t('user.tableUser.name')" label-width="140px"
-                    style="margin-right: 50px;">
+      <el-form-item prop="name" :label="$t('user.tableUser.name')" label-width="140px" style="margin-right: 50px;">
         <el-input v-model="userForm.name" autocomplete="off" />
       </el-form-item>
       <el-form-item prop="display_name" :label="$t('user.tableUser.displayName')" label-width="140px"
-                    style="margin-right: 50px;">
+        style="margin-right: 50px;">
         <!-- :readonly="dialogUserDetailForm" -->
         <el-input v-model="userForm.display_name" autocomplete="off" />
       </el-form-item>
       <el-form-item prop="password" :label="$t('user.formUser.password0')" label-width="140px"
-                    style="margin-right: 50px;">
+        style="margin-right: 50px;">
         <el-input v-model="userForm.password" autocomplete="off" />
       </el-form-item>
       <el-form-item :label="$t('user.tableUser.email')" label-width="140px" style="margin-right: 50px;">
         <el-input v-model="userForm.email" autocomplete="off" />
       </el-form-item>
-      <el-form-item :label="$t('user.tableUser.level')" label-width="140px" style="margin-right: 50px;">
+      <el-form-item :label="$t('user.tableUser.level')" prop="level" label-width="140px" style="margin-right: 50px;">
         <!-- :disabled="dialogUserDetailForm" -->
         <el-select v-model="userForm.levelName" :placeholder="$t('user.plzSelectLevel')">
           <el-option :label="$t('user.role.level1')" value="1" />
@@ -88,8 +86,7 @@
         </el-select>
       </el-form-item>
       <el-form-item :label="$t('user.tableUser.remark')" label-width="140px" style="margin-right: 50px;">
-        <el-input v-model="userForm.remark" maxlength="100" style="width: 310px" show-word-limit
-                  type="textarea" />
+        <el-input v-model="userForm.remark" maxlength="100" style="width: 310px" show-word-limit type="textarea" />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -102,16 +99,16 @@
 
 
   <!--  重置密码  -->
-  <el-dialog v-model="dialogResetPasswordForm" :title="$t('base.resetPassword')"  width="550">
+  <el-dialog v-model="dialogResetPasswordForm" :title="$t('base.resetPassword')" width="550">
     <el-form :model="passwordForm" :rules="passwordRules" label-width="auto">
-      <el-form-item :label="$t('user.tableUser.name')" >
+      <el-form-item :label="$t('user.tableUser.name')">
         <el-input class="form-item-input" v-model="passwordForm.name" autocomplete="off" readonly />
       </el-form-item>
       <el-form-item prop="newPassword" :label="$t('user.formUser.password0')">
         <div class="form-item">
           <el-input class="form-item-input" v-model="passwordForm.newPassword" autocomplete="off" />
           <el-button type="primary" @click="createPassword">{{ $t('base.generate') }}</el-button>
-          <el-button style="margin-left: 0" @click="copyPassword">{{$t('base.copy') }}</el-button>
+          <el-button style="margin-left: 0" @click="copyPassword">{{ $t('base.copy') }}</el-button>
         </div>
       </el-form-item>
       <el-form-item prop="againPassword" :label="$t('user.formUser.password1')">
@@ -123,8 +120,8 @@
         <el-button type="primary" @click="commitNewPassword">
           {{ $t('base.confirm') }}
         </el-button>
-        <el-button style="margin-left: 50px"
-                   @click="dialogResetPasswordForm = false">{{ $t('base.cancel') }}</el-button>
+        <el-button style="margin-left: 50px" @click="dialogResetPasswordForm = false">{{ $t('base.cancel')
+          }}</el-button>
       </div>
     </template>
   </el-dialog>
@@ -139,8 +136,7 @@
         <el-button type="primary" @click="deleteUser">
           {{ $t('base.confirm') }}
         </el-button>
-        <el-button style="margin-left: 50px"
-                   @click="dialogDeleteVisible = false">{{ $t('base.cancel') }}</el-button>
+        <el-button style="margin-left: 50px" @click="dialogDeleteVisible = false">{{ $t('base.cancel') }}</el-button>
       </div>
     </template>
   </el-dialog>
@@ -153,7 +149,7 @@ import { Api } from "@/network/api.js";
 import { ElMessage } from "element-plus/es";
 import { Common } from "@/common/common";
 import Layout from "@/components/Layout.vue";
-import {Search, Plus, Refresh } from '@element-plus/icons-vue'
+import { Search, Plus, Refresh } from '@element-plus/icons-vue'
 export default {
   computed: {
     Refresh() {
@@ -166,7 +162,7 @@ export default {
       return Search
     }
   },
-  components: {Layout},
+  components: { Layout },
   mixins: [PageMixin],
   data() {
     return {
@@ -196,6 +192,10 @@ export default {
         ],
         password: [
           { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
+        ],
+        email: [
+          { required: true, message: '请输入邮箱', trigger: 'blur' },
+          { validator: this.validateEmail, trigger: 'blur' }
         ],
       },
       dialogFormVisible: false,
@@ -241,10 +241,21 @@ export default {
     validateAgainPassword: (rule, value, callback, source, options) => {
       if (value === '') {
         callback(new Error(this.$t('base.noDataHint')))
-      } else if(this.passwordForm.newPassword !== value) {
+      } else if (this.passwordForm.newPassword !== value) {
         callback(new Error(this.$t('user.password1Hint')))
       } else {
         callback()
+      }
+    },
+    validateEmail(rule, value, callback) {
+      // 根据条件动态判断是否进行邮箱格式校验
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!value) {
+        callback(new Error('请输入邮箱'));
+      } else if (!emailRegex.test(value)) {
+        callback(new Error('请输入有效的邮箱地址'));
+      } else {
+        callback(); // 校验通过
       }
     },
     addUser(val, row) {
@@ -267,6 +278,8 @@ export default {
         this.userForm.remark = row.remark
         this.userForm.permissions = row.permissions
         this.userForm.password = row.password
+        this.userForm.level = row.level
+        this.userForm.levelName = row.levelName
         this.userRow = row
       }
       console.log('addUser val - row', val, row)
@@ -394,10 +407,8 @@ export default {
             if (!it['email']) {
               it["email"] = ''
             }
-            if (!it['create_time']) {
-              it["create_time"] = this.$t('base.none')
-            }
-            it['levelname'] = (it['level'] == '1' ? this.$t('user.role.level1') : this.$t('user.role.level2'))
+            it['create_time'] =  it['timestamp']
+            it['levelName'] = (it['level'] == '1' ? this.$t('user.role.level1') : this.$t('user.role.level2'))
             it["permissions"] = (it['level'] == '1' ? this.$t('user.role.level1') : this.$t('user.role.level2'))
             it['disabled'] = !parseInt(it['disabled'])
             it['status'] = it['disabled'] == 0 ? false : true
@@ -423,14 +434,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
-.form-item{
+.form-item {
   height: auto;
 }
 
-.form-item-input{
+.form-item-input {
   width: 300px;
 }
-
-
 </style>

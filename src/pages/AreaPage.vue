@@ -65,7 +65,7 @@ export default {
           if (code == 0) {
             this.getAreaList()
           } else {
-            ElMessage.error(message)
+            ElMessage.error(msg)
           }
         })
       })

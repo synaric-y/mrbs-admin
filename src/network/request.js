@@ -13,10 +13,10 @@ export class Request {
         })
 
         let rep = res.data;
-        if (rep.code == -99) {
+        if (rep.code == -99 || rep.code == 1) {
             localStorage.removeItem(STORAGE.USER_INFO)
             await router.replace('/login')
-            throw Error('message')
+            // throw Error('message')
         }
         return rep
     }

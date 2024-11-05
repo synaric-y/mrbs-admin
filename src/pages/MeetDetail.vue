@@ -200,7 +200,7 @@ export default {
                         this.back()
                     } else {
                         ElMessage({
-                            message: message,
+                            message: msg,
                             type: 'error',
                         })
                     }

@@ -117,7 +117,7 @@ export default {
             })
             this.back()
           } else if (code == -2) {
-            ElMessage.error(message)
+            ElMessage.error(msg)
           } else {
             ElMessage.error(this.$t('base.editFailed'))
           }

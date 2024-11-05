@@ -31,7 +31,7 @@ export default {
         if (code == 0) {
           this.getUserList()
         } else {
-          ElMessage.error(message)
+          ElMessage.error(msg)
         }
       })
     },

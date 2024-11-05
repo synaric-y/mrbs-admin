@@ -49,7 +49,7 @@ export default {
         if (code == 0) {
           this.getRoomList()
         } else {
-          ElMessage.error(message)
+          ElMessage.error(msg)
         }
 
       })
@@ -102,7 +102,7 @@ export default {
           if (code == 0) {
             this.getRoomList()
           } else {
-            ElMessage.error(message)
+            ElMessage.error(msg)
           }
         })
       })

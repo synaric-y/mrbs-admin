@@ -70,7 +70,7 @@ export default {
             })
             this.back()
           } else {
-            ElMessage.error(message)
+            ElMessage.error(msg)
           }
         }).catch(() => {
           ElMessage.error(this.$t('base.editFailed'))
