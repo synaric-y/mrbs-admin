@@ -12,7 +12,7 @@
                   style="--el-switch-on-color: #591bb7;"
               />
               <el-text v-if="form.bookerDisplay" class="mx-1" type="primary">终端将显示预定人姓名</el-text>
-              <el-text v-else class="mx-1">终端将显示默认文字：“xx预定”</el-text>
+              <el-text v-else class="mx-1">终端将显示默认文字：“**预定”</el-text>
             </div>
             <div class="switch-row">
               <div class="label">预定会议名称显示</div>
@@ -21,7 +21,7 @@
                   style="--el-switch-on-color: #591bb7;"
               />
               <el-text v-if="form.meetingNameDisplay" class="mx-1" type="primary">终端将显示会议名称</el-text>
-              <el-text v-else class="mx-1">终端将显示默认文字：“xx会议”</el-text>
+              <el-text v-else class="mx-1">终端将显示默认文字：“**会议”</el-text>
             </div>
             <div class="switch-row">
               <div class="label">开启临时会议</div>
@@ -31,7 +31,6 @@
               />
               <el-text v-if="form.quickMeetingDisplay" class="mx-1" type="primary">终端将显示临时会议按钮</el-text>
               <el-text v-else class="mx-1">终端将不显示临时会议按钮</el-text>
-              、
             </div>
           </div>
           <div class="preview">
@@ -55,7 +54,7 @@
                   <el-icon>
                     <Monitor/>
                   </el-icon>
-                  <div class="value">{{ form.meetingNameDisplay ? '销售部门会议' : 'xx会议' }}</div>
+                  <div class="value">{{ form.meetingNameDisplay ? '销售部门会议' : '**会议' }}</div>
                 </div>
                 <div class="info-row">
                   <el-icon>
@@ -67,7 +66,7 @@
                   <el-icon>
                     <User/>
                   </el-icon>
-                  <div class="value">{{ form.bookerDisplay ? 'Alvin' : 'xx预定' }}</div>
+                  <div class="value">{{ form.bookerDisplay ? 'Alvin' : '**预定' }}</div>
                 </div>
               </div>
             </div>
@@ -299,7 +298,7 @@ export default {
       background-color: #d8d8d8;
       height: 30px;
       line-height: 30px;
-      width: 95%;
+      width: 70%;
       border-radius: 2px;
       text-align: center;
     }
