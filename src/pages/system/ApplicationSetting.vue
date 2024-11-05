@@ -88,8 +88,8 @@
             </el-form-item>
             <el-form-item label="时间格式" prop="timeFormat">
               <el-select v-model="form.timeFormat" style="width: 200px" placeholder="请选择">
-                <el-option label="12小时制" :value="0"/>
-                <el-option label="24小时制" :value="1"/>
+                <el-option label="12小时制" :value="12"/>
+                <el-option label="24小时制" :value="24"/>
               </el-select>
             </el-form-item>
             <el-form-item label="主题" prop="theme">
@@ -130,8 +130,8 @@
 
     </template>
     <template #btns>
-      <el-button type="default">取消</el-button>
       <el-button type="primary" @click="submit">保存</el-button>
+      <el-button type="default">取消</el-button>
     </template>
   </Layout>
 </template>

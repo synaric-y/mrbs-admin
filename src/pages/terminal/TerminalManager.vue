@@ -115,7 +115,6 @@ export default {
     onStatusChange(e) {
       console.log('TerminalManager onStatusChange e', e)
       this.select_status_id = e
-
     },
     onRoomChange(e) {
       console.log('TerminalManager onRoomChange e', e)
@@ -161,11 +160,10 @@ export default {
     },
 
     unbindDevice() {
-      // 解绑当前设备
-      this.dialogUnbindVisible = false
       Api.unbindDevice({ device_id: this.selectRow.device_id }).then(({ data, code, msg }) => {
-        this.closedAlert()
         if (code == 0) {
+          this.dialogUnbindVisible = false
+          ElMessage.success('解绑操作成功')
           this.getTerminalList()
         } else {
           ElMessage.error(msg)
@@ -179,18 +177,6 @@ export default {
     handleCurrentChange(newPage) {
       console.log('TerminalManager handleCurrentChange newPage:', newPage, this.page_number)
       this.page_number = newPage
-    },
-
-    unBindDevice() {
-      console.log('TerminalManager unbindDevice')
-      Api.editUser(params).then(({ data, code, msg }) => {
-        this.closedAlert()
-        if (code == 0) {
-          this.getUserList()
-        } else {
-          ElMessage.error(msg)
-        }
-      })
     },
 
     getTerminalList() {
@@ -218,9 +204,7 @@ export default {
             it['bind_room'] = it['is_set'] ? '已绑定' : '未绑定'
             it['set_time'] = it['set_time'] ? it['set_time'] : '无'
           })
-
           console.log(data.devices)
-
           this.terminals = data.devices
           this.total_num = data.total_num
         }

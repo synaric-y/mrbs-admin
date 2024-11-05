@@ -2,19 +2,19 @@
   <Layout title="历史会议">
     <template #filter>
       <el-select class="account-status-select" v-model="statusVal" placeholder="Select" size="default"
-                 style="width: 140px;min-height: 30px;">
+        style="width: 140px;min-height: 30px;">
         <el-option style="height: 30px;" v-for="item in statusOptions" :key="item.value" :label="item.label"
-                   :value="item.value" />
+          :value="item.value" />
       </el-select>
       <el-select class="account-status-select" v-model="areaStatusVal" placeholder="Select" size="default"
-                 style="width: 140px;min-height: 30px;" @change="onAreaChange">
-        <el-option style="height: 30px;" v-for="item in page_cache_areas" :key="item.area_id"
-                   :label="item.area_name" :value="item.area_id" />
+        style="width: 140px;min-height: 30px;" @change="onAreaChange">
+        <el-option style="height: 30px;" v-for="item in page_cache_areas" :key="item.area_id" :label="item.area_name"
+          :value="item.area_id" />
       </el-select>
       <el-select class="account-status-select" v-model="roomVal" placeholder="Select" size="default"
-                 style="width: 140px;min-height: 30px;" @change="onRoomChange">
+        style="width: 140px;min-height: 30px;" @change="onRoomChange">
         <el-option style="height: 30px;" v-for="item in roomOptions" :key="item.room_id" :label="item.title"
-                   :value="item.room_id" />
+          :value="item.room_id" />
       </el-select>
       <!-- <el-date-picker style="margin-left: 20px;" v-model="baseTime" type="daterange" :range-separator="$t('base.to')"
         :start-placeholder="startTime" :end-placeholder="endTime" @change="choseDate" /> -->
@@ -23,7 +23,7 @@
       </el-button>
     </template>
     <template #table>
-      <el-table :data="meetListData" header-cell-class-name="tb-header" max-height="450">
+      <el-table :data="meetListData" header-cell-class-name="tb-header" max-height="450" width="auto">
         <el-table-column prop="number" label="序号" width="60">
           <template #default="scope">
             {{ scope.$index + 1 }}
@@ -31,8 +31,8 @@
         </el-table-column>
         <el-table-column prop="area_name" label="区域" width="100"></el-table-column>
         <el-table-column prop="room_name" label="会议室" width="100"></el-table-column>
-        <el-table-column prop="startTime" label="预约开始时间" width="150"></el-table-column>
-        <el-table-column prop="endTime" label="预约结束时间" width="150"></el-table-column>
+        <el-table-column prop="startTime" label="预约开始时间" width="250"></el-table-column>
+        <el-table-column prop="endTime" label="预约结束时间" width="250"></el-table-column>
         <el-table-column prop="duration" label="会议时间" width="200"></el-table-column>
         <el-table-column prop="is_repeat_text" label="是否周期会议" width="130"></el-table-column>
         <el-table-column prop="status_text" label="会议状态" width="80"></el-table-column>
@@ -41,21 +41,28 @@
         <el-table-column prop="id" :label="$t('user.tableUser.operate')" width="200">
           <template #default="scope">
             <div class="operate-wrapper">
-              <span class="operate-item" @click="editMeetDislog(scope.row)">编辑</span>
+              <span class="operate-item" style="color: #000000;" disable>无</span>
             </div>
+            <!-- <div class="operate-wrapper" v-else>
+              <span class="operate-item" @click="editMeetDislog(scope.row)">编辑</span>
+            </div> -->
           </template>
         </el-table-column>
       </el-table>
     </template>
     <template #pagination>
       <el-text>{{ $t('base.tableBottomCount', total_num) }}</el-text>
-      <el-pagination v-model:current-page="page_number" @current-change="handleCurrentChange"
-                     layout="prev, pager, next" :default-page-size="20" :total="total_num" />
+      <el-pagination v-model:current-page="page_number" @current-change="handleCurrentChange" layout="prev, pager, next"
+        :default-page-size="20" :total="total_num" />
     </template>
   </Layout>
 
-  <CycleMeetCMP v-if="dialogCycleMeet" :entry_id="entry_id" @close="dialogCycleMeet = false" />
-  <SingleMeetCMP v-if="dialogSingleMeet" :entry_id="entry_id" @close="dialogSingleMeet = false" />
+  <!-- <CycleMeetCMP v-if="dialogCycleMeet" :entry_id="entry_id" @close="dialogCycleMeet = false" />
+  <SingleMeetCMP v-if="dialogSingleMeet" :entry_id="entry_id" @close="dialogSingleMeet = false" /> -->
+  <SingleMeetCMP v-if="dialogMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas"
+    :entry_id="entry_id" @close="closeDialogMeetForm" />
+  <CycleMeetCMP v-if="dialogCycleMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas"
+    :repeat_id="repeat_id" :entry_id="entry_id" @close="closeDialogCycleMeetForm" />
 </template>
 
 <script>
@@ -67,14 +74,14 @@ import moment from "moment";
 import CycleMeetCMP from "@/components/CycleMeetCMP.vue";
 import SingleMeetCMP from "@/components/SingleMeetCMP.vue";
 import Layout from "@/components/Layout.vue";
-import {Search} from "@element-plus/icons-vue";
+import { Search } from "@element-plus/icons-vue";
 export default {
   computed: {
     Search() {
       return Search
     }
   },
-  components: {Layout, CycleMeetCMP, SingleMeetCMP },
+  components: { Layout, CycleMeetCMP, SingleMeetCMP },
   mixins: [PageMixin],
   data() {
     return {
@@ -114,19 +121,42 @@ export default {
       dialogCycleMeet: false,
       entry_id: -1,
       dialogSingleMeet: false,
-      page_cache_areas: [],
       select_area_id: -1,
       select_room_id: -1,
+      form_mode: 0,
+      page_cache_areas: [],
+      addParams:{
+        area_id: '',
+        area_name: '',
+        room_id: '',
+        room_name: '',
+        timeStamp: 0,
+        resolution: 1800,
+      },
+      repeat_id: 0,
     }
   },
   methods: {
 
     editMeetDislog(row) {
       this.dialogSingleMeet = true
-      // this.dialogCycleMeet = true
       this.entry_id = row.id
-      // this.passwordForm.name = row.name
-      // this.passwordForm.newPassword = ''
+      console.log('MeetList editMeetDislog row',row)
+      // this.form_mode = 1
+      // this.entry_id = event.entry_id
+      // this.form_mode = 1
+      // this.addParams.room_id = room.room_id
+      // this.addParams.room_name = tmp_room_name
+      // this.addParams.resolution = room.resolution
+      // this.addParams.area_id = room.area_id
+      // this.addParams.area_name = room.area_name
+      // this.addParams.timeStamp = nextTimeStamp
+      // if (row.is_repeat) {
+      //   this.repeat_id = row.id
+      //   this.dialogCycleMeetForm = true
+      //   return
+      // }
+      // this.dialogMeetForm = true
     },
     searchMeet() {
       this.getMeetList()
@@ -248,8 +278,8 @@ export default {
         this.initialized = true
         if (code == 0 && data) {
           data.entries.forEach(it => {
-            it["startTime"] = moment.tz(it['start_time'] * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
-            it['endTime'] = moment.tz(it['end_time'] * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
+            it["startTime"] = moment.tz(it['start_time'] * 1000, 'Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss')
+            it['endTime'] = moment.tz(it['end_time'] * 1000, 'Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss')
             it['is_repeat_text'] = it['is_repeat'] == 0 ? '否' : '是'
             it['status_text'] = it['status'] == 0 ? '未开始' : it['status'] == 1 ? '进行中' : '已结束'
             // it['meet_time'] = '无'
