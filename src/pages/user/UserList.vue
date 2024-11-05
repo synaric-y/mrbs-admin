@@ -216,8 +216,9 @@ export default {
         password1: ''
       },
       passwordRules: {
-        password0: { required: true, message: this.$t('base.noDataHint'), trigger: 'blur', validator: this.validatePassword0 },
-        password1: { required: true, message: this.$t('base.noDataHint'), trigger: 'blur', validator: this.validatePassword1 },
+        password0: [{ required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}],
+        password1: [{ required: true, message: this.$t('base.noDataHint'), trigger: 'blur'},
+        { validator: this.validatePassword1, message: this.$t('user.password1Hint'), trigger: 'blur' }],
       },
       keyword: '',
       page_number: 1,
@@ -229,17 +230,10 @@ export default {
     }
   },
   methods: {
-    validatePassword0(rule, value, callback) {
-      if (value === '') {
-        callback(new Error(this.$t('base.noDataHint')));
-      } else {
-        callback();
-      }
-    },
     validatePassword1(rule, value, callback) {
       if (value === '') {
         callback(new Error(this.$t('base.noDataHint')));
-      } else if (this.passwordForm.password0 !== value) {
+      } else if (this.passwordForm.password0 !== this.passwordForm.password1) {
         callback(new Error(this.$t('user.password1Hint')));
       } else {
         callback();
@@ -259,7 +253,7 @@ export default {
 
     onLevelChange(e) {
       this.userForm.level = e
-      console.log('addUser onLevelChange - e', e)
+      console.log('UserList onLevelChange - e', e)
     },
     addUser(val, row) {
       this.dialogFormVisible = true
@@ -285,7 +279,7 @@ export default {
         this.userForm.levelName = row.levelName
         this.userRow = row
       }
-      console.log('addUser val - row', val, row)
+      console.log('UserList val - row', val, row)
     },
     closedAlert() {
       this.dialogFormVisible = false
@@ -309,7 +303,7 @@ export default {
       params['remark'] = this.userForm.remark
       this.$refs.userForm.validate((pass) => {
         if (!pass) {
-          console.log('CycleMeetCMP commitForm !pass')
+          console.log('UserList commitForm !pass')
           return
         }
         this.editUser(params)
