@@ -196,7 +196,7 @@ export default {
           { required: false, message: '请输入会议信息', trigger: 'blur' }
         ],
       },
-      select_area_id: -1,
+      // select_area_id: -1,
       // select_room_id: -1,
       currentTimeZone: 'Asia/Shanghai',
       roomOptions: [],
@@ -209,10 +209,10 @@ export default {
     },
 
     OnAreaChange(e) {
-      this.select_area_id = e
+      // this.select_area_id = e
       this.meetForm.area_id = e
       console.log('SingleMeetCMP OnAreaChange e', e)
-      if (this.select_area_id != -1) {
+      if (this.meetForm.area_id != -1) {
         this.roomOptions = this.getSelectedArea(e)
       } else {
         const select_rooms = [];
@@ -228,8 +228,12 @@ export default {
             });
           });
         });
+        this.meetForm.room_name = ''
+        this.meetForm.room_id = -1
         this.roomOptions = select_rooms
       }
+      this.meetForm.room_name = ''
+      this.meetForm.room_id = -1
     },
 
     onRoomChange(e) {

@@ -276,6 +276,8 @@ export default {
         });
         this.roomOptions = select_rooms
       }
+      this.meetForm.room_name = ''
+      this.meetForm.room_id = -1
     },
     onRoomChange(e) {
       this.meetForm.room_id = e
