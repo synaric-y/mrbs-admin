@@ -267,7 +267,7 @@ export default {
         this.userForm.remark = ''
       } else {
         this.dialogUserDetailForm = true // Read-only for viewing user details
-        this.userDetailTitle = this.$t('user.viewUser')
+        this.userDetailTitle = '编辑用户'
         this.userForm.name = row.name
         this.userForm.display_name = row.display_name
         this.userForm.password = ''
@@ -314,6 +314,7 @@ export default {
       this.passwordForm.name = row.name
       this.passwordForm.id = row.id
       this.passwordForm.password0 = ''
+      this.passwordForm.password1 = ''
     },
     deleteUserPop(row) {
       this.dialogDeleteVisible = true
