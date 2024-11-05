@@ -41,7 +41,7 @@
     </template>
     <template #btns>
       <el-button type="primary" @click="submit">保存</el-button>
-      <el-button>取消</el-button>
+      <el-button @click="back">取消</el-button>
     </template>
   </Layout>
 </template>
@@ -239,6 +239,9 @@ export default {
     })
   },
   methods: {
+    back() {
+      this.$router.go(-1)
+    },
     pwdValidator(rule, value, callback){
       let reg = /(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{8,20}/;
       if(reg.test(value) === false) callback(new Error('密码强度过低！请输入包含数字、字母、特殊符号最低8位密码'))

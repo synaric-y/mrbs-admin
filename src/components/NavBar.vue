@@ -11,7 +11,7 @@
         <el-icon color="#4e5969"><BellFilled /></el-icon>
       </div> -->
       <div class="icon-container">
-        <el-icon color="#4e5969"><Tools /></el-icon>
+        <el-icon color="#4e5969" @click="toSettings"><Tools /></el-icon>
       </div>
 
       <el-dropdown placement="bottom" @command="handleCommand">
@@ -69,6 +69,9 @@ export default {
         // router.replace("/login")
       })
       router.replace("/login")
+    },
+    toSettings() {
+      router.replace("../application_setting")
     },
     handleVisibleChange(visible) {
       const handleDocumentClick = (event) => {

@@ -28,7 +28,7 @@
     </template>
     <template #btns>
       <el-button type="primary" @click="submit">保存</el-button>
-      <el-button >取消</el-button>
+      <el-button @click="back">取消</el-button>
     </template>
   </Layout>
 </template>
@@ -113,6 +113,9 @@ export default {
     })
   },
   methods: {
+    back() {
+      this.$router.go(-1)
+    },
     verify(){
 
       if(!this.form.hosts || this.form.hosts===''){
