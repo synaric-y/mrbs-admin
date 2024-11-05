@@ -1,38 +1,30 @@
 <template>
   <div class="container">
-    <NavBar v-if="!isLoginPage" :companyName="companyName" :logo="logo" :time="time"/>
+    <NavBar v-if="!isLoginPage" :companyName="companyName" :logo="logo" :time="time" />
     <div style="height: 75px;" v-if="!isLoginPage"></div>
-    <div class="menu-content-wrapper" >
+    <div class="menu-content-wrapper">
       <div class="left-menu" v-if="!isLoginPage">
         <el-scrollbar height="100%">
           <el-col>
             <el-menu default-active="1" class="el-menu-vertical-demo" @open="handleOpen">
-
-              <template v-for="(menu,i) in adminMenu" :key="menu.index">
-                <el-menu-item
-                    v-if="menu.path"
-                    :index="menu.index"
-                    @click="()=>{activeIndex=menu.index;switchTab(menu.path)}">
-                  <img class="menu_icon" :src="activeIndex===menu.index?menu.active_icon:menu.icon" alt="#">
-                  <el-text :type="activeIndex===menu.index?'primary':''">{{menu.title}}</el-text>
+              <template v-for="(menu, i) in adminMenu" :key="menu.index">
+                <el-menu-item v-if="menu.path" :index="menu.index"
+                  @click="() => { activeIndex = menu.index; toPath(menu.path) }">
+                  <img class="menu_icon" :src="activeIndex === menu.index ? menu.active_icon : menu.icon" alt="#">
+                  <el-text :type="activeIndex === menu.index ? 'primary' : ''">{{ menu.title }}</el-text>
                 </el-menu-item>
                 <el-sub-menu v-else :index="menu.index">
                   <template #title>
-                    <img class="menu_icon" :src="activeIndex===menu.index?menu.active_icon:menu.icon" alt="#">
-                    <el-text :type="activeIndex===menu.index?'primary':''">{{menu.title}}</el-text>
+                    <img class="menu_icon" :src="activeIndex === menu.index ? menu.active_icon : menu.icon" alt="#">
+                    <el-text :type="activeIndex === menu.index ? 'primary' : ''">{{ menu.title }}</el-text>
                   </template>
-                  <el-menu-item
-                      v-for="submenu in menu.children"
-                      :key="submenu.index"
-                      :index="menu.index+'-'+submenu.index"
-                      @click="()=>{activeIndex=menu.index;switchTab(submenu.path)}">
-                    {{submenu.title}}
+                  <el-menu-item v-for="submenu in menu.children" :key="submenu.index"
+                    :index="menu.index + '-' + submenu.index" @click="() => { activeIndex = menu.index; toPath(submenu.path) }">
+                    {{ submenu.title }}
                   </el-menu-item>
                 </el-sub-menu>
               </template>
-
             </el-menu>
-
           </el-col>
         </el-scrollbar>
       </div>
@@ -51,12 +43,6 @@
         <!-- </el-main> -->
       </div>
     </div>
-    <!-- <div class="nav-block"></div> -->
-    <!--    <transition name="el-fade-in" mode="out-in">-->
-    <!--      <keep-alive>-->
-    <!--        <router-view></router-view>-->
-    <!--      </keep-alive>-->
-    <!--    </transition>-->
   </div>
 </template>
 
@@ -64,11 +50,11 @@
 import router from "@/router/index.js"
 import { PageMixin } from "@/pages/PageMixin.js";
 import { STORAGE } from "@/const.js";
-import {Api} from "@/network/api.js";
+import { Api } from "@/network/api.js";
 import NavBar from "@/components/NavBar.vue";
 
 export default {
-  components: {NavBar},
+  components: { NavBar },
   mixins: [PageMixin],
   data() {
     return {
@@ -76,22 +62,23 @@ export default {
       activeIndex: 1,
       logo: '',
       companyName: '',
+      init_status: -1,
       time: '',
-      adminMenu:[
+      adminMenu: [
         {
           index: 1,
           icon: '/admin/imgs/dashboard_manager.png',
           active_icon: '/admin/imgs/dashboard_manager_selected.png',
           title: '仪表盘',//Dashboard
           path: '/guide_one',
-          children:[]
+          children: []
         },
         {
           index: 2,
           icon: '/admin/imgs/user_manager.png',
           active_icon: '/admin/imgs/user_manager_selected.png',
           title: '用户管理',
-          children:[
+          children: [
             {
               index: 1,
               title: '用户列表',
@@ -109,7 +96,7 @@ export default {
           icon: '/admin/imgs/meet_manager.png',
           active_icon: '/admin/imgs/meet_manager_selected.png',
           title: '会议预定',
-          children:[
+          children: [
             {
               index: 1,
               title: '单次会议预定',
@@ -132,7 +119,7 @@ export default {
           icon: '/admin/imgs/area_manager.png',
           active_icon: '/admin/imgs/area_manager_selected.png',
           title: '区域&会议管理',
-          children:[
+          children: [
             {
               index: 1,
               title: '编辑区域',
@@ -151,14 +138,14 @@ export default {
           active_icon: '/admin/imgs/terminal_manager_selected.png',
           title: '终端设备管理',
           path: '/terminal_manager',
-          children:[]
+          children: []
         },
         {
           index: 6,
           icon: '/admin/imgs/check_circle.png',
           active_icon: '/admin/imgs/check_circle_selected.png',
           title: '系统设置',
-          children:[
+          children: [
             {
               index: 1,
               title: '会议规则设置',
@@ -186,7 +173,7 @@ export default {
           icon: '/admin/imgs/help_manager.png',
           active_icon: '/admin/imgs/help_manager_selected.png',
           title: '帮助中心',
-          children:[
+          children: [
             {
               index: 1,
               title: '操作手册下载',
@@ -204,7 +191,7 @@ export default {
             // }
           ]
         },
-        
+
       ]
     }
   },
@@ -214,21 +201,21 @@ export default {
     this.syncTime()
     this.getSetting()
     this.$forceUpdate()
-    
+
   },
   methods: {
-    syncTime(){
+    syncTime() {
       this.getTime()
-      setInterval(()=>{
+      setInterval(() => {
         this.getTime()
-      },30000)
+      }, 30000)
     },
-    getTime(){
+    getTime() {
       Api.getMeetRooms({})
-          .then(({data})=>{
-            console.log(data)
-            this.time = data.time
-          })
+        .then(({ data }) => {
+          console.log(data)
+          this.time = data.time
+        })
     },
     handleOpen(val) {
       console.log(val)
@@ -249,10 +236,19 @@ export default {
         "logo_dir": 1,
         "company_name": 1,
         "server_address": 1,
-      }).then(({code,data,msg})=>{
-        this.logo = data.server_address + data.logo_dir + '?time='+ new Date().getTime() // 强制刷新logo
+        "init_status": 1,
+      }).then(({ code, data, msg }) => {
+        this.logo = data.server_address + data.logo_dir + '?time=' + new Date().getTime() // 强制刷新logo
         this.companyName = data.company_name
+        this.init_status = data.init_status
       })
+    },
+    toPath(path) {
+      if (path === '/guide_one' && this.init_status != 0) {
+        this.switchTab('../single_meet')
+        return
+      }
+      this.switchTab(path)
     },
     toLogout() {
       this.showPop = false
@@ -323,7 +319,7 @@ body {
 .container-sub-page-main {
   /* min-width: 930px; */
   padding: 20px;
-  width:100%;
+  width: 100%;
 
   /* height: calc(100vh - 95px); */
   display: flex;
@@ -370,7 +366,7 @@ body {
   top: 75px;
 }
 
-.left-menu-placeholder{
+.left-menu-placeholder {
   flex-shrink: 0;
   width: 189px;
   height: calc(100vh - 75px);
@@ -405,6 +401,7 @@ body {
   display: flex;
   flex-direction: row;
 }
+
 .operate-item {
   font-family: PingFang SC;
   font-size: 14px;

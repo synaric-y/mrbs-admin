@@ -221,7 +221,7 @@ export default defineComponent({
       this.getSyncInterval()
       this.interval = setInterval(() => {
         this.getSyncInterval()
-      }, 20000000)
+      }, 20000)
     },
     getSyncInterval() {
       this.filterDateStore = FilterDateStore()
