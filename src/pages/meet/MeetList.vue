@@ -31,23 +31,23 @@
         </el-table-column>
         <el-table-column prop="area_name" label="区域" width="100"></el-table-column>
         <el-table-column prop="room_name" label="会议室" width="100"></el-table-column>
-        <el-table-column prop="startTime" label="预约开始时间" width="250"></el-table-column>
-        <el-table-column prop="endTime" label="预约结束时间" width="250"></el-table-column>
-        <el-table-column prop="duration" label="会议时间" width="200"></el-table-column>
+        <el-table-column prop="startTime" label="预约开始时间" width="200"></el-table-column>
+        <el-table-column prop="endTime" label="预约结束时间" width="200"></el-table-column>
+        <el-table-column prop="duration" label="会议时间" width="350"></el-table-column>
         <el-table-column prop="is_repeat_text" label="是否周期会议" width="130"></el-table-column>
         <el-table-column prop="status_text" label="会议状态" width="80"></el-table-column>
         <el-table-column prop="create_by" label="预约人" width="100">
         </el-table-column>
-        <el-table-column prop="id" :label="$t('user.tableUser.operate')" width="200">
+        <!-- <el-table-column prop="id" :label="$t('user.tableUser.operate')" width="200">
           <template #default="scope">
             <div class="operate-wrapper">
               <span class="operate-item" style="color: #000000;" disable>无</span>
-            </div>
+            </div> -->
             <!-- <div class="operate-wrapper" v-else>
               <span class="operate-item" @click="editMeetDislog(scope.row)">编辑</span>
             </div> -->
-          </template>
-        </el-table-column>
+          <!-- </template>
+        </el-table-column> -->
       </el-table>
     </template>
     <template #pagination>

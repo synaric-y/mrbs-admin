@@ -145,12 +145,12 @@ const router = createRouter({
     {
       path: '/area_detail/:id',
       name: 'area_detail',
-      component: () => import('@/pages/AreaDetailPage.vue')
+      component: () => import('@/pages/area/AreaDetailPage.vue')
     },
     {
       path: '/room_detail/:id',
       name: 'room_detail',
-      component: () => import('@/pages/RoomDetailPage.vue')
+      component: () => import('@/pages/area/RoomDetailPage.vue')
     },
     {
       path: '/user_detail/:mode/:id',
