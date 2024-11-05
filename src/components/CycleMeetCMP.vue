@@ -104,13 +104,13 @@ export default {
       minStartTime: '06:00',
       maxEndTime: '21:00',
       check_box_list: [
-        { label: '周一', value: '1' },
-        { label: '周二', value: '2' },
-        { label: '周三', value: '3' },
-        { label: '周四', value: '4' },
-        { label: '周五', value: '5' },
-        { label: '周六', value: '6' },
-        { label: '周日', value: '0' },
+        { label: '周一', value: 1 },
+        { label: '周二', value: 2 },
+        { label: '周三', value: 3 },
+        { label: '周四', value: 4 },
+        { label: '周五', value: 5 },
+        { label: '周六', value: 6 },
+        { label: '周日', value: 0 },
       ],
       meetForm: {
         tmp_repeat_id: 0,
@@ -360,7 +360,7 @@ export default {
     getCheckBoxList(binaryString) {
       const checkList = []
       for (let i = 0; i < binaryString.length; i++) {
-        if (binaryString[i] === '1') {
+        if (binaryString[i] === 1) {
           checkList.push(i.toString())
         }
       }
@@ -369,10 +369,12 @@ export default {
     },
 
     toBinary(checkList) {
+      // [1,3,5,0]
+      console.log('toBinary checkList', checkList)
       const length = 7;
       let binaryArray = new Array(length).fill('0');
       checkList.forEach(item => {
-        binaryArray[parseInt(item)] = '1';
+        binaryArray[parseInt(item)] = 1;
       });
       console.log('toBinary checkList', checkList, binaryArray.join(''))
       return binaryArray.join('');
@@ -404,11 +406,7 @@ export default {
         this.meetForm.end_seconds = data.end_time
         this.meetForm.rep_day = data.rep_day
         // rep_opt: 1010100
-        this.meetForm.rep_opt = data.rep_opt.substring(0).replace(/\D/g, "")
-        console.log('getMeetDetail this.meetForm.rep_opt', this.meetForm.rep_opt)
-        this.meetForm.rep_day = this.getCheckBoxList(data.rep_opt.toString())
-        this.meetForm.rep_day = this.meetForm.rep_day.map(item => item === '7' ? '0' : item);
-        console.log('getMeetDetail this.meetForm.rep_day', this.meetForm.rep_day)
+        this.meetForm.rep_day = this.meetForm.rep_day.map(item => item === 7 ? 0 : item);
         if (data.resolution == 1800) {
           this.minStartTime = Common.formatLastMinute(30)
         } else {
