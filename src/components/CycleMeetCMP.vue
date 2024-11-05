@@ -19,7 +19,7 @@
         <el-form-item prop="start_date" label="开始时间" style="margin-left: 20px" required>
           <el-form-item prop="start_date">
             <el-date-picker v-model="meetForm.start_date" type="date" :disabled-date="disabledDate"
-              value-format="YYYY-MM-DD" aria-label="Pick start day" placeholder="Pick start day" style="width: 100%"
+              value-format="YYYY-MM-DD" aria-label="请选择" placeholder="请选择" style="width: 100%"
               @change="choseDate(0, $event)" />
           </el-form-item>
         </el-form-item>
@@ -49,11 +49,11 @@
         <el-form-item prop="rep_end_date" label="结束时间" style="margin-left: 20px;" required>
           <el-form-item prop="rep_end_date">
             <el-date-picker v-model="meetForm.rep_end_date" type="date" :disabled-date="disabledDate"
-              value-format="YYYY-MM-DD" aria-label="Pick end day" placeholder="Pick end day" style="width: 100%" />
+              value-format="YYYY-MM-DD" aria-label="请选择" placeholder="请选择" style="width: 100%" />
           </el-form-item>
         </el-form-item>
         <el-form-item prop="description" label="备注" label-width="100px">
-          <el-input v-model="meetForm.description" maxlength="100" style="width: 410px;" placeholder="Please input"
+          <el-input v-model="meetForm.description" maxlength="100" style="width: 410px;" placeholder="请输入"
             show-word-limit type="textarea" />
         </el-form-item>
       </el-form>
