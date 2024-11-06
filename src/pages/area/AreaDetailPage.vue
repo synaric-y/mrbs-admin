@@ -116,10 +116,8 @@ export default {
               type: 'success',
             })
             this.back()
-          } else if (code == -2) {
+          }  else {
             ElMessage.error(msg)
-          } else {
-            ElMessage.error(this.$t('base.editFailed'))
           }
         }).catch(() => {
           ElMessage.error(this.$t('base.editFailed'))
