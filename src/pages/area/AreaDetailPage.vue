@@ -234,8 +234,8 @@ export default {
         </el-collapse>
 
         <el-form-item style="margin-top: 60px">
-          <el-button type="info" size="default" @click="back">{{ $t("base.cancel") }}</el-button>
           <el-button type="primary" size="default" @click="submit">{{ $t("base.confirm") }}</el-button>
+          <el-button type="info" size="default" @click="back">{{ $t("base.cancel") }}</el-button>
         </el-form-item>
       </el-form>
     </el-main>

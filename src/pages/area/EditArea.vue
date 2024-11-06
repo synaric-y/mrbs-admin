@@ -44,10 +44,10 @@
     </el-form>
     <template #footer>
       <div class="dialog-footer">
-        <el-button @click="showAddAreaDialog = false">{{ $t('base.cancel') }}</el-button>
         <el-button type="primary" @click="addArea">
           {{ $t('base.confirm') }}
         </el-button>
+        <el-button @click="showAddAreaDialog = false">{{ $t('base.cancel') }}</el-button>
       </div>
     </template>
   </el-dialog>
@@ -55,10 +55,10 @@
     <span>{{ $t('area.deleteAreaHint') }}</span>
     <template #footer>
       <div class="dialog-footer">
-        <el-button @click="showDeleteAreaDialog = false">{{ $t('base.cancel') }}</el-button>
         <el-button type="primary" @click="deleteArea">
           {{ $t('base.confirm') }}
         </el-button>
+        <el-button @click="showDeleteAreaDialog = false">{{ $t('base.cancel') }}</el-button>
       </div>
     </template>
   </el-dialog>
