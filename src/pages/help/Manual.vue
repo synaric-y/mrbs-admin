@@ -4,8 +4,6 @@
       <div class="sub-title-wrapper">
         <div class="sub-title">操作手册下载</div>
       </div>
-
-
       <div class="manual-wrapper">
         <div class="manual-pdf">
           <!-- <div class="preview-pdf-placeholder"></div> -->
@@ -18,8 +16,6 @@
         <!-- <div class="preview-pdf">在线浏览</div> -->
         <!-- <div class="download-pdf">PDF下载</div> -->
       </div>
-
-
       <el-dialog v-model="showDeleteRoomDialog" title="Tips" width="500">
         <span>{{ $t('room.deleteRoomHint') }}</span>
         <template #footer>
@@ -53,7 +49,6 @@ export default {
         name: '',
         description: '',
         capacity: '',
-        // room_admin_email: ''
       },
       rules: {
         name: [
@@ -112,7 +107,6 @@ export default {
 </script>
 
 
-
 <style lang="scss" scoped>
 .container-sub-page-main {
   background-color: white;
@@ -135,16 +129,15 @@ export default {
 }
 
 .preview-pdf-placeholder {
-  width: 100%;
+  width: auto;
   height: 100%;
   background-color: #D8D8D8;
 }
 
 .preview-pdf-name {
   margin-top: 22px;
-  width: 1000px;
+  min-width: 1000px;
   height: 800px;
-  // width: 100%;
   text-align: center;
 }
 
