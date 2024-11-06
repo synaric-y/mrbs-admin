@@ -175,11 +175,10 @@ router.beforeEach((to, from) => {
   } else if (to.name == 'login') {
     return false
   }
-
   let user = JSON.parse(json)
-  if (user["level"] < 2) {
-    return false
-  }
+  // if (user["level"] < 2) {
+  //   return false
+  // }
   return true
 })
 
