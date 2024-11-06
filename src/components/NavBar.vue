@@ -159,6 +159,7 @@ export default {
   font-size: 16px;
   border-radius: 50%;
   border: 1px solid #ccc;
+  cursor: pointer;
 }
 
 
