@@ -74,8 +74,8 @@
   </el-dialog>
   <el-dialog v-model="showTerminalDialog" title="终端绑定" width="550">
     <el-form :model="terminalForm" :rules="terminal_rules">
-      <el-form-item label="终端" prop="terminal" required>
-        <el-select style="min-width: 120px" v-model="select_terminal" placeholder="终端">
+      <el-form-item label="终端" prop="device_id" required>
+        <el-select style="min-width: 120px" v-model="terminalForm.device_id" placeholder="终端">
           <el-option v-for="item in avaliableDevices" style="min-width: 120px;z-index: 99999" :key="item.device_id"
             :label="item.device_name" :value="item.device_id" />
         </el-select></el-form-item>
@@ -128,7 +128,8 @@ export default {
         ],
       },
       terminalForm: {
-        terminal: ''
+        terminal: '',
+        device_id: '',
       },
       terminal_rules: {
         terminal: [
@@ -215,7 +216,7 @@ export default {
       this.select_row = row
     },
     sureBindTerminal() {
-      Api.bindDevice({ device_id: this.select_row.device_id, room_id: this.select_row.id }).then(({ data, code, msg }) => {
+      Api.bindDevice({ device_id: this.terminalForm.device_id, room_id: this.select_row.id }).then(({ data, code, msg }) => {
         if (code == 0) {
           this.getRoomList()
         } else {
