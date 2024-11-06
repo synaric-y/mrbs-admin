@@ -1,7 +1,7 @@
 <template>
   <div class="nav_wrapper">
     <div class="logo-container">
-      <img class="logo" :src="logo" alt="logo">
+      <img class="logo" :src="logo" >
     </div>
     <div class="nav-left">{{companyName}}</div>
     <div style="flex: 1"></div>
