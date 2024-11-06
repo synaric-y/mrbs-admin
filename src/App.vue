@@ -147,13 +147,13 @@ export default {
           children: [
             {
               index: "1",
-              title: '会议规则设置',
-              path: '/meet_rule'
+              title: '应用设置',
+              path: '/application_setting'
             },
             {
               index: "2",
-              title: '应用设置',
-              path: '/application_setting'
+              title: '会议规则设置',
+              path: '/meet_rule'
             },
             {
               index: "3",

@@ -15,7 +15,8 @@
               <div class="form-item-content">
                 <el-input :disabled="urlStatus==='testing'" @input="urlStatus='untested'" v-model="form.requestUrl" class="form-item-input"  placeholder="示例:172.16.88.180"/>
                 <TestButton :status="urlStatus" @test="verify"/>
-                <div style="width: 20px;height: 20px" id="qrcode"></div>
+                <el-button type="primary" @click="pendingShowQRCode">查看二维码</el-button>
+<!--                <div style="width: 20px;height: 20px" id="qrcode"></div>-->
               </div>
             </el-form-item>
 
@@ -126,7 +127,12 @@
           </el-table>
         </div>
       </div>
-
+      <el-dialog v-model="showQRCode"  width="800" center align-center>
+        <div style="width: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center">
+          <div style="width: 200px;height: 200px" id="qrcode"></div>
+          <div style="margin-top: 10px">请打开未激活的平板并扫码</div>
+        </div>
+      </el-dialog>
 
     </template>
     <template #btns>
@@ -167,6 +173,7 @@ export default {
       originalWebLogoURL: '',
       originalAppLogoURL: '',
       versionData: [],
+      showQRCode: false,
       rules:{
         companyName: [
           { required: true, message: '请输入公司或组织名称', trigger: 'blur' },
@@ -224,17 +231,6 @@ export default {
           theme:data.theme_type
         }
 
-        if(that.form.requestUrl && that.form.requestUrl!==''){
-          const codeFigure = new AraleQRCode({
-            "render": "svg", // 生成的类型 'svg' or 'table'
-            "text": that.form.requestUrl, // 需要生成二维码的链接
-            "size": 100 // 生成二维码大小
-          });
-          document.querySelector('#qrcode').appendChild(codeFigure);
-        }
-
-
-
         that.originalWebLogoURL = data.logo_dir!=='' ? (HOST + data.logo_dir + '?time=' + new Date().getTime()) : ''
         that.originalAppLogoURL = data.app_logo_dir!=='' ? (HOST + data.app_logo_dir + '?time=' + new Date().getTime()) : ''
 
@@ -271,9 +267,9 @@ export default {
       // 测试联通
       this.urlStatus='testing'
       axios({
-        url: `${this.form.requestUrl}/web/call.php?act=get_info%2Fadmin`,
+        url: `${this.form.requestUrl}/web/call.php?act=test%2Ftest_exchange`,
         method: 'POST',
-        data: {type:'area'},
+        data: {server_address: this.form.requestUrl},
       }).then(({data})=>{
         if(data.code!==0){
           ElMessage.error({
@@ -288,25 +284,26 @@ export default {
           message: '请求地址验证成功！'
         })
 
+      }).catch(e=>{
+
+      })
+
+
+    },
+    pendingShowQRCode() {
+      this.showQRCode = true
+      this.$nextTick(() => {
         const codeFigure = new AraleQRCode({
           "render": "svg", // 生成的类型 'svg' or 'table'
           "text": this.form.requestUrl, // 需要生成二维码的链接
-          "size": 100 // 生成二维码大小
+          "size": 200 // 生成二维码大小
         });
         const qrcodeContainer = document.querySelector('#qrcode')
         while (qrcodeContainer.firstChild) { // 移除所有子元素
           qrcodeContainer.removeChild(qrcodeContainer.firstChild);
         }
         qrcodeContainer.appendChild(codeFigure); // 增加新的子元素
-
-      }).catch(e=>{
-        ElMessage.error({
-          message: '无效的请求地址'
-        })
-        this.urlStatus='untested'
       })
-
-
     },
     removeImage(type,file){
       switch (type){
