@@ -7,7 +7,7 @@
         <el-scrollbar height="100%">
           <el-col>
             <el-menu default-active="1" class="el-menu-vertical-demo" @open="handleOpen">
-              <template v-for="(menu, i) in adminMenu" :key="menu.index">
+              <template v-for="(menu, i) in (userInfo.level == 2 ? adminMenu : memberMenu)" :key="menu.index">
                 <el-menu-item v-if="menu.path" :index="menu.index"
                   @click="() => { activeIndex = menu.index; toPath(menu.path) }">
                   <img class="menu_icon" :src="activeIndex === menu.index ? menu.active_icon : menu.icon" alt="#">
@@ -165,6 +165,62 @@ export default {
               title: '日历同步',
               path: '/sync_calendar'
             },
+          ]
+        },
+        {
+          index: "7",
+          icon: '/admin/imgs/help_manager.png',
+          active_icon: '/admin/imgs/help_manager_selected.png',
+          title: '帮助中心',
+          children: [
+            {
+              index: "1",
+              title: '操作手册下载',
+              path: '/manual'
+            },
+            {
+              index: "2",
+              title: '常见问题',
+              path: '/questions'
+            },
+            // {
+            //   index: 3,
+            //   title: '问题反馈',
+            //   path: '/feedback'
+            // }
+          ]
+        },
+
+      ],
+      memberMenu: [
+        {
+          index: "1",
+          icon: '/admin/imgs/dashboard_manager.png',
+          active_icon: '/admin/imgs/dashboard_manager_selected.png',
+          title: '仪表盘',//Dashboard
+          path: '/guide_one',
+          children: []
+        },{
+          index: "3",
+          icon: '/admin/imgs/meet_manager.png',
+          active_icon: '/admin/imgs/meet_manager_selected.png',
+          title: '会议预定',
+          children: [
+            {
+              index: "1",
+              title: '单次会议预定',
+              path: '/single_meet'
+            },
+            {
+              index: "2",
+              title: '循环会议预定',
+              path: '/cycle_meet'
+            },
+            {
+              index: "3",
+              title: '历史会议',
+              path: '/meet_list'
+            }
           ]
         },
         {
