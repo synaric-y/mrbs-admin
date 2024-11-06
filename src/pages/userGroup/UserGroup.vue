@@ -1,10 +1,10 @@
 <template>
   <el-container class="container-sub-page">
     <el-main class="container-sub-page-main">
-      <div class="sub-page-content">
+      <div class="sub-page-content-main">
         <div class="sub-title-wrapper" style="margin-left: 20px;">
           <div class="page-title">{{ $t('userGroup.userGroupSettings') }}</div>
-          <div class="async-wrapper" style="margin-top: 20px;height: 30px;">
+          <div class="async-wrapper" style="margin-top: 20px;">
             <el-button :disabled="!enable_sync" size="large" type="primary" style="width: 112px;" @click="OnSyncUsers">
               <img src="../../../public/imgs/button_reflesh.png" alt="Search Icon" class="el-button-img" />
               {{ $t('base.userSync') }}
@@ -12,7 +12,7 @@
             <span class="async-last-time">{{ syncTime }}</span>
           </div>
         </div>
-        <div class="table-wrapper" style="height: auto">
+        <div class="table-wrapper" style="height: auto;margin-top: 20px;">
           <el-table :v-loading="true" :data="tableData" lazy style="width: 100%;height: auto; margin-bottom: 20px;"
             row-key="id" :tree-props="{ children: 'children', hasChildren: 'has_child' }" :load="loadSubGroup"
             max-height="550" :default-expanded-keys="expandedKeys" @node-expand="handleNodeExpand"
@@ -439,12 +439,10 @@ export default {
             this.syncTime = this.$t('userGroup.lastSyncTime', { time })
           }
           console.log('UserGroup getADStatus data:', data)
-          console.log('UserGroup getADStatus data.task:', data.task)
-          console.log('UserGroup getADStatus data.complete:', data.task.complete)
           if (data.task === undefined || data.task === null) {
             this.enable_sync = true
             this.is_loading = false
-            console.log('UserGroup getADStatus complete:null')
+            console.log('UserGroup getADStatus data.task:null')
             if (!is_initalize) {
               this.startSyncUser()
             }
@@ -460,7 +458,7 @@ export default {
             return
           }
           else if (data.task && data.task.complete === 0) {
-            this.enable_sync = true
+            this.enable_sync = false
             console.log('UserGroup getADStatus complete:0')
             if (!is_initalize) {
               this.startSyncUser()
@@ -587,7 +585,7 @@ export default {
     },
   },
   mounted() {
-    this.setTab('/user')
+    // this.setTab('/user')
     this.getADStatus(true)
     this.getTableData()
     // this.syncADState(true)
@@ -606,6 +604,20 @@ export default {
   padding: 0;
   margin: 0;
   position: relative;
+}
+
+.sub-page-content-main {
+  width: 100%;
+  height: auto;
+  // padding: 20px;
+  box-sizing: border-box;
+  margin: 0;
+  position: relative;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  // gap: 30px;
+  background-color: #fff;
 }
 
 .sub-title-wrapper {
@@ -631,9 +643,10 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
   margin-left: 20px;
   padding: 0 5px;
+  // margin-bottom: 20px;
 }
 
 .async-last-time {

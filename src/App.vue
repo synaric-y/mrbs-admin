@@ -59,81 +59,80 @@ export default {
   data() {
     return {
       showPop: false,
-      activeIndex: 1,
+      activeIndex: "1",
       logo: '',
       companyName: '',
       init_status: -1,
       time: '',
       adminMenu: [
         {
-          index: 1,
+          index: "1",
           icon: '/admin/imgs/dashboard_manager.png',
           active_icon: '/admin/imgs/dashboard_manager_selected.png',
           title: '仪表盘',//Dashboard
           path: '/guide_one',
           children: []
-        },
-        {
-          index: 2,
-          icon: '/admin/imgs/user_manager.png',
-          active_icon: '/admin/imgs/user_manager_selected.png',
-          title: '用户管理',
-          children: [
-            {
-              index: 1,
-              title: '用户列表',
-              path: '/user_list'
-            },
-            {
-              index: 2,
-              title: '用户组配置',
-              path: '/user_group'
-            }
-          ]
-        },
-        {
-          index: 3,
+        },{
+          index: "3",
           icon: '/admin/imgs/meet_manager.png',
           active_icon: '/admin/imgs/meet_manager_selected.png',
           title: '会议预定',
           children: [
             {
-              index: 1,
+              index: "1",
               title: '单次会议预定',
               path: '/single_meet'
             },
             {
-              index: 2,
+              index: "2",
               title: '循环会议预定',
               path: '/cycle_meet'
             },
             {
-              index: 3,
+              index: "3",
               title: '历史会议',
               path: '/meet_list'
             }
           ]
         },
         {
-          index: 4,
+          index: "2",
+          icon: '/admin/imgs/user_manager.png',
+          active_icon: '/admin/imgs/user_manager_selected.png',
+          title: '用户管理',
+          children: [
+            {
+              index: "1",
+              title: '用户列表',
+              path: '/user_list'
+            },
+            {
+              index: "2",
+              title: '用户组配置',
+              path: '/user_group'
+            }
+          ]
+        },
+        {
+          index: "4",
           icon: '/admin/imgs/area_manager.png',
           active_icon: '/admin/imgs/area_manager_selected.png',
           title: '区域&会议管理',
           children: [
             {
-              index: 1,
+              index: "1",
               title: '编辑区域',
               path: '/edit_area'
             },
             {
-              index: 2,
+              index: "2",
               title: '编辑会议室',
               path: '/edit_meet'
             },
           ]
         },
         {
-          index: 5,
+          index: "5",
           icon: '/admin/imgs/terminal_manager.png',
           active_icon: '/admin/imgs/terminal_manager_selected.png',
           title: '终端设备管理',
@@ -141,46 +140,46 @@ export default {
           children: []
         },
         {
-          index: 6,
+          index: "6",
           icon: '/admin/imgs/check_circle.png',
           active_icon: '/admin/imgs/check_circle_selected.png',
           title: '系统设置',
           children: [
             {
-              index: 1,
+              index: "1",
               title: '会议规则设置',
               path: '/meet_rule'
             },
             {
-              index: 2,
+              index: "2",
               title: '应用设置',
               path: '/application_setting'
             },
             {
-              index: 3,
+              index: "3",
               title: '用户同步',
               path: '/sync_user'
             },
             {
-              index: 4,
+              index: "4",
               title: '日历同步',
               path: '/sync_calendar'
             },
           ]
         },
         {
-          index: 7,
+          index: "7",
           icon: '/admin/imgs/help_manager.png',
           active_icon: '/admin/imgs/help_manager_selected.png',
           title: '帮助中心',
           children: [
             {
-              index: 1,
+              index: "1",
               title: '操作手册下载',
               path: '/manual'
             },
             {
-              index: 2,
+              index: "2",
               title: '常见问题',
               path: '/questions'
             },
