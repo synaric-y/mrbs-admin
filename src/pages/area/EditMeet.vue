@@ -218,6 +218,7 @@ export default {
     sureBindTerminal() {
       Api.bindDevice({ device_id: this.terminalForm.device_id, room_id: this.select_row.id }).then(({ data, code, msg }) => {
         if (code == 0) {
+          this.showTerminalDialog = false
           this.getRoomList()
         } else {
           ElMessage.error(msg)
