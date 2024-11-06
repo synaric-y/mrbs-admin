@@ -180,7 +180,23 @@ export default {
         { label: this.$t('user.role.level1'), value: 1 },
         { label: this.$t('user.role.level2'), value: 2 }
       ],
-      rules: {
+      rules: [],
+      rulesAdd: {
+        name: [
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
+        ],
+        display_name: [
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
+        ],
+        email: [
+          { required: true, message: '请输入邮箱', trigger: 'blur' },
+          { validator: this.validateEmail, trigger: 'blur' }
+        ],
+      },
+      rulesUpdate: {
         name: [
           { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
         ],
@@ -259,6 +275,7 @@ export default {
       this.dialogFormVisible = true
       if (val === 1) {
         this.dialogUserDetailForm = false// Editable for adding a user
+        this.rules = this.rulesAdd
         this.userDetailTitle = this.$t('user.addUser')
         this.userForm.name = ''
         this.userForm.display_name = ''
@@ -267,6 +284,7 @@ export default {
         this.userForm.remark = ''
       } else {
         this.dialogUserDetailForm = true // Read-only for viewing user details
+        this.rules = this.rulesUpdate
         this.userDetailTitle = '编辑用户'
         this.userForm.name = row.name
         this.userForm.display_name = row.display_name
