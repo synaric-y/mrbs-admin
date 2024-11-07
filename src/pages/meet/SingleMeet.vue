@@ -530,9 +530,9 @@ export default defineComponent({
       if (!userinfo || userinfo.level == 0) {
         return this.$t('base.loginoutUser')
       }
-      if (this.normalUser()) {
-        return this.$t('base.normalUser')
-      }
+      // if (this.normalUser()) {
+      //   return this.$t('base.normalUser')
+      // }
       if (roomStatus.disabled == ROOM_STATUS.DISABLED) {
         return this.$t('base.roomDisabled')
       }
@@ -570,9 +570,9 @@ export default defineComponent({
       if (nextTimeStamp < this.currenTimestamp) {
         return
       }
-      if (this.normalUser()) {
-        return
-      }
+      // if (this.normalUser()) {
+      //   return
+      // }
       if (room.disabled == ROOM_STATUS.DISABLED) {
         console.log('Home toMeet disabled', room.disabled)
         return
@@ -582,9 +582,9 @@ export default defineComponent({
 
     editMeet(event) {
       console.log('SingleMeet editMeet event', event)
-      if (this.normalUser()) {
-        return
-      }
+      // if (this.normalUser()) {
+      //   return
+      // }
       if (event.status == MEETING_STATUS.END) {
         return
       }
