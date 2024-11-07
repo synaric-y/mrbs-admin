@@ -13,7 +13,7 @@
       </el-select>
       <el-select class="account-status-select" v-model="roomVal" placeholder="Select" size="default"
         style="width: 140px;min-height: 30px;" @change="onRoomChange">
-        <el-option style="height: 30px;" v-for="item in roomOptions" :key="item.room_id" :label="item.title"
+        <el-option style="height: 30px;" v-for="item in roomOptions" :key="item.room_id" :label="item.room_name"
           :value="item.room_id" />
       </el-select>
       <!-- <el-date-picker style="margin-left: 20px;" v-model="baseTime" type="daterange" :range-separator="$t('base.to')"
@@ -102,9 +102,9 @@ export default {
           label: '已结束',
         }],
 
-      areaStatusVal: 'all',
+      areaStatusVal: '所有',
       areaOptions: [],
-      roomVal: 'all',
+      roomVal: '所有',
       roomOptions: [],
       pendingDeleteName: null,
       role: [
@@ -142,21 +142,6 @@ export default {
       this.dialogSingleMeet = true
       this.entry_id = row.id
       console.log('MeetList editMeetDislog row',row)
-      // this.form_mode = 1
-      // this.entry_id = event.entry_id
-      // this.form_mode = 1
-      // this.addParams.room_id = room.room_id
-      // this.addParams.room_name = tmp_room_name
-      // this.addParams.resolution = room.resolution
-      // this.addParams.area_id = room.area_id
-      // this.addParams.area_name = room.area_name
-      // this.addParams.timeStamp = nextTimeStamp
-      // if (row.is_repeat) {
-      //   this.repeat_id = row.id
-      //   this.dialogCycleMeetForm = true
-      //   return
-      // }
-      // this.dialogMeetForm = true
     },
     searchMeet() {
       this.getMeetList()
