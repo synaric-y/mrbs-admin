@@ -1,7 +1,7 @@
 <template>
   <div class="mask">
     <div class="content">
-      <div class="title">{{$t('userGroup.viewMember')}}</div>
+      <div class="title">{{ $t('userGroup.viewMember') }}</div>
       <el-form :inline="true" class="demo-form-inline">
         <el-form-item><el-input v-model="keyword" :placeholder="$t('user.plzEnterUsernameHint')" /></el-form-item>
         <!--        <el-form-item><el-select style="min-width: 120px" v-model="sourceVal" placeholder="来源">-->
@@ -10,7 +10,7 @@
         <!--        </el-select></el-form-item>-->
         <el-form-item>
           <el-button type="primary" :color="'#591bb7'" :dark="true" :icon="Search"
-            @click="searchGroupMember">{{$t('base.search')}}</el-button>
+            @click="searchGroupMember">{{ $t('base.search') }}</el-button>
         </el-form-item>
       </el-form>
 
@@ -19,20 +19,29 @@
           style="--el-table-tr-bg-color:#fff!important;width: 100%;height: auto; margin-bottom: 20px;" row-key="id"
           default-expand-all>
           <template v-if="isEdit">
-            <el-table-column prop="id" :label="$t('user.tableUser.id')" label-width="100px" />
+            <!-- <el-table-column prop="id" :label="$t('user.tableUser.id')" label-width="100px" /> -->
+            <el-table-column prop="number" :label="$t('user.tableUser.id')" width="120">
+              <template #default="scope">
+                {{ scope.$index + 1 }}
+              </template>
+            </el-table-column>
             <el-table-column prop="display_name" :label="$t('user.tableUser.displayName')" label-width="120px" />
             <el-table-column prop="source" :label="$t('user.tableUser.source')" label-width="100px" />
-            <el-table-column prop="status" :label="$t('user.tableUser.status')" width="100"  v-if="!isLoading">
+            <el-table-column prop="status" :label="$t('user.tableUser.status')" width="100" v-if="!isLoading">
               <template #default="scope">
                 <el-switch v-model="scope.row.status"
                   style="--el-switch-on-color: #591BB7; --el-switch-off-color: #A8ABB2" :active-value="true"
-                  :inactive-value="false"
-                   @change="handleSwitchChange(scope.row)" />
+                  :inactive-value="false" @change="handleSwitchChange(scope.row)" />
               </template>
             </el-table-column>
           </template>
           <template v-else>
-            <el-table-column prop="id" :label="$t('user.tableUser.id')" label-width="100px" />
+            <!-- <el-table-column prop="id" :label="$t('user.tableUser.id')" label-width="100px" /> -->
+            <el-table-column prop="number" :label="$t('user.tableUser.id')" width="120">
+              <template #default="scope">
+                {{ scope.$index + 1 }}
+              </template>
+            </el-table-column>
             <el-table-column prop="group" :label="$t('userGroup.userGroup')" label-width="100px">
               {{ groupName }}
             </el-table-column>
@@ -41,13 +50,13 @@
           </template>
         </el-table>
         <div class="table-pagination-block">
-          <div class="table-demonstration">{{$t('base.tableBottomCount', {count: total_num})}}</div>
+          <div class="table-demonstration">{{ $t('base.tableBottomCount', { count: total_num }) }}</div>
           <el-pagination :current-page="pageNumber" background @current-change="handleCurrentChange"
             layout="prev, pager, next" :default-page-size="20" :total="total_num" />
         </div>
       </div>
       <div class="dialog-footer">
-        <el-button type="primary" @click="$emit('close')">{{$t('base.close')}}</el-button>
+        <el-button type="primary" @click="$emit('close')">{{ $t('base.close') }}</el-button>
       </div>
     </div>
   </div>
@@ -68,7 +77,7 @@ export default {
     }
   },
   mixins: [PageMixin],
-  props: ['groupId', 'groupName', 'isEdit','adMore'],
+  props: ['groupId', 'groupName', 'isEdit', 'adMore'],
   emits: ['close'],
   name: 'GroupDetail',
   data() {
@@ -86,7 +95,7 @@ export default {
           value: 'ad',
           label: this.$t('userGroup.fromAD'),
         }],
-        isLoading: true,
+      isLoading: true,
       selectRow: null,
     }
   },
@@ -150,7 +159,7 @@ export default {
       let params = {}
       params['group_id'] = parseInt(this.groupId)
       params['search'] = this.keyword || '',
-      params['page'] = this.pageNumber
+        params['page'] = this.pageNumber
       if (this.adMore) {
         params['in_group'] = 1
       }
@@ -164,7 +173,7 @@ export default {
               it['status'] = false
             }
           })
-          console.log('UserList getUserList data.users:',data.users)
+          console.log('UserList getUserList data.users:', data.users)
           this.groupMembers = data.users
           this.total_num = data.total_num
         }
@@ -172,12 +181,12 @@ export default {
     },
   },
   created() {
-    console.log('created:',this.groupId)
+    console.log('created:', this.groupId)
     // this.getGroupMember()
   },
 
   mounted() {
-    console.log('mounted:',this.groupId)
+    console.log('mounted:', this.groupId)
     this.getGroupMember()
   },
 

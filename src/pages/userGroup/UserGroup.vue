@@ -352,6 +352,7 @@ export default {
     editGroupMember(row) {
       this.dialogGroupMember = true
       this.isEdit = true
+      this.ad_more_member = false
       this.selectedGroupId = row.id
     },
     moreGroupMember(row) {
