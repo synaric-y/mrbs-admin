@@ -332,6 +332,7 @@ export default defineComponent({
       console.log('SingleMeet getCurrentAreaRooms area_id', area_id)
       if (area_id == 0 || !area_id) {
         this.rooms = this.getAllRoom(this.page_cache_areas)
+        this.getMeetRooms()
         return
       }
       const area_rooms = this.page_cache_areas.filter((item) =>
