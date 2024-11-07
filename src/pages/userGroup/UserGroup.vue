@@ -14,10 +14,9 @@
         </div>
         <div class="table-wrapper" style="height: auto;margin-top: 20px;">
           <el-table :v-loading="true" :data="tableData" lazy style="width: 100%;height: auto; margin-bottom: 20px;"
-            row-key="id" :tree-props="{ children: 'children', hasChildren: 'has_child' }" :load="loadSubGroup"
-            max-height="550" :default-expanded-keys="expandedKeys" @node-expand="handleNodeExpand"
-            @node-collapse="handleNodeCollapse">
-            <el-table-column prop="group" :label="$t('userGroup.userGroup')" label-width="400px">
+            :tree-props="{ children: 'children', hasChildren: 'has_child' }" :load="loadSubGroup" max-height="550"
+            :row-key="getRowKeys" :expand-row-keys="expandedKeys" type='expand' @expand-change="handleExpandChange">
+            <el-table-column  prop="group" :label="$t('userGroup.userGroup')" label-width="400px">
               <template #default="scope">
                 <span class="group-title" :style="{ 'font-weight': scope.row.children ? 'bold' : 'normal' }">{{
                   scope.row.name }}</span>
@@ -196,7 +195,7 @@ export default {
       },
       // mode=0为新增 1为编辑 3为新增不可编辑
       mode: 0,
-      show_sync_group:true,
+      show_sync_group: false,
       selectedItem: null,
       ad_more_member: false,
       enable_sync: true,
@@ -211,13 +210,12 @@ export default {
     },
 
     startSyncUser() {
-      const storedKeys = JSON.parse(localStorage.getItem('expandedNodes')) || [];
-      this.expandedKeys.value = storedKeys;
       this.is_loading = true
+      this.enable_sync = false
       Api.syncAD().then(({ data, code, msg }) => {
         if (code == 0) {
           ElMessage.success({
-            message: data['status']
+            message: '开始同步备份！'
           })
         } else {
           ElMessage.error(msg)
@@ -337,18 +335,18 @@ export default {
         this.addGroupForm.name = row.name
         const selectedItem = this.findNodeById(this.treeData, row.third_id);
         console.log('editGroupBtn selectedItem', selectedItem, this.treeData)
-        this.addGroupForm.sync_group_name = selectedItem?selectedItem.name: ''
+        this.addGroupForm.sync_group_name = selectedItem ? selectedItem.name : ''
         this.selectedItem = selectedItem
       } else {
         this.addGroupForm.name = ''
         this.addGroupForm.sync_group_name = ''
         this.addGroupForm.parent_id = row.id
       }
-      if (row.source === 'system' && row.sync_state) {
-        this.show_sync_group = true
+      if (row.id === -1) {
+        this.show_sync_group = false
         return
       }
-      this.show_sync_group = false
+      this.show_sync_group = true
     },
 
     deleteGroupDialog(row) {
@@ -376,7 +374,7 @@ export default {
     },
 
     commitGroupForm() {
-      console.log('commitGroupForm mode', this.mode,this.selectedItem)
+      console.log('commitGroupForm mode', this.mode, this.selectedItem)
       if (this.mode == 1) {
         if (this.selectedItem) {
           this.editGroup(this.selectedItem.third_id)
@@ -386,7 +384,7 @@ export default {
         return
       }
       console.log('commitGroupForm selectedItem', this.selectedItem)
-      this.addGroup(this.selectedItem?this.selectedItem.third_id:-1)
+      this.addGroup(this.selectedItem ? this.selectedItem.third_id : -1)
     },
 
     addGroup(third_id) {
@@ -468,11 +466,13 @@ export default {
           }
           else if (data.task && data.task.complete === 0) {
             this.enable_sync = false
+            this.is_loading = true
+            return
             console.log('UserGroup getADStatus complete:0')
             if (!is_initalize) {
               this.startSyncUser()
             }
-            return
+            
           } else {
             ElMessage.error(msg)
           }
@@ -575,19 +575,27 @@ export default {
       this.tableData = []
       await this.getSystemGroupTreeWithId(-1)
       this.getAdGroupTreeWithId(-1)
+      console.log('UserGroup getTableData this.expandedKeys', this.expandedKeys)
     },
 
-    handleNodeExpand(node) {
-      const expandedNodes = JSON.parse(localStorage.getItem('expandedNodes')) || [];
-      if (!expandedNodes.includes(nodeData.id)) {
-        expandedNodes.push(nodeData.id);
-        localStorage.setItem('expandedNodes', JSON.stringify(expandedNodes));
+    handleExpandChange(row, expanded) {
+      console.log('UserGroup handleExpandChange: row', row.id, expanded);
+      if (expanded) {
+        if (!this.expandedKeys.includes(row.id)) {
+          this.expandedKeys.push(row.id);
+        }
+      } else {
+        const index = this.expandedKeys.indexOf(row.id);
+        if (index !== -1) {
+          this.expandedKeys.splice(index, 1);
+        }
       }
+      console.log('UserGroup Updated expandedKeys:', this.expandedKeys);
     },
-    handleNodeCollapse(node) {
-      let expandedNodes = JSON.parse(localStorage.getItem('expandedNodes')) || [];
-      expandedNodes = expandedNodes.filter(id => id !== nodeData.id);
-      localStorage.setItem('expandedNodes', JSON.stringify(expandedNodes));
+
+    getRowKeys(row) {
+      // console.log('UserGroup getRowKeys row.id',row.id)
+      return row.id;
     },
   },
   mounted() {
