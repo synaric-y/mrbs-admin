@@ -4,25 +4,26 @@
       <el-button type="primary" @click="pendingAddArea">{{ $t("base.add") }}</el-button>
     </template>
     <template #table>
-      <el-table :data="tableData"
+      <div class="table-wrapper" style="height: auto">
+        <el-table :data="tableData"
                 header-cell-class-name="tb-header"
                 header-align="center"
                 table-layout="auto"
-                max-height="600">
-        <el-table-column fixed prop="area_name" :label="$t('area.tableArea.name')" width="350">
+                max-height="600" fit>
+        <el-table-column fixed prop="area_name" :label="$t('area.tableArea.name')" >
         </el-table-column>
-        <el-table-column prop="disabled" :label="$t('area.tableArea.state')" width="150">
+        <el-table-column prop="disabled" :label="$t('area.tableArea.state')">
           <template #default="scope">
             <el-switch disabled v-model="scope.row.disabled"
                        :active-value="0"
                        :inactive-value="1" @change="handleSwitchChange(scope.row)" />
           </template>
         </el-table-column>
-        <el-table-column prop="id" :label="$t('area.tableArea.id')" width="150">
+        <el-table-column prop="id" :label="$t('area.tableArea.id')">
         </el-table-column>
-        <el-table-column prop="timezone" :label="$t('area.tableArea.timezone')" width="250">
+        <el-table-column prop="timezone" :label="$t('area.tableArea.timezone')">
         </el-table-column>
-        <el-table-column prop="id" :label="$t('area.tableArea.operate')" width="300">
+        <el-table-column prop="id" :label="$t('area.tableArea.operate')">
           <template #default="scope">
             <div class="operate-wrapper">
               <span class="operate-item" @click="toAreaDetail(scope.row.id)">编辑</span>
@@ -31,6 +32,7 @@
           </template>
         </el-table-column>
       </el-table>
+      </div>
     </template>
     <template #btns>
 

@@ -17,23 +17,22 @@
       </el-button>
     </template>
     <template #table>
-      <el-table :data="terminals" header-cell-class-name="tb-header" max-height="450">
-        <el-table-column prop="number" :label="$t('terminal.tableTerminal.id')" width="60">
+      <el-table class="table-wrapper" style="height: auto;"  :data="terminals" header-cell-class-name="tb-header" max-height="450">
+        <el-table-column prop="number" :label="$t('terminal.tableTerminal.id')">
           <template #default="scope">
             {{ scope.$index + 1 }}
           </template>
         </el-table-column>
-        <el-table-column prop="device_id" :label="$t('terminal.tableTerminal.deviceId')" width="200"></el-table-column>
-        <el-table-column prop="version" :label="$t('terminal.tableTerminal.version')" width="100"></el-table-column>
+        <el-table-column prop="device_id" :label="$t('terminal.tableTerminal.deviceId')"></el-table-column>
+        <el-table-column prop="version" :label="$t('terminal.tableTerminal.version')"></el-table-column>
         <!-- <el-table-column prop="description" :label="$t('terminal.tableTerminal.deviceInfo')"></el-table-column> -->
-        <el-table-column prop="resolution" :label="$t('terminal.tableTerminal.resolution')"
-          width="150"></el-table-column>
-        <el-table-column prop="battry_text" :label="$t('terminal.tableTerminal.battery')" width="130"></el-table-column>
-        <el-table-column prop="status" :label="$t('terminal.tableTerminal.status')" width="130"></el-table-column>
-        <el-table-column prop="bind_room" :label="$t('terminal.tableTerminal.bindStatus')" width="80"></el-table-column>
-        <el-table-column prop="room_name" :label="$t('terminal.tableTerminal.room')" width="100"></el-table-column>
-        <el-table-column prop="set_time" :label="$t('terminal.tableTerminal.setTime')" width="250"></el-table-column>
-        <el-table-column prop="id" :label="$t('user.tableUser.operate')" width="200">
+        <el-table-column prop="resolution" :label="$t('terminal.tableTerminal.resolution')"></el-table-column>
+        <el-table-column prop="battry_text" :label="$t('terminal.tableTerminal.battery')"></el-table-column>
+        <el-table-column prop="status" :label="$t('terminal.tableTerminal.status')"></el-table-column>
+        <el-table-column prop="bind_room" :label="$t('terminal.tableTerminal.bindStatus')"></el-table-column>
+        <el-table-column prop="room_name" :label="$t('terminal.tableTerminal.room')"></el-table-column>
+        <el-table-column prop="set_time" :label="$t('terminal.tableTerminal.setTime')"></el-table-column>
+        <el-table-column prop="id" :label="$t('user.tableUser.operate')">
           <template #default="scope">
             <div class="operate-wrapper" v-if="scope.row.is_set == 1">
               <span class="operate-item" @click="unbindDeviceDialog(scope.row)">{{ $t('base.unbind') }}</span>

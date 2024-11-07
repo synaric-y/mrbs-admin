@@ -472,7 +472,6 @@ export default {
             if (!is_initalize) {
               this.startSyncUser()
             }
-            
           } else {
             ElMessage.error(msg)
           }

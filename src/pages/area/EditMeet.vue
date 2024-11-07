@@ -7,23 +7,23 @@
       <el-button type="primary" @click="pendingAddRoom">{{ $t("base.add") }}</el-button>
     </template>
     <template #table>
-      <el-table :data="tableData" style="width: 100%" header-cell-class-name="tb-header" header-align="center"
+      <el-table class="table-wrapper" style="height: auto"  :data="tableData" header-cell-class-name="tb-header" header-align="center"
         max-height="600">
-        <el-table-column fixed prop="room_name" :label="$t('room.tableRoom.name')" width="330">
+        <el-table-column fixed prop="room_name" :label="$t('room.tableRoom.name')">
         </el-table-column>
-        <el-table-column prop="disabled" :label="$t('room.tableRoom.state')" width="150">
+        <el-table-column prop="disabled" :label="$t('room.tableRoom.state')">
           <template #default="scope">
             <el-switch v-model="scope.row.disabled" disabled :active-value="0" :inactive-value="1"
               @change="handleSwitchChange(scope.row)" />
           </template>
         </el-table-column>
-        <el-table-column prop="id" :label="$t('room.tableRoom.id')" width="150">
+        <el-table-column prop="id" :label="$t('room.tableRoom.id')">
         </el-table-column>
-        <el-table-column prop="capacity" :label="$t('room.tableRoom.capacity')" width="150">
+        <el-table-column prop="capacity" :label="$t('room.tableRoom.capacity')">
         </el-table-column>
-        <!-- <el-table-column prop="battery_level" :label="$t('room.tableRoom.battery')" width="200">
+        <!-- <el-table-column prop="battery_level" :label="$t('room.tableRoom.battery')">
         </el-table-column> -->
-        <el-table-column prop="id" :label="$t('room.tableRoom.operate')" width="200">
+        <el-table-column prop="id" :label="$t('room.tableRoom.operate')">
           <template #default="scope">
             <div class="operate-wrapper">
               <span class="operate-item" @click="toRoomDetail(scope.row.id)">编辑</span>

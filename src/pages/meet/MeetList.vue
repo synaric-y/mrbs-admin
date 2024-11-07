@@ -23,7 +23,7 @@
       </el-button>
     </template>
     <template #table>
-      <el-table :data="meetListData" header-cell-class-name="tb-header" max-height="450" width="auto">
+      <el-table class="table-wrapper" style="height: auto;" :data="meetListData" header-cell-class-name="tb-header" max-height="450">
         <el-table-column prop="number" label="序号" width="60">
           <template #default="scope">
             {{ scope.$index + 1 }}
