@@ -184,9 +184,6 @@ export default {
               if (!value) {
                 errors.push(new Error(this.$t('请选择会议开始时间')))
               }
-              if (!value && value.endsWith('5')) {
-                errors.push(new Error(this.$t('当前选择的时间间隔异常')))
-              }
               return errors;
             },
           },
@@ -213,9 +210,6 @@ export default {
               const errors = [];
               if (!value) {
                 errors.push(new Error(this.$t('请选择会议结束时间')))
-              }
-              if (!value && value.endsWith('5')) {
-                errors.push(new Error(this.$t('当前选择的时间间隔异常')))
               }
               return errors;
             },
