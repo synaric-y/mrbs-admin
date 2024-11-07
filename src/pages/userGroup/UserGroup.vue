@@ -95,7 +95,7 @@
             <el-form-item :label="$t('userGroup.tableUserGroup.syncFromAD')" label-width="140px"
               style="margin-right: 50px;">
               <el-tree-select lazy v-model="addGroupForm.sync_group_name" :load="loadGroup" :props="groupProps"
-                :disabled="mode" @change="handleTreeSelect" />
+                :disabled="mode || show_sync_group" @change="handleTreeSelect" />
             </el-form-item>
           </el-form>
           <template #footer>
@@ -194,8 +194,9 @@ export default {
           { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
         ]
       },
-      // mode=0为新增 1为编辑
+      // mode=0为新增 1为编辑 3为新增不可编辑
       mode: 0,
+      show_sync_group:true,
       selectedItem: null,
       ad_more_member: false,
       enable_sync: true,
@@ -343,6 +344,11 @@ export default {
         this.addGroupForm.sync_group_name = ''
         this.addGroupForm.parent_id = row.id
       }
+      if (row.source === 'system' && row.sync_state) {
+        this.show_sync_group = true
+        return
+      }
+      this.show_sync_group = false
     },
 
     deleteGroupDialog(row) {
@@ -380,14 +386,16 @@ export default {
         return
       }
       console.log('commitGroupForm selectedItem', this.selectedItem)
-      this.addGroup(this.selectedItem)
+      this.addGroup(this.selectedItem?this.selectedItem.third_id:-1)
     },
 
     addGroup(third_id) {
       let params = {}
       params['name'] = this.addGroupForm.name
       params['parent_id'] = this.addGroupForm.parent_id
-      params['third_id'] = third_id
+      if (third_id != -1) {
+        params['third_id'] = third_id
+      }
       console.log('UserGroup updateUserStatus params', params)
       Api.addGroup(params).then(({ data, code, msg }) => {
         if (code == 0) {
@@ -562,9 +570,6 @@ export default {
           }
         })
       })
-    },
-    toUserDetail(mode, id) {
-      this.push(`/user_detail/${mode}/${id}`)
     },
     async getTableData() {
       this.tableData = []
