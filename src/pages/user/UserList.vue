@@ -10,7 +10,7 @@
       <el-button type="primary" class="btn" :icon="Search" @click="searchUser">
         {{ $t('base.search') }}
       </el-button>
-      <el-button type="primary" class="btn" :icon="Plus" @click="addUser(1, null)">
+      <el-button type="primary" class="btn" :icon="Plus" @click="addUser(0, null)">
         {{ $t('base.add2') }}
       </el-button>
       <!-- <el-button type="primary" class="btn" :icon="Refresh" style="width: 112px;">
@@ -46,7 +46,7 @@
             <template #default="scope">
               <div class="operate-wrapper">
                 <span class="operate-item" @click="resetPassword(scope.row)">{{ $t('base.resetPassword') }}</span>
-                <span class="operate-item" @click="addUser(0, scope.row)">编辑</span>
+                <span class="operate-item" @click="addUser(1, scope.row)">编辑</span>
                 <span class="operate-item" @click="deleteUserPop(scope.row)">{{ $t('base.delete') }}</span>
               </div>
             </template>
@@ -71,10 +71,12 @@
         <!-- :readonly="dialogUserDetailForm" -->
         <el-input v-model="userForm.display_name" autocomplete="off" />
       </el-form-item>
-      <el-form-item prop="password" :label="$t('user.formUser.password0')" label-width="140px"
-        style="margin-right: 50px;">
-        <el-input v-model="userForm.password" autocomplete="off" />
-      </el-form-item>
+      <template v-if="mode==0">
+        <el-form-item prop="password" :label="$t('user.formUser.password0')" label-width="140px"
+          style="margin-right: 50px;">
+          <el-input v-model="userForm.password" autocomplete="off" />
+        </el-form-item>
+      </template>
       <el-form-item :label="$t('user.tableUser.email')" label-width="140px" style="margin-right: 50px;">
         <el-input v-model="userForm.email" autocomplete="off" />
       </el-form-item>
@@ -243,6 +245,7 @@ export default {
       userRow: null,
       deleteRow: null,
       isLoading: true,
+      mode: 0,
     }
   },
   methods: {
@@ -273,16 +276,8 @@ export default {
     },
     addUser(val, row) {
       this.dialogFormVisible = true
+      this.mode = val
       if (val === 1) {
-        this.dialogUserDetailForm = false// Editable for adding a user
-        this.rules = this.rulesAdd
-        this.userDetailTitle = this.$t('user.addUser')
-        this.userForm.name = ''
-        this.userForm.display_name = ''
-        this.userForm.password = ''
-        this.userForm.email = ''
-        this.userForm.remark = ''
-      } else {
         this.dialogUserDetailForm = true // Read-only for viewing user details
         this.rules = this.rulesUpdate
         this.userDetailTitle = '编辑用户'
@@ -296,6 +291,15 @@ export default {
         this.userForm.level = row.level
         this.userForm.levelName = row.levelName
         this.userRow = row
+      } else {
+        this.dialogUserDetailForm = false
+        this.rules = this.rulesAdd
+        this.userDetailTitle = this.$t('user.addUser')
+        this.userForm.name = ''
+        this.userForm.display_name = ''
+        this.userForm.password = ''
+        this.userForm.email = ''
+        this.userForm.remark = ''
       }
       console.log('UserList val - row', val, row)
     },
