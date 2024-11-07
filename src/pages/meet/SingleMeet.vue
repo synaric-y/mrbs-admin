@@ -192,17 +192,14 @@ export default defineComponent({
 
   mounted() {
     this.getAllAreas()
-    console.log('Home getBrowserLanguege:', Common.getBrowserLanguege())
     this.localLangFormat = Common.getBrowserLanguege()
     const screenWidth = window.screen.width
     this.screenSize['width'] = screenWidth
     const screenHeight = window.screen.height
     this.screenSize['height'] = screenHeight
     this.screenHeight = screenHeight
-    console.log('Home screenSize:', this.screenSize)
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
     this.currentTimeZone = timeZone
-    console.log('Home 获取当前设备的时区', timeZone)
     this.startSync()
     this.$nextTick(() => {
       this.showLoading = false
@@ -225,13 +222,11 @@ export default defineComponent({
     },
     getSyncInterval() {
       this.filterDateStore = FilterDateStore()
-      console.log('Home getSyncInterval this.filterDateStore', this.filterDateStore.area)
       const selectDays = this.filterDateStore.days
       const selectStartDate = this.filterDateStore.startDate
       const selectEndDate = this.filterDateStore.endDate
       const selectArea = this.filterDateStore.area
       const selectAreaName = this.filterDateStore.areaName
-      // this.getAllAreas()
       this.dayRrangeVal = selectDays
       if (selectStartDate && selectEndDate) {
         this.startTime = selectStartDate
@@ -250,15 +245,11 @@ export default defineComponent({
         }
       }
       if (selectArea && selectAreaName) {
-        // console.log('Home selectAreaName:', selectAreaName)
         this.currenAreaName = selectAreaName
         this.currenArea = selectArea
       }
       this.getCurrentAreaRooms(this.currenArea)
       this.getMeetRooms()
-      // console.log('Home selectArea', selectArea)
-      // console.log('Home selectStartDate', selectStartDate, selectEndDate)
-      // console.log('Home selectDays', selectDays)
     },
 
     closeDialogMeetForm() {
@@ -272,7 +263,6 @@ export default defineComponent({
     },
 
     getAllRoom(areas) {
-      console.log('Home getAllRoom areas 1111111', areas)
       const allRoom = [];
       areas.forEach(area => {
         const areaId = area.area_id
@@ -320,35 +310,27 @@ export default defineComponent({
           "resolution": '1800',
           "rooms": []
         }
-        // this.minItemHeight = 60 / (1800 / parseInt(minResolution))
         this.minItemHeight = 40
-        console.log('Home Minimum resolution: this.minItemHeight', minResolution, this.minItemHeight)
         // 获取开始、结束时间
         const { minStart, maxEnd } = this.getMaxAreaDuration()
-        console.log('Home Minimum minStart  maxEnd', minStart, maxEnd)
         const { timeSlots, localTimeSlots } = Common.generateTimeSlots(minStart, maxEnd)
-        console.log('Home getAllAreas timeSlots', timeSlots)
-        console.log('Home getAllAreas localTimeSlots', localTimeSlots)
         this.timeSlots = timeSlots
         this.localTimeSlots = localTimeSlots
         if (temp_areas) {
           temp_areas.splice(0, 0, firstArea)
         }
         this.page_cache_areas = temp_areas
-        console.log('Home getAllAreas this.page_cache_areas', this.page_cache_areas)
         this.getCurrentAreaRooms(this.area_id)
       })
     },
 
     getCurrentAreaRooms(area_id) {
       if (!this.page_cache_areas || this.page_cache_areas.length == 0) {
-        console.log('SingleMeet getCurrentAreaRooms this.page_cache_areas', this.page_cache_areas)
         this.getAllAreas()
         return
       }
       console.log('SingleMeet getCurrentAreaRooms area_id', area_id)
       if (area_id == 0 || !area_id) {
-        console.log('SingleMeet getCurrentAreaRooms area_id == 0 return')
         this.rooms = this.getAllRoom(this.page_cache_areas)
         return
       }
@@ -358,30 +340,12 @@ export default defineComponent({
       if (this.dayRrangeVal != 0) {
         this.dayRrange(this.dayRrangeVal)
       }
-      console.log('Home getCurrentAreaRooms area_rooms', area_rooms)
       const tmp_areas = []
       tmp_areas.push(area_rooms)
       this.rooms = this.getAllRoom(tmp_areas[0])
       console.log('Home getCurrentAreaRooms this.rooms', this.rooms)
       // this.getMeetRooms()
       return
-
-
-      Api.getAreaRooms({ id: area_id }).then(({ data, code, msg }) => {
-        if (code != 0) {
-          ElMessage({
-            message: this.$t('base.getAreaError'),
-            type: 'error'
-          })
-          return
-        }
-        if (this.dayRrangeVal != 0) {
-          this.dayRrange(this.dayRrangeVal)
-        }
-        console.log('Home getCurrentAreaRooms data', data)
-        this.rooms = this.getAllRoom(data)
-        // this.getMeetRooms()
-      })
     },
 
     getMaxAreaDuration() {
@@ -393,52 +357,23 @@ export default defineComponent({
     getTimeSlotIndex(time) {
       const slot_index = this.localTimeSlots.indexOf(time)
       return slot_index
-      // startTime: "08:00PM"
-      const [hour, minutePeriod] = time.split(":")
-      const [minute, period] = [minutePeriod.slice(0, -2), minutePeriod.slice(-2)]
-      const baseTime = `${hour.padStart(2, '0')}:00${period.toUpperCase()}`
-      const multiple = (1800 / this.minDuration)
-      // const multiple = 1
-      let baseIndex = this.timeSlots.indexOf(baseTime) * multiple
-      if (baseIndex === -1) {
-        // console.log('getTimeSlotIndex time baseTime',time,baseTime)
-        return -1
-      }
-      // 适配5、10、15、20、25、30分钟
-      const divideItems = 40 / (multiple * 2)
-      for (let i = 0; i < (multiple * 2); i++) {
-        if (minute == divideItems * i) {
-          baseIndex = baseIndex + i
-          break
-        }
-      }
-      // console.log('getTimeSlotIndex time baseTime baseIndex',time,baseTime,baseIndex,minute)
-      return baseIndex
     },
 
     dayRrange(day) {
       let days = []
       let tempTime = {}
       if (day == SELECT_DAY.TODAY) {
-        console.log('Home One Days:', this.getCurrenDay(this.currentTimeZone))
         days = this.getCurrenDay(this.currentTimeZone)
         tempTime = Common.getTodayTimestamps(this.currentTimeZone)
-        console.log(tempTime)
       } else if (day == SELECT_DAY.THREE) {
-        console.log('Home Next Three Days:', this.getThreeDays(this.currentTimeZone))
         days = this.getThreeDays(this.currentTimeZone)
         tempTime = Common.getThreeDaysTimestamps(this.currentTimeZone)
-        console.log(tempTime)
       } else if (day == SELECT_DAY.WEEK) {
-        console.log('Home Week Days:', this.getCurrenWeek(this.currentTimeZone))
         days = this.getCurrenWeek(this.currentTimeZone)
         tempTime = Common.getThisWeekTimestamps(this.currentTimeZone)
-        console.log(tempTime)
       } else {
-        console.log('Home Next Three Days:', this.getThreeDays(this.currentTimeZone))
         days = this.getThreeDays(this.currentTimeZone)
         tempTime = Common.getThreeDaysTimestamps(this.currentTimeZone)
-        console.log(tempTime)
       }
       this.filterDateStore.setDays(day)
       this.startStamp = tempTime.start
@@ -447,7 +382,6 @@ export default defineComponent({
       this.endTime = moment.tz(tempTime.end * 1000, this.currentTimeZone).format('YYYY-MM-DD')
       this.filterDateStore.setStartDate(this.startTime)
       this.filterDateStore.setEndDate(this.endTime)
-      console.log('Home dayRrange tempTime', this.startTime, this.endTime)
       this.dayRrangeVal = day
       this.days = this.formatDays(days)
       this.getMeetRooms()
@@ -455,7 +389,6 @@ export default defineComponent({
 
     getCurrenDay(timeZone) {
       const today = moment().tz(timeZone)
-      console.log('Home getCurrenDay timeZone', timeZone, today.format(this.localLangFormat))
       const oneDays = [
         Common.translateWeekDay(today.format(this.localLangFormat)),
       ];
@@ -464,7 +397,6 @@ export default defineComponent({
 
     getThreeDays(timeZone) {
       const today = moment().tz(timeZone);
-      console.log('Home getThreeDays timeZone', timeZone, today.format(this.localLangFormat))
       const nextThreeDays = [
         Common.translateWeekDay(today.format(this.localLangFormat)),
         Common.translateWeekDay(today.add(1, 'days').format(this.localLangFormat)),
@@ -475,7 +407,6 @@ export default defineComponent({
 
     getCurrenWeek(timeZone) {
       const startDay = moment().tz(timeZone);
-      console.log('Home getCurrenWeek timeZone', timeZone);
       const startOfWeek = startDay.clone().startOf('week');
       const endOfWeek = startDay.clone().endOf('week');
       const weekDays = [];
@@ -488,7 +419,6 @@ export default defineComponent({
     },
 
     getDaysBetween(startDate, endDate) {
-      console.log('Home getDaysBetween startDate endDate', startDate, endDate)
       const start = moment(startDate)
       const end = moment(endDate)
       const days = []
@@ -496,7 +426,6 @@ export default defineComponent({
         days.push(Common.translateWeekDay(start.format(this.localLangFormat)))
         start.add(1, 'days')
       }
-      console.log('Home getDaysBetween days', days)
       return days
     },
 
@@ -515,9 +444,6 @@ export default defineComponent({
       for (let i = 0; i < this.events.length; i++) {
         const event = this.events[i]
         if (day.date === event.date && event.startTime === hoverTime && room.room_id === event.room_id) {
-          console.log('Home canHoverDiv hoverTime event.startTime', hoverTime, event.startTime)
-          console.log('Home canHoverDiv event', event.room_id, event.room_name)
-          console.log('Home canHoverDiv room', room.room_id, room.room_name)
           canHover = false
           break
         }
@@ -547,9 +473,6 @@ export default defineComponent({
     },
 
     toMeet(time, room, day) {
-      console.log("Home toMeet room", room)
-      console.log("Home toMeet time", time)
-      console.log("Home toMeet day", day)
       this.form_mode = 0
       this.addParams.room_id = room.room_id
       const [tmp_area_name, tmp_room_name] = room.room_name.split(" ")
@@ -558,14 +481,9 @@ export default defineComponent({
       this.addParams.area_id = room.area_id
       this.addParams.area_name = room.area_name
       const lang = Common.getLocalLang()
-      console.log("Home toMeet day.date timeZone lang", day.date, this.currentTimeZone, this.localLangFormat)
-      console.log("Home toMeet formatTime date", day.date)
       const appeedStr = day.date + ' ' + time
-      console.log('Home toMeet appeedStr', appeedStr)
       const formatStr = Common.getAssignFormatWithAM(appeedStr, lang)
-      console.log('Home toMeet formatStr', formatStr)
       const nextTimeStamp = moment.tz(formatStr, this.currentTimeZone).unix();
-      console.log('Home toMeet nextTimeStamp currenTimestamp', nextTimeStamp, this.currenTimestamp)
       this.addParams.timeStamp = nextTimeStamp
       if (nextTimeStamp < this.currenTimestamp) {
         return
@@ -574,7 +492,6 @@ export default defineComponent({
         return
       }
       if (room.disabled == ROOM_STATUS.DISABLED) {
-        console.log('Home toMeet disabled', room.disabled)
         return
       }
       this.dialogMeetForm = true
@@ -589,7 +506,6 @@ export default defineComponent({
         return
       }
       if (event.disabled == ROOM_STATUS.DISABLED) {
-        console.log('Home editMeet disabled', event.disabled)
         return
       }
       this.form_mode = 1
@@ -613,15 +529,12 @@ export default defineComponent({
 
     choseArea(e) {
       this.currenArea = e;
-      console.log('Home choseArea e')
       const area = this.page_cache_areas.filter(area => area.area_id == e)
-      console.log('Home choseArea areaName', area)
       const areaName = area[0].area_name
       this.currenAreaName = areaName
       this.filterDateStore.setArea(e)
       this.filterDateStore.setAreaName(areaName)
       this.getCurrentAreaRooms(this.currenArea)
-      // this.getAreaRooms()
       this.getMeetRooms()
     },
 
@@ -630,12 +543,10 @@ export default defineComponent({
       if (this.currenArea == 'All' || this.currenArea == '') {
         const temp_areas = this.page_cache_areas.flatMap(area => area.rooms)
         this.rooms = temp_areas.flatMap(room => room.room_name)
-        console.log('Home getAreaRooms 1111 all rooms:', this.rooms)
       } else {
         const temp_areas = this.page_cache_areas.filter(area => area.area_id == this.currenArea)
         // this.rooms = temp_areas.rooms.flatMap(room => room.room_name)
         this.rooms = temp_areas.rooms
-        console.log('Home getAreaRooms 22222 currenArea rooms:', this.rooms)
       }
     },
 
@@ -658,17 +569,13 @@ export default defineComponent({
         // 2024-11-01(2024-11-01 00:00:00) 2024-11-09(2024-11-09 23:59:59)
         this.startTime = start_date
         this.endTime = end_date
-        console.log('Home choseDate start_date-end_date',start_date,end_date)
         this.startStamp = Common.getTimestamp(start_date,'start')
         this.endStamp = Common.getTimestamp(end_date,'end')
-        console.log('Home choseDate this.startStamp-this.endStamp',this.startStamp,this.endStamp)
-
         this.filterDateStore.setStartDate(start_date)
         this.filterDateStore.setEndDate(end_date)
         this.getMeetRooms()
         const days = this.getDaysBetween(start_date, end_date)
         const tempdays = this.formatDays(days)
-        console.log('Home tempdays:', tempdays)
         this.days = tempdays
       }
     },
@@ -683,7 +590,6 @@ export default defineComponent({
     },
 
     getMeetRooms() {
-      console.log('Home getMeetRooms enter')
       if (this.startStamp && this.endStamp) {
       } else {
         const temp = Common.getThreeDaysTimestamps()
@@ -701,7 +607,6 @@ export default defineComponent({
       } else {
         this.itemWidth = 229
       }
-      console.log('Home getMeetRooms currenArea:  start: end: ', this.currenArea, this.startStamp, this.endStamp);
       Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp, end_time: this.endStamp, timezone: this.currentTimeZone }).then(({ data, code, msg }) => {
         if (!data && code != 0) {
           ElMessage({
@@ -715,8 +620,6 @@ export default defineComponent({
         // min_time: "02:00 PM"
         this.min_start = Common.convertTo24Hour(data.min_time)
         this.max_end = Common.convertTo24Hour(data.max_time)
-        console.log('Home getMeetRooms api this.min_start:', this.min_start,data.min_time)
-        console.log('Home getMeetRooms api this.max_end:', this.max_end,data.max_time)
         this.nowTime = data.time
         this.getInMeeting(data)
         this.$nextTick(() => {
