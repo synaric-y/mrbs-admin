@@ -88,9 +88,13 @@ export default {
       meetListData: [
         { "number": 1, "area": 'shanghai', "room": '会议室A', "meet_start": '2024-10-12', "meet_end": '2024-12-30', "meet_time": '13:00-14:00', "is_cycle": '是', "meet_status": '未开始', "display_name": 'joy', "is_edit": '1' },
       ],
-      statusVal: 0,
+      statusVal: -1,
       accountSwitch: 1,
       statusOptions: [
+        {
+          value: -1,
+          label: '所有',
+        },
         {
           value: 0,
           label: '未开始',
@@ -244,11 +248,8 @@ export default {
     },
     getMeetList() {
       let params = {}
-      const select_status = this.statusOptions.filter((item) =>
-        item.value === this.statusVal
-      )
-      if (select_status && select_status[0]) {
-        params['status'] = select_status[0].value
+      if (this.statusVal != -1) {
+        params['status'] = this.statusVal
       }
       if (this.select_area_id != -1) {
         params['area_id'] = this.select_area_id
