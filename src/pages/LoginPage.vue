@@ -68,7 +68,7 @@ export default {
           this.login(data)
           this.switchTab('../single_meet')
         } else {
-          ElMessage.error('登录失败！')
+          ElMessage.error(msg)
         }
       })
     },
