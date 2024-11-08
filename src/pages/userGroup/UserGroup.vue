@@ -16,7 +16,7 @@
           <el-table :v-loading="true" :data="tableData" lazy style="width: 100%;height: auto; margin-bottom: 20px;"
             :tree-props="{ children: 'children', hasChildren: 'has_child' }" :load="loadSubGroup" max-height="550"
             :row-key="getRowKeys" :expand-row-keys="expandedKeys" type='expand' @expand-change="handleExpandChange">
-            <el-table-column  prop="group" :label="$t('userGroup.userGroup')" label-width="400px">
+            <el-table-column prop="group" :label="$t('userGroup.userGroup')" label-width="400px">
               <template #default="scope">
                 <span class="group-title" :style="{ 'font-weight': scope.row.children ? 'bold' : 'normal' }">{{
                   scope.row.name }}</span>

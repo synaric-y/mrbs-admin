@@ -5,7 +5,11 @@ import {STORAGE} from "@/const.js";
 const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
-    
+    {
+      path: '/single_meet',
+      name: 'single_meet',
+      component: () => import('@/pages/meet/SingleMeet.vue')
+    },
     {
       path: '/user_list',
       name: 'user_list',
@@ -14,7 +18,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component: HomePage
+      component:  () => import('@/pages/meet/SingleMeet.vue')
     },{
       path: '/guide_one',
       name: 'guide_one',
@@ -60,10 +64,6 @@ const router = createRouter({
       path: '/group_detail',
       name: 'group_detail',
       component: () => import('@/pages/userGroup/GroupDetail.vue')
-    },{
-      path: '/single_meet',
-      name: 'single_meet',
-      component: () => import('@/pages/meet/SingleMeet.vue')
     },{
       path: '/cycle_meet',
       name: 'cycle_meet',
