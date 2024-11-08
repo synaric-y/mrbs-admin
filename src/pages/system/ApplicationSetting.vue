@@ -50,7 +50,7 @@
                     </div>
                   </template>
                 </el-upload>
-                <span class="form-item-tip">推荐尺寸300x300，彩色Logo透明底</span>
+                <span class="form-item-tip">推荐尺寸300x300的PNG图片类型，彩色Logo透明底</span>
               </div>
             </el-form-item>
 
@@ -84,7 +84,7 @@
                     </div>
                   </template>
                 </el-upload>
-                <span class="form-item-tip">推荐尺寸450x50，白色Logo透明底</span>
+                <span class="form-item-tip">推荐尺寸450x50的PNG图片类型，白色Logo透明底</span>
               </div>
             </el-form-item>
             <el-form-item label="时间格式" prop="timeFormat">
