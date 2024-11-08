@@ -22,23 +22,38 @@
               <el-button v-for="(item, index) in groupButtons" type="primary" size="small"
                 :class="['', item.day == dayRrangeVal ? 'day-button-active' : 'day-button']"
                 @click="dayRrange(item.day)">{{
-                  item.name }}</el-button>
+                item.name }}</el-button>
             </div>
             <div class="date-picker">
-              <el-date-picker v-model="baseTime" type="daterange" value-format="YYYY-MM-DD" :range-separator="$t('base.to')"
-                :start-placeholder="startTime" :end-placeholder="endTime" @change="choseDate" />
+              <el-date-picker v-model="baseTime" type="daterange" value-format="YYYY-MM-DD"
+                :range-separator="$t('base.to')" :start-placeholder="startTime" :end-placeholder="endTime"
+                @change="choseDate" />
             </div>
           </div>
         </div>
+
+
+
+
         <div class="table-container" v-if="!showLoading">
-          <el-scrollbar class="scroll-table-view" always :style="{ height: 'calc(100vh - 150px)' }">
+          <el-scrollbar ref="timeScroll" id="time-scrollbar" class="time-table-view" @scroll="syncScroll('timeScroll')"
+            :style="{ height: 'calc(100vh - 150px - 65px)' }">
+            <div class="time-slots-wrapper">
+              <div v-for="(time, timeIndex) in timeSlots" :key="timeIndex" class="time-slot">
+                {{ time }}
+              </div>
+            </div>
+          </el-scrollbar>
+
+          <el-scrollbar ref="contentScroll" id="content-scrollbar" class="scroll-table-view" @scroll="syncScroll('contentScroll')" always
+            :style="{ height: 'calc(100vh - 150px + 40px)' }">
             <div class="calendar-header">
               <div class="time-header">
-                <div class="time-slots">
+                <!-- <div class="time-slots">
                   <div v-for="(time, timeIndex) in timeSlots" :key="timeIndex" class="time-slot">
                     {{ time }}
                   </div>
-                </div>
+                </div> -->
               </div>
               <div v-for="(day, indexday) in days" :key="indexday" class="day-header"
                 :style="{ backgroundColor: day.color }">
@@ -48,13 +63,13 @@
                     :style="{ height: timeSlots.length * 40 + 70 + 'px', width: itemWidth + 'px' }">
                     {{ room.room_name }}
                     <template v-for="(time, timeIndex) in localTimeSlots">
-                        <div v-if="timeIndex != localTimeSlots.length - 1"
-                          :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div' : 'empty-meet-div']"
-                          :style="{ height: minItemHeight + 'px', width: itemWidth + 'px', top: ((timeIndex) * minItemHeight + 70) + 'px' }"
-                          @click="toMeet(time, room, day)">
-                          <text class="empty-meet-duration">{{ time }}</text>
-                          <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text>
-                        </div>
+                      <div v-if="timeIndex != localTimeSlots.length - 1"
+                        :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div' : 'empty-meet-div']"
+                        :style="{ height: minItemHeight + 'px', width: itemWidth + 'px', top: ((timeIndex) * minItemHeight + 70) + 'px' }"
+                        @click="toMeet(time, room, day)">
+                        <text class="empty-meet-duration">{{ time }}</text>
+                        <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text>
+                      </div>
                     </template>
                     <template v-for="(event, indexeve) in events">
                       <template v-if="day.date === event.date && room.room_id === event.room_id">
@@ -68,7 +83,8 @@
                                 v-if="(getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) == 1">
                                 <div class="event-title" :style="{ margin: 1 + 'px' }">{{ event.entry_name
                                   }}</div>
-                                <div class="event-person" :style="{ margin: 2 + 'px' }">{{ event.duration }}{{ event.book_by }}</div>
+                                <div class="event-person" :style="{ margin: 2 + 'px' }">{{ event.duration }}{{
+                                  event.book_by }}</div>
                               </template>
                               <template v-else>
                                 <div class="event-title">{{ event.entry_name }}</div>
@@ -87,10 +103,18 @@
             </div>
           </el-scrollbar>
         </div>
-        <SingleMeetCMP v-if="dialogMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas" :entry_id="entry_id"
-          @close="closeDialogMeetForm" />
-        <CycleMeetCMP v-if="dialogCycleMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas" :repeat_id="repeat_id" :entry_id="entry_id"
-          @close="closeDialogCycleMeetForm" />
+
+        <!-- <div class="slider-container-horizontal">
+          <el-slider v-model="scrollLeft" @input="scrollHorizontal" />
+        </div>
+        <div class="slider-container-vertical">
+          <el-slider :show-tooltip="false" v-model="scrollTop" vertical height="calc( 100vh - 75px - 40px )"
+            @input="scrollVertical" />
+        </div> -->
+        <SingleMeetCMP v-if="dialogMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas"
+          :entry_id="entry_id" @close="closeDialogMeetForm" />
+        <CycleMeetCMP v-if="dialogCycleMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas"
+          :repeat_id="repeat_id" :entry_id="entry_id" @close="closeDialogCycleMeetForm" />
       </div>
     </el-main>
     <el-skeleton v-if="showLoading" :rows="15" animated />
@@ -178,7 +202,7 @@ export default defineComponent({
       currentHourMinute: '',
       currentTimeZone: 'Asia/Shanghai',
       page_cache_areas: [],
-      addParams:{
+      addParams: {
         area_id: '',
         area_name: '',
         room_id: '',
@@ -187,6 +211,9 @@ export default defineComponent({
         resolution: 1800,
       },
       repeat_id: 0,
+      isSyncing: false,
+      scrollLeft: 0,
+      scrollTop: 100,
     };
   },
 
@@ -207,6 +234,60 @@ export default defineComponent({
   },
 
   methods: {
+
+    syncScroll(refName) {
+      if (this.isSyncing) return;
+      this.isSyncing = true;
+      requestAnimationFrame(() => {
+        const contentScrollWrap = this.$refs.contentScroll?.$refs.wrapRef;
+        const timeScrollWrap = this.$refs.timeScroll?.$refs.wrapRef;
+        if (!contentScrollWrap || !timeScrollWrap) {
+          this.isSyncing = false;
+          return;
+        }
+        if (refName === 'contentScroll') {
+          timeScrollWrap.scrollTop = contentScrollWrap.scrollTop;
+        } else if (refName === 'timeScroll') {
+          contentScrollWrap.scrollTop = timeScrollWrap.scrollTop;
+        }
+        this.isSyncing = false;
+      });
+    },
+
+    scrollHorizontal(){
+      const that = this
+      const contentScrollDom = document.getElementById('content-scrollbar')
+      const timeScroll = document.getElementById('time-scrollbar')
+      if (window.requestAnimationFrame) {
+        let fun = () => {
+          scrollDom.scrollLeft = that.scrollLeft / 100 * (table.scrollWidth-scrollDom.clientWidth)
+        };
+        window.requestAnimationFrame(fun);
+      }
+    },
+    scrollVertical(){
+      const that = this
+      const contentScrollDom = document.getElementById('content-scrollbar')
+      const timeScroll = document.getElementById('time-scrollbar')
+      if (window.requestAnimationFrame) {
+        let fun = () => {
+          scrollDom.scrollTop = (100-that.scrollTop) / 100 * (table.scrollHeight-scrollDom.clientHeight)
+        };
+        window.requestAnimationFrame(fun);
+      }
+    },
+
+    // syncScroll(refName) {
+    //   console.log('SingleMeet syncScroll')
+    //   const contentScrollWrap = this.$refs.contentScroll.$refs.wrapRef;
+    //   const timeScrollWrap = this.$refs.timeScroll.$refs.wrapRef;
+    //   if (refName === 'contentScroll') {
+    //     timeScrollWrap.scrollTop = contentScrollWrap.scrollTop;
+    //   } else if (refName === 'timeScroll') {
+    //     contentScrollWrap.scrollTop = timeScrollWrap.scrollTop;
+    //   }
+    // },
+
     disabledDate(time) {
       return time.getTime() < Date.now() - 86400000;
     },
@@ -570,8 +651,8 @@ export default defineComponent({
         // 2024-11-01(2024-11-01 00:00:00) 2024-11-09(2024-11-09 23:59:59)
         this.startTime = start_date
         this.endTime = end_date
-        this.startStamp = Common.getTimestamp(start_date,'start')
-        this.endStamp = Common.getTimestamp(end_date,'end')
+        this.startStamp = Common.getTimestamp(start_date, 'start')
+        this.endStamp = Common.getTimestamp(end_date, 'end')
         this.filterDateStore.setStartDate(start_date)
         this.filterDateStore.setEndDate(end_date)
         this.getMeetRooms()
@@ -703,7 +784,7 @@ export default defineComponent({
   flex-direction: column;
   width: 100%;
   height: 100%;
-  z-index: 2000;
+  z-index: 200;
 }
 
 .toolbar {
@@ -798,7 +879,7 @@ export default defineComponent({
 
 .table-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   position: relative;
   background-color: white;
   width: 100%;
@@ -813,10 +894,23 @@ export default defineComponent({
   width: 100%;
 }
 
+.time-table-view {
+  margin-top: 85px;
+  width: 100px;
+  // height: 550px;
+}
+
 .scroll-table-big-view {
   height: 660px;
   width: 100%;
 }
+
+// .el-scrollbar__wrap {
+//   overflow-x: hidden !important;
+// }
+// :deep(.el-scrollbar__bar.is-horizontal) {
+//   height: 0 !important;
+// }
 
 .calendar-header {
   display: flex;
@@ -831,14 +925,17 @@ export default defineComponent({
   position: relative;
 }
 
+.time-slots-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 90px;
+}
+
 .time-slots {
   margin-top: 80px;
   display: flex;
   flex-direction: column;
-  padding-right: 10px;
-  padding-left: 10px;
-  z-index: 2000;
-  // border-right: 1px solid #9A9A9A;
+  z-index: 200;
 }
 
 .time-slot {
@@ -849,6 +946,7 @@ export default defineComponent({
   font-weight: normal;
   font-family: PingFangSC-regular;
   text-align: right;
+  width: 80px;
 }
 
 .empty-abled-meet-div {
@@ -1027,5 +1125,20 @@ export default defineComponent({
 .empty-bottom {
   height: 10px;
   width: 100%;
+}
+
+.slider-container-horizontal{
+  position: fixed;
+  z-index: 999;
+  width: calc(100vw - 189px - 40px);
+  bottom: 0;
+  right: 20px;
+}
+
+.slider-container-vertical{
+  position: fixed;
+  z-index: 999;
+  bottom: 20px;
+  right: 0;
 }
 </style>

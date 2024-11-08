@@ -31,14 +31,24 @@
           </div>
         </div>
         <div class="table-container" v-if="!showLoading">
-          <el-scrollbar class="scroll-table-view" always :style="{ height: 'calc(100vh - 150px)' }">
+
+          <el-scrollbar ref="timeCycleScroll" id="time-scrollbar" class="time-table-view" @scroll="syncScroll('timeCycleScroll')"
+            :style="{ height: 'calc(100vh - 150px - 65px)' }">
+            <div class="time-slots-wrapper">
+              <div v-for="(time, timeIndex) in timeSlots" :key="timeIndex" class="time-slot">
+                {{ time }}
+              </div>
+            </div>
+          </el-scrollbar>
+
+          <el-scrollbar ref="contentScroll" id="content-scrollbar" class="scroll-table-view" @scroll="syncScroll('contentScroll')" always :style="{ height: 'calc(100vh - 150px + 40px)' }">
             <div class="calendar-header">
               <div class="time-header">
-                <div class="time-slots">
+                <!-- <div class="time-slots">
                   <div v-for="(time, timeIndex) in timeSlots" :key="timeIndex" class="time-slot">
                     {{ time }}
                   </div>
-                </div>
+                </div> -->
               </div>
               <div v-for="(day, indexday) in days" :key="indexday" class="day-header"
                 :style="{ backgroundColor: day.color }">
@@ -190,6 +200,9 @@ export default defineComponent({
         resolution: 1800,
       },
       repeat_id: 0,
+      isSyncing: false,
+      scrollLeft: 0,
+      scrollTop: 100,
     };
   },
 
@@ -213,6 +226,25 @@ export default defineComponent({
   },
 
   methods: {
+
+    syncScroll(refName) {
+      if (this.isSyncing) return;
+      this.isSyncing = true;
+      requestAnimationFrame(() => {
+        const contentScrollWrap = this.$refs.contentScroll?.$refs.wrapRef;
+        const timeScrollWrap = this.$refs.timeCycleScroll?.$refs.wrapRef;
+        if (!contentScrollWrap || !timeScrollWrap) {
+          this.isSyncing = false;
+          return;
+        }
+        if (refName === 'contentScroll') {
+          timeScrollWrap.scrollTop = contentScrollWrap.scrollTop;
+        } else if (refName === 'timeCycleScroll') {
+          contentScrollWrap.scrollTop = timeScrollWrap.scrollTop;
+        }
+        this.isSyncing = false;
+      });
+    },
     disabledDate(time) {
       return time.getTime() < Date.now() - 86400000;
     },
@@ -892,7 +924,7 @@ export default defineComponent({
 
 .table-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   position: relative;
   background-color: white;
   width: 100%;
@@ -900,6 +932,11 @@ export default defineComponent({
   margin: 0px;
   padding: 0;
   flex: 1;
+}
+
+.time-table-view {
+  margin-top: 85px;
+  width: 100px;
 }
 
 .scroll-table-view {
@@ -925,12 +962,16 @@ export default defineComponent({
   position: relative;
 }
 
+.time-slots-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 90px;
+}
+
 .time-slots {
   margin-top: 80px;
   display: flex;
   flex-direction: column;
-  padding-right: 10px;
-  padding-left: 10px;
   z-index: 2000;
   // border-right: 1px solid #9A9A9A;
 }
@@ -943,6 +984,7 @@ export default defineComponent({
   font-weight: normal;
   font-family: PingFangSC-regular;
   text-align: right;
+  width: 80px;
 }
 
 .empty-abled-meet-div {
