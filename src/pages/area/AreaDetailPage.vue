@@ -15,7 +15,7 @@ export default {
         area: 1,
         area_name: "",
         sort_key: "",
-        area_disabled: 0,
+        area_disabled: false,
         area_timezone: "",
         area_start_first_slot: "",
         area_start_last_slot: "",
@@ -30,8 +30,8 @@ export default {
         area_reminders_enabled: "on",
         area_private_default: 0,
         area_private_override: "none",
-        group_ids: '',
-        group_names: "",
+        group_ids: [1,3892,3930],
+        group_names: ['Admin', '测试组2',  'iOS-group1'],
 
         area_use_exchange: 0,
         area_exchange_server: "",
@@ -110,6 +110,7 @@ export default {
         children: 'children',
         isLeaf: 'isLeaf',
         disabled: 'disabled',
+        checked: 'checked',
       },
     }
   },
@@ -120,14 +121,23 @@ export default {
       if (node.level === 0) {
         // console.log('loadGroup sync level0', node.level)
         resolve([
-          { name: this.$t('userGroup.groupAD'), id: '-1',source: 'ad',group_source:'ad', isLeaf: false, third_id: 0, disabled: 0, user_count: 0, sync_state: 0, has_child: 1 },
-          { name: '系统分组', id: '-1', isLeaf: false,source: 'system',group_source:'system', third_id: 0, disabled: 0, user_count: 0, sync_state: 0, has_child: 1 },
+          { name: this.$t('userGroup.groupAD'), id: '-1',source: 'ad',group_source:'ad', isLeaf: false, third_id: 0, disabled: false, user_count: 0, sync_state: 0, has_child: 1 },
+          { name: '系统分组', id: '-1', isLeaf: false,source: 'system',group_source:'system', third_id: 0, disabled: false, user_count: 0, sync_state: 0, has_child: 1 },
         ]);
       } else if (node.level === 1) {
         console.log('AreaDetailPage loadGroup sync level1', node.data.group_source)
         if (node && node.data && node.data.group_source == 'system') {
           this.getSystemTreeWithId(-1).then(childrenData => {
-            // console.log('AreaDetailPage getAdTreeWithId 1 groups', childrenData)
+            childrenData.map(item => {
+              if (item.disabled) {
+                item.disabled = true
+              } else {
+                item.disabled = false
+              }
+              item.checked = true
+              // this.$refs.multipleTree.setCurrentKey(item.id)
+            })
+            console.log('AreaDetailPage getAdTreeWithId 1 groups', childrenData)
             resolve(childrenData);
           }).catch(() => {
             resolve([]);
@@ -207,6 +217,7 @@ export default {
     },
     handleTreeSelect(id) {
       console.log('AreaDetailPage handleTreeSelect', id)
+      this.form['group_ids'] = id
       // const selectedItem = this.findNodeById(this.treeData, id);
       // console.log('选中的 item 数据:', selectedItem);
       // this.selectedItem = selectedItem
@@ -262,7 +273,7 @@ export default {
       this.form["area"] = data["id"]
       this.form["area_name"] = data["area_name"]
       this.form["sort_key"] = data["sort_key"]
-      this.form["area_disabled"] = Number(data["disabled"])
+      this.form["area_disabled"] = Boolean(data["disabled"])
       this.form["area_timezone"] = data["timezone"]
       this.form["area_start_first_slot"] = this.formatTime(data["morningstarts"], data["morningstarts_minutes"])
       this.form["area_start_last_slot"] = this.formatTime(data["eveningends"], data["eveningends_minutes"])
@@ -272,8 +283,23 @@ export default {
       this.form["area_wxwork_corpid"] = data["wxwork_corpid"]
       this.form["area_wxwork_secret"] = data["wxwork_secret"]
       this.form['area_res_mins'] = data['resolution'] / 60
-      this.form['group_ids'] = data['group_ids']
-      this.form['group_names'] = data['group_names']
+      if (data['groups']) {
+        const group_ids = []
+        const group_names = []
+        for (let index = 0; index < data['groups'].length; index++) {
+          const ele = data['groups'][index];
+          group_ids.push(ele.id)
+          group_names.push(ele.name)
+        }
+        this.form['group_ids'] = group_ids
+        this.form['group_names'] = group_names
+        // console.log('AreaDetailPage getArea group_ids',group_ids)
+        console.log('AreaDetailPage getArea group_ids',this.form['group_ids'])
+        console.log('AreaDetailPage getArea group_names',this.form['group_names'])
+      } else {
+        this.form['group_ids'] = ''
+        this.form['group_names'] = ''
+      }
     })
     this.timezoneList = TIMEZONE_LIST
   }
@@ -323,12 +349,13 @@ export default {
               step="15"
               end="30"
               :placeholder="$t('base.plzSelect')"
-          /> -->
+          /> -->""
         <!-- </el-form-item> -->
 
+        <!-- show-checkbox -->
         <el-form-item label="同步用户组" prop="group_names" label-width="140px" style="margin-left: 50px;">
-          <el-tree-select multiple lazy v-model="form.group_ids" :load="loadGroup" :props="groupProps"
-             @change="handleTreeSelect" />
+          <el-tree-select ref="multipleTree" multiple lazy v-model="form.group_names" :load="loadGroup" :props="groupProps"
+             @change="handleTreeSelect" node-key="id" highlight-current :default-checked-keys="form.group_ids" />
         </el-form-item>
 
         <el-form-item :label="$t('area.formArea.timeDuration')" prop="area_res_mins">
