@@ -398,6 +398,7 @@ export default {
       Api.addGroup(params).then(({ data, code, msg }) => {
         if (code == 0) {
           this.dialogAddGroup = false
+          ElMessage.success('新增成功')
           this.getTableData()
         } else {
           ElMessage.error(msg)
@@ -415,6 +416,7 @@ export default {
       console.log('UserGroup updateUserStatus params', params)
       Api.editGroup(params).then(({ data, code, msg }) => {
         if (code == 0) {
+          ElMessage.success('编辑成功')
           this.dialogAddGroup = false
           this.getTableData()
         } else {
@@ -427,6 +429,7 @@ export default {
       console.log('UserList editUser params', params)
       Api.deleteGroup(params).then(({ data, code, msg }) => {
         if (code == 0) {
+          ElMessage.success('删除成功')
           this.getTableData()
         } else {
           ElMessage.error(msg)

@@ -30,6 +30,8 @@ export default {
         area_reminders_enabled: "on",
         area_private_default: 0,
         area_private_override: "none",
+        group_ids: '',
+        group_names: "",
 
         area_use_exchange: 0,
         area_exchange_server: "",
@@ -89,7 +91,6 @@ export default {
       },
       timezoneList: [],
       collapse: ["1", "2"],
-      
       resolutionOptions:[
         {
           label: '15分钟',
@@ -100,9 +101,131 @@ export default {
           value: 30
         }
       ],
+
+      groupVal: this.$t('base.plzSelect'),
+      groupProps:
+      {
+        value: 'id',
+        label: 'name',
+        children: 'children',
+        isLeaf: 'isLeaf',
+        disabled: 'disabled',
+      },
     }
   },
   methods: {
+
+    loadGroup(node, resolve) {
+      console.log('AreaDetailPage loadGroup sync node', node)
+      if (node.level === 0) {
+        // console.log('loadGroup sync level0', node.level)
+        resolve([
+          { name: this.$t('userGroup.groupAD'), id: '-1',source: 'ad',group_source:'ad', isLeaf: false, third_id: 0, disabled: 0, user_count: 0, sync_state: 0, has_child: 1 },
+          { name: '系统分组', id: '-1', isLeaf: false,source: 'system',group_source:'system', third_id: 0, disabled: 0, user_count: 0, sync_state: 0, has_child: 1 },
+        ]);
+      } else if (node.level === 1) {
+        console.log('AreaDetailPage loadGroup sync level1', node.data.group_source)
+        if (node && node.data && node.data.group_source == 'system') {
+          this.getSystemTreeWithId(-1).then(childrenData => {
+            // console.log('AreaDetailPage getAdTreeWithId 1 groups', childrenData)
+            resolve(childrenData);
+          }).catch(() => {
+            resolve([]);
+          });
+        } else {
+          this.getAdTreeWithId(-1).then(childrenData => {
+            // console.log('AreaDetailPage getAdTreeWithId 1 groups', childrenData)
+            resolve(childrenData);
+          }).catch(() => {
+            resolve([]);
+          });
+        }
+      } else {
+        console.log('AreaDetailPage loadGroup sync level2', node.data.group_source)
+        if (node && node.data && node.data.group_source == 'system') {
+          this.getSystemTreeWithId(node.data.id).then(childrenData => {
+            // console.log('AreaDetailPage getAdTreeWithId 3 childrenData', childrenData)
+            resolve(childrenData);
+          }).catch(() => {
+            resolve([]);
+          });
+        } else {
+          this.getAdTreeWithId(node.data.id).then(childrenData => {
+            // console.log('AreaDetailPage getAdTreeWithId 3 childrenData', childrenData)
+            resolve(childrenData);
+          }).catch(() => {
+            resolve([]);
+          });
+        }
+      }
+    },
+    getAdTreeWithId(group_id) {
+      return new Promise((resolve, reject) => {
+        Api.getAdGroupTree({
+          "group_id": group_id,
+          "page": 1,
+        }).then(({ data, code, msg }) => {
+          if (code == 0) {
+            let groups = data.group.child_groups
+            groups.forEach(item => {
+              item['group_source'] = 'ad'
+              item['isLeaf'] = item['has_child'] == 1 ? false : true
+              item['lable'] = item['name']
+              item['children'] = []
+            })
+            resolve(groups)
+            // console.log('AreaDetailPage getAdTreeWithId groups', groups)
+          } else {
+            ElMessage.error(msg)
+            reject(msg)
+          }
+        })
+      })
+    },
+    getSystemTreeWithId(group_id) {
+      return new Promise((resolve, reject) => {
+        Api.getSystemGroupTree({
+          "group_id": group_id,
+          "page": 1,
+        }).then(({ data, code, msg }) => {
+          if (code == 0) {
+            let groups = data.group.child_groups
+            groups.forEach(item => {
+              item['group_source'] = 'system'
+              item['isLeaf'] = item['has_child'] == 1 ? false : true
+              item['lable'] = item['name']
+              item['children'] = []
+            })
+            resolve(groups)
+            // console.log('AreaDetailPage getAdTreeWithId groups', groups)
+          } else {
+            ElMessage.error(msg)
+            reject(msg)
+          }
+        })
+      })
+    },
+    handleTreeSelect(id) {
+      console.log('AreaDetailPage handleTreeSelect', id)
+      // const selectedItem = this.findNodeById(this.treeData, id);
+      // console.log('选中的 item 数据:', selectedItem);
+      // this.selectedItem = selectedItem
+    },
+    findNodeById(nodes, id) {
+      for (let node of nodes) {
+        if (node.id === id) {
+          return node;
+        }
+        if (node.third_id === id) {
+          return node
+        }
+        if (node.children && node.children.length > 0) {
+          const found = this.findNodeById(node.children, id);
+          if (found) return found;
+        }
+      }
+      return null;
+    },
     submit() {
       this.$refs.areaForm.validate((pass) => {
         if (!pass) {
@@ -149,6 +272,8 @@ export default {
       this.form["area_wxwork_corpid"] = data["wxwork_corpid"]
       this.form["area_wxwork_secret"] = data["wxwork_secret"]
       this.form['area_res_mins'] = data['resolution'] / 60
+      this.form['group_ids'] = data['group_ids']
+      this.form['group_names'] = data['group_names']
     })
     this.timezoneList = TIMEZONE_LIST
   }
@@ -201,9 +326,15 @@ export default {
           /> -->
         <!-- </el-form-item> -->
 
+        <el-form-item label="同步用户组" prop="group_names" label-width="140px" style="margin-left: 50px;">
+          <el-tree-select multiple lazy v-model="form.group_ids" :load="loadGroup" :props="groupProps"
+             @change="handleTreeSelect" />
+        </el-form-item>
+
         <el-form-item :label="$t('area.formArea.timeDuration')" prop="area_res_mins">
           <el-select style="min-width: 400px" v-model="form.area_res_mins" :placeholder="$t('base.plzSelect')">
-            <el-option v-for="(item, index) in resolutionOptions" :key="index" :label="item.label" :value="item.value" />
+            <el-option v-for="(item, index) in resolutionOptions" :key="index" :label="item.label"
+              :value="item.value" />
           </el-select>
         </el-form-item>
 
