@@ -40,7 +40,7 @@
             </el-form-item>
 
             <el-form-item prop="syncDay" label="同步时间">
-              <el-select :disabled="!form.autoSync" v-model="form.syncDay" placeholder="Select" size="large" style="width: 100px;margin-right: 10px;">
+              <el-select :disabled="!form.autoSync" v-model="form.syncDay" :placeholder="$t('base.plzSelect')" size="large" style="width: 100px;margin-right: 10px;">
                 <el-option v-for="item in everyDayOptions" :key="item.value" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
