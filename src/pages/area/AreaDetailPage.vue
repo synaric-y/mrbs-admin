@@ -24,23 +24,10 @@
           <el-time-select v-model="form.area_start_last_slot" style="width: 240px" start="06:00" step="00:30"
             end="18:30" :placeholder="$t('base.plzSelect')" />
         </el-form-item>
-        <!-- <el-form-item prop="area_res_mins" :label="$t('area.formArea.timeDuration')">
-          <el-select v-model="form.area_res_mins" :placeholder="$t('base.plzSelect')" @change="onMinTimeChange">
-            <el-option v-for="item in minsOptions" :key="item.min_time" :label="item.min_time" :value="item.min_time_id" />
-          </el-select> -->
-        <!-- <el-time-select
-              v-model="form.area_res_mins"
-              style="width: 240px"
-              start="15"
-              step="15"
-              end="30"
-              :placeholder="$t('base.plzSelect')"
-          /> -->""
-        <!-- </el-form-item> -->
-        <!-- show-checkbox -->
-        <el-form-item label="同步用户组" prop="group_names" label-width="140px" style="margin-left: 50px;">
-          <el-tree-select ref="multipleTree" multiple lazy v-model="form.group_names" :load="loadGroup" :props="groupProps"
-             @change="handleTreeSelect" node-key="id" highlight-current :default-checked-keys="form.group_ids" />
+        <el-form-item label="同步用户组" prop="group_ids" label-width="140px" style="margin-left: 50px;">
+          <el-tree-select ref="multipleTree" multiple lazy clearable v-model="form.group_ids" :load="loadGroup" :props="groupProps"
+             @change="handleTreeSelect" :render-after-expand="false" node-key="id" :default-checked-keys="form.group_ids"
+             />
         </el-form-item>
         <el-form-item :label="$t('area.formArea.timeDuration')" prop="area_res_mins">
           <el-select style="min-width: 400px" v-model="form.area_res_mins" :placeholder="$t('base.plzSelect')">
@@ -58,19 +45,6 @@
               <el-input v-model="form.area_exchange_server" show-word-limit maxlength="255" />
             </el-form-item>
           </el-collapse-item>
-          <!--          <el-collapse-item :title="$t('base.wxwork')" name="2">-->
-          <!--            <el-form-item prop="use_wxwork" :label="$t('area.formArea.useWxwork')">-->
-          <!--              <el-switch active-value="1" inactive-value="0" v-model="form.area_use_wxwork"/>-->
-          <!--            </el-form-item>-->
-
-          <!--            <el-form-item prop="wxwork_corpid" :label="$t('area.formArea.wxworkCorpId')">-->
-          <!--              <el-input v-model="form.area_wxwork_corpid" show-word-limit maxlength="255" />-->
-          <!--            </el-form-item>-->
-
-          <!--            <el-form-item prop="wxwork_secret" :label="$t('area.formArea.wxworkSecret')">-->
-          <!--              <el-input v-model="form.area_wxwork_secret" show-word-limit maxlength="255" />-->
-          <!--            </el-form-item>-->
-          <!--          </el-collapse-item>-->
         </el-collapse>
         <el-form-item style="margin-top: 60px">
           <el-button type="primary" size="default" @click="submit">{{ $t("base.confirm") }}</el-button>
@@ -197,7 +171,6 @@ export default {
         children: 'children',
         isLeaf: 'isLeaf',
         disabled: 'disabled',
-        checked: 'checked',
       },
     }
   },
@@ -370,7 +343,7 @@ export default {
       this.form["area_wxwork_corpid"] = data["wxwork_corpid"]
       this.form["area_wxwork_secret"] = data["wxwork_secret"]
       this.form['area_res_mins'] = data['resolution'] / 60
-      if (data['groups']) {
+      if (data['groups'] && data['groups'].length > 0) {
         const group_ids = []
         const group_names = []
         for (let index = 0; index < data['groups'].length; index++) {
@@ -380,12 +353,11 @@ export default {
         }
         this.form['group_ids'] = group_ids
         this.form['group_names'] = group_names
-        // console.log('AreaDetailPage getArea group_ids',group_ids)
         console.log('AreaDetailPage getArea group_ids',this.form['group_ids'])
         console.log('AreaDetailPage getArea group_names',this.form['group_names'])
       } else {
-        this.form['group_ids'] = ''
-        this.form['group_names'] = ''
+        this.form['group_ids'] = []
+        this.form['group_names'] = []
       }
     })
     this.timezoneList = TIMEZONE_LIST
