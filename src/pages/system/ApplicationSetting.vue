@@ -267,7 +267,8 @@ export default {
       // 测试联通
       this.urlStatus='testing'
       axios({
-        url: `${this.form.requestUrl}/web/call.php?act=test%2Ftest_exchange`,
+        // url: `${this.form.requestUrl}/web/call.php?act=system_setting%2Fset_variables`,
+        url: `/web/call.php?act=system_setting%2Fget_variables`,
         method: 'POST',
         data: {server_address: this.form.requestUrl},
       }).then(({data})=>{
