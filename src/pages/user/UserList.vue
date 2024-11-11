@@ -2,7 +2,7 @@
   <Layout :title="$t('user.userList')">
     <template #filter>
       <el-input v-model="keyword" style="width: 140px" :placeholder="$t('user.plzEnterUsernameHint')" />
-      <el-select class="account-status-select" v-model="accountStatusVal" placeholder="Select" size="large"
+      <el-select class="account-status-select" v-model="accountStatusVal" :placeholder="$t('base.plzSelect')" size="large"
         style="width: 140px;min-height: 30px;">
         <el-option style="height: 30px;" v-for="item in accountStatusOptions" :key="item.value" :label="item.label"
           :value="item.value" />

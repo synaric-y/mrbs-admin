@@ -31,10 +31,6 @@
             </div>
           </div>
         </div>
-
-
-
-
         <div class="table-container" v-if="!showLoading">
           <el-scrollbar ref="timeScroll" id="time-scrollbar" class="time-table-view" @scroll="syncScroll('timeScroll')"
             :style="{ height: 'calc(100vh - 150px - 65px)' }">
@@ -49,11 +45,6 @@
             :style="{ height: 'calc(100vh - 150px + 40px)' }">
             <div class="calendar-header">
               <div class="time-header">
-                <!-- <div class="time-slots">
-                  <div v-for="(time, timeIndex) in timeSlots" :key="timeIndex" class="time-slot">
-                    {{ time }}
-                  </div>
-                </div> -->
               </div>
               <div v-for="(day, indexday) in days" :key="indexday" class="day-header"
                 :style="{ backgroundColor: day.color }">

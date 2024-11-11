@@ -2,12 +2,12 @@
   <Layout :title="$t('terminal.terminalManage')">
     <template #filter>
       <el-input v-model="keyword" style="width: 140px;height: 30px" :placeholder="$t('terminal.plzInputDeviceId')" />
-      <el-select class="account-status-select" v-model="statusVal" placeholder="Select" size="default"
+      <el-select class="account-status-select" v-model="statusVal" :placeholder="$t('base.plzSelect')" size="default"
         style="width: 140px;min-height: 30px;" @change="onStatusChange">
         <el-option style="height: 30px;" v-for="item in statusOptions" :key="item.value" :label="item.label"
           :value="item.value" />
       </el-select>
-      <el-select class="account-status-select" v-model="roomVal" placeholder="Select" size="default"
+      <el-select class="account-status-select" v-model="roomVal" :placeholder="$t('base.plzSelect')" size="default"
         style="width: 140px;min-height: 30px;" @change="onRoomChange">
         <el-option style="height: 30px;" v-for="item in roomOptions" :key="item.room_id" :label="item.title"
           :value="item.room_id" />

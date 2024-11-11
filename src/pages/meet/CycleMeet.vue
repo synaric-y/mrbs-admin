@@ -44,11 +44,6 @@
           <el-scrollbar ref="contentScroll" id="content-scrollbar" class="scroll-table-view" @scroll="syncScroll('contentScroll')" always :style="{ height: 'calc(100vh - 150px + 40px)' }">
             <div class="calendar-header">
               <div class="time-header">
-                <!-- <div class="time-slots">
-                  <div v-for="(time, timeIndex) in timeSlots" :key="timeIndex" class="time-slot">
-                    {{ time }}
-                  </div>
-                </div> -->
               </div>
               <div v-for="(day, indexday) in days" :key="indexday" class="day-header"
                 :style="{ backgroundColor: day.color }">

@@ -13,13 +13,13 @@
         </el-form-item>
 
         <el-form-item prop="syncMethod" label="同步方式">
-          <el-select v-model="form.syncMethod" placeholder="Select" size="large" style="width: 340px">
+          <el-select v-model="form.syncMethod" :placeholder="$t('base.plzSelect')" size="large" style="width: 340px">
             <el-option v-for="item in groupOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
 
         <el-form-item prop="syncMinute" label="同步间隔">
-          <el-select v-model="form.syncMinute" placeholder="Select" size="large" style="width: 200px;margin-right: 10px;">
+          <el-select v-model="form.syncMinute" placeholder="选择" size="large" style="width: 200px;margin-right: 10px;">
             <el-option v-for="item in everySecondOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>

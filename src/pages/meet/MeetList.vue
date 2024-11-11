@@ -1,17 +1,17 @@
 <template>
   <Layout title="历史会议">
     <template #filter>
-      <el-select class="account-status-select" v-model="statusVal" placeholder="Select" size="default"
+      <el-select class="account-status-select" v-model="statusVal" :placeholder="$t('base.plzSelect')" size="default"
         style="width: 140px;min-height: 30px;">
         <el-option style="height: 30px;" v-for="item in statusOptions" :key="item.value" :label="item.label"
           :value="item.value" />
       </el-select>
-      <el-select class="account-status-select" v-model="areaStatusVal" placeholder="Select" size="default"
+      <el-select class="account-status-select" v-model="areaStatusVal" :placeholder="$t('base.plzSelect')" size="default"
         style="width: 140px;min-height: 30px;" @change="onAreaChange">
         <el-option style="height: 30px;" v-for="item in page_cache_areas" :key="item.area_id" :label="item.area_name"
           :value="item.area_id" />
       </el-select>
-      <el-select class="account-status-select" v-model="roomVal" placeholder="Select" size="default"
+      <el-select class="account-status-select" v-model="roomVal" :placeholder="$t('base.plzSelect')" size="default"
         style="width: 140px;min-height: 30px;" @change="onRoomChange">
         <el-option style="height: 30px;" v-for="item in roomOptions" :key="item.room_id" :label="item.room_name"
           :value="item.room_id" />
