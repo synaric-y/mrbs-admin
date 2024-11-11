@@ -299,7 +299,7 @@ export default {
       })
     },
     toPath(path) {
-      if (path === '/guide_one' && this.init_status != 0) {
+      if (path === '/guide_one' && this.init_status !== 0) {
         this.switchTab('../single_meet')
         return
       }
