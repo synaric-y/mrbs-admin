@@ -1,3 +1,90 @@
+<template>
+  <el-container class="container-sub-page">
+    <el-main class="container-sub-page-main">
+      <div class="sub-title-wrapper">
+        <div class="sub-title">{{ mode === "add" ? $t("area.addArea") : $t("area.editArea") }}</div>
+      </div>
+      <el-form :model="form" :rules="rules" label-width="auto" ref="areaForm" style="max-width: 530px">
+        <el-form-item prop="area_name" :label="$t('area.formArea.name')">
+          <el-input v-model="form.area_name" show-word-limit maxlength="32" />
+        </el-form-item>
+        <el-form-item prop="area_timezone" :label="$t('area.formArea.timezone')">
+          <el-select v-model="form.area_timezone" :placeholder="$t('base.plzSelect')">
+            <el-option :label="tz" :value="tz" v-for="(tz, index) in timezoneList" :key="index" />
+          </el-select>
+        </el-form-item>
+        <el-form-item prop="area_disabled" :label="$t('area.formArea.status')">
+          <el-switch :active-value="0" :inactive-value="1" v-model="form.area_disabled" />
+        </el-form-item>
+        <el-form-item prop="area_start_first_slot" :label="$t('area.formArea.startOfFirstSlot')">
+          <el-time-select v-model="form.area_start_first_slot" style="width: 240px" start="06:00" step="00:30"
+            end="18:30" :placeholder="$t('base.plzSelect')" />
+        </el-form-item>
+        <el-form-item prop="area_start_last_slot" :label="$t('area.formArea.startOfLastSlot')">
+          <el-time-select v-model="form.area_start_last_slot" style="width: 240px" start="06:00" step="00:30"
+            end="18:30" :placeholder="$t('base.plzSelect')" />
+        </el-form-item>
+        <!-- <el-form-item prop="area_res_mins" :label="$t('area.formArea.timeDuration')">
+          <el-select v-model="form.area_res_mins" :placeholder="$t('base.plzSelect')" @change="onMinTimeChange">
+            <el-option v-for="item in minsOptions" :key="item.min_time" :label="item.min_time" :value="item.min_time_id" />
+          </el-select> -->
+        <!-- <el-time-select
+              v-model="form.area_res_mins"
+              style="width: 240px"
+              start="15"
+              step="15"
+              end="30"
+              :placeholder="$t('base.plzSelect')"
+          /> -->""
+        <!-- </el-form-item> -->
+        <!-- show-checkbox -->
+        <el-form-item label="同步用户组" prop="group_names" label-width="140px" style="margin-left: 50px;">
+          <el-tree-select ref="multipleTree" multiple lazy v-model="form.group_names" :load="loadGroup" :props="groupProps"
+             @change="handleTreeSelect" node-key="id" highlight-current :default-checked-keys="form.group_ids" />
+        </el-form-item>
+        <el-form-item :label="$t('area.formArea.timeDuration')" prop="area_res_mins">
+          <el-select style="min-width: 400px" v-model="form.area_res_mins" :placeholder="$t('base.plzSelect')">
+            <el-option v-for="(item, index) in resolutionOptions" :key="index" :label="item.label"
+              :value="item.value" />
+          </el-select>
+        </el-form-item>
+        <el-collapse v-model="collapse">
+          <el-collapse-item :title="$t('base.exchange')" name="1">
+            <el-form-item prop="use_exchange" :label="$t('area.formArea.useExchange')">
+              <el-switch active-value="1" inactive-value="0" v-model="form.area_use_exchange" />
+            </el-form-item>
+
+            <el-form-item prop="exchange_server" :label="$t('area.formArea.exchangeServer')">
+              <el-input v-model="form.area_exchange_server" show-word-limit maxlength="255" />
+            </el-form-item>
+          </el-collapse-item>
+          <!--          <el-collapse-item :title="$t('base.wxwork')" name="2">-->
+          <!--            <el-form-item prop="use_wxwork" :label="$t('area.formArea.useWxwork')">-->
+          <!--              <el-switch active-value="1" inactive-value="0" v-model="form.area_use_wxwork"/>-->
+          <!--            </el-form-item>-->
+
+          <!--            <el-form-item prop="wxwork_corpid" :label="$t('area.formArea.wxworkCorpId')">-->
+          <!--              <el-input v-model="form.area_wxwork_corpid" show-word-limit maxlength="255" />-->
+          <!--            </el-form-item>-->
+
+          <!--            <el-form-item prop="wxwork_secret" :label="$t('area.formArea.wxworkSecret')">-->
+          <!--              <el-input v-model="form.area_wxwork_secret" show-word-limit maxlength="255" />-->
+          <!--            </el-form-item>-->
+          <!--          </el-collapse-item>-->
+        </el-collapse>
+        <el-form-item style="margin-top: 60px">
+          <el-button type="primary" size="default" @click="submit">{{ $t("base.confirm") }}</el-button>
+          <el-button type="info" size="default" @click="back">{{ $t("base.cancel") }}</el-button>
+        </el-form-item>
+      </el-form>
+    </el-main>
+  </el-container>
+</template>
+
+<style lang="scss" scoped>
+
+</style>
+
 <script>
 import moment from "moment";
 import {TIMEZONE_LIST} from "@/assets/timezone.js";
@@ -306,100 +393,3 @@ export default {
 }
 </script>
 
-<template>
-  <el-container class="container-sub-page">
-    <el-main class="container-sub-page-main">
-      <div class="sub-title-wrapper">
-        <div class="sub-title">{{ mode === "add" ? $t("area.addArea") : $t("area.editArea") }}</div>
-      </div>
-
-      <el-form :model="form" :rules="rules" label-width="auto" ref="areaForm" style="max-width: 530px">
-
-        <el-form-item prop="area_name" :label="$t('area.formArea.name')">
-          <el-input v-model="form.area_name" show-word-limit maxlength="32" />
-        </el-form-item>
-
-        <el-form-item prop="area_timezone" :label="$t('area.formArea.timezone')">
-          <el-select v-model="form.area_timezone" :placeholder="$t('base.plzSelect')">
-            <el-option :label="tz" :value="tz" v-for="(tz, index) in timezoneList" :key="index" />
-          </el-select>
-        </el-form-item>
-
-        <el-form-item prop="area_disabled" :label="$t('area.formArea.status')">
-          <el-switch :active-value="0" :inactive-value="1" v-model="form.area_disabled" />
-        </el-form-item>
-
-        <el-form-item prop="area_start_first_slot" :label="$t('area.formArea.startOfFirstSlot')">
-          <el-time-select v-model="form.area_start_first_slot" style="width: 240px" start="06:00" step="00:30"
-            end="18:30" :placeholder="$t('base.plzSelect')" />
-        </el-form-item>
-        <el-form-item prop="area_start_last_slot" :label="$t('area.formArea.startOfLastSlot')">
-          <el-time-select v-model="form.area_start_last_slot" style="width: 240px" start="06:00" step="00:30"
-            end="18:30" :placeholder="$t('base.plzSelect')" />
-        </el-form-item>
-
-        <!-- <el-form-item prop="area_res_mins" :label="$t('area.formArea.timeDuration')">
-          <el-select v-model="form.area_res_mins" :placeholder="$t('base.plzSelect')" @change="onMinTimeChange">
-            <el-option v-for="item in minsOptions" :key="item.min_time" :label="item.min_time" :value="item.min_time_id" />
-          </el-select> -->
-        <!-- <el-time-select
-              v-model="form.area_res_mins"
-              style="width: 240px"
-              start="15"
-              step="15"
-              end="30"
-              :placeholder="$t('base.plzSelect')"
-          /> -->""
-        <!-- </el-form-item> -->
-
-        <!-- show-checkbox -->
-        <el-form-item label="同步用户组" prop="group_names" label-width="140px" style="margin-left: 50px;">
-          <el-tree-select ref="multipleTree" multiple lazy v-model="form.group_names" :load="loadGroup" :props="groupProps"
-             @change="handleTreeSelect" node-key="id" highlight-current :default-checked-keys="form.group_ids" />
-        </el-form-item>
-
-        <el-form-item :label="$t('area.formArea.timeDuration')" prop="area_res_mins">
-          <el-select style="min-width: 400px" v-model="form.area_res_mins" :placeholder="$t('base.plzSelect')">
-            <el-option v-for="(item, index) in resolutionOptions" :key="index" :label="item.label"
-              :value="item.value" />
-          </el-select>
-        </el-form-item>
-
-        <el-collapse v-model="collapse">
-          <el-collapse-item :title="$t('base.exchange')" name="1">
-            <el-form-item prop="use_exchange" :label="$t('area.formArea.useExchange')">
-              <el-switch active-value="1" inactive-value="0" v-model="form.area_use_exchange" />
-            </el-form-item>
-
-            <el-form-item prop="exchange_server" :label="$t('area.formArea.exchangeServer')">
-              <el-input v-model="form.area_exchange_server" show-word-limit maxlength="255" />
-            </el-form-item>
-          </el-collapse-item>
-
-          <!--          <el-collapse-item :title="$t('base.wxwork')" name="2">-->
-          <!--            <el-form-item prop="use_wxwork" :label="$t('area.formArea.useWxwork')">-->
-          <!--              <el-switch active-value="1" inactive-value="0" v-model="form.area_use_wxwork"/>-->
-          <!--            </el-form-item>-->
-
-          <!--            <el-form-item prop="wxwork_corpid" :label="$t('area.formArea.wxworkCorpId')">-->
-          <!--              <el-input v-model="form.area_wxwork_corpid" show-word-limit maxlength="255" />-->
-          <!--            </el-form-item>-->
-
-          <!--            <el-form-item prop="wxwork_secret" :label="$t('area.formArea.wxworkSecret')">-->
-          <!--              <el-input v-model="form.area_wxwork_secret" show-word-limit maxlength="255" />-->
-          <!--            </el-form-item>-->
-          <!--          </el-collapse-item>-->
-        </el-collapse>
-
-        <el-form-item style="margin-top: 60px">
-          <el-button type="primary" size="default" @click="submit">{{ $t("base.confirm") }}</el-button>
-          <el-button type="info" size="default" @click="back">{{ $t("base.cancel") }}</el-button>
-        </el-form-item>
-      </el-form>
-    </el-main>
-  </el-container>
-</template>
-
-<style scoped>
-
-</style>
