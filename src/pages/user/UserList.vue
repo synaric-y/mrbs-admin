@@ -25,9 +25,9 @@
               {{ scope.$index + 1 }}
             </template>
           </el-table-column>
-          <el-table-column prop="name" :label="$t('user.tableUser.displayName')" width="130">
+          <el-table-column prop="display_name" :label="$t('user.tableUser.displayName')" width="130">
           </el-table-column>
-          <el-table-column prop="display_name" :label="$t('user.tableUser.name')" width="130">
+          <el-table-column prop="name" :label="$t('user.tableUser.name')" width="130">
           </el-table-column>
           <el-table-column prop="email" :label="$t('user.tableUser.email')">
           </el-table-column>
