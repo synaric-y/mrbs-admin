@@ -22,8 +22,8 @@
 
             <el-form-item label="管理后台Logo" prop="webLogo">
               <div class="form-item-content">
-                <div class="img-bg">
-                  <img v-if="originalWebLogoURL!==''" class="form-item-logo" :src="originalWebLogoURL" alt="图片未加载">
+                <div class="img-bg" v-if="originalWebLogoURL">
+                  <img class="form-item-logo" :src="onlineWebImage(originalWebLogoURL)" alt="图片未加载">
                 </div>
 
                 <el-upload
@@ -56,8 +56,8 @@
 
             <el-form-item label="平板端首页Logo" prop="appLogo">
               <div class="form-item-content">
-                <div class="img-bg">
-                  <img v-if="originalAppLogoURL!==''" class="form-item-logo" :src="originalAppLogoURL" alt="图片未加载">
+                <div class="img-bg" v-if="originalAppLogoURL" >
+                  <img class="form-item-logo" :src="onlineWebImage(originalAppLogoURL)" alt="图片未加载">
                 </div>
 
                 <el-upload
@@ -185,13 +185,13 @@ export default {
         ],
         webLogo: [
           { type: 'array', validator:(rule, value, callback)=>{
-            if(this.originalWebLogoURL==='') callback(new Error('请上传管理后台Logo图片'))
+            if(this.originalWebLogoURL==='' && value.length===0) callback(new Error('请上传管理后台Logo图片'))
             else callback()
             },message: '请上传管理后台Logo图片', trigger: 'blur' },
         ],
         appLogo: [
           { type: 'array', validator:(rule, value, callback)=>{
-              if(this.originalAppLogoURL==='') callback(new Error('请上传平板端Logo图片'))
+              if(this.originalAppLogoURL==='' && value.length===0) callback(new Error('请上传平板端Logo图片'))
               else callback()
             }, message: '请上传平板端Logo图片', trigger: 'blur' },
         ],
@@ -203,6 +203,13 @@ export default {
         ],
       }
 
+    }
+  },
+  computed:{
+    onlineWebImage(){
+      return (url)=>{
+        return (HOST + url + '?time=' + new Date().getTime())
+      }
     }
   },
   created() {
@@ -231,8 +238,8 @@ export default {
           theme:data.theme_type
         }
 
-        that.originalWebLogoURL = data.logo_dir!=='' ? (HOST + data.logo_dir + '?time=' + new Date().getTime()) : ''
-        that.originalAppLogoURL = data.app_logo_dir!=='' ? (HOST + data.app_logo_dir + '?time=' + new Date().getTime()) : ''
+        that.originalWebLogoURL = data.logo_dir
+        that.originalAppLogoURL = data.app_logo_dir
 
         console.log(that.originalWebLogoURL,that.originalWebLogoURL)
       }else{
