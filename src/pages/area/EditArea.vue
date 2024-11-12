@@ -5,33 +5,29 @@
     </template>
     <template #table>
       <div class="table-wrapper" style="height: auto">
-        <el-table :data="tableData"
-                header-cell-class-name="tb-header"
-                header-align="center"
-                table-layout="auto"
-                max-height="600" fit>
-        <el-table-column fixed prop="area_name" :label="$t('area.tableArea.name')" >
-        </el-table-column>
-        <el-table-column prop="disabled" :label="$t('area.tableArea.state')">
-          <template #default="scope">
-            <el-switch disabled v-model="scope.row.disabled"
-                       :active-value="0"
-                       :inactive-value="1" @change="handleSwitchChange(scope.row)" />
-          </template>
-        </el-table-column>
-        <el-table-column prop="id" :label="$t('area.tableArea.id')">
-        </el-table-column>
-        <el-table-column prop="timezone" :label="$t('area.tableArea.timezone')">
-        </el-table-column>
-        <el-table-column prop="id" :label="$t('area.tableArea.operate')">
-          <template #default="scope">
-            <div class="operate-wrapper">
-              <span class="operate-item" @click="toAreaDetail(scope.row.id)">编辑</span>
-              <span class="operate-item" @click="pendingDeleteArea(scope.row.id)">删除</span>
-            </div>
-          </template>
-        </el-table-column>
-      </el-table>
+        <el-table :data="tableData" header-cell-class-name="tb-header" header-align="center" table-layout="auto"
+          max-height="600" fit>
+          <el-table-column fixed prop="area_name" :label="$t('area.tableArea.name')">
+          </el-table-column>
+          <el-table-column prop="disabled" :label="$t('area.tableArea.state')">
+            <template #default="scope">
+              <el-switch disabled v-model="scope.row.disabled" :active-value="0" :inactive-value="1"
+                @change="handleSwitchChange(scope.row)" />
+            </template>
+          </el-table-column>
+          <el-table-column prop="id" :label="$t('area.tableArea.id')">
+          </el-table-column>
+          <el-table-column prop="timezone" :label="$t('area.tableArea.timezone')">
+          </el-table-column>
+          <el-table-column prop="id" :label="$t('area.tableArea.operate')">
+            <template #default="scope">
+              <div class="operate-wrapper">
+                <span class="operate-item" @click="toAreaDetail(scope.row.id)">编辑</span>
+                <span class="operate-item" @click="pendingDeleteArea(scope.row.id)">删除</span>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
       </div>
     </template>
     <template #btns>
@@ -42,6 +38,11 @@
     <el-form :model="form" ref="form" :rules="rules">
       <el-form-item prop="name" :label="$t('area.formArea.name')">
         <el-input v-model="form.name" autocomplete="off" />
+      </el-form-item>
+      <el-form-item prop="timezone" :label="$t('area.formArea.timezone')" style="margin-left: 27px;">
+        <el-select v-model="form.timezone" :placeholder="$t('base.plzSelect')">
+          <el-option :label="tz" :value="tz" v-for="(tz, index) in timezoneList" :key="index" />
+        </el-select>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -73,8 +74,9 @@ import { Api } from "@/network/api.js";
 import router from "@/router/index.js";
 import { ElMessage } from "element-plus";
 import Layout from "@/components/Layout.vue";
+import { TIMEZONE_LIST } from "@/assets/timezone";
 export default {
-  components: {Layout},
+  components: { Layout },
   mixins: [PageMixin],
   data() {
     return {
@@ -84,11 +86,16 @@ export default {
       showDeleteAreaDialog: false,
       form: {
         name: '',
+        timezone: '',
         group_ids: [-1],
       },
+      timezoneList: [],
       rules: {
         name: [
           { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
+        ],
+        timezone: [
+         { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
         ]
       },
       pendingDeleteId: null
@@ -148,6 +155,7 @@ export default {
   mounted() {
     this.setTab('/area')
     this.getAreaList()
+    this.timezoneList = TIMEZONE_LIST
   }
 }
 </script>
@@ -160,8 +168,7 @@ export default {
   margin-bottom: 20px;
 }
 
-.el-table {
-}
+.el-table {}
 
 .tb-op-icon {
   width: 25px;
