@@ -25,7 +25,7 @@
             end="18:30" :placeholder="$t('base.plzSelect')" />
         </el-form-item>
         <el-form-item label="同步用户组" prop="group_ids" label-width="140px" style="margin-left: 50px;">
-          <el-tree-select ref="multipleTree" multiple lazy clearable v-model="form.group_ids" :load="loadGroup" :props="groupProps"
+          <el-tree-select ref="multipleTree" multiple lazy clearable v-model="form.group_names" :load="loadGroup" :props="groupProps"
              @change="handleTreeSelect" :render-after-expand="false" node-key="id" :default-checked-keys="form.group_ids"
              />
         </el-form-item>
