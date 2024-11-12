@@ -77,6 +77,7 @@ export const langKo = {
         editMeet: '편집회의',
         tips: '힌트',
         deleteTips: '현재 회의 삭제 확인',
+        search_create_by: '약속을 잡는 사람을 입력하세요.',
     },
     login: {
         account: '계정',
