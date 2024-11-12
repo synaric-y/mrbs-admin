@@ -359,7 +359,8 @@ body {
 .container-sub-page {
   width: calc(100vw - 189px);
   /* width: auto; */
-  min-height: 100vh;
+  min-height: calc(100vh - 75px);
+  height: auto;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;

@@ -693,6 +693,12 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+
+.sub-page-content{
+  box-sizing: border-box;
+  padding-bottom: 0;
+}
+
 /* 标题 */
 .title{
   font-family: PingFang SC;

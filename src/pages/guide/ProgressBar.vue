@@ -25,22 +25,29 @@ const steps = [
 </script>
 
 <template>
-  <div class="guide-progress">
-    <div class="guide-item" v-for="item in steps" :key="item.id">
+  <div class="progress-container">
+    <div class="guide-progress">
+      <div class="guide-item" v-for="item in steps" :key="item.id">
 
       <span v-if="item.id<activeIndex" class="guide-number guide-number-previous">
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="none" version="1.1" width="12" height="12" viewBox="0 0 12 12"><g><g></g><g><path d="M10.428003926753998,2.026165065261841C10.230443926753997,1.8286115652618409,9.909333926753998,1.8312712652618408,9.715083926753998,2.032071065261841L4.494803926753997,7.428258065261841L2.5054939267539975,5.438938065261841C2.3102339267539977,5.243678065261841,1.9936539267539979,5.243678065261841,1.7983889267539976,5.438938065261841L1.0912819267539977,6.146048065261841C0.8960200267539978,6.341308065261841,0.8960200267539978,6.657898065261841,1.0912819267539977,6.853158065261841L3.9197039267539977,9.68157806526184C3.9323139267539977,9.69418806526184,3.945433926753998,9.705988065261842,3.958983926753998,9.716968065261842L4.160693926753998,9.91867806526184C4.3582539267539975,10.116228065261842,4.679333926753998,10.11358806526184,4.873593926753998,9.91279806526184L11.140803926753998,3.434378065261841C11.330603926753998,3.2382280652618407,11.328003926753997,2.926158065261841,11.135003926753997,2.733178065261841L10.428003926753998,2.026165065261841Z" fill-rule="evenodd" fill="#591BB7" fill-opacity="1"/></g></g></svg>
       </span>
-      <span v-else :class="activeIndex==item.id?'guide-number guide-number-active':'guide-number'">
+        <span v-else :class="activeIndex==item.id?'guide-number guide-number-active':'guide-number'">
         {{item.id}}
       </span>
-      <span :class="activeIndex==item.id?'guide-title guide-title-active':'guide-title'">{{item.title}}</span>
+        <span :class="activeIndex==item.id?'guide-title guide-title-active':'guide-title'">{{item.title}}</span>
+      </div>
     </div>
+    <div v-if="steps[activeIndex-1].tip" class="guide-tips">{{steps[activeIndex-1].tip}}</div>
   </div>
-  <div v-if="steps[activeIndex-1].tip" class="guide-tips">{{steps[activeIndex-1].tip}}</div>
 </template>
 
 <style scoped>
+.progress-container{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .guide-progress {
   box-sizing: border-box;
   width: 100%;
@@ -98,7 +105,7 @@ const steps = [
   letter-spacing: 0px;
   font-variation-settings: "opsz" auto;
   color: #3D3D3D;
-  margin-top: 40px;
+  margin-top: 20px;
   align-self: center;
 }
 </style>
