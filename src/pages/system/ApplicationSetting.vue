@@ -91,9 +91,8 @@
           </el-form>
         </div>
       </div>
-
       <div>
-        <div class="section-title">会议助手</div>
+        <div class="section-title">企业微信App</div>
         <div class="section-content">
           <el-form ref="formRef" :model="form" :rules="rules" label-width="auto" style="max-width: 650px">
             <el-form-item label="企微corpId" prop="corpId">
@@ -141,7 +140,6 @@
           <div style="margin-top: 10px">请打开未激活的平板并扫码</div>
         </div>
       </el-dialog>
-
     </template>
     <template #btns>
       <el-button type="primary" @click="submit">保存</el-button>
@@ -149,7 +147,6 @@
     </template>
   </Layout>
 </template>
-
 
 <script>
 import { HOST } from "@/config.js";
@@ -217,7 +214,6 @@ export default {
           { required: true, message: '请选择一个主题', trigger: 'blur' },
         ],
       }
-
     }
   },
   computed: {
@@ -239,11 +235,6 @@ export default {
     }).then(({ code, data, msg }) => {
       if (code == 0) {
         console.log(data)
-        // that.form.timeFormat = data.timeFormat
-        // that.form.companyName = data.companyName
-        // that.form.requestUrl = data.requestUrl
-        // that.form.theme = data.theme
-
         that.form = {
           companyName: data.company_name,
           requestUrl: data.server_address,
@@ -255,18 +246,15 @@ export default {
           secret: data.secret,
           agentId: data.agentid,
         }
-
         that.originalWebLogoURL = data.logo_dir
         that.originalAppLogoURL = data.app_logo_dir
-
         console.log(that.originalWebLogoURL, that.originalWebLogoURL)
       } else {
         ElMessage.error({
           message: '设置获取失败',
         })
       }
-    })
-      .catch(e => {
+    }).catch(e => {
         console.log(e)
       })
 
@@ -276,19 +264,16 @@ export default {
           arr[index].publish_time = dayjs.unix(item.publish_time).format('YYYY-MM-DD HH:mm:ss')
         })
         this.versionData = data
-
       })
   },
   methods: {
     verify() {
-
       if (!this.form.requestUrl || this.form.requestUrl === '') {
         ElMessage.error({
           message: '请求地址不能为空！'
         })
         return
       }
-
       // 测试联通
       this.urlStatus = 'testing'
       axios({
@@ -304,17 +289,13 @@ export default {
           this.urlStatus = 'untested'
           return
         }
-
         this.urlStatus = 'tested'
         ElMessage.success({
           message: '请求地址验证成功！'
         })
-
       }).catch(e => {
 
       })
-
-
     },
     pendingShowQRCode() {
       this.showQRCode = true
@@ -349,15 +330,11 @@ export default {
       this.$refs.formRef.validate((valid) => {
         if (valid) {
           console.log('submit!')
-
           const requests = []
-
           // 管理端图片上传
           if (this.form.webLogo.length !== 0) {
             const webLogoData = new FormData();
             webLogoData.append('logo', this.form.webLogo[0].raw)
-
-
             requests.push(
               Api.uploadWebLogo(webLogoData)
                 .then(res => {
@@ -365,12 +342,10 @@ export default {
                 })
             )
           }
-
           // 平板端图片上传
           if (this.form.appLogo.length !== 0) {
             const appLogoData = new FormData();
             appLogoData.append('logo', this.form.appLogo[0].raw)
-
             requests.push(
               Api.uploadAppLogo(appLogoData)
                 .then(res => {
@@ -378,8 +353,6 @@ export default {
                 })
             )
           }
-
-
           // 其他数据修改
           requests.push(Api.setVariables(
             {
@@ -390,19 +363,12 @@ export default {
               "theme_type": this.form.theme,
             }
           ))
-
-
           Promise.all(requests)
             .then((responses) => {
               console.log(responses)
-
               ElMessage.success({
                 message: '设置成功',
               })
-
-              // setTimeout(()=>{
-              //   location.reload() // 刷新页面
-              // },1000)
             })
             .catch((error) => {
               ElMessage.error({
@@ -410,8 +376,6 @@ export default {
               })
               console.log(error)
             });
-
-
         } else {
           ElMessage.error({
             message: '表单格式错误',
@@ -430,12 +394,10 @@ export default {
 }
 </script>
 
-
 <style lang="scss" scoped>
 ::v-deep .hide .el-upload--picture-card {
   display: none;
 }
-
 
 .section-title {
   color: var(--el-color-primary);
@@ -461,13 +423,10 @@ export default {
 }
 
 .form-item-content {
-
   display: flex;
-  //align-items: center;
   gap: 20px;
 }
 
-/* copy: https://juejin.cn/post/7102784102637502478 */
 .img-bg {
   width: 90px;
   height: 90px;
@@ -479,15 +438,12 @@ export default {
     linear-gradient(45deg, #c9c9c9 25%, transparent 0, transparent 75%, #c9c9c9 0);
   background-position: 0 0, 10px 10px;
   background-size: 20px 20px;
-
-
   .form-item-logo {
     width: 100%;
     height: 100%;
     object-fit: contain;
   }
 }
-
 
 ::v-deep .el-upload-list--picture-card {
   --el-upload-list-picture-card-size: 90px;
@@ -506,7 +462,6 @@ export default {
     linear-gradient(45deg, #c9c9c9 25%, transparent 0, transparent 75%, #c9c9c9 0);
   background-position: 0 0, 10px 10px;
   background-size: 20px 20px;
-
   .remove-btn {
     position: absolute;
     top: 0;
