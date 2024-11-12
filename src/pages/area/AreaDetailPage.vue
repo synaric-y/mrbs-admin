@@ -5,8 +5,10 @@ import {PageMixin} from "@/pages/PageMixin.js";
 import {Api} from "@/network/api.js";
 import {ElMessage} from "element-plus";
 import router from "@/router/index.js";
+import Layout from "@/components/Layout.vue";
 
 export default {
+  components: {Layout},
   mixins: [PageMixin],
   data() {
     return {
@@ -273,7 +275,7 @@ export default {
       this.form["area"] = data["id"]
       this.form["area_name"] = data["area_name"]
       this.form["sort_key"] = data["sort_key"]
-      this.form["area_disabled"] = Boolean(data["disabled"])
+      this.form["area_disabled"] = data["disabled"]
       this.form["area_timezone"] = data["timezone"]
       this.form["area_start_first_slot"] = this.formatTime(data["morningstarts"], data["morningstarts_minutes"])
       this.form["area_start_last_slot"] = this.formatTime(data["eveningends"], data["eveningends_minutes"])
@@ -307,12 +309,9 @@ export default {
 </script>
 
 <template>
-  <el-container class="container-sub-page">
-    <el-main class="container-sub-page-main">
-      <div class="sub-title-wrapper">
-        <div class="sub-title">{{ mode === "add" ? $t("area.addArea") : $t("area.editArea") }}</div>
-      </div>
 
+  <Layout :title="mode === 'add' ? $t('area.addArea') : $t('area.editArea')" :section-left-padding="40">
+    <template #section>
       <el-form :model="form" :rules="rules" label-width="auto" ref="areaForm" style="max-width: 530px">
 
         <el-form-item prop="area_name" :label="$t('area.formArea.name')">
@@ -331,11 +330,11 @@ export default {
 
         <el-form-item prop="area_start_first_slot" :label="$t('area.formArea.startOfFirstSlot')">
           <el-time-select v-model="form.area_start_first_slot" style="width: 240px" start="06:00" step="00:30"
-            end="18:30" :placeholder="$t('base.plzSelect')" />
+                          end="18:30" :placeholder="$t('base.plzSelect')" />
         </el-form-item>
         <el-form-item prop="area_start_last_slot" :label="$t('area.formArea.startOfLastSlot')">
           <el-time-select v-model="form.area_start_last_slot" style="width: 240px" start="06:00" step="00:30"
-            end="18:30" :placeholder="$t('base.plzSelect')" />
+                          end="18:30" :placeholder="$t('base.plzSelect')" />
         </el-form-item>
 
         <!-- <el-form-item prop="area_res_mins" :label="$t('area.formArea.timeDuration')">
@@ -349,57 +348,49 @@ export default {
               step="15"
               end="30"
               :placeholder="$t('base.plzSelect')"
-          /> -->""
+          /> -->
         <!-- </el-form-item> -->
 
         <!-- show-checkbox -->
         <el-form-item label="同步用户组" prop="group_names" label-width="140px" style="margin-left: 50px;">
           <el-tree-select ref="multipleTree" multiple lazy v-model="form.group_names" :load="loadGroup" :props="groupProps"
-             @change="handleTreeSelect" node-key="id" highlight-current :default-checked-keys="form.group_ids" />
+                          @change="handleTreeSelect" node-key="id" highlight-current :default-checked-keys="form.group_ids" />
         </el-form-item>
 
         <el-form-item :label="$t('area.formArea.timeDuration')" prop="area_res_mins">
           <el-select style="min-width: 400px" v-model="form.area_res_mins" :placeholder="$t('base.plzSelect')">
             <el-option v-for="(item, index) in resolutionOptions" :key="index" :label="item.label"
-              :value="item.value" />
+                       :value="item.value" />
           </el-select>
         </el-form-item>
 
-        <el-collapse v-model="collapse">
-          <el-collapse-item :title="$t('base.exchange')" name="1">
-            <el-form-item prop="use_exchange" :label="$t('area.formArea.useExchange')">
-              <el-switch active-value="1" inactive-value="0" v-model="form.area_use_exchange" />
-            </el-form-item>
+        <div class="section-title">{{$t('base.exchange')}}</div>
 
-            <el-form-item prop="exchange_server" :label="$t('area.formArea.exchangeServer')">
-              <el-input v-model="form.area_exchange_server" show-word-limit maxlength="255" />
-            </el-form-item>
-          </el-collapse-item>
-
-          <!--          <el-collapse-item :title="$t('base.wxwork')" name="2">-->
-          <!--            <el-form-item prop="use_wxwork" :label="$t('area.formArea.useWxwork')">-->
-          <!--              <el-switch active-value="1" inactive-value="0" v-model="form.area_use_wxwork"/>-->
-          <!--            </el-form-item>-->
-
-          <!--            <el-form-item prop="wxwork_corpid" :label="$t('area.formArea.wxworkCorpId')">-->
-          <!--              <el-input v-model="form.area_wxwork_corpid" show-word-limit maxlength="255" />-->
-          <!--            </el-form-item>-->
-
-          <!--            <el-form-item prop="wxwork_secret" :label="$t('area.formArea.wxworkSecret')">-->
-          <!--              <el-input v-model="form.area_wxwork_secret" show-word-limit maxlength="255" />-->
-          <!--            </el-form-item>-->
-          <!--          </el-collapse-item>-->
-        </el-collapse>
-
-        <el-form-item style="margin-top: 60px">
-          <el-button type="primary" size="default" @click="submit">{{ $t("base.confirm") }}</el-button>
-          <el-button type="info" size="default" @click="back">{{ $t("base.cancel") }}</el-button>
+        <el-form-item prop="use_exchange" :label="$t('area.formArea.useExchange')">
+          <el-switch :active-value="1" :inactive-value="0" v-model="form.area_use_exchange" />
         </el-form-item>
+
+        <el-form-item prop="exchange_server" :label="$t('area.formArea.exchangeServer')">
+          <el-input v-model="form.area_exchange_server" show-word-limit maxlength="255" />
+        </el-form-item>
+
       </el-form>
-    </el-main>
-  </el-container>
+    </template>
+    <template #btns>
+      <el-button type="primary" size="default" @click="submit">{{ $t("base.confirm") }}</el-button>
+      <el-button size="default" @click="back">{{ $t("base.cancel") }}</el-button>
+    </template>
+  </Layout>
+
 </template>
 
 <style scoped>
-
+.section-title {
+  color: var(--el-color-primary);
+  font-family: PingFang SC;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 2;
+  margin-bottom: 20px;
+}
 </style>
