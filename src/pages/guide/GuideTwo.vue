@@ -1,62 +1,58 @@
 <template>
-  <el-container class="container-sub-page">
-    <el-main class="container-sub-page-main">
-      <div class="sub-page-content">
-        <div class="page-title">会议系统配置向导</div>
+  <Layout :title="'会议系统配置向导'" :section-center="true">
 
-        <ProgressBar :active-index="1"/>
+    <template #section>
+      <ProgressBar :active-index="1"/>
 
 
-        <div class="section">
-          <el-form :model="form" :rules="rules" ref="formRef" label-width="150px">
+      <div style="margin-top: 20px;">
+        <el-form :model="form" :rules="rules" ref="formRef" label-width="150px">
 
-            <el-form-item label="选择服务">
-              <img class="form-item-img" src="../../../public/imgs/ad.png" alt="#">
-            </el-form-item>
+          <el-form-item label="选择服务">
+            <img class="form-item-img" src="../../../public/imgs/ad.png" alt="#">
+          </el-form-item>
 
-            <el-form-item prop="hosts" label="服务器地址(hosts)">
-              <el-input v-model="form.hosts" class="form-item-input" placeholder="示例:172.16.88.180" />
-            </el-form-item>
+          <el-form-item prop="hosts" label="服务器地址(hosts)">
+            <el-input v-model="form.hosts" class="form-item-input" placeholder="示例:172.16.88.180" />
+          </el-form-item>
 
-            <el-form-item prop="port" label="服务器端口(port)">
-              <el-input v-model="form.port" class="form-item-input" placeholder="示例:3136" />
-            </el-form-item>
+          <el-form-item prop="port" label="服务器端口(port)">
+            <el-input v-model="form.port" class="form-item-input" placeholder="示例:3136" />
+          </el-form-item>
 
-            <el-form-item prop="base_dn" label="基础地址(base_dn)">
-              <el-input v-model="form.base_dn" class="form-item-input" placeholder="示例:0U=BCC,DC=businessconnectchina,DC=com" />
-            </el-form-item>
+          <el-form-item prop="base_dn" label="基础地址(base_dn)">
+            <el-input v-model="form.base_dn" class="form-item-input" placeholder="示例:0U=BCC,DC=businessconnectchina,DC=com" />
+          </el-form-item>
 
-            <el-form-item prop="username" label="用户名(username)">
-              <el-input v-model="form.username" class="form-item-input" placeholder="示例:CN=meet. dap,0U=LDAP,DC=businessconnectchina,DC=com" />
-            </el-form-item>
+          <el-form-item prop="username" label="用户名(username)">
+            <el-input v-model="form.username" class="form-item-input" placeholder="示例:CN=meet. dap,0U=LDAP,DC=businessconnectchina,DC=com" />
+          </el-form-item>
 
-            <el-form-item prop="password" label="密码(password)">
-              <el-input type="password" v-model="form.password" class="form-item-input" placeholder="请输入包含数字、字母、特殊符号最低8位密码" />
-              <TestButton :status="adStatus" @test="verify"/>
-            </el-form-item>
+          <el-form-item prop="password" label="密码(password)">
+            <el-input type="password" v-model="form.password" class="form-item-input" placeholder="请输入包含数字、字母、特殊符号最低8位密码" />
+            <TestButton :status="adStatus" @test="verify"/>
+          </el-form-item>
 
-            <el-form-item prop="autoSync" label="开启定时同步">
-              <el-switch v-model="form.autoSync" />
-            </el-form-item>
-
+          <el-form-item prop="autoSync" label="开启定时同步">
+            <el-switch v-model="form.autoSync" />
+          </el-form-item>
             <el-form-item prop="syncDay" label="同步时间">
               <el-select :disabled="!form.autoSync" v-model="form.syncDay" :placeholder="$t('base.plzSelect')" size="large" style="width: 100px;margin-right: 10px;">
                 <el-option v-for="item in everyDayOptions" :key="item.value" :label="item.label" :value="item.value" />
               </el-select>
             </el-form-item>
-
-          </el-form>
-        </div>
-
-        <div class="sub-buttons">
-          <el-button plain class="btn" @click="jumpGuide">跳过向导</el-button>
-          <el-button type="primary" class="btn" @click="switchTab('/guide_one')">上一步</el-button>
-          <el-button plain class="btn" @click="skipCurrentGuide">暂不需要</el-button>
-          <el-button type="primary" class="btn" @click="nextStep">下一步</el-button>
-        </div>
+        </el-form>
       </div>
-    </el-main>
-  </el-container>
+    </template>
+
+    <template #btns>
+      <el-button plain class="btn" @click="jumpGuide">跳过向导</el-button>
+      <el-button type="primary" class="btn" @click="switchTab('/guide_one')">上一步</el-button>
+      <el-button plain class="btn" @click="skipCurrentGuide">暂不需要</el-button>
+      <el-button type="primary" class="btn" @click="nextStep">下一步</el-button>
+    </template>
+
+  </Layout>
 </template>
 
 
@@ -69,9 +65,10 @@ import { ElMessage } from "element-plus";
 import { Text } from "vue";
 import ProgressBar from "@/pages/guide/ProgressBar.vue";
 import TestButton from "@/components/TestButton.vue";
+import Layout from "@/components/Layout.vue";
 
 export default {
-  components: {TestButton, ProgressBar},
+  components: {Layout, TestButton, ProgressBar},
   mixins: [PageMixin],
   data() {
     return {
@@ -348,97 +345,4 @@ export default {
 </script>
 
 <style  lang="scss" scoped>
-.sub-page-content {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  flex-direction: column;
-  background-color: white;
-  padding: 20px;
-}
-
-.page-title {
-  font-size: 20px;
-}
-
-
-
-.section{
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin: 30px 0;
-}
-
-.form-item {
-  display: flex;
-  flex-direction: row;
-  height: 50px;
-  align-items: center;
-}
-
-.form-ad {
-  display: flex;
-  flex-direction: row;
-  height: 50px;
-  align-items: center;
-}
-
-.form-item-tip {
-  font-family: PingFang SC;
-  font-size: 14px;
-  font-weight: normal;
-  line-height: 22px;
-  text-align: right;
-  letter-spacing: 0px;
-  color: #4E5969;
-  margin-right: 28px;
-  width: 400px;
-  /* background-color: red; */
-}
-
-.form-item-img {
-  width: 153px;
-  height: 43px;
-}
-
-.form-item-input {
-  width: 400px;
-}
-
-.form-item-btn {
-  border-radius: 2px;
-  opacity: 1;
-  background: #591BB7;
-  box-sizing: border-box;
-  padding: 0 15px;
-  border: 1px solid #000000;
-  font-family: PingFang SC;
-  font-size: 14px;
-  font-weight: normal;
-  line-height: 22px;
-  text-align: right;
-  display: flex;
-  align-items: center;
-  letter-spacing: 0px;
-  font-variation-settings: "opsz" auto;
-  color: #FFFFFF;
-  margin-left: 20px;
-}
-
-.sub-buttons {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  gap: 30px;
-  width: 100%;
-  margin-top: 15px;
-  padding-bottom: 15px;
-}
-
-.btn {
-  padding: 0 15px;
-  height: 36px;
-  line-height: 36px;
-}
 </style>

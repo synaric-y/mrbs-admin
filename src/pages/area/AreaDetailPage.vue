@@ -1,9 +1,6 @@
 <template>
-  <el-container class="container-sub-page">
-    <el-main class="container-sub-page-main">
-      <div class="sub-title-wrapper">
-        <div class="sub-title">{{ mode === "add" ? $t("area.addArea") : $t("area.editArea") }}</div>
-      </div>
+  <Layout :title="mode === 'add' ? $t('area.addArea') : $t('area.editArea')" :section-left-padding="40">
+    <template #section>
       <el-form :model="form" :rules="rules" label-width="auto" ref="areaForm" style="max-width: 530px">
         <el-form-item prop="area_name" :label="$t('area.formArea.name')">
           <el-input v-model="form.area_name" show-word-limit maxlength="32" />
@@ -24,10 +21,25 @@
           <el-time-select v-model="form.area_start_last_slot" style="width: 240px" start="06:00" step="00:30"
             end="18:30" :placeholder="$t('base.plzSelect')" />
         </el-form-item>
-        <el-form-item label="同步用户组" prop="group_ids" label-width="140px" style="margin-left: 50px;">
-          <el-tree-select ref="multipleTree" multiple lazy clearable v-model="form.group_names" :load="loadGroup" :props="groupProps"
-             @change="handleTreeSelect" :render-after-expand="false" node-key="id" :default-checked-keys="form.group_ids"
-             />
+        <!-- <el-form-item prop="area_res_mins" :label="$t('area.formArea.timeDuration')">
+          <el-select v-model="form.area_res_mins" :placeholder="$t('base.plzSelect')" @change="onMinTimeChange">
+            <el-option v-for="item in minsOptions" :key="item.min_time" :label="item.min_time" :value="item.min_time_id" />
+          </el-select> -->
+        <!-- <el-time-select
+              v-model="form.area_res_mins"
+              style="width: 240px"
+              start="15"
+              step="15"
+              end="30"
+              :placeholder="$t('base.plzSelect')"
+          /> -->
+        <!-- </el-form-item> -->
+
+        <!-- show-checkbox -->
+        <el-form-item label="同步用户组" prop="group_names" label-width="140px" style="margin-left: 50px;">
+          <el-tree-select ref="multipleTree" multiple lazy v-model="form.group_names" :load="loadGroup"
+            :props="groupProps" @change="handleTreeSelect" node-key="id" highlight-current
+            :default-checked-keys="form.group_ids" />
         </el-form-item>
         <el-form-item :label="$t('area.formArea.timeDuration')" prop="area_res_mins">
           <el-select style="min-width: 400px" v-model="form.area_res_mins" :placeholder="$t('base.plzSelect')">
@@ -35,39 +47,35 @@
               :value="item.value" />
           </el-select>
         </el-form-item>
-        <el-collapse v-model="collapse">
-          <el-collapse-item :title="$t('base.exchange')" name="1">
-            <el-form-item prop="use_exchange" :label="$t('area.formArea.useExchange')">
-              <el-switch active-value="1" inactive-value="0" v-model="form.area_use_exchange" />
-            </el-form-item>
-
-            <el-form-item prop="exchange_server" :label="$t('area.formArea.exchangeServer')">
-              <el-input v-model="form.area_exchange_server" show-word-limit maxlength="255" />
-            </el-form-item>
-          </el-collapse-item>
-        </el-collapse>
-        <el-form-item style="margin-top: 60px">
-          <el-button type="primary" size="default" @click="submit">{{ $t("base.confirm") }}</el-button>
-          <el-button type="info" size="default" @click="back">{{ $t("base.cancel") }}</el-button>
+        <div class="section-title">{{ $t('base.exchange') }}</div>
+        <el-form-item prop="use_exchange" :label="$t('area.formArea.useExchange')">
+          <el-switch :active-value="1" :inactive-value="0" v-model="form.area_use_exchange" />
+        </el-form-item>
+        <el-form-item prop="exchange_server" :label="$t('area.formArea.exchangeServer')">
+          <el-input v-model="form.area_exchange_server" show-word-limit maxlength="255" />
         </el-form-item>
       </el-form>
-    </el-main>
-  </el-container>
+    </template>
+    <template #btns>
+      <el-button type="primary" size="default" @click="submit">{{ $t("base.confirm") }}</el-button>
+      <el-button size="default" @click="back">{{ $t("base.cancel") }}</el-button>
+    </template>
+  </Layout>
 </template>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>
 
 <script>
 import moment from "moment";
-import {TIMEZONE_LIST} from "@/assets/timezone.js";
-import {PageMixin} from "@/pages/PageMixin.js";
-import {Api} from "@/network/api.js";
-import {ElMessage} from "element-plus";
+import { TIMEZONE_LIST } from "@/assets/timezone.js";
+import { PageMixin } from "@/pages/PageMixin.js";
+import { Api } from "@/network/api.js";
+import { ElMessage } from "element-plus";
 import router from "@/router/index.js";
+import Layout from "@/components/Layout.vue";
 
 export default {
+  components: { Layout },
   mixins: [PageMixin],
   data() {
     return {
@@ -91,8 +99,8 @@ export default {
         area_reminders_enabled: "on",
         area_private_default: 0,
         area_private_override: "none",
-        group_ids: [1,3892,3930],
-        group_names: ['Admin', '测试组2',  'iOS-group1'],
+        group_ids: [1, 3892, 3930],
+        group_names: ['Admin', '测试组2', 'iOS-group1'],
 
         area_use_exchange: 0,
         area_exchange_server: "",
@@ -102,19 +110,19 @@ export default {
       },
       rules: {
         area_name: [
-          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
         ],
         area_start_first_slot: [
-          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
         ],
         area_start_last_slot: [
-          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
         ],
         area_timezone: [
-          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
         ],
         area_res_mins: [
-          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
         ],
         area_exchange_server: [
           {
@@ -152,7 +160,7 @@ export default {
       },
       timezoneList: [],
       collapse: ["1", "2"],
-      resolutionOptions:[
+      resolutionOptions: [
         {
           label: '15分钟',
           value: 15
@@ -181,8 +189,8 @@ export default {
       if (node.level === 0) {
         // console.log('loadGroup sync level0', node.level)
         resolve([
-          { name: this.$t('userGroup.groupAD'), id: '-1',source: 'ad',group_source:'ad', isLeaf: false, third_id: 0, disabled: false, user_count: 0, sync_state: 0, has_child: 1 },
-          { name: '系统分组', id: '-1', isLeaf: false,source: 'system',group_source:'system', third_id: 0, disabled: false, user_count: 0, sync_state: 0, has_child: 1 },
+          { name: this.$t('userGroup.groupAD'), id: '-1', source: 'ad', group_source: 'ad', isLeaf: false, third_id: 0, disabled: false, user_count: 0, sync_state: 0, has_child: 1 },
+          { name: '系统分组', id: '-1', isLeaf: false, source: 'system', group_source: 'system', third_id: 0, disabled: false, user_count: 0, sync_state: 0, has_child: 1 },
         ]);
       } else if (node.level === 1) {
         console.log('AreaDetailPage loadGroup sync level1', node.data.group_source)
@@ -303,14 +311,14 @@ export default {
           return
         }
         this.form["sort_key"] = this.form["area_name"]
-        Api.editArea(this.form).then(({data, code, msg}) => {
+        Api.editArea(this.form).then(({ data, code, msg }) => {
           if (code == 0) {
             ElMessage({
               message: this.$t('base.editSuccess'),
               type: 'success',
             })
             this.back()
-          }  else {
+          } else {
             ElMessage.error(msg)
           }
         }).catch(() => {
@@ -320,12 +328,12 @@ export default {
     },
     formatTime(hours, minutes) {
       let date = new Date(0, 0, 0, hours, minutes, 0);
-      return date.toLocaleTimeString('it-IT', {hour: '2-digit', minute: '2-digit'});
+      return date.toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
     }
   },
   mounted() {
-    let {id} = this.$route.params
-    Api.getArea({id: Number(id)}).then(({data}) => {
+    let { id } = this.$route.params
+    Api.getArea({ id: Number(id) }).then(({ data }) => {
       if (!data) {
         return
       }
@@ -333,7 +341,7 @@ export default {
       this.form["area"] = data["id"]
       this.form["area_name"] = data["area_name"]
       this.form["sort_key"] = data["sort_key"]
-      this.form["area_disabled"] = Boolean(data["disabled"])
+      this.form["area_disabled"] = data["disabled"]
       this.form["area_timezone"] = data["timezone"]
       this.form["area_start_first_slot"] = this.formatTime(data["morningstarts"], data["morningstarts_minutes"])
       this.form["area_start_last_slot"] = this.formatTime(data["eveningends"], data["eveningends_minutes"])
@@ -353,8 +361,8 @@ export default {
         }
         this.form['group_ids'] = group_ids
         this.form['group_names'] = group_names
-        console.log('AreaDetailPage getArea group_ids',this.form['group_ids'])
-        console.log('AreaDetailPage getArea group_names',this.form['group_names'])
+        console.log('AreaDetailPage getArea group_ids', this.form['group_ids'])
+        console.log('AreaDetailPage getArea group_names', this.form['group_names'])
       } else {
         this.form['group_ids'] = []
         this.form['group_names'] = []
@@ -365,3 +373,13 @@ export default {
 }
 </script>
 
+<style scoped>
+.section-title {
+  color: var(--el-color-primary);
+  font-family: PingFang SC;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 2;
+  margin-bottom: 20px;
+}
+</style>

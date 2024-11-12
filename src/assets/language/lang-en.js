@@ -77,6 +77,7 @@ export const langEn = {
         editMeet: 'Edit Meet',
         tips: 'Tips',
         deleteTips: 'Confirm that you want to delete the current meeting',
+        search_create_by: 'Please enter the person who made the reservation',
     },
     login: {
         account: 'Account',
