@@ -23,7 +23,13 @@
             <el-form-item label="管理后台Logo" prop="webLogo">
               <div class="form-item-content">
                 <div class="img-bg" v-if="originalWebLogoURL">
-                  <img class="form-item-logo" :src="onlineWebImage(originalWebLogoURL)" alt="图片未加载">
+                  <el-image
+                      class="form-item-logo"
+                      :src="onlineWebImage(originalWebLogoURL)"
+                      :preview-src-list="[onlineWebImage(originalWebLogoURL)]"
+                      fit="contain"
+                  />
+<!--                  <img class="form-item-logo" :src="onlineWebImage(originalWebLogoURL)" alt="图片未加载">-->
                 </div>
 
                 <el-upload
@@ -43,7 +49,13 @@
 
                   <template #file="{ file }">
                     <div class="image-wrapper">
-                      <img class="el-upload-list__item-thumbnail" :src="file.url" alt=""/>
+                      <el-image
+                          class="el-upload-list__item-thumbnail"
+                          :src="file.url"
+                          :preview-src-list="[file.url]"
+                          fit="contain"
+                      />
+<!--                      <img class="el-upload-list__item-thumbnail" :src="file.url" alt=""/>-->
                       <div class="remove-btn" @click="removeImage('web',file)">
                         <el-icon><SemiSelect /></el-icon>
                       </div>
@@ -57,7 +69,13 @@
             <el-form-item label="平板端首页Logo" prop="appLogo">
               <div class="form-item-content">
                 <div class="img-bg" v-if="originalAppLogoURL" >
-                  <img class="form-item-logo" :src="onlineWebImage(originalAppLogoURL)" alt="图片未加载">
+                  <el-image
+                      class="form-item-logo"
+                      :src="onlineWebImage(originalAppLogoURL)"
+                      :preview-src-list="[onlineWebImage(originalAppLogoURL)]"
+                      fit="contain"
+                  />
+<!--                  <img class="form-item-logo" :src="onlineWebImage(originalAppLogoURL)" alt="图片未加载">-->
                 </div>
 
                 <el-upload
@@ -77,7 +95,13 @@
 
                   <template #file="{ file }">
                     <div class="image-wrapper">
-                      <img class="el-upload-list__item-thumbnail" :src="file.url" alt=""/>
+                      <el-image
+                          class="el-upload-list__item-thumbnail"
+                          :src="file.url"
+                          :preview-src-list="[file.url]"
+                          fit="contain"
+                      />
+<!--                      <img class="el-upload-list__item-thumbnail" :src="file.url" alt=""/>-->
                       <div class="remove-btn" @click="removeImage('app',file)">
                         <el-icon><SemiSelect /></el-icon>
                       </div>

@@ -25,6 +25,7 @@
 
         <el-form-item prop="password" label="密码(password)">
           <el-input type="password" v-model="form.password" class="form-item-input" placeholder="请输入包含数字、字母、特殊符号最低8位密码" />
+          <TestButton :status="adStatus" @test="verify"/>
         </el-form-item>
 
         <el-form-item prop="autoSync" label="开启定时同步">
@@ -54,13 +55,14 @@ import { PageMixin } from "@/pages/PageMixin.js";
 import { STORAGE } from "@/const.js";
 import { ElMessage } from "element-plus";
 import Layout from "@/components/Layout.vue";
+import TestButton from "@/components/TestButton.vue";
 
 export default {
-  components: {Layout},
+  components: {TestButton, Layout},
   mixins: [PageMixin],
   data() {
     return {
-
+      adStatus: 'untested',
       form:{
         hosts:'',
         port:'',
@@ -239,6 +241,41 @@ export default {
     })
   },
   methods: {
+    verify(){
+
+      this.$refs.formRef.validate(valid=>{
+        if(!valid){
+          ElMessage.error({
+            message: '表单格式错误',
+          })
+        }else{
+          this.adStatus = 'testing'
+          Api.testAD({
+            server: this.form.hosts,
+            port: this.form.port,
+            base_dn: this.form.base_dn,
+            username: this.form.username,
+            password: this.form.password,
+          }).then(({code}) => {
+            if(code!==0){
+              throw new Error('测试失败')
+            }
+
+            this.adStatus = 'tested'
+            ElMessage.success({
+              message: '测试成功',
+            })
+
+          }).catch(e=>{
+            this.adStatus = 'untested'
+            ElMessage.error({
+              message: '测试失败',
+            })
+          })
+        }
+      })
+
+    },
     back() {
       this.$router.go(-1)
     },
@@ -259,6 +296,14 @@ export default {
     },
     submit(){
       console.log(this.form)
+
+      if(this.adStatus!=='tested'){
+        ElMessage.error({
+          message: 'AD连通性未测试，请先测试',
+        })
+        return
+      }
+
       this.$refs.formRef.validate((valid) => {
         if (valid) {
           Api.setVariables(
