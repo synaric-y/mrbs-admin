@@ -1,7 +1,7 @@
 <template>
   <Layout title="历史会议">
     <template #filter>
-      <el-input v-model="keyword" style="width: 140px" :placeholder="$t('meet.search_create_by')" />
+      <el-input v-model="keyword" style="width: 140px;height: 32px;" :placeholder="$t('meet.search_create_by')" />
       <el-select class="account-status-select" v-model="statusVal" :placeholder="$t('base.plzSelect')" size="default"
         style="width: 140px;min-height: 30px;">
         <el-option style="height: 30px;" v-for="item in statusOptions" :key="item.value" :label="item.label"
