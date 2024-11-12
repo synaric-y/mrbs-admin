@@ -25,7 +25,7 @@ defineProps({
       <div class="sub-page-content">
         <div class="title">{{title}}</div>
 
-        <div class="section" :style="`padding-left:${sectionLeftPadding}px;`+(sectionCenter?'justify-content:center':'')">
+        <div class="section" :style="`padding-left:${sectionLeftPadding}px;`+(sectionCenter?'align-items:center':'')">
           <slot name="section">
 
           </slot>
@@ -59,7 +59,7 @@ defineProps({
 /* 容器 */
 .sub-page-content {
   width: 100%;
-  height: auto;
+  height: 100%;
   padding: 20px;
   box-sizing: border-box;
   margin: 0;
