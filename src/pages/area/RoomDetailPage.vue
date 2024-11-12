@@ -1,9 +1,54 @@
+<template>
+  <Layout :title="mode === 'add' ? $t('room.addRoom') : $t('room.editRoom')" :section-left-padding="40">
+    <template #section>
+      <el-form :model="form" :rules="rules" label-width="auto" ref="roomForm" style="max-width: 530px">
+        <el-form-item prop="room_name" :label="$t('room.formRoom.name')">
+          <el-input v-model="form.room_name" show-word-limit maxlength="32" />
+        </el-form-item>
+        <el-form-item prop="room_disabled" :label="$t('room.formRoom.status')">
+          <el-switch :active-value="0" :inactive-value="1" v-model="form.room_disabled" />
+        </el-form-item>
+        <el-form-item prop="area" :label="$t('room.formRoom.area')" label-position="right">
+          <el-select v-model="form.area" :empty-values="[null, undefined]" @change="onAreaChange">
+            <el-option v-for="item in areaList" :key="item.id" :label="item.area_name" :value="item.id" />
+          </el-select>
+        </el-form-item>
+        <el-form-item prop="capacity" :label="$t('room.formRoom.capacity')">
+          <el-input v-model="form.capacity" />
+        </el-form-item>
+        <el-form-item prop="description" :label="$t('room.formRoom.description')">
+          <el-input v-model="form.description" show-word-limit maxlength="255" />
+        </el-form-item>
+        <el-collapse v-model="collapse" style="background-color: white;">
+          <el-collapse-item :title="$t('base.exchange')" name="1">
+            <el-form-item prop="use_exchange" :label="$t('room.formRoom.useExchange')">
+              <el-switch active-value="1" inactive-value="0" v-model="area.use_exchange" disabled />
+            </el-form-item>
+            <el-form-item prop="exchange_username" :label="$t('room.formRoom.exchangeUsername')">
+              <el-input v-model="form.exchange_username" show-word-limit maxlength="255" />
+            </el-form-item>
+            <el-form-item prop="exchange_password" :label="$t('room.formRoom.exchangePassword')">
+              <el-input v-model="form.exchange_password" show-word-limit maxlength="64" />
+            </el-form-item>
+          </el-collapse-item>
+        </el-collapse>
+        <el-form-item style="margin-top: 60px">
+          <el-button type="primary" size="default" @click="submit">{{ $t("base.confirm") }}</el-button>
+          <el-button type="info" size="default" @click="back">{{ $t("base.cancel") }}</el-button>
+        </el-form-item>
+      </el-form>
+    </template>
+  </Layout>
+</template>
+
 <script>
-import {PageMixin} from "@/pages/PageMixin.js";
-import {Api} from "@/network/api.js";
-import {ElMessage} from "element-plus";
+import { PageMixin } from "@/pages/PageMixin.js";
+import { Api } from "@/network/api.js";
+import { ElMessage } from "element-plus";
+import Layout from "@/components/Layout.vue";
 
 export default {
+  components: {Layout},
   mixins: [PageMixin],
   data() {
     return {
@@ -27,13 +72,13 @@ export default {
       },
       rules: {
         area: [
-          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'},
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' },
         ],
         room_name: [
-          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
         ],
         capacity: [
-          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'},
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' },
           {
             validator: (rule, value, callback, source, options) => {
               const errors = [];
@@ -62,7 +107,7 @@ export default {
           req["new_area"] = req["area"]
         }
         req["area"] = Number(req["area"])
-        Api.editRoom(req).then(({data, code, msg}) => {
+        Api.editRoom(req).then(({ data, code, msg }) => {
           if (code == 0) {
             ElMessage({
               message: this.$t('base.editSuccess'),
@@ -80,8 +125,8 @@ export default {
     async getData() {
       let areaListRep = await Api.getAreaList({})
       this.areaList = areaListRep.data
-      let {id} = this.$route.params
-      let roomRep = await Api.getRoom({id: Number(id)})
+      let { id } = this.$route.params
+      let roomRep = await Api.getRoom({ id: Number(id) })
       let data = roomRep.data
       if (!data) {
         return
@@ -101,7 +146,7 @@ export default {
       this.form["exchange_password"] = data["exchange_password"]
       this.form["wxwork_mr_id"] = data["wxwork_mr_id"]
 
-      let areaRep =  await Api.getArea({id: this.form.area})
+      let areaRep = await Api.getArea({ id: this.form.area })
       this.area = areaRep.data[0]
     },
     onAreaChange(e) {
@@ -114,81 +159,10 @@ export default {
 }
 </script>
 
-<template>
-  <el-container class="container-sub-page">
-    <el-main class="container-sub-page-main">
-      <div class="sub-title-wrapper">
-        <div class="sub-title">{{ mode === "add" ? $t("room.addRoom") : $t("room.editRoom") }}</div>
-      </div>
-
-      <el-form :model="form" :rules="rules" label-width="auto" ref="roomForm" style="max-width: 530px">
-
-        <el-form-item prop="room_name" :label="$t('room.formRoom.name')">
-          <el-input v-model="form.room_name" show-word-limit maxlength="32" />
-        </el-form-item>
-
-        <el-form-item prop="room_disabled" :label="$t('room.formRoom.status')">
-          <el-switch :active-value="0" :inactive-value="1" v-model="form.room_disabled"/>
-        </el-form-item>
-
-        <el-form-item prop="area" :label="$t('room.formRoom.area')" label-position="right">
-          <el-select
-              v-model="form.area"
-              :empty-values="[null, undefined]"
-              @change="onAreaChange"
-          >
-            <el-option
-                v-for="item in areaList"
-                :key="item.id"
-                :label="item.area_name"
-                :value="item.id"
-            />
-          </el-select>
-        </el-form-item>
-
-        <el-form-item prop="capacity" :label="$t('room.formRoom.capacity')">
-          <el-input v-model="form.capacity"/>
-        </el-form-item>
-
-        <el-form-item prop="description" :label="$t('room.formRoom.description')">
-          <el-input v-model="form.description" show-word-limit maxlength="255" />
-        </el-form-item>
-
-        <el-collapse v-model="collapse">
-          <el-collapse-item :title="$t('base.exchange')" name="1">
-            <el-form-item prop="use_exchange" :label="$t('room.formRoom.useExchange')">
-              <el-switch active-value="1" inactive-value="0" v-model="area.use_exchange" disabled />
-            </el-form-item>
-
-            <el-form-item prop="exchange_username" :label="$t('room.formRoom.exchangeUsername')">
-              <el-input v-model="form.exchange_username" show-word-limit maxlength="255" />
-            </el-form-item>
-
-            <el-form-item prop="exchange_password" :label="$t('room.formRoom.exchangePassword')">
-              <el-input v-model="form.exchange_password" show-word-limit maxlength="64" />
-            </el-form-item>
-          </el-collapse-item>
-
-<!--          <el-collapse-item :title="$t('base.wxwork')" name="2">-->
-<!--            <el-form-item prop="use_wxwork" :label="$t('room.formRoom.useWxwork')">-->
-<!--              <el-switch active-value="1" inactive-value="0" v-model="area.use_wxwork" disabled />-->
-<!--            </el-form-item>-->
-
-<!--            <el-form-item prop="wxwork_mr_id" :label="$t('room.formRoom.wxworkMRiD')">-->
-<!--              <el-input v-model="form.wxwork_mr_id" show-word-limit maxlength="20" />-->
-<!--            </el-form-item>-->
-<!--          </el-collapse-item>-->
-        </el-collapse>
-
-        <el-form-item style="margin-top: 60px">
-          <el-button type="primary" size="default" @click="submit">{{ $t("base.confirm") }}</el-button>
-          <el-button type="info" size="default" @click="back">{{ $t("base.cancel") }}</el-button>
-        </el-form-item>
-      </el-form>
-    </el-main>
-  </el-container>
-</template>
-
 <style scoped>
+.el-collapse {
+  --el-collapse-header-bg-color: white;
+  --el-collapse-content-bg-color: white;
+}
 
 </style>
