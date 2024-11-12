@@ -439,8 +439,8 @@ export default {
               it["email"] = ''
             }
             it['create_time'] = it['timestamp']
-            it['levelName'] = (it['level'] == '1' ? this.$t('user.role.level1') : this.$t('user.role.level2'))
-            it["permissions"] = (it['level'] == '1' ? this.$t('user.role.level1') : this.$t('user.role.level2'))
+            it['levelName'] = (it['level'] == '1' || it['level'] == '0' ? this.$t('user.role.level1') : this.$t('user.role.level2'))
+            it["permissions"] = (it['level'] == '1' || it['level'] == '0' ? this.$t('user.role.level1') : this.$t('user.role.level2'))
             it['disabled'] = !parseInt(it['disabled'])
             it['status'] = it['disabled'] == 0 ? false : true
           })
