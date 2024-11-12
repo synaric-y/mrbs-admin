@@ -8,7 +8,7 @@
         <div class="manual-pdf">
           <!-- <div class="preview-pdf-placeholder"></div> -->
           <iframe  class="preview-pdf-name"
-          src='https://meeting-manage-test.businessconnectchina.com:12443/mrbs_help_cn.pdf'
+          :src='manualHost'
           width='100%' height='100%' frameborder='1'>
           操作手册</iframe>
           <!-- <div class="preview-pdf-name">操作手册</div> -->
@@ -36,6 +36,7 @@ import { PageMixin } from "@/pages/PageMixin.js";
 import { Api } from "@/network/api.js";
 import router from "@/router/index.js";
 import { ElMessage } from "element-plus/es";
+import { HOST } from "@/config";
 
 export default {
   mixins: [PageMixin],
@@ -44,6 +45,7 @@ export default {
       tableData: [],
       showAddRoomDialog: false,
       showDeleteRoomDialog: false,
+      manualHost: `${HOST}/mrbs_help_cn.pdf`,
       form: {
         area: '',
         name: '',
