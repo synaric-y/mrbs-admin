@@ -468,6 +468,7 @@ export default {
       this.meetForm.room_name = this.add_params.room_name
       this.meetForm.area_id = this.add_params.area_id
       this.meetForm.area_name = this.add_params.area_name
+      const now_date = moment.tz(Date.now(), this.currentTimeZone).format('YYYY-MM-DD')
       if (this.add_params.resolution == 1800) {
         const invaild_time = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('HH:mm')
         // 处理15、45分钟
@@ -488,7 +489,9 @@ export default {
           this.meetForm.end_seconds = this.add_params.timeStamp + 1800
         }
         this.minStep = '00:30'
-        this.minStartTime = Common.formatLastMinute(30)
+        if (now_date === this.meetForm.start_date) {
+          this.minStartTime = Common.formatLastMinute(30)
+        }
       } else {
         this.meetForm.start_date = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
         this.meetForm.start_hour = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('HH:mm')
@@ -497,7 +500,9 @@ export default {
         this.meetForm.start_seconds = this.add_params.timeStamp
         this.meetForm.end_seconds = this.add_params.timeStamp + 900
         this.minStep = '00:15'
-        this.minStartTime = Common.formatLastMinute(15)
+        if (now_date === this.meetForm.start_date) {
+          this.minStartTime = Common.formatLastMinute(15)
+        }
       }
       this.roomOptions = this.getSelectedArea(this.add_params.area_id)
       return
