@@ -349,7 +349,7 @@ export default {
         }
         this.meetForm.original_room_id = this.meetForm.room_id
         this.meetForm.rooms = []
-        if (this.entry_id) {
+        if (this.entry_id && this.mode != 0) {
           this.meetForm.id = Number(this.entry_id)
         }
         if (this.userInfo && this.userInfo.display_name) {
