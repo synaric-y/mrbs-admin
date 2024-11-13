@@ -755,17 +755,6 @@ export default defineComponent({
   margin-bottom: 20px;
 }
 
-::-webkit-scrollbar {
-  display: none;
-}
-
-* {
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
 .menu-content-wrapper {
   margin-top: 10px;
   display: flex;
@@ -848,7 +837,6 @@ export default defineComponent({
 .date-picker {
   margin-left: 50px;
 }
-
 
 .meet-scrollbar-wrapper {
   display: flex;
@@ -960,13 +948,6 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   width: 90px;
-}
-
-.time-slots {
-  margin-top: 80px;
-  display: flex;
-  flex-direction: column;
-  z-index: 200;
 }
 
 .time-slot {
