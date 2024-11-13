@@ -405,9 +405,9 @@ export default {
                       message: '设置成功',
                     })
 
-                    // setTimeout(()=>{
-                    //   location.reload() // 刷新页面
-                    // },1000)
+                    setTimeout(()=>{
+                      location.reload() // 刷新页面
+                    },1000)
                   })
                   .catch((error) => {
                     ElMessage.error({
