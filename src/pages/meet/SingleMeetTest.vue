@@ -31,16 +31,16 @@
             </div>
           </div>
         </div>
+
         <div class="table-container" v-if="!showLoading">
-          <div class="calendar-scrollbar-wrapper"
-            style="display: flex;flex-direction: row;padding-left:100px;height: auto;background-color: white;">
+          <div class="calendar-scrollbar-wrapper">
             <el-scrollbar ref="calendarScroll" style="width: 100%;height: auto;" @scroll="syncScroll('calendarScroll')">
-              <div style="background-color: white;display: flex;flex-direction: row;height: 70px;width: auto;">
-                <div v-for="(day, indexday) in days" :key="indexday"
-                  style="display: flex;flex-direction: column;text-align: center;background-color: #6a1b9a;padding: 10px 0;border-left: 1px solid black;">
+              <div class="day-header-wrapper">
+                <div v-for="(day, indexday) in days" class="day-header" :key="indexday"
+                  :style="{backgroundColor:day.color}">
                   {{ day.date }}
-                  <div style="display: flex;flex-direction: row;">
-                    <div :style="{ backgroundColor: white, textAlign: center, lineHeight: 40 + 'px', width: itemWidth + 20 + 'px', border: '1px solid orange'}"
+                  <div class="room-header-wrapper">
+                    <div class="room-header" :style="{width: itemWidth + 20 + 'px'}"
                       v-for="(room, roomIndex) in rooms" :key="roomIndex">
                       {{ room.room_name }}
                     </div>
@@ -49,7 +49,7 @@
               </div>
             </el-scrollbar>
           </div>
-          <div class="meet-scrollbar-wrapper" style="display: flex;flex-direction: row;background-color: white;">
+          <div class="meet-scrollbar-wrapper">
             <el-scrollbar ref="timeScroll" id="time-scrollbar" class="slots-time-scrollbar"
               @scroll="syncScroll('timeScroll')" :style="{ height: 'calc(100vh - 150px - 65px)' }">
               <div class="time-slots-wrapper">
@@ -58,16 +58,17 @@
                 </div>
               </div>
             </el-scrollbar>
-            <el-scrollbar ref="contentScroll" id="content-scrollbar" class="content-meet-scrollbar"
-              @scroll="syncScroll('contentScroll')" always :style="{ height: 'calc(100vh - 150px - 25px)' }">
+            <el-scrollbar  view-style="height:100%;" ref="contentScroll" id="content-scrollbar" class="content-meet-scrollbar"
+              @scroll="syncScroll('contentScroll')" always :style="{ height: 'calc(100vh - 150px - 25px)',width: auto }">
               <div class="calendar-header">
                 <template v-for="(day, indexday) in days" :key="indexday" :style="{ backgroundColor: day.color }">
+                  <!-- width: itemWidth + 20 + 'px' -->
                   <div v-for="(room, roomIndex) in rooms" class="room-wrapper" :key="roomIndex"
-                    :style="{height: timeSlots.length * 40 + 30 + 'px', width: itemWidth + 20 + 'px', left: roomIndex * (itemWidth + 20) + 'px', top: 0 }">
+                    :style="{position: absolute,height: timeSlots.length * 40 + 30 + 'px', left: roomIndex * (itemWidth + 20) + 'px', top: 0 }">
                     <template v-for="(time, timeIndex) in localTimeSlots">
                       <div v-if="timeIndex != localTimeSlots.length - 1"
                         :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div' : 'empty-meet-div']"
-                        :style="{ height: minItemHeight + 'px', width: itemWidth + 'px', left: roomIndex * (itemWidth + 20) + 'px', top: ((timeIndex) * minItemHeight + 30) + 'px' }"
+                        :style="{position: absolute, height: minItemHeight + 'px', width: itemWidth + 'px', left: roomIndex * (itemWidth + 20) + 'px', top: ((timeIndex) * minItemHeight + 30) + 'px' }"
                         @click="toMeet(time, room, day)">
                         <text class="empty-meet-duration">{{ time }}</text>
                         <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text>
@@ -79,7 +80,7 @@
                           <div :key="indexeve"
                             :class="[event.status == 0 ? 'room-meet-event' : event.status == 1 ? 'room-meet-in-event' : 'room-meet-timeout-event']"
                             @click="editMeet(event)"
-                            :style="{ top: minItemHeight * getTimeSlotIndex(event.startTime) + 30 + 'px', left: (itemWidth + 20) * roomIndex + 'px', width: itemWidth + 20 + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * minItemHeight + 'px' }">
+                            :style="{ top: minItemHeight * getTimeSlotIndex(event.startTime) + 30 + 'px', left: (itemWidth + 20) * roomIndex + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * minItemHeight + 'px' }">
                             <div class="event-center">
                               <template
                                 v-if="(getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) == 1">
@@ -249,6 +250,7 @@ export default defineComponent({
         }
         if (refName === 'contentScroll') {
           timeScrollWrap.scrollTop = contentScrollWrap.scrollTop;
+          calendarScrollWrap.scrollLeft = contentScrollWrap.scrollLeft;
         } else if (refName === 'timeScroll') {
           contentScrollWrap.scrollTop = timeScrollWrap.scrollTop;
         } else if (refName === 'calendarScroll') {
@@ -281,20 +283,6 @@ export default defineComponent({
       }
     },
 
-    // syncScroll(refName) {
-    //   console.log('SingleMeet syncScroll')
-    //   const contentScrollWrap = this.$refs.contentScroll.$refs.wrapRef;
-    //   const timeScrollWrap = this.$refs.timeScroll.$refs.wrapRef;
-    //   if (refName === 'contentScroll') {
-    //     timeScrollWrap.scrollTop = contentScrollWrap.scrollTop;
-    //   } else if (refName === 'timeScroll') {
-    //     contentScrollWrap.scrollTop = timeScrollWrap.scrollTop;
-    //   }
-    // },
-
-    disabledDate(time) {
-      return time.getTime() < Date.now() - 86400000;
-    },
     startSync() {
       if (this.interval) {
         clearInterval(this.interval)
@@ -769,8 +757,6 @@ export default defineComponent({
   margin-bottom: 20px;
 }
 
-.el-table {}
-
 ::-webkit-scrollbar {
   display: none;
 }
@@ -865,14 +851,18 @@ export default defineComponent({
   margin-left: 50px;
 }
 
+
+.meet-scrollbar-wrapper {
+  display: flex;
+  flex-direction: row;
+  background-color: white;
+}
 .el-icon {
   margin-right: 8px;
 }
-
 .el-button {
   margin: 10px;
 }
-
 .el-select {
   min-width: 150px;
 }
@@ -896,15 +886,15 @@ export default defineComponent({
 .content-meet-scrollbar {
   height: 550px;
   width: auto;
-  margin-left: 13px;
+  margin-left: 8px;
   padding: 0px;
-  // position: relative;
   background-color: #54BCBD;
+  position: relative;
 }
 
 .slots-time-scrollbar {
   margin-top: 25px;
-  width: 120px;
+  width: 180px;
 }
 
 .scroll-table-big-view {
@@ -919,16 +909,53 @@ export default defineComponent({
 //   height: 0 !important;
 // }
 
+.calendar-scrollbar-wrapper {
+  display: flex;
+  flex-direction: row;
+  padding-left:100px;
+  height: auto;
+  background-color: white;
+}
+
 .calendar-header {
   display: flex;
   flex-direction: row;
   background-color: #f0f0f0;
   text-align: center;
-  width: auto;
+  // width: auto;
   border-right:1px solid #BD3124;
   font-weight: bold;
   color: white;
   position: relative;
+}
+
+.day-header-wrapper {
+  background-color: white;
+  display: flex;
+  flex-direction: row;
+  height: 70px;
+  width: auto;
+}
+
+.day-header {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  padding: 10px 0;
+  border-left: 1px solid black;
+}
+
+.room-header-wrapper {
+  display: flex;
+  flex-direction: row;
+}
+
+.room-header {
+  align-self: center;
+  line-height: 40px;
+  text-align: center;
+  background-color: white;
+  border: 1px solid orange;
 }
 
 .time-slots-wrapper {
@@ -955,8 +982,12 @@ export default defineComponent({
   width: 80px;
 }
 
+
+
 .room-wrapper {
   // position: absolute;
+  // background-color: white;
+  width: 349px;
   border-right:1px solid orange;
 }
 
