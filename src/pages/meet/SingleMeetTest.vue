@@ -34,7 +34,7 @@
 
         <div class="table-container" v-if="!showLoading">
           <div class="calendar-scrollbar-wrapper">
-            <el-scrollbar ref="calendarScroll" style="width: 100%;height: auto;" @scroll="syncScroll('calendarScroll')">
+            <el-scrollbar ref="calendarScroll" style="width: 100%;" @scroll="syncScroll('calendarScroll')">
               <div class="day-header-wrapper">
                 <div v-for="(day, indexday) in days" class="day-header" :key="indexday"
                   :style="{backgroundColor:day.color}">
@@ -59,16 +59,15 @@
               </div>
             </el-scrollbar>
             <el-scrollbar  view-style="height:100%;" ref="contentScroll" id="content-scrollbar" class="content-meet-scrollbar"
-              @scroll="syncScroll('contentScroll')" always :style="{ height: 'calc(100vh - 150px - 25px)',width: auto }">
+              @scroll="syncScroll('contentScroll')" always :style="{ height: 'calc(100vh - 150px - 25px)' }">
               <div class="calendar-header">
                 <template v-for="(day, indexday) in days" :key="indexday" :style="{ backgroundColor: day.color }">
-                  <!-- width: itemWidth + 20 + 'px' -->
                   <div v-for="(room, roomIndex) in rooms" class="room-wrapper" :key="roomIndex"
-                    :style="{position: absolute,height: timeSlots.length * 40 + 30 + 'px', left: roomIndex * (itemWidth + 20) + 'px', top: 0 }">
+                    :style="{height: timeSlots.length * 40 + 30 + 'px', left: roomIndex * (itemWidth + 20) + 'px', top: 0 }">
                     <template v-for="(time, timeIndex) in localTimeSlots">
                       <div v-if="timeIndex != localTimeSlots.length - 1"
                         :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div' : 'empty-meet-div']"
-                        :style="{position: absolute, height: minItemHeight + 'px', width: itemWidth + 'px', left: roomIndex * (itemWidth + 20) + 'px', top: ((timeIndex) * minItemHeight + 30) + 'px' }"
+                        :style="{height: minItemHeight + 'px', width: itemWidth + 'px', left: roomIndex * (itemWidth + 20) + 'px', top: ((timeIndex) * minItemHeight + 30) + 'px' }"
                         @click="toMeet(time, room, day)">
                         <text class="empty-meet-duration">{{ time }}</text>
                         <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text>
@@ -100,7 +99,6 @@
                       </template>
                     </template>
                   </div>
-                  <!-- <div class="room-devide-line"></div> -->
                 </template>
               </div>
             </el-scrollbar>
@@ -982,11 +980,7 @@ export default defineComponent({
   width: 80px;
 }
 
-
-
 .room-wrapper {
-  // position: absolute;
-  // background-color: white;
   width: 349px;
   border-right:1px solid orange;
 }
@@ -1067,26 +1061,6 @@ export default defineComponent({
   padding-bottom: 0px;
   border-right: 1px solid #9A9A9A;
   background-color: #FFFFFF;
-}
-
-.room-devide-line {
-  position: absolute;
-  top: 50px;
-  // background-color: #333333;
-  background-color: red;
-  height: 2px;
-  width: 100%;
-}
-
-.calendar-body {
-  display: flex;
-  flex-direction: row;
-}
-
-.room-column {
-  position: relative;
-  border-right: 1px solid #e0e0e0;
-  min-height: 600px;
 }
 
 .room-meet-event {
