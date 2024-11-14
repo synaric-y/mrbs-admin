@@ -34,6 +34,7 @@
 
         <div class="table-container" v-if="!showLoading">
           <div class="calendar-scrollbar-wrapper">
+            <div style="width: 140px;height: 80px;background-color: clear;"></div>
             <el-scrollbar ref="calendarScroll" id="calendar-scrollbar" :style="{width: scrollbarWidth}" @scroll="syncScroll('calendarScroll')">
               <div class="day-header-wrapper">
                 <div v-for="(day, indexday) in days" class="day-header" :key="indexday"
