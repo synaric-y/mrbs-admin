@@ -424,10 +424,12 @@ export default {
         this.meetForm.end_date = this.meetForm.start_date
         this.meetForm.rooms.push(this.meetForm.room_id)
         this.meetForm.rep_opt = this.toBinary(this.meetForm.rep_day)
-        if (this.userInfo && this.userInfo.display_name) {
-          this.meetForm.create_by = this.userInfo.display_name
-          this.meetForm.book_by = this.userInfo.display_name
-        }
+        delete this.meetForm['create_by']
+        delete this.meetForm['book_by']
+        // if (this.userInfo && this.userInfo.display_name) {
+        //   this.meetForm.create_by = this.userInfo.display_name
+        //   this.meetForm.book_by = this.userInfo.display_name
+        // }
         Api.editMeet(this.meetForm).then(({ data, code, msg }) => {
           if (code == 0) {
             this.$emit('close')

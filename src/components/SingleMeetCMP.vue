@@ -353,10 +353,12 @@ export default {
         if (this.entry_id && this.mode != 0) {
           this.meetForm.id = Number(this.entry_id)
         }
-        if (this.userInfo && this.userInfo.display_name) {
-          this.meetForm.create_by = this.userInfo.display_name
-          this.meetForm.book_by = this.userInfo.display_name
-        }
+        delete this.meetForm['create_by']
+        delete this.meetForm['book_by']
+        // if (this.userInfo && this.userInfo.display_name) {
+        //   this.meetForm.create_by = this.userInfo.display_name
+        //   this.meetForm.book_by = this.userInfo.display_name
+        // }
         this.meetForm.rooms.push(this.meetForm.room_id)
         Api.editMeet(this.meetForm).then(({ data, code, msg }) => {
           if (code == 0) {
