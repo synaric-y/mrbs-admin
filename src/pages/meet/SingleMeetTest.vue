@@ -40,7 +40,7 @@
                   :style="{backgroundColor:day.color}">
                   {{ day.date }}
                   <div class="room-header-wrapper">
-                    <div class="room-header" :style="{width: itemWidth + 20 + 'px'}"
+                    <div class="room-header" :style="{width: itemWidth + 22 + 'px'}"
                       v-for="(room, roomIndex) in rooms" :key="roomIndex">
                       {{ room.room_name }}
                     </div>
@@ -886,6 +886,7 @@ export default defineComponent({
   flex-direction: row;
   padding-left:100px;
   height: auto;
+  width: 100%;
   background-color: white;
 }
 
@@ -893,7 +894,7 @@ export default defineComponent({
   background-color: white;
   display: flex;
   flex-direction: row;
-  height: 70px;
+  height: 80px;
   width: auto;
 }
 
@@ -901,22 +902,41 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   text-align: center;
+  color: #FFFFFF;
+  font-size: 12px;
   padding: 10px 0;
+  font-weight: 600;
   border-left: 1px solid #9A9A9A;
+  border-bottom: 2px solid #9A9A9A;
+  // -webkit-line-clamp: 2;
 }
 
 .room-header-wrapper {
   display: flex;
+  align-items: center;
+  justify-content: center;
   flex-direction: row;
+  margin-top: 3px;
 }
 
 .room-header {
-  align-self: center;
-  line-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000000;
+  font-size: 12px;
+  text-align: center;
+  padding: 5px 0px;
+  padding-bottom: 0px;
+  font-weight: bold;
+  width: 100%;
+  line-height: 45px;
+  height: 45px;
   text-align: center;
   background-color: white;
-  border: 1px solid #9A9A9A;
-  // border: 1px solid orange;
+  border-left: 1px solid #9A9A9A;
+  border-bottom: 2px solid #9A9A9A;
+  position: relative;
 }
 
 .slots-time-scrollbar {
@@ -941,7 +961,6 @@ export default defineComponent({
   width: 80px;
 }
 
-
 .content-meet-scrollbar {
   height: 550px;
   width: 100%;
@@ -962,12 +981,17 @@ export default defineComponent({
   position: relative;
 }
 
+.room-wrapper:first-child {
+  border-left:1px solid #9A9A9A;
+}
+
 .room-wrapper {
   width: 229px;
   margin: 0px;
   padding: 0px;
   background-color: white;
-  border:1px solid #9A9A9A;
+  border-right:1px solid #9A9A9A;
+  // position: relative;
 }
 
 .empty-abled-meet-div {
@@ -981,7 +1005,7 @@ export default defineComponent({
   height: 40px;
   transition: all 0.3s ease;
   padding: 0px 10px;
-  z-index: 10;
+  z-index: 100;
 }
 
 .empty-meet-div {
@@ -995,7 +1019,7 @@ export default defineComponent({
   height: 40px;
   transition: background-color 0.3s ease, color 0.3s ease;
   padding: 0px 10px;
-  z-index: 10;
+  z-index: 100;
 }
 
 .empty-meet-duration {
@@ -1016,27 +1040,6 @@ export default defineComponent({
 .empty-abled-meet-div:hover {
   color: white;
   background-color: #6a1b9a;
-}
-
-.day-header {
-  padding: 5px 0px;
-  padding-bottom: 0px;
-  color: #FFFFFF;
-  font-size: 12px;
-  -webkit-line-clamp: 2;
-}
-
-.room-header {
-  display: flex;
-  color: #000000;
-  font-size: 12px;
-  text-align: center;
-  padding: 5px 0px;
-  padding-bottom: 0px;
-  font-weight: bold;
-  position: relative;
-  border-left: 1px solid #9A9A9A;
-  // background-color: #29591BB7;
 }
 
 .room-name {
@@ -1065,7 +1068,7 @@ export default defineComponent({
   font-size: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   border-left: 10px solid #54BCBD;
-  z-index: 11;
+  z-index: 101;
 }
 
 .room-meet-in-event {
@@ -1083,7 +1086,7 @@ export default defineComponent({
   font-size: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   border-left: 10px solid #BD3124;
-  z-index: 11;
+  z-index: 101;
 }
 
 .room-meet-timeout-event {
@@ -1101,7 +1104,7 @@ export default defineComponent({
   font-size: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   border-left: 10px solid #9A9A9A;
-  z-index: 11;
+  z-index: 101;
 }
 
 .event-title {
