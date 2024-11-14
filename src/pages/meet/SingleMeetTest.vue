@@ -12,7 +12,7 @@
               <span class="now-time-span">{{ nowTime }}</span>
             </div>
             <div class="all-area">
-              <el-select v-model="currenAreaName" placeholder="All Areas" @change="choseArea">
+              <el-select v-model="currenAreaName" placeholder="所有区域" @change="choseArea">
                 <el-option v-for="(area, index) in page_cache_areas" :label="area.area_name" :value="area.area_id"
                   :key="index">
                 </el-option>
@@ -34,13 +34,13 @@
 
         <div class="table-container" v-if="!showLoading">
           <div class="calendar-scrollbar-wrapper">
-            <el-scrollbar ref="calendarScroll" :style="{width: scrollbarWidth}" @scroll="syncScroll('calendarScroll')">
+            <el-scrollbar ref="calendarScroll" id="calendar-scrollbar" :style="{width: scrollbarWidth}" @scroll="syncScroll('calendarScroll')">
               <div class="day-header-wrapper">
                 <div v-for="(day, indexday) in days" class="day-header" :key="indexday"
                   :style="{backgroundColor:day.color}">
                   {{ day.date }}
                   <div class="room-header-wrapper">
-                    <div class="room-header" :style="{width: itemWidth + 22 + 'px'}"
+                    <div class="room-header" :style="{width: itemWidth + 21 + 'px'}"
                       v-for="(room, roomIndex) in rooms" :key="roomIndex">
                       {{ room.room_name }}
                     </div>
@@ -58,16 +58,16 @@
                 </div>
               </div>
             </el-scrollbar>
-            <el-scrollbar  :view-style="{height:'100%', width: scrollbarWidth}" ref="contentScroll" id="content-scrollbar" class="content-meet-scrollbar"
+            <el-scrollbar  :view-style="{ width: scrollbarContentWidth}" ref="contentScroll" id="content-scrollbar" class="content-meet-scrollbar"
               @scroll="syncScroll('contentScroll')" always :style="{ height: 'calc(100vh - 150px - 25px)' }">
               <div class="calendar-header">
                 <template v-for="(day, indexday) in days" :key="indexday" :style="{ backgroundColor: day.color }">
                   <div v-for="(room, roomIndex) in rooms" class="room-wrapper" :key="roomIndex"
-                    :style="{height: timeSlots.length * 40 + 30 + 'px',width:itemWidth + 20 + 'px',left: roomIndex * (itemWidth + 23) + 'px', top: 0 }">
+                    :style="{height: timeSlots.length * 40 + 30 + 'px',width:itemWidth + 22 + 'px',left: roomIndex * (itemWidth + 22.5) + 'px', top: 0 }">
                     <template v-for="(time, timeIndex) in localTimeSlots">
                       <div v-if="timeIndex != localTimeSlots.length - 1"
                         :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div' : 'empty-meet-div']"
-                        :style="{height: minItemHeight + 'px', width: itemWidth + 'px', left: roomIndex * (itemWidth + 22) + 'px', top: ((timeIndex) * minItemHeight + 30) + 'px' }"
+                        :style="{height: minItemHeight + 'px', width: itemWidth + 'px', left: roomIndex * (itemWidth + 21) + 'px', top: ((timeIndex) * minItemHeight + 30) + 'px' }"
                         @click="toMeet(time, room, day)">
                         <text class="empty-meet-duration">{{ time }}</text>
                         <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text>
@@ -79,7 +79,7 @@
                           <div :key="indexeve"
                             :class="[event.status == 0 ? 'room-meet-event' : event.status == 1 ? 'room-meet-in-event' : 'room-meet-timeout-event']"
                             @click="editMeet(event)"
-                            :style="{ top: minItemHeight * getTimeSlotIndex(event.startTime) + 30 + 'px', left: (itemWidth + 22) * roomIndex + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * minItemHeight + 'px' }">
+                            :style="{ top: minItemHeight * getTimeSlotIndex(event.startTime) + 30 + 'px', left: (itemWidth + 21) * roomIndex + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * minItemHeight + 'px' }">
                             <div class="event-center">
                               <template
                                 v-if="(getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) == 1">
@@ -103,14 +103,13 @@
               </div>
             </el-scrollbar>
           </div>
+          
         </div>
-        <!-- <div class="slider-container-horizontal">
+
+        <div class="slider-container-horizontal">
           <el-slider v-model="scrollLeft" @input="scrollHorizontal" />
         </div>
-        <div class="slider-container-vertical">
-          <el-slider :show-tooltip="false" v-model="scrollTop" vertical height="calc( 100vh - 75px - 40px )"
-            @input="scrollVertical" />
-        </div> -->
+        
         <SingleMeetCMP v-if="dialogMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas"
           :entry_id="entry_id" @close="closeDialogMeetForm" />
         <CycleMeetCMP v-if="dialogCycleMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas"
@@ -212,13 +211,16 @@ export default defineComponent({
       },
       repeat_id: 0,
       isSyncing: false,
+      isScrolling: false,
       scrollLeft: 0,
-      scrollTop: 100,
     };
   },
   computed: {
     scrollbarWidth() {
-      return this.rooms.length * this.days.length * (this.itemWidth + 22) + 'px';
+      return this.rooms.length * this.days.length * (this.itemWidth + 21) + 'px';
+    },
+    scrollbarContentWidth() {
+      return this.rooms.length * this.days.length * (this.itemWidth + 21) + 'px';
     }
   },
 
@@ -241,49 +243,42 @@ export default defineComponent({
   methods: {
 
     syncScroll(refName) {
-      if (this.isSyncing) return;
-      this.isSyncing = true;
+      if (this.isSyncing) return
+      this.isSyncing = true
       requestAnimationFrame(() => {
-        const contentScrollWrap = this.$refs.contentScroll?.$refs.wrapRef;
-        const timeScrollWrap = this.$refs.timeScroll?.$refs.wrapRef;
+        const contentScrollWrap = this.$refs.contentScroll?.$refs.wrapRef
+        const timeScrollWrap = this.$refs.timeScroll?.$refs.wrapRef
         const calendarScrollWrap = this.$refs.calendarScroll?.$refs.wrapRef
         if (!contentScrollWrap || !timeScrollWrap || !calendarScrollWrap) {
-          this.isSyncing = false;
+          this.isSyncing = false
           return;
         }
         if (refName === 'contentScroll') {
-          timeScrollWrap.scrollTop = contentScrollWrap.scrollTop;
-          calendarScrollWrap.scrollLeft = contentScrollWrap.scrollLeft;
+          timeScrollWrap.scrollTop = contentScrollWrap.scrollTop
+          calendarScrollWrap.scrollLeft = contentScrollWrap.scrollLeft
         } else if (refName === 'timeScroll') {
-          contentScrollWrap.scrollTop = timeScrollWrap.scrollTop;
+          contentScrollWrap.scrollTop = timeScrollWrap.scrollTop
         } else if (refName === 'calendarScroll') {
-          contentScrollWrap.scrollLeft = calendarScrollWrap.scrollLeft;
+          contentScrollWrap.scrollLeft = calendarScrollWrap.scrollLeft
+          console.log('syncScroll calendarScrollWrap.scrollLeft',calendarScrollWrap.scrollLeft)
         }
-        this.isSyncing = false;
+        this.isSyncing = false
       });
     },
 
-    scrollHorizontal() {
-      const that = this
-      const contentScrollDom = document.getElementById('content-scrollbar')
-      const timeScroll = document.getElementById('time-scrollbar')
-      if (window.requestAnimationFrame) {
-        let fun = () => {
-          scrollDom.scrollLeft = that.scrollLeft / 100 * (table.scrollWidth - scrollDom.clientWidth)
-        };
-        window.requestAnimationFrame(fun);
-      }
-    },
-    scrollVertical() {
-      const that = this
-      const contentScrollDom = document.getElementById('content-scrollbar')
-      const timeScroll = document.getElementById('time-scrollbar')
-      if (window.requestAnimationFrame) {
-        let fun = () => {
-          scrollDom.scrollTop = (100 - that.scrollTop) / 100 * (table.scrollHeight - scrollDom.clientHeight)
-        };
-        window.requestAnimationFrame(fun);
-      }
+    scrollHorizontal(scrollValue) {
+      console.log('scrollHorizontal scrollValue:',scrollValue,this.$refs.contentScroll.$refs.wrapRef.scrollWidth,this.$refs.contentScroll.$refs.wrapRef.clientWidth)
+      if (this.isScrolling) return;
+      this.isScrolling = true;
+      const maxScrollLeft = this.$refs.contentScroll.$refs.wrapRef.scrollWidth - this.$refs.contentScroll.$refs.wrapRef.clientWidth;
+      const tempScrollValue = Math.max(0, Math.min(maxScrollLeft, maxScrollLeft));
+      // console.log('scrollHorizontal scrollLeft:',maxScrollLeft / 100 * scrollValue,tempScrollValue)
+      const syncHirizontalScroll = () => {
+        this.$refs.contentScroll.$refs.wrapRef.scrollLeft = maxScrollLeft / 100 * scrollValue
+        this.$refs.calendarScroll.$refs.wrapRef.scrollLeft = maxScrollLeft / 100 * scrollValue
+        this.isScrolling = false;
+      };
+      window.requestAnimationFrame(syncHirizontalScroll);
     },
 
     startSync() {
@@ -753,6 +748,14 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+// 不可以选择复制
+* {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 .container-sub-page-main {
   background-color: white;
   margin-left: 20px;
@@ -874,9 +877,6 @@ export default defineComponent({
   flex: 1;
 }
 
-// .el-scrollbar__wrap {
-//   overflow-x: hidden !important;
-// }
 // :deep(.el-scrollbar__bar.is-horizontal) {
 //   height: 0 !important;
 // }
@@ -884,7 +884,8 @@ export default defineComponent({
 .calendar-scrollbar-wrapper {
   display: flex;
   flex-direction: row;
-  padding-left:100px;
+  // padding-left:100px;
+  // margin-left: 100px;
   height: auto;
   width: 100%;
   background-color: white;
@@ -1131,14 +1132,7 @@ export default defineComponent({
   position: fixed;
   z-index: 999;
   width: calc(100vw - 189px - 40px);
-  bottom: 0;
-  right: 20px;
-}
-
-.slider-container-vertical {
-  position: fixed;
-  z-index: 999;
   bottom: 20px;
-  right: 0;
+  right: 20px;
 }
 </style>
