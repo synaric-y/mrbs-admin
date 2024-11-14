@@ -871,16 +871,16 @@ export default defineComponent({
 
 .content-meet-scrollbar {
   height: 550px;
-  width: auto;
+  width: 100%;
   margin-left: 8px;
   padding: 0px;
-  background-color: #54BCBD;
+  background-color: white;
   position: relative;
 }
 
 .slots-time-scrollbar {
   margin-top: 25px;
-  width: 180px;
+  width: 90px;
 }
 
 .scroll-table-big-view {
@@ -908,10 +908,10 @@ export default defineComponent({
   flex-direction: row;
   background-color: #f0f0f0;
   text-align: center;
-  // width: auto;
   border-right:1px solid #BD3124;
   font-weight: bold;
   color: white;
+  // overflow: hidden;
   position: relative;
 }
 
@@ -947,7 +947,7 @@ export default defineComponent({
 .time-slots-wrapper {
   display: flex;
   flex-direction: column;
-  width: 90px;
+  width: 80px;
 }
 
 .time-slot {
@@ -962,8 +962,11 @@ export default defineComponent({
 }
 
 .room-wrapper {
-  width: 349px;
-  border-right:1px solid orange;
+  width: 229px;
+  margin: 0px;
+  padding: 0px;
+  background-color: white;
+  border:1px solid orange;
 }
 
 .empty-abled-meet-div {
