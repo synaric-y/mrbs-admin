@@ -218,7 +218,7 @@ export default defineComponent({
   },
   computed: {
     scrollbarWidth() {
-      return this.rooms.length * (this.itemWidth + 22) + 'px';
+      return this.rooms.length * this.days.length * (this.itemWidth + 22) + 'px';
     }
   },
 
@@ -981,6 +981,7 @@ export default defineComponent({
   height: 40px;
   transition: all 0.3s ease;
   padding: 0px 10px;
+  z-index: 10;
 }
 
 .empty-meet-div {
@@ -994,6 +995,7 @@ export default defineComponent({
   height: 40px;
   transition: background-color 0.3s ease, color 0.3s ease;
   padding: 0px 10px;
+  z-index: 10;
 }
 
 .empty-meet-duration {
@@ -1063,6 +1065,7 @@ export default defineComponent({
   font-size: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   border-left: 10px solid #54BCBD;
+  z-index: 11;
 }
 
 .room-meet-in-event {
@@ -1080,6 +1083,7 @@ export default defineComponent({
   font-size: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   border-left: 10px solid #BD3124;
+  z-index: 11;
 }
 
 .room-meet-timeout-event {
@@ -1097,6 +1101,7 @@ export default defineComponent({
   font-size: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   border-left: 10px solid #9A9A9A;
+  z-index: 11;
 }
 
 .event-title {
