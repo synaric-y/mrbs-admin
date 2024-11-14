@@ -63,7 +63,7 @@
               <div class="calendar-header">
                 <template v-for="(day, indexday) in days" :key="indexday" :style="{ backgroundColor: day.color }">
                   <div v-for="(room, roomIndex) in rooms" class="room-wrapper" :key="roomIndex"
-                    :style="{height: timeSlots.length * 40 + 30 + 'px',width:itemWidth + 20 + 'px',left: roomIndex * (itemWidth + 22) + 'px', top: 0 }">
+                    :style="{height: timeSlots.length * 40 + 30 + 'px',width:itemWidth + 20 + 'px',left: roomIndex * (itemWidth + 23) + 'px', top: 0 }">
                     <template v-for="(time, timeIndex) in localTimeSlots">
                       <div v-if="timeIndex != localTimeSlots.length - 1"
                         :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div' : 'empty-meet-div']"
@@ -902,7 +902,7 @@ export default defineComponent({
   flex-direction: column;
   text-align: center;
   padding: 10px 0;
-  border-left: 1px solid black;
+  border-left: 1px solid #9A9A9A;
 }
 
 .room-header-wrapper {
@@ -915,7 +915,8 @@ export default defineComponent({
   line-height: 40px;
   text-align: center;
   background-color: white;
-  border: 1px solid orange;
+  border: 1px solid #9A9A9A;
+  // border: 1px solid orange;
 }
 
 .slots-time-scrollbar {
@@ -955,10 +956,9 @@ export default defineComponent({
   flex-direction: row;
   background-color: #f0f0f0;
   text-align: center;
-  border-right:1px solid #BD3124;
+  border-right:1px solid #9A9A9A;
   font-weight: bold;
   color: white;
-  // overflow: hidden;
   position: relative;
 }
 
@@ -967,7 +967,7 @@ export default defineComponent({
   margin: 0px;
   padding: 0px;
   background-color: white;
-  border:1px solid orange;
+  border:1px solid #9A9A9A;
 }
 
 .empty-abled-meet-div {
