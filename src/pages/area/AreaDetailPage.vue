@@ -36,13 +36,13 @@
         <!-- </el-form-item> -->
 
         <!-- show-checkbox -->
-        <el-form-item label="同步用户组" prop="group_names" label-width="140px" style="margin-left: 50px;">
+        <el-form-item label="仅允许该用户组成员预定" prop="group_names">
           <el-tree-select ref="multipleTree" multiple lazy v-model="form.group_names" :load="loadGroup"
             :props="groupProps" @change="handleTreeSelect" node-key="id" highlight-current
             :default-checked-keys="form.group_ids" />
         </el-form-item>
         <el-form-item :label="$t('area.formArea.timeDuration')" prop="area_res_mins">
-          <el-select style="min-width: 400px" v-model="form.area_res_mins" :placeholder="$t('base.plzSelect')">
+          <el-select v-model="form.area_res_mins" :placeholder="$t('base.plzSelect')">
             <el-option v-for="(item, index) in resolutionOptions" :key="index" :label="item.label"
               :value="item.value" />
           </el-select>
