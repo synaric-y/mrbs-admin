@@ -58,12 +58,12 @@
                 </div>
               </div>
             </el-scrollbar>
-            <el-scrollbar  view-style="height:100%;" ref="contentScroll" id="content-scrollbar" class="content-meet-scrollbar"
+            <el-scrollbar  :view-style="{height:'100%', width: scrollbarWidth}" ref="contentScroll" id="content-scrollbar" class="content-meet-scrollbar"
               @scroll="syncScroll('contentScroll')" always :style="{ height: 'calc(100vh - 150px - 25px)' }">
               <div class="calendar-header">
                 <template v-for="(day, indexday) in days" :key="indexday" :style="{ backgroundColor: day.color }">
                   <div v-for="(room, roomIndex) in rooms" class="room-wrapper" :key="roomIndex"
-                    :style="{height: timeSlots.length * 40 + 30 + 'px', left: roomIndex * (itemWidth + 20) + 'px', top: 0 }">
+                    :style="{height: timeSlots.length * 40 + 30 + 'px',width:itemWidth + 28 + 'px',left: roomIndex * (itemWidth) + 'px', top: 0 }">
                     <template v-for="(time, timeIndex) in localTimeSlots">
                       <div v-if="timeIndex != localTimeSlots.length - 1"
                         :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div' : 'empty-meet-div']"
@@ -215,6 +215,11 @@ export default defineComponent({
       scrollLeft: 0,
       scrollTop: 100,
     };
+  },
+  computed: {
+    scrollbarWidth() {
+      return this.rooms.length * (this.itemWidth + 20) + 'px';
+    }
   },
 
   mounted() {
