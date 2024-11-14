@@ -869,25 +869,6 @@ export default defineComponent({
   flex: 1;
 }
 
-.content-meet-scrollbar {
-  height: 550px;
-  width: 100%;
-  margin-left: 8px;
-  padding: 0px;
-  background-color: white;
-  position: relative;
-}
-
-.slots-time-scrollbar {
-  margin-top: 25px;
-  width: 90px;
-}
-
-.scroll-table-big-view {
-  height: 660px;
-  width: 100%;
-}
-
 // .el-scrollbar__wrap {
 //   overflow-x: hidden !important;
 // }
@@ -901,18 +882,6 @@ export default defineComponent({
   padding-left:100px;
   height: auto;
   background-color: white;
-}
-
-.calendar-header {
-  display: flex;
-  flex-direction: row;
-  background-color: #f0f0f0;
-  text-align: center;
-  border-right:1px solid #BD3124;
-  font-weight: bold;
-  color: white;
-  // overflow: hidden;
-  position: relative;
 }
 
 .day-header-wrapper {
@@ -944,6 +913,11 @@ export default defineComponent({
   border: 1px solid orange;
 }
 
+.slots-time-scrollbar {
+  margin-top: 25px;
+  width: 90px;
+}
+
 .time-slots-wrapper {
   display: flex;
   flex-direction: column;
@@ -959,6 +933,28 @@ export default defineComponent({
   font-family: PingFangSC-regular;
   text-align: right;
   width: 80px;
+}
+
+
+.content-meet-scrollbar {
+  height: 550px;
+  width: 100%;
+  margin-left: 15px;
+  padding: 0px;
+  background-color: white;
+  position: relative;
+}
+
+.calendar-header {
+  display: flex;
+  flex-direction: row;
+  background-color: #f0f0f0;
+  text-align: center;
+  border-right:1px solid #BD3124;
+  font-weight: bold;
+  color: white;
+  // overflow: hidden;
+  position: relative;
 }
 
 .room-wrapper {
