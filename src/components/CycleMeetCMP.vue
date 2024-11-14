@@ -4,12 +4,12 @@
       <div class="title">{{ mode == 1 ? '编辑循环会议' : '新增循环会议' }}</div>
       <el-form ref="meetForm" :model="meetForm" :rules="rules">
         <el-form-item prop="area_name" label="区域" label-width="100px" required>
-          <el-select v-model="meetForm.area_name" placeholder="请选择区域" @change="OnAreaChange">
+          <el-select v-model="meetForm.area_name" placeholder="请选择区域"  :disabled="mode == 1"  @change="OnAreaChange">
             <el-option v-for="item in areas" :key="item.area_id" :label="item.area_name" :value="item.area_id" />
           </el-select>
         </el-form-item>
         <el-form-item prop="room_name" label="会议室" label-width="100px" required>
-          <el-select v-model="meetForm.room_name" placeholder="请选择会议室" @change="onRoomChange">
+          <el-select v-model="meetForm.room_name" :disabled="mode == 1" placeholder="请选择会议室" @change="onRoomChange">
             <el-option v-for="item in roomOptions" :key="item.room_name" :label="item.title" :value="item.room_id" />
           </el-select>
         </el-form-item>
@@ -393,6 +393,7 @@ export default {
         this.meetForm.room_id = data.room_id
         this.meetForm.room_name = data.room_name
         this.meetForm.area_id = data.area_id
+        this.roomOptions = this.getSelectedArea(data.area_id)
         this.meetForm.area_name = data.area_name
         this.meetForm.start_date = moment.tz(data.start_time * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
         this.meetForm.start_hour = moment.tz(data.start_time * 1000, 'Asia/Shanghai').format('HH:mm')

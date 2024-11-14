@@ -4,12 +4,12 @@
       <div class="title">{{ mode == 1 ? '编辑会议' : '新增会议' }}</div>
       <el-form ref="meetForm" :model="meetForm" :rules="rules">
         <el-form-item prop="area_name" label="区域" label-width="100px" required>
-          <el-select v-model="meetForm.area_name" placeholder="请选择区域" @change="OnAreaChange">
+          <el-select v-model="meetForm.area_name" placeholder="请选择区域" :disabled="mode == 1" @change="OnAreaChange">
             <el-option v-for="item in areas" :key="item.area_id" :label="item.area_name" :value="item.area_id" />
           </el-select>
         </el-form-item>
         <el-form-item prop="room_name" label="会议室" label-width="100px" required>
-          <el-select v-model="meetForm.room_name" placeholder="请选择会议室" @change="onRoomChange">
+          <el-select v-model="meetForm.room_name" placeholder="请选择会议室" :disabled="mode == 1" @change="onRoomChange">
             <el-option v-for="item in roomOptions" :key="item.room_id" :label="item.title" :value="item.room_id" />
           </el-select>
         </el-form-item>
