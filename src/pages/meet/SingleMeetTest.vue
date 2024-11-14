@@ -34,7 +34,7 @@
 
         <div class="table-container" v-if="!showLoading">
           <div class="calendar-scrollbar-wrapper">
-            <div style="width: 135px;height: 80px;background-color: clear;"></div>
+            <div class="placeholder-view"></div>
             <el-scrollbar ref="calendarScroll" id="calendar-scrollbar" :style="{width: scrollbarWidth}" @scroll="syncScroll('calendarScroll')">
               <div class="day-header-wrapper">
                 <div v-for="(day, indexday) in days" class="day-header" :key="indexday"
@@ -671,6 +671,7 @@ export default defineComponent({
       }
       const itemNumber = this.rooms.length * this.days.length
       this.itemWidth = 229
+      this.scrollLeft = 0
       // if (itemNumber <= 2) {
       //   this.itemWidth = 229
       // } else if (itemNumber <= 4) {
@@ -892,6 +893,12 @@ export default defineComponent({
   background-color: white;
 }
 
+.placeholder-view {
+  width: 136px !important;
+  height: 80px;
+  background-color: red;
+}
+
 .day-header-wrapper {
   background-color: white;
   display: flex;
@@ -993,6 +1000,7 @@ export default defineComponent({
   padding: 0px;
   background-color: white;
   border-right:1px solid #9A9A9A;
+  // z-index: 99;
   // position: relative;
 }
 
