@@ -64,11 +64,11 @@
               <div class="calendar-header">
                 <template v-for="(day, indexday) in days" :key="indexday" :style="{ backgroundColor: day.color }">
                   <div v-for="(room, roomIndex) in rooms" class="room-wrapper" :key="roomIndex"
-                    :style="{height: timeSlots.length * 40 + 30 + 'px',width:itemWidth + 22 + 'px',left: roomIndex * (itemWidth + 22.5) + 'px', top: 0 }">
+                    :style="{height: timeSlots.length * 40 + 30 + 'px',width:itemWidth + 21 + 'px',left: roomIndex * (itemWidth + 21.5) + 'px', top: 0 }">
                     <template v-for="(time, timeIndex) in localTimeSlots">
                       <div v-if="timeIndex != localTimeSlots.length - 1"
                         :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div' : 'empty-meet-div']"
-                        :style="{height: minItemHeight + 'px', width: itemWidth + 'px', left: roomIndex * (itemWidth + 21) + 'px', top: ((timeIndex) * minItemHeight + 30) + 'px' }"
+                        :style="{height: minItemHeight + 'px', width: itemWidth + 'px', left: (indexday * rooms.length + roomIndex) * (itemWidth + 21) + 'px', top: ((timeIndex) * minItemHeight + 30) + 'px' }"
                         @click="toMeet(time, room, day)">
                         <text class="empty-meet-duration">{{ time }}</text>
                         <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text>
@@ -1030,6 +1030,7 @@ export default defineComponent({
   transition: background-color 0.3s ease, color 0.3s ease;
   padding: 0px 10px;
   z-index: 100;
+  pointer-events: auto;
 }
 
 .empty-meet-duration {
@@ -1042,14 +1043,16 @@ export default defineComponent({
   font-size: 12px;
 }
 
-.empty-meet-div:hover {
+#content-scrollbar .empty-meet-div:hover {
   color: white;
   background-color: #CECECE;
+  z-index: 101;
 }
 
-.empty-abled-meet-div:hover {
+#content-scrollbar .empty-abled-meet-div:hover {
   color: white;
   background-color: #6a1b9a;
+  z-index: 101;
 }
 
 .room-name {
