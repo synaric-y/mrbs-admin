@@ -185,7 +185,21 @@ export default {
           }
         ],
         end_hour: [
-          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' },
+          {
+            validator: (rule, value, callback) => {
+              const [hourPart, minutePart] = this.meetForm.start_hour.split(':')
+              const [endHourPart,endMinutePart] = value.split(':')
+              if (Number(hourPart) > Number(endHourPart)) {
+                callback(new Error('开始时间段不能大于结束的时间段'))
+              } else if(Number(hourPart) === Number(endHourPart) && Number(minutePart) >= Number(endMinutePart)) {
+                callback(new Error('开始时间段不能大于结束的时间段'))
+              } else {
+                callback();
+              }
+            },
+            trigger: 'blur'
+          }
         ],
         repeat_week: [
           { required: true, message: '请选择会议重复时间', trigger: 'blur' }

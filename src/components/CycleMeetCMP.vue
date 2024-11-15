@@ -37,7 +37,7 @@
           </el-form-item>
         </el-row>
         <el-form-item label="重复间隔为" prop="rep_interval" style="margin-left: 7px" required>
-          <el-input-number style="width: 100px;" v-model="meetForm.rep_interval" :min="1" :max="4" />
+          <el-input-number style="width: 100px;" v-model="meetForm.rep_interval" @change="onRepeatIntervalChange" :min="1" :max="4" />
           <span
             style="margin-left: 20px;color: #4E5969;font-family: PingFang SC;font-size: 14px;font-weight: normal;">周后的：</span>
         </el-form-item>
@@ -197,23 +197,28 @@ export default {
               } else if (value <= startDate) {
                 callback(new Error(this.$t('结束时间必须大于开始时间')));
               } else {
-                callback(); // 校验通过
+                callback();
               }
             },
             trigger: 'blur'
           }
         ],
         end_hour: [
-          // { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' },
           {
-            validator: (rule, value, callback, source, options) => {
-              const errors = [];
-              if (!value) {
-                errors.push(new Error(this.$t('请选择会议结束时间')))
+            validator: (rule, value, callback) => {
+              const [hourPart, minutePart] = this.meetForm.start_hour.split(':')
+              const [endHourPart,endMinutePart] = value.split(':')
+              if (Number(hourPart) > Number(endHourPart)) {
+                callback(new Error('开始时间段不能大于结束的时间段'))
+              } else if(Number(hourPart) === Number(endHourPart) && Number(minutePart) >= Number(endMinutePart)) {
+                callback(new Error('开始时间段不能大于结束的时间段'))
+              } else {
+                callback()
               }
-              return errors;
             },
-          },
+            trigger: 'blur'
+          }
         ],
         rep_interval: [
           { required: true, message: '请选择会议重复时间', trigger: 'blur' }
@@ -276,7 +281,10 @@ export default {
     onRoomChange(e) {
       this.meetForm.room_id = e
     },
-
+    onRepeatIntervalChange(val) {
+      this.meetForm.rep_interval = val
+      this.addDaysForBaseDay(Number(val) * 7)
+    },
     choseDate(mode, e) {
       const selected_date = moment.tz(e, this.currentTimeZone).format('YYYY-MM-DD')
       this.limitSelectHour(selected_date)
@@ -376,6 +384,13 @@ export default {
       return binaryArray.join('');
     },
 
+    addDaysForBaseDay(days) {
+      const baseDate = moment.tz(this.meetForm.start_date, this.currentTimeZone);
+      const difDaysUnix = baseDate.clone().add(Number(days), 'days').endOf('day').unix()
+      const difDays = moment.tz(difDaysUnix * 1000, this.currentTimeZone).format('YYYY-MM-DD')
+      this.meetForm.rep_end_date = difDays
+    },
+
     getMeetDetail() {
       let params = {}
       params['id'] = Number(this.repeat_id)
@@ -402,6 +417,8 @@ export default {
         this.meetForm.end_hour = this.start_hour = moment.tz(data.end_time * 1000, 'Asia/Shanghai').format('HH:mm')
         this.meetForm.end_seconds = data.end_time
         this.meetForm.rep_day = data.rep_day
+        this.meetForm.rep_interval = data.rep_interval
+        this.addDaysForBaseDay(data.rep_interval * 7)
         // rep_opt: 1010100
         this.meetForm.rep_day = this.meetForm.rep_day.map(item => item === 7 ? 0 : item);
         if (data.resolution == 1800) {
@@ -503,6 +520,7 @@ export default {
           this.minStartTime = Common.formatLastMinute(15)
         }
       }
+      this.addDaysForBaseDay(7)
       this.roomOptions = this.getSelectedArea(this.add_params.area_id)
       return
     }
