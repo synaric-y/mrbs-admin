@@ -29,7 +29,7 @@
           </el-col>
           <el-col :span="11">
             <el-form-item prop="start_hour">
-              <el-time-select v-model="meetForm.start_hour" style="width: 140px;margin-left: 20px" :start="minStartTime"
+              <el-time-select v-model="meetForm.start_hour" style="width: 300px" :start="minStartTime"
                 :step="minStep" :end="maxEndTime" :placeholder="$t('base.plzSelect')"
                 @change="choseDialogHour(0, meetForm.start_hour, $event)" :min-time="currentHourMinute" />
             </el-form-item>
@@ -47,7 +47,7 @@
           </el-col>
           <el-col :span="11">
             <el-form-item prop="end_hour">
-              <el-time-select v-model="meetForm.end_hour" style="width: 140px;margin-left: 20px" :start="minStartTime"
+              <el-time-select v-model="meetForm.end_hour" style="width: 300px" :start="minStartTime"
                 :step="minStep" :end="maxEndTime" :placeholder="$t('base.plzSelect')"
                 @change="choseDialogHour(1, meetForm.end_hour, $event)" :min-time="currentHourMinute" />
             </el-form-item>

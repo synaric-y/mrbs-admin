@@ -16,22 +16,22 @@
         <el-form-item prop="name" label="会议室标题" label-width="100px" required>
           <el-input v-model="meetForm.name" autocomplete="off" show-word-limit maxlength="20" />
         </el-form-item>
-        <el-form-item prop="start_date" label="开始时间" style="margin-left: 20px" required>
-          <el-form-item prop="start_date">
+        <el-form-item prop="start_date" label="开始时间" style="margin-left: 20px;width: 300px;" required>
+          <el-form-item prop="start_date" style="width: 300px">
             <el-date-picker v-model="meetForm.start_date" type="date" :disabled-date="disabledDate"
-              value-format="YYYY-MM-DD" aria-label="请选择" placeholder="请选择" style="width: 100%"
+              value-format="YYYY-MM-DD" aria-label="请选择" placeholder="请选择" 
               @change="choseDate(0, $event)" />
           </el-form-item>
         </el-form-item>
         <el-row style="margin-left: 97px">
           <el-form-item prop="start_hour" required>
-            <el-time-select v-model="meetForm.start_hour" style="width: 140px;" :start="minStartTime" :step="minStep"
+            <el-time-select v-model="meetForm.start_hour" style="width: 300px;" :start="minStartTime" :step="minStep"
               :end="maxEndTime" placeholder="会议开始" @change="choseDialogHour(0, meetForm.start_hour, $event)"
               :min-time="currentHourMinute" />
           </el-form-item>
           <span style="line-height: 32px;width: 20px;text-align: center;"> - </span>
           <el-form-item prop="end_hour" required>
-            <el-time-select v-model="meetForm.end_hour" style="width: 140px;" :start="minStartTime" :step="minStep"
+            <el-time-select v-model="meetForm.end_hour" style="width: 300px;" :start="minStartTime" :step="minStep"
               :end="maxEndTime" placeholder="会议结束" @change="choseDialogHour(1, meetForm.end_hour, $event)"
               :min-time="currentHourMinute" />
           </el-form-item>
@@ -46,10 +46,10 @@
             <el-checkbox v-for="(item, index) in check_box_list" :label="item.label" :value="item.value" :key="index" />
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item prop="rep_end_date" label="结束时间" style="margin-left: 20px;" required>
-          <el-form-item prop="rep_end_date">
+        <el-form-item prop="rep_end_date" label="结束时间" style="margin-left: 20px;width: 300px;" required>
+          <el-form-item prop="rep_end_date" style="width: 300px">
             <el-date-picker v-model="meetForm.rep_end_date" type="date" :disabled-date="disabledDate"
-              value-format="YYYY-MM-DD" aria-label="请选择" placeholder="请选择" style="width: 100%" />
+              value-format="YYYY-MM-DD" aria-label="请选择" placeholder="请选择" />
           </el-form-item>
         </el-form-item>
         <el-form-item prop="description" label="备注" label-width="100px">
