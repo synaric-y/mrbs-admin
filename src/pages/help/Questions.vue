@@ -10,7 +10,7 @@
 
         <template v-for="(item,index) in questionList">
           {{item.title}}<br>
-             {{item.reply}}
+          <div style="white-space: pre-wrap; margin-left: 50px">{{item.reply}}</div>
         <br>
         <br>
         </template>
@@ -97,7 +97,8 @@ export default {
         {title: '11、为什么终端绑定显示的设备不全？',reply: '答：绑定终端只会显示已经激活且处于空闲中的设备，且一个会议室可以绑定多个终端，但一个终端无法绑定多个会议室'},
         {title: '12、怎么把终端和会议室解除绑定？',reply: '答：如果您只是在平板端切换会议室，您可在平板端设置中切换，如果是解绑可以在“终端设备管理”界面解绑，但是注意解绑后平板端会立马处理原始待激活状态'},
         {title: '13、在全局会议规则设置里关闭了会议信息展示为什么还会显示？',reply: '答：这里的展示开关为创建会议室时的默认状态开关，实际会议信息开关需要到会议室编辑里改动'},
-        {title: '14、未找到需要的查询问题？',reply: '答：您可以先查看下“用户操作手册”，如果还未解决您的问题可在“问题反馈”中提交您的问题'},
+        {title: '14、Exchange或Office 365预定的会议，会议标题变成了组织者？',reply: '答：这是微软的默认设置，与-AddOrganizerToSubject有关，会擦除会议标题。如想更改默认行为不擦除会议标题，\nExchange可以参考：https://learn.microsoft.com/en-us/exchange/troubleshoot/client-connectivity/calendar-shows-organizer-name\nOffice365可以参考：https://practical365.com/room-mailbox-meeting-organizer/'},
+        {title: '15、未找到需要的查询问题？',reply: '答：您可以先查看下“用户操作手册”，如果还未解决您的问题可在“问题反馈”中提交您的问题'},
       ]
     }
   },
