@@ -74,8 +74,8 @@
                                 v-if="(getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) == 1">
                                 <div class="event-title" :style="{ margin: 1 + 'px' }">{{ event.entry_name
                                   }}</div>
-                                <div class="event-person" :style="{ margin: 2 + 'px' }">{{ event.duration }}--{{
-                                  event.book_by }}</div>
+                                <div class="event-person" :style="{ margin: 2 + 'px' }">{{ event.duration }}-({{
+                                  event.book_by }})</div>
                               </template>
                               <template v-else>
                                 <div class="event-title">{{ event.entry_name }}</div>

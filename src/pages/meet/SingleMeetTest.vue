@@ -41,7 +41,7 @@
                   :style="{ backgroundColor: day.color }">
                   {{ day.date }}
                   <div class="room-header-wrapper">
-                    <div class="room-header" :style="{ width: itemWidth + 20.5 + 'px' }" v-for="(room, roomIndex) in rooms"
+                    <div class="room-header" :style="{ width: itemWidth + 20 + 'px' }" v-for="(room, roomIndex) in rooms"
                       :key="roomIndex">
                       {{ room.room_name }}
                     </div>
@@ -87,8 +87,8 @@
                                 v-if="(getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) == 1">
                                 <div class="event-title" :style="{ margin: 1 + 'px' }">{{ event.entry_name
                                   }}</div>
-                                <div class="event-person" :style="{ margin: 2 + 'px' }">{{ event.duration }}{{
-                                  event.book_by }}</div>
+                                <div class="event-person" :style="{ margin: 2 + 'px' }">{{ event.duration }}-({{
+                                  event.book_by }})</div>
                               </template>
                               <template v-else>
                                 <div class="event-title">{{ event.entry_name }}</div>

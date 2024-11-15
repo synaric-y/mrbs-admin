@@ -53,7 +53,6 @@
                     :style="{ height: timeSlots.length * 40 + 70 + 'px', width: itemWidth + 'px' }">
                     {{ room.room_name }}
                     <template v-for="(time, timeIndex) in localTimeSlots">
-
                         <div v-if="timeIndex != localTimeSlots.length - 1"
                           :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div' : 'empty-meet-div']"
                           :style="{ height: minItemHeight + 'px', width: itemWidth + 'px', top: ((timeIndex) * minItemHeight + 70) + 'px' }"
@@ -74,7 +73,7 @@
                                 v-if="(getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) == 1">
                                 <div class="event-title" :style="{ margin: 1 + 'px' }">{{ event.entry_name
                                   }}</div>
-                                <div class="event-person" :style="{ margin: 2 + 'px' }">{{ event.duration }}{{ event.book_by }}</div>
+                                <div class="event-person" :style="{ margin: 2 + 'px' }">{{ event.duration }}-({{ event.book_by }})</div>
                               </template>
                               <template v-else>
                                 <div class="event-title">{{ event.entry_name }}</div>
