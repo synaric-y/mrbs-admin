@@ -41,7 +41,7 @@
                   :style="{ backgroundColor: day.color }">
                   {{ day.date }}
                   <div class="room-header-wrapper">
-                    <div class="room-header" :style="{ width: itemWidth + 21 + 'px' }" v-for="(room, roomIndex) in rooms"
+                    <div class="room-header" :style="{ width: itemWidth + 20.5 + 'px' }" v-for="(room, roomIndex) in rooms"
                       :key="roomIndex">
                       {{ room.room_name }}
                     </div>
@@ -65,11 +65,11 @@
               <div class="calendar-header">
                 <template v-for="(day, indexday) in days" :key="indexday" :style="{ backgroundColor: day.color }">
                   <div v-for="(room, roomIndex) in rooms" class="room-wrapper" :key="roomIndex"
-                    :style="{ height: timeSlots.length * 40 + 30 + 'px', width: itemWidth + 20 + 'px', left: roomIndex * (itemWidth + 22) + 'px', top: 0 }">
+                    :style="{ height: timeSlots.length * 40 + 30 + 'px', width: itemWidth + 22.5 + 'px', left: roomIndex * (itemWidth + 22.5) + 'px', top: 0 }">
                     <template v-for="(time, timeIndex) in localTimeSlots">
                       <div v-if="timeIndex != localTimeSlots.length - 1"
                         :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div' : 'empty-meet-div']"
-                        :style="{ height: minItemHeight + 'px', width: itemWidth + 'px', left: (indexday * rooms.length + roomIndex) * (itemWidth + 22) + 'px', top: ((timeIndex) * minItemHeight + 30) + 'px' }"
+                        :style="{ height: minItemHeight + 'px', width: itemWidth + 'px', left: (indexday * rooms.length + roomIndex) * (itemWidth + 21) + 'px', top: ((timeIndex) * minItemHeight + 30) + 'px' }"
                         @click="toMeet(time, room, day)">
                         <text class="empty-meet-duration">{{ time }}</text>
                         <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text>
@@ -81,7 +81,7 @@
                           <div :key="indexeve"
                             :class="[event.status == 0 ? 'room-meet-event' : event.status == 1 ? 'room-meet-in-event' : 'room-meet-timeout-event']"
                             @click="editMeet(event)"
-                            :style="{ top: minItemHeight * getTimeSlotIndex(event.startTime) + 30 + 'px', left: (itemWidth + 22) * roomIndex + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * minItemHeight + 'px' }">
+                            :style="{ top: minItemHeight * getTimeSlotIndex(event.startTime) + 30 + 'px', left: (itemWidth + 21) * roomIndex + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * minItemHeight + 'px' }">
                             <div class="event-center">
                               <template
                                 v-if="(getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) == 1">
@@ -870,16 +870,16 @@ export default defineComponent({
 .calendar-scrollbar-wrapper {
   display: flex;
   flex-direction: row;
-  // padding-left:100px;
-  // margin-left: 100px;
   height: auto;
   width: auto;
   background-color: white;
 }
 
 .placeholder-view {
-  min-width: 100px;
-  width: 136px !important;
+  // 100px
+  // width: 136px !important;
+  min-width: 99px;
+  width: 46px !important;
   height: 80px;
   background-color: clear;
 }
@@ -900,9 +900,12 @@ export default defineComponent({
   font-size: 12px;
   padding: 10px 0;
   font-weight: 600;
-  border-left: 1px solid #9A9A9A;
   border-bottom: 2px solid #9A9A9A;
   // -webkit-line-clamp: 2;
+}
+
+.day-header-wrapper:last-child {
+  border-right: 10px solid red;
 }
 
 .room-header-wrapper {
@@ -977,6 +980,10 @@ export default defineComponent({
 
 .room-wrapper:first-child {
   border-left: 1px solid #9A9A9A;
+}
+
+.room-wrapper:last-child {
+  border-right: 1px solid #9A9A9A;
 }
 
 .room-wrapper {
