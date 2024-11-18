@@ -97,7 +97,7 @@ export default {
           value: 1,
           label: this.$t('terminal.bind.online'),
         }],
-      roomVal: '全部',
+      roomVal: '所有',
       roomOptions: [],
       pendingDeleteName: null,
       page_number: 1,
@@ -149,7 +149,7 @@ export default {
             });
           });
         });
-        select_rooms.unshift({ title: '全部', room_id: -1, room_name: '全部' })
+        select_rooms.unshift({ title: '所有', room_id: -1, room_name: '所有' })
         this.roomOptions = select_rooms
       })
     },
@@ -196,16 +196,20 @@ export default {
       console.log('TerminalManager getTerminalList params', params)
       Api.getTerminalList(params).then(({ data, code, msg }) => {
         if (code == 0) {
-          data.devices.forEach(it => {
-            it["version"] = !it["version"] ? '无' : it["version"]
-            it['description'] = !it['description'] ? '无' : it['description']
-            it['status'] = !it['status'] ? '下线' : '上线'
-            it['battry_text'] = it['is_charging'] ? `充电中 ${it['battery_level']}%` : `${it['battery_level']}%`
-            it['bind_room'] = it['is_set'] ? '已绑定' : '未绑定'
-            it['set_time'] = moment(parseInt(it['set_time'] * 1000)).format('YYYY/MM/DD hh:mm:ss')
-          })
-          console.log(data.devices)
-          this.terminals = data.devices
+          if (data && data.devices) {
+              data.devices.forEach(it => {
+              it["version"] = !it["version"] ? '无' : it["version"]
+              it['description'] = !it['description'] ? '无' : it['description']
+              it['status'] = !it['status'] ? '下线' : '上线'
+              it['battry_text'] = it['is_charging'] ? `充电中 ${it['battery_level']}%` : `${it['battery_level']}%`
+              it['bind_room'] = it['is_set'] ? '已绑定' : '未绑定'
+              it['set_time'] = moment(parseInt(it['set_time'] * 1000)).format('YYYY/MM/DD hh:mm:ss')
+            })
+            console.log(data.devices)
+            this.terminals = data.devices
+          } else {
+            this.terminals = []
+          }
           this.total_num = data.total_num
         }
       })
