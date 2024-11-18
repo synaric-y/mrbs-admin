@@ -32,7 +32,7 @@
         </el-table-column>
         <el-table-column prop="area_name" label="区域" ></el-table-column>
         <el-table-column prop="room_name" label="会议室"></el-table-column>
-        <el-table-column prop="entry_name" label="会议标题"></el-table-column>
+        <el-table-column prop="name" label="会议标题"></el-table-column>
         <el-table-column prop="startTime" label="预约开始时间"></el-table-column>
         <el-table-column prop="endTime" label="预约结束时间"></el-table-column>
         <!-- <el-table-column prop="duration" label="会议时间"></el-table-column> -->

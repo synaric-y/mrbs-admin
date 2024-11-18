@@ -47,13 +47,13 @@
               :value="item.value" />
           </el-select>
         </el-form-item>
-        <div class="section-title">{{ $t('base.exchange') }}</div>
+        <!-- <div class="section-title">{{ $t('base.exchange') }}</div>
         <el-form-item prop="use_exchange" :label="$t('area.formArea.useExchange')">
           <el-switch disabled :active-value="1" :inactive-value="0" v-model="form.area_use_exchange" />
         </el-form-item>
         <el-form-item prop="exchange_server" :label="$t('area.formArea.exchangeServer')">
           <el-input v-model="form.area_exchange_server" show-word-limit maxlength="255" />
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
     </template>
     <template #btns>
