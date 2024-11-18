@@ -65,7 +65,7 @@
               <div class="calendar-header">
                 <template v-for="(day, indexday) in days" :key="indexday" :style="{ backgroundColor: day.color }">
                   <div v-for="(room, roomIndex) in rooms" class="room-wrapper" :key="roomIndex"
-                    :style="{ height: timeSlots.length * 40 + 30 + 'px', width: itemWidth + 22.5 + 'px', left: roomIndex * (itemWidth + 22.5) + 'px', top: 0 }">
+                    :style="{ height: timeSlots.length * 40 + 30 + 'px', width: itemWidth + 22.5 + 'px', left: roomIndex * (itemWidth + 22) + 'px', top: 0 }">
                     <template v-for="(time, timeIndex) in localTimeSlots">
                       <div v-if="timeIndex != localTimeSlots.length - 1"
                         :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div' : 'empty-meet-div']"
@@ -962,7 +962,7 @@ export default defineComponent({
 .content-meet-scrollbar {
   height: 550px;
   width: 100%;
-  margin-left: 17px;
+  margin-left: 16px;
   padding: 0px;
   background-color: white;
   position: relative;
