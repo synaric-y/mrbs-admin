@@ -157,11 +157,9 @@ export default defineComponent({
       endTime: this.$t('base.endDate'),
       areas: [],
       meetRooms: [],
-      scrollY: 0,
       startStamp: 0,
       endStamp: 0,
       nowTime: '',
-      screenHeight: 700,
       localLangFormat: 'dddd, MMMM Do YYYY',
       interval: null,
       currenTimestamp: 0,
@@ -190,7 +188,6 @@ export default defineComponent({
       dialogMeetForm: false,
       dialogCycleMeetForm: false,
       form_mode: 0,
-      currentHourMinute: '',
       currentTimeZone: 'Asia/Shanghai',
       page_cache_areas: [], // area选择器缓存的数据，含房间信息
       addParams:{
@@ -381,7 +378,7 @@ export default defineComponent({
       })
     },
 
-    getDays(number,timeZone){
+    getDays(number,timeZone){ // 获取显示在页面上的“日期”
       console.log(number,timeZone)
       const today = moment().tz(timeZone);
 
