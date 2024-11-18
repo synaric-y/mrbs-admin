@@ -1,6 +1,6 @@
 <template>
   <div class="nav_wrapper">
-    <div class="logo-container">
+    <div v-if="originalLogo" class="logo-container">
       <img class="logo" :src="logo" >
     </div>
     <div class="nav-left">{{companyName}}</div>
@@ -39,7 +39,7 @@ import {BellFilled, Tools} from "@element-plus/icons-vue";
 export default {
   components: {Tools, BellFilled},
   mixins: [PageMixin],
-  props: ['companyName','logo','time'],
+  props: ['companyName','originalLogo','logo','time'],
   data() {
     return {
       showPop: false,
