@@ -49,7 +49,7 @@
         </el-form-item>
         <div class="section-title">{{ $t('base.exchange') }}</div>
         <el-form-item prop="use_exchange" :label="$t('area.formArea.useExchange')">
-          <el-switch :active-value="1" :inactive-value="0" v-model="form.area_use_exchange" />
+          <el-switch disabled :active-value="1" :inactive-value="0" v-model="form.area_use_exchange" />
         </el-form-item>
         <el-form-item prop="exchange_server" :label="$t('area.formArea.exchangeServer')">
           <el-input v-model="form.area_exchange_server" show-word-limit maxlength="255" />
@@ -333,6 +333,20 @@ export default {
   },
   mounted() {
     let { id } = this.$route.params
+
+    Api.getVariables({
+      "logo_dir": 1,
+      "company_name": 1,
+      "server_address": 1,
+      "init_status": 1,
+      "use_wxwork": 1,
+      "use_exchange": 1,
+      "exchange_server": 1,
+    }).then(({ code, data, msg }) => {
+      console.log('getVariables data',data);
+      this.form.area_use_exchange = data.use_exchange
+    })
+
     Api.getArea({ id: Number(id) }).then(({ data }) => {
       if (!data) {
         return
