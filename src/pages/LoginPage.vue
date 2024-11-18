@@ -70,6 +70,8 @@ export default {
         } else {
           ElMessage.error(msg)
         }
+      }).catch(() => {
+        ElMessage.error('网络异常')
       })
     },
     forgetPassword(){
