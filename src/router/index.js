@@ -93,6 +93,10 @@ const router = createRouter({
       name: 'application_setting',
       component: () => import('@/pages/system/ApplicationSetting.vue')
     },{
+      path: '/wxwork_setting',
+      name: 'wxwork_setting',
+      component: () => import('@/pages/system/WxWorkSetting.vue')
+    },{
       path: '/meet_rule',
       name: 'meet_rule',
       component: () => import('@/pages/system/MeetRule.vue')

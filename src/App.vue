@@ -153,16 +153,21 @@ export default {
             },
             {
               index: "2",
+              title: '企业微信设置',
+              path: '/wxwork_setting'
+            },
+            {
+              index: "3",
               title: '会议规则设置',
               path: '/meet_rule'
             },
             {
-              index: "3",
+              index: "4",
               title: '用户同步',
               path: '/sync_user'
             },
             {
-              index: "4",
+              index: "5",
               title: '日历同步',
               path: '/sync_calendar'
             },

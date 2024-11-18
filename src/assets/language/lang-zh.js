@@ -237,5 +237,8 @@ export const langZh = {
         calendar_synchronize_setting: {
             title: '日历同步'
         },
+        wxwork_setting: {
+            title: '企业微信设置'
+        }
     }
 }

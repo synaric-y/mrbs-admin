@@ -92,29 +92,6 @@
         </div>
       </div>
       <div>
-        <div class="section-title">企业微信App</div>
-        <div class="section-content">
-          <el-form ref="formRef" :model="form" :rules="rules" label-width="auto" style="max-width: 650px">
-            <el-form-item label="企微corpId" prop="corpId">
-              <div class="form-item-content">
-                <el-input class="form-item-input" v-model="form.corpId" />
-              </div>
-            </el-form-item>
-            <el-form-item label="企微secret" prop="secret">
-              <div class="form-item-content">
-                <el-input v-model="form.secret" class="form-item-input" placeholder="请输入" />
-              </div>
-            </el-form-item>
-            <data value=""></data>
-            <el-form-item label="企微agentId" prop="agentId">
-              <div class="form-item-content">
-                <el-input v-model="form.agentId" class="form-item-input" placeholder="请输入" />
-              </div>
-            </el-form-item>
-          </el-form>
-        </div>
-      </div>
-      <div>
         <div class="section-title">平板端升级</div>
         <div class="section-content">
           <el-table :data="versionData" style="width: 100%">
@@ -173,9 +150,6 @@ export default {
         appLogo: [],
         timeFormat: '',
         theme: '',
-        corpId: '',
-        secret: '',
-        agentId: '',
       },
       urlStatus: 'untested', //枚举值untested testing tested
       originalWebLogoURL: '',
@@ -242,9 +216,6 @@ export default {
           appLogo: [],
           timeFormat: data.time_type,
           theme: data.theme_type,
-          corpId: data.corpid,
-          secret: data.secret,
-          agentId: data.agentid,
         }
         that.originalWebLogoURL = data.logo_dir
         that.originalAppLogoURL = data.app_logo_dir
@@ -369,6 +340,10 @@ export default {
               ElMessage.success({
                 message: '设置成功',
               })
+
+              setTimeout(()=>{
+                location.reload() // 刷新页面
+              },1000)
             })
             .catch((error) => {
               ElMessage.error({
