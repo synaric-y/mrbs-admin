@@ -881,10 +881,10 @@ export default defineComponent({
   height: 0 !important;
 }
 
-:deep(.el-scrollbar__bar.is-vertical) {
-  width: 0 !important;
-  display: none !important;
-}
+// :deep(.el-scrollbar__bar.is-vertical) {
+//   width: 0 !important;
+//   display: none !important;
+// }
 
 .calendar-scrollbar-wrapper {
   display: flex;
@@ -895,8 +895,6 @@ export default defineComponent({
 }
 
 .placeholder-view {
-  // 100px
-  // width: 136px !important;
   min-width: 99px;
   width: 46px !important;
   height: 80px;
@@ -909,7 +907,6 @@ export default defineComponent({
   flex-direction: row;
   height: 80px;
   width: auto;
-  // border-right: 100px solid red;
 }
 
 .day-header {
