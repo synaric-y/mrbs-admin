@@ -81,7 +81,7 @@
                           <div :key="indexeve"
                             :class="[event.status == 0 ? 'room-meet-event' : event.status == 1 ? 'room-meet-in-event' : 'room-meet-timeout-event']"
                             @click="editMeet(event)"
-                            :style="{ top: minItemHeight * getTimeSlotIndex(event.startTime) + 30 + 'px', left: (itemWidth + 21) * roomIndex + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * minItemHeight + 'px' }">
+                            :style="{ top: minItemHeight * getTimeSlotIndex(event.startTime) + 30 + 'px', left: (itemWidth + 21) * (indexday * rooms.length + roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * minItemHeight + 'px' }">
                             <div class="event-center">
                               <template
                                 v-if="(getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) == 1">
@@ -497,6 +497,7 @@ export default defineComponent({
           color: (index + 1) % 2 == 0 ? "#0288d1" : "#6a1b9a"
         };
       });
+      console.log('formatDays days :',formattedDates)
       return formattedDates;
     },
 
