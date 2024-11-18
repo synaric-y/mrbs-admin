@@ -103,7 +103,7 @@ export const langZh = {
             startOfLastSlot: '预定终止时间（下班时间）',
             resolution: '最小时段时长 (分钟)',
             defaultDuration: '默认会议时长 (分钟)',
-            useExchange: '是否启用Exchange',
+            useExchange: '当前系统是否开启Exchange预定',
             exchangeServer: 'Exchange服务地址',
             useWxwork: '是否启用企业微信',
             wxworkCorpId: '企业微信CorpId',

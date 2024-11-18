@@ -881,10 +881,10 @@ export default defineComponent({
   height: 0 !important;
 }
 
-// :deep(.el-scrollbar__bar.is-vertical) {
-//   width: 0 !important;
-//   display: none !important;
-// }
+.slots-time-scrollbar:deep(.el-scrollbar__bar.is-vertical) {
+  width: 0 !important;
+  display: none !important;
+}
 
 .calendar-scrollbar-wrapper {
   display: flex;
