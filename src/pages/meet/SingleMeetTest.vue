@@ -21,7 +21,7 @@
             <div class="group-buttons">
               <el-button v-for="(item, index) in groupButtons" type="primary" size="small"
                 :class="['', item.day == dayRrangeVal ? 'day-button-active' : 'day-button']"
-                @click="dayRrange(item.day)">{{
+                @click="dayRrange(item.day,false)">{{
                   item.name }}</el-button>
             </div>
             <div class="date-picker">
@@ -59,7 +59,7 @@
                 </div>
               </div>
             </el-scrollbar>
-            <el-scrollbar :view-style="{ width: scrollbarContentWidth }" ref="contentScroll" id="content-scrollbar"
+            <el-scrollbar :view-style="{ width: scrollbarWidth }" ref="contentScroll" id="content-scrollbar"
               class="content-meet-scrollbar" @scroll="syncScroll('contentScroll')" always
               :style="{ height: 'calc(100vh - 150px - 25px)' }">
               <div class="calendar-header">
@@ -105,13 +105,10 @@
               </div>
             </el-scrollbar>
           </div>
-
         </div>
-
         <div class="slider-container-horizontal">
           <el-slider v-model="scrollLeft" @input="scrollHorizontal" />
         </div>
-
         <SingleMeetCMP v-if="dialogMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas"
           :entry_id="entry_id" @close="closeDialogMeetForm" />
         <CycleMeetCMP v-if="dialogCycleMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas"
@@ -211,9 +208,6 @@ export default defineComponent({
     scrollbarWidth() {
       return this.rooms.length * this.days.length * (this.itemWidth + 21) + 'px';
     },
-    scrollbarContentWidth() {
-      return this.rooms.length * this.days.length * (this.itemWidth + 21) + 'px';
-    }
   },
 
   mounted() {
@@ -278,7 +272,7 @@ export default defineComponent({
       this.getSyncInterval()
       this.interval = setInterval(() => {
         this.getSyncInterval()
-      }, 20000)
+      }, 1000 * 20)
     },
     getSyncInterval() {
       this.filterDateStore = FilterDateStore()
@@ -299,16 +293,16 @@ export default defineComponent({
         this.endStamp = Common.getThreeDaysTimestamps().end
         if (selectDays) {
           this.dayRrangeVal = selectDays
-          this.dayRrange(selectDays)
+          this.dayRrange(selectDays,true)
         } else {
-          this.dayRrange(SELECT_DAY.THREE);
+          this.dayRrange(SELECT_DAY.THREE,true);
         }
       }
       if (selectArea && selectAreaName) {
         this.currenAreaName = selectAreaName
         this.currenArea = selectArea
       }
-      this.getCurrentAreaRooms(this.currenArea)
+      this.getCurrentAreaRooms(this.currenArea,true)
       this.getMeetRooms()
     },
 
@@ -384,7 +378,7 @@ export default defineComponent({
       })
     },
 
-    getCurrentAreaRooms(area_id) {
+    getCurrentAreaRooms(area_id,timedRefresh) {
       if (!this.page_cache_areas || this.page_cache_areas.length == 0) {
         this.getAllAreas()
         return
@@ -399,7 +393,7 @@ export default defineComponent({
         item.area_id === area_id
       )
       if (this.dayRrangeVal != 0) {
-        this.dayRrange(this.dayRrangeVal)
+        this.dayRrange(this.dayRrangeVal,timedRefresh?true:false)
       }
       const tmp_areas = []
       tmp_areas.push(area_rooms)
@@ -420,7 +414,7 @@ export default defineComponent({
       return slot_index
     },
 
-    dayRrange(day) {
+    dayRrange(day,timedRefresh) {
       let days = []
       let tempTime = {}
       if (day == SELECT_DAY.TODAY) {
@@ -445,6 +439,9 @@ export default defineComponent({
       this.filterDateStore.setEndDate(this.endTime)
       this.dayRrangeVal = day
       this.days = this.formatDays(days)
+      if (!timedRefresh) {
+        this.resetScroll()
+      }
       this.getMeetRooms()
     },
 
@@ -589,6 +586,26 @@ export default defineComponent({
       return true
     },
 
+    resetScroll() {
+      if (this.isSyncing) return
+      this.isSyncing = true
+      requestAnimationFrame(() => {
+        const contentScrollWrap = this.$refs.contentScroll?.$refs.wrapRef
+        const timeScrollWrap = this.$refs.timeScroll?.$refs.wrapRef
+        const calendarScrollWrap = this.$refs.calendarScroll?.$refs.wrapRef
+        if (!contentScrollWrap || !timeScrollWrap || !calendarScrollWrap) {
+          this.isSyncing = false
+          return;
+        }
+        timeScrollWrap.scrollTop = 0
+        calendarScrollWrap.scrollLeft = 0
+        contentScrollWrap.scrollTop = 0
+        contentScrollWrap.scrollLeft = 0
+        this.scrollLeft = 0
+        this.isSyncing = false
+      })
+    },
+
     choseArea(e) {
       this.currenArea = e;
       const area = this.page_cache_areas.filter(area => area.area_id == e)
@@ -597,6 +614,7 @@ export default defineComponent({
       this.filterDateStore.setArea(e)
       this.filterDateStore.setAreaName(areaName)
       this.getCurrentAreaRooms(this.currenArea)
+      this.resetScroll()
       this.getMeetRooms()
     },
 
@@ -634,6 +652,7 @@ export default defineComponent({
         this.endStamp = Common.getTimestamp(end_date, 'end')
         this.filterDateStore.setStartDate(start_date)
         this.filterDateStore.setEndDate(end_date)
+        this.resetScroll()
         this.getMeetRooms()
         const days = this.getDaysBetween(start_date, end_date)
         const tempdays = this.formatDays(days)
@@ -659,7 +678,6 @@ export default defineComponent({
       }
       const itemNumber = this.rooms.length * this.days.length
       this.itemWidth = 229
-      this.scrollLeft = 0
       Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp, end_time: this.endStamp, timezone: this.currentTimeZone }).then(({ data, code, msg }) => {
         if (!data && code != 0) {
           ElMessage({
@@ -891,6 +909,7 @@ export default defineComponent({
   flex-direction: row;
   height: 80px;
   width: auto;
+  // border-right: 100px solid red;
 }
 
 .day-header {
@@ -906,7 +925,7 @@ export default defineComponent({
 }
 
 .day-header-wrapper:last-child {
-  border-right: 10px solid red;
+  border-right: 1px solid #9A9A9A;
 }
 
 .room-header-wrapper {
@@ -933,7 +952,7 @@ export default defineComponent({
   text-align: center;
   background-color: white;
   border-left: 1px solid #9A9A9A;
-  border-bottom: 2px solid #9A9A9A;
+  border-bottom: 1px solid #9A9A9A;
   position: relative;
 }
 
