@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <NavBar v-if="!isLoginPage" :companyName="companyName" :logo="logo" :time="time" />
+    <NavBar v-if="!isLoginPage" :companyName="companyName" :logo="logo" :originalLogo="originalLogo" :time="time" />
     <div style="height: 75px;" v-if="!isLoginPage"></div>
     <div class="menu-content-wrapper">
       <div class="left-menu" v-if="!isLoginPage">
@@ -61,6 +61,7 @@ export default {
       showPop: false,
       activeIndex: "1",
       logo: '',
+      originalLogo: '', // 未拼接的url，用于判空
       companyName: '',
       init_status: -1,
       time: '',
@@ -293,6 +294,7 @@ export default {
         "server_address": 1,
         "init_status": 1,
       }).then(({ code, data, msg }) => {
+        this.originalLogo = data.logo_dir
         this.logo = data.server_address + data.logo_dir + '?time=' + new Date().getTime() // 强制刷新logo
         this.companyName = data.company_name
         this.init_status = data.init_status
