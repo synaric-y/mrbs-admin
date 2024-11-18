@@ -200,7 +200,7 @@ export default {
             it["version"] = !it["version"] ? '无' : it["version"]
             it['description'] = !it['description'] ? '无' : it['description']
             it['status'] = !it['status'] ? '下线' : '上线'
-            it['battry_text'] = it['is_charging'] ? `充电中${it['battery_level']}` : it['battery_level']
+            it['battry_text'] = it['is_charging'] ? `充电中 ${it['battery_level']}%` : `${it['battery_level']}%`
             it['bind_room'] = it['is_set'] ? '已绑定' : '未绑定'
             it['set_time'] = moment(parseInt(it['set_time'] * 1000)).format('YYYY/MM/DD hh:mm:ss')
           })
