@@ -10,10 +10,11 @@
       <!-- <div class="icon-container">
         <el-icon color="#4e5969"><BellFilled /></el-icon>
       </div> -->
-      <div class="icon-container">
-        <el-icon color="#4e5969" @click="toSettings"><Tools /></el-icon>
-      </div>
-
+      <template v-if="!isNormalUser">
+        <div class="icon-container">
+          <el-icon color="#4e5969" @click="toSettings"><Tools /></el-icon>
+        </div>
+      </template>
       <el-dropdown placement="bottom" @command="handleCommand">
         <div class="username-wrapper" @click="toProfile">
           <img style="width: 30px; height: 30px" src="../../public/imgs/profile.png"
@@ -35,6 +36,7 @@ import { PageMixin } from "@/pages/PageMixin.js";
 import router from "@/router/index.js";
 import {Api} from "@/network/api.js";
 import {BellFilled, Tools} from "@element-plus/icons-vue";
+import { Common } from "@/common/common";
 
 export default {
   components: {Tools, BellFilled},
@@ -43,6 +45,11 @@ export default {
   data() {
     return {
       showPop: false,
+    }
+  },
+  computed: {
+    isNormalUser() {
+      return Common.normalUser()
     }
   },
   methods: {

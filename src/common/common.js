@@ -1,5 +1,6 @@
 import momentzone from "moment-timezone";
 import moment from "moment";
+import { STORAGE, USER_TYPE } from "@/const";
 
 export class Common {
 
@@ -352,6 +353,8 @@ export class Common {
         }
     }
 
+
+
     static generateRandomString(length) {
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+[]{}|;:,.<>?';
         let result = '';
@@ -360,5 +363,14 @@ export class Common {
           result += characters.charAt(Math.floor(Math.random() * charactersLength));
         }
         return result;
+    }
+
+    static normalUser() {
+        const userinfo = JSON.parse(localStorage.getItem(STORAGE.USER_INFO))
+        const level = {}
+        if (userinfo && userinfo.level == USER_TYPE.ADMIN) {
+            return false
+        }
+        return true
     }
 }
