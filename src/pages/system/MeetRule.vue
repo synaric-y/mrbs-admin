@@ -25,11 +25,17 @@
             </div>
             <div class="switch-row">
               <div class="label">开启临时会议</div>
-              <el-switch
+              <!-- <el-switch
                   v-model="form.quickMeetingDisplay"
                   style="--el-switch-on-color: #591bb7;"
-              />
-              <el-text v-if="form.quickMeetingDisplay" class="mx-1" type="primary">终端将显示临时会议按钮</el-text>
+              /> -->
+
+              <el-select style="max-width: 170px" v-model="form.quickMeetingDisplay" placeholder="请选择">
+                <el-option label="从不" :value="0" key="0"/>
+                <el-option label="不记名预约" :value="1" key="1"/>
+                <el-option label="扫描身份证验证预约" :value="2" key="2"/>
+              </el-select>
+              <el-text v-if="form.quickMeetingDisplay != 0" class="mx-1" type="primary">终端将显示临时会议按钮</el-text>
               <el-text v-else class="mx-1">终端将不显示临时会议按钮</el-text>
             </div>
           </div>
@@ -38,7 +44,7 @@
               <div class="times">
                 <div class="time" v-for="item in timeline">{{ item }}</div>
               </div>
-              <div class="btn" v-if="form.quickMeetingDisplay">临时会议</div>
+              <div class="btn" v-if="form.quickMeetingDisplay != 0">临时会议</div>
             </div>
             <div class="right">
               <div class="room">
@@ -75,15 +81,8 @@
       </div>
       <div>
         <div class="section-title">会议规则参数</div>
-
         <div class="section-content">
           <el-form ref="formRef" :model="form" label-width="auto" :rules="rules">
-            <!--              <el-form-item label="快速会议开始时间" prop="startTime">-->
-            <!--                <el-select style="min-width: 400px" v-model="form.startTime" placeholder="请选择">-->
-            <!--                  <el-option label="最近空闲时段马上开始" value="0"/>-->
-            <!--                  <el-option label="手动选择" value="1"/>-->
-            <!--                </el-select>-->
-            <!--              </el-form-item>-->
             <el-form-item label="预定时间最小间隔" prop="minScale">
               <el-select style="min-width: 400px" v-model="form.minScale" placeholder="请选择">
                 <el-option v-for="(item,index) in resolutionOptions" :key="index" :label="item.label" :value="item.value"/>
@@ -119,8 +118,7 @@ export default {
       form: {
         bookerDisplay: true,
         meetingNameDisplay: true,
-        quickMeetingDisplay: true,
-        // startTime: '',
+        quickMeetingDisplay: 1,
         minScale: '',
       },
 
@@ -138,9 +136,6 @@ export default {
         '10:00am', '10:30am', '11:00am', '11:30am', '12:00am', '12:30am', '01:00pm', '01:30pm',
       ],
       rules: {
-        // startTime: [
-        //   {required: true, message: '请选择快速会议开始时间', trigger: 'blur'},
-        // ],
         minScale: [
           {required: true, message: '请选择预定时间最小间隔', trigger: 'blur'},
         ],
@@ -162,7 +157,7 @@ export default {
           ...that.form,
           bookerDisplay: data.show_book===1,
           meetingNameDisplay: data.show_meeting_name===1,
-          quickMeetingDisplay: data.temporary_meeting===1,
+          quickMeetingDisplay: data.temporary_meeting,
           minScale: data.resolution
         }
       } else {
@@ -190,7 +185,7 @@ export default {
                 "init_status": 3,
                 "show_book": this.form.bookerDisplay?1:0,
                 "show_meeting_name": this.form.meetingNameDisplay?1:0,
-                "temporary_meeting": this.form.quickMeetingDisplay?1:0,
+                "temporary_meeting": this.form.quickMeetingDisplay,
                 "resolution": this.form.minScale
               }
           ).then(({code,data})=>{
