@@ -203,7 +203,7 @@ export default {
               it['status'] = !it['status'] ? '下线' : '上线'
               it['battry_text'] = it['is_charging'] ? `充电中 ${it['battery_level']}%` : `${it['battery_level']}%`
               it['bind_room'] = it['is_set'] ? '已绑定' : '未绑定'
-              it['set_time'] = moment(parseInt(it['set_time'] * 1000)).format('YYYY/MM/DD hh:mm:ss')
+              it['set_time'] =  moment.tz(it['set_time'] * 1000, 'Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss')
             })
             console.log(data.devices)
             this.terminals = data.devices
