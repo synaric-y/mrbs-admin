@@ -81,7 +81,7 @@
                           <div :key="indexeve"
                             :class="[event.status == 0 ? 'room-meet-event' : event.status == 1 ? 'room-meet-in-event' : 'room-meet-timeout-event']"
                             @click="editMeet(event)"
-                            :style="{ top: minItemHeight * getTimeSlotIndex(event.startTime) + 30 + 'px', left: (itemWidth + 21) * (indexday * rooms.length + roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * minItemHeight + 'px' }">
+                            :style="{top: minItemHeight * getTimeSlotIndex(event.startTime) + 30 + 'px', left: (itemWidth + 21) * (indexday * rooms.length + roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * minItemHeight + 'px' }">
                             <div class="event-center">
                               <template
                                 v-if="(getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) == 1">
@@ -1024,9 +1024,6 @@ export default defineComponent({
   margin: 0px;
   padding: 0px;
   background-color: white;
-  // border-right: 1px solid #9A9A9A;
-  // z-index: 99;
-  // position: relative;
 }
 
 .empty-abled-meet-div {
@@ -1071,13 +1068,13 @@ export default defineComponent({
 #content-scrollbar .empty-meet-div:hover {
   color: white;
   background-color: #CECECE;
-  z-index: 101;
+  z-index: 100;
 }
 
 #content-scrollbar .empty-abled-meet-div:hover {
   color: white;
   background-color: #6a1b9a;
-  z-index: 101;
+  z-index: 100;
 }
 
 .room-name {
@@ -1104,8 +1101,9 @@ export default defineComponent({
   margin: 2px 0;
   color: #000;
   font-size: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  // box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   border-left: 10px solid #54BCBD;
+  opacity: 1;
   z-index: 101;
 }
 
@@ -1152,17 +1150,14 @@ export default defineComponent({
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  z-index: 101;
 }
 
 .event-time,
 .event-person {
   font-size: 10px;
   color: #555;
-}
-
-.empty-bottom {
-  height: 10px;
-  width: 100%;
+  z-index: 101;
 }
 
 .slider-container-horizontal {

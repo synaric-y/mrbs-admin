@@ -98,8 +98,6 @@
             </div>
           </el-scrollbar>
         </div>
-        <!-- <CycleMeetCMP v-if="dialogMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas" :repeat_id="repeat_id" :entry_id="entry_id"
-          @close="closeDialogMeetForm" /> -->
           <SingleMeetCMP v-if="dialogMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas" :entry_id="entry_id"
           @close="closeDialogMeetForm" />
         <CycleMeetCMP v-if="dialogCycleMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas" :repeat_id="repeat_id" :entry_id="entry_id"
@@ -787,7 +785,7 @@ export default defineComponent({
                 date: Common.translateWeekDay(moment(Number(entry.start_time * 1000)).format(this.localLangFormat)),
                 startTime: entry.duration.split('-')[0].trim(),
                 endTime: entry.duration.split('-')[1].trim(),
-                src: entry.repeat_id > 0?'/imgs/cycle_meet_tag.png':this.normalSelfMeet(entry.book_by)?'/imgs/person_meet_tag.png':'',
+                // src: entry.repeat_id > 0?'/imgs/cycle_meet_tag.png':this.normalSelfMeet(entry.book_by)?'/imgs/person_meet_tag.png':'',
                 ...entry
               });
             });
@@ -962,10 +960,8 @@ export default defineComponent({
 .calendar-header {
   display: flex;
   flex-direction: row;
-  // background-color: #f0f0f0;
   text-align: center;
   width: 150px;
-  // padding: 5px;
   padding-bottom: 0px;
   font-weight: bold;
   color: white;
@@ -983,7 +979,6 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   z-index: 2000;
-  // border-right: 1px solid #9A9A9A;
 }
 
 .time-slot {
@@ -1008,6 +1003,7 @@ export default defineComponent({
   height: 40px;
   transition: all 0.3s ease;
   padding: 0px 10px;
+  z-index: -1;
 }
 
 .empty-meet-div {
@@ -1021,6 +1017,7 @@ export default defineComponent({
   height: 40px;
   transition: background-color 0.3s ease, color 0.3s ease;
   padding: 0px 10px;
+  z-index: 100;
 }
 
 .empty-meet-duration {
@@ -1035,22 +1032,14 @@ export default defineComponent({
 
 .empty-meet-div:hover {
   color: white;
-  /* background:
-    linear-gradient(to bottom right,
-      transparent 0%,
-      transparent calc(50% - 1px),
-      white 50%,
-      transparent calc(50% + 1px),
-      transparent 100%);
-  background-size: 100% 100%;
-  background-blend-mode: normal; */
   background-color: #CECECE;
+  z-index: 100;
 }
 
 .empty-abled-meet-div:hover {
   color: white;
-  /* "#0288d" */
   background-color: #6a1b9a;
+  z-index: 100;
 }
 
 .day-header {
@@ -1119,6 +1108,7 @@ export default defineComponent({
   font-size: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   border-left: 10px solid #54BCBD;
+  z-index: 101;
 }
 
 .room-meet-in-event {
@@ -1136,6 +1126,7 @@ export default defineComponent({
   font-size: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   border-left: 10px solid #BD3124;
+  z-index: 101;
 }
 
 .room-meet-timeout-event {
@@ -1153,6 +1144,7 @@ export default defineComponent({
   font-size: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   border-left: 10px solid #9A9A9A;
+  z-index: 101;
 }
 
 .event-title {

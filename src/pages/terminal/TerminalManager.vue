@@ -36,6 +36,7 @@
           <template #default="scope">
             <div class="operate-wrapper" v-if="scope.row.is_set == 1">
               <span class="operate-item" @click="unbindDeviceDialog(scope.row)">{{ $t('base.unbind') }}</span>
+              <!-- <span class="operate-item" @click="bindDeviceDialog(scope.row)">绑定终端</span> -->
             </div>
             <div v-else>{{ $t('base.none')}}</div>
           </template>
@@ -48,6 +49,7 @@
         :default-page-size="20" :total="total_num" />
     </template>
   </Layout>
+  <BindTerminal v-if="is_bind_terminal" :room_id="bind_room_id" @close="closeBindTerminal" />
   <el-dialog v-model="dialogUnbindVisible" :title="$t('terminal.unbindDevice')" width="550">
     <div class="">
       {{ $t('terminal.confirmUnbindHint') }}
@@ -71,6 +73,7 @@ import { Common } from "@/common/common";
 import Layout from "@/components/Layout.vue";
 import { Search } from '@element-plus/icons-vue'
 import moment from "moment";
+import BindTerminal from "@/components/BindTerminal.vue";
 
 export default {
   computed: {
@@ -78,7 +81,7 @@ export default {
       return Search
     }
   },
-  components: { Layout },
+  components: { Layout,BindTerminal },
   mixins: [PageMixin],
   data() {
     return {
@@ -108,10 +111,19 @@ export default {
       select_status_id: -1,
       select_room_id: -1,
       page_cache_areas: [],
+      is_bind_terminal:false,
+      bind_room_id: -1,
     }
   },
   methods: {
-
+    bindDeviceDialog(row) {
+      console.log('bindDeviceDialog row:',row);
+      this.bind_room_id = row.id
+      this.is_bind_terminal = true
+    },
+    closeBindTerminal() {
+      this.is_bind_terminal = false
+    },
     onStatusChange(e) {
       console.log('TerminalManager onStatusChange e', e)
       this.select_status_id = e
