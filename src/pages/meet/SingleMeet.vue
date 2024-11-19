@@ -724,6 +724,7 @@ export default defineComponent({
                 date: Common.translateWeekDay(moment(Number(entry.start_time * 1000)).format(this.localLangFormat)),
                 startTime: entry.duration.split('-')[0].trim(),
                 endTime: entry.duration.split('-')[1].trim(),
+                src: entry.repeat_id > 0?'/imgs/cycle_meet_tag.png':this.normalSelfMeet(entry.book_by)?'/imgs/person_meet_tag.png':'',
                 ...entry
               });
             });

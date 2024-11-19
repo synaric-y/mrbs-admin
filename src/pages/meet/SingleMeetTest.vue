@@ -65,7 +65,7 @@
               <div class="calendar-header">
                 <template v-for="(day, indexday) in days" :key="indexday" :style="{ backgroundColor: day.color }">
                   <div v-for="(room, roomIndex) in rooms" class="room-wrapper" :key="roomIndex"
-                    :style="{ height: timeSlots.length * 40 + 30 + 'px', width: itemWidth + 20 + 'px', left: roomIndex * (itemWidth + 20.5) + 'px', top: 0 }">
+                    :style="{ height: timeSlots.length * 40 + 30 + 'px', width: itemWidth + 20.5 + 'px', left: roomIndex * (itemWidth + 20.5) + 'px', top: 0,borderLeft: '1px solid #9A9A9A' }">
                     <template v-for="(time, timeIndex) in localTimeSlots">
                       <div v-if="timeIndex != localTimeSlots.length - 1"
                         :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div' : 'empty-meet-div']"
@@ -89,11 +89,17 @@
                                   }}</div>
                                 <div class="event-person" :style="{ margin: 1 + 'px' }">{{ event.duration }}-({{
                                   event.book_by }})</div>
+                                <template v-if="event.src">
+                                  <img style="position: absolute;top:1px;right: 1px;width: 20px;height: 20px;" :src="event.src" alt="">
+                                </template>
                               </template>
                               <template v-else>
                                 <div class="event-title">{{ event.entry_name }}</div>
                                 <div class="event-time">{{ event.duration }}</div>
                                 <div class="event-person">{{ event.book_by }}</div>
+                                <template v-if="event.src">
+                                  <img style="position: absolute;top:1px;right: 1px;width: 20px;height: 20px;" :src="event.src" alt="">
+                                </template>
                               </template>
                             </div>
                           </div>
@@ -515,9 +521,9 @@ export default defineComponent({
       if (!userinfo || userinfo.level == 0) {
         return this.$t('base.loginoutUser')
       }
-      if (this.normalUser()) {
-        return this.$t('base.normalUser')
-      }
+      // if (this.normalUser()) {
+      //   return this.$t('base.normalUser')
+      // }
       if (roomStatus.disabled == ROOM_STATUS.DISABLED) {
         return this.$t('base.roomDisabled')
       }
@@ -547,9 +553,9 @@ export default defineComponent({
       if (nextTimeStamp < this.currenTimestamp) {
         return
       }
-      if (this.normalUser()) {
-        return
-      }
+      // if (this.normalUser()) {
+      //   return
+      // }
       if (room.disabled == ROOM_STATUS.DISABLED) {
         return
       }
@@ -557,8 +563,9 @@ export default defineComponent({
     },
 
     editMeet(event) {
-      console.log('SingleMeet editMeet event', event)
-      if (this.normalUser()) {
+      const userinfo = JSON.parse(localStorage.getItem(STORAGE.USER_INFO))
+      console.log('SingleMeet editMeet event', event,userinfo)
+      if (this.normalUser() && event.book_by !== userinfo.username) {
         return
       }
       if (event.status == MEETING_STATUS.END) {
@@ -584,6 +591,14 @@ export default defineComponent({
         return false
       }
       return true
+    },
+
+    normalSelfMeet(book_by) {
+      const userinfo = JSON.parse(localStorage.getItem(STORAGE.USER_INFO))
+      if (this.normalUser() && userinfo.username === book_by) {
+        return true
+      }
+      return false
     },
 
     resetScroll() {
@@ -720,6 +735,7 @@ export default defineComponent({
                 date: Common.translateWeekDay(moment(Number(entry.start_time * 1000)).format(this.localLangFormat)),
                 startTime: entry.duration.split('-')[0].trim(),
                 endTime: entry.duration.split('-')[1].trim(),
+                src: entry.repeat_id > 0?'/imgs/cycle_meet_tag.png':this.normalSelfMeet(entry.book_by)?'/imgs/person_meet_tag.png':'',
                 ...entry
               });
             });
@@ -1008,7 +1024,7 @@ export default defineComponent({
   margin: 0px;
   padding: 0px;
   background-color: white;
-  border-right: 1px solid #9A9A9A;
+  // border-right: 1px solid #9A9A9A;
   // z-index: 99;
   // position: relative;
 }

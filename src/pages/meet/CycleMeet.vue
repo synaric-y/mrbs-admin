@@ -68,17 +68,23 @@
                             :class="[event.status == 0 ? 'room-meet-event' : event.status == 1 ? 'room-meet-in-event' : 'room-meet-timeout-event']"
                             @click="editMeet(event)"
                             :style="{ top: minItemHeight * getTimeSlotIndex(event.startTime) + 70 + 'px', left: ((itemWidth + 20) * roomIndex) + roomIndex * 0.5 + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * minItemHeight + 'px' }">
-                            <div class="event-center">
+                            <div class="event-center" style="position: relative;">
                               <template
                                 v-if="(getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) == 1">
                                 <div class="event-title" :style="{ margin: 1 + 'px' }">{{ event.entry_name
                                   }}</div>
                                 <div class="event-person" :style="{ margin: 2 + 'px' }">{{ event.duration }}-({{ event.book_by }})</div>
+                                <template v-if="event.src">
+                                  <img style="position: absolute;top:1px;right: 1px;width: 20px;height: 20px;" :src="event.src" alt="">
+                                </template>
                               </template>
                               <template v-else>
                                 <div class="event-title">{{ event.entry_name }}</div>
                                 <div class="event-time">{{ event.duration }}</div>
                                 <div class="event-person">{{ event.book_by }}</div>
+                                <template v-if="event.src">
+                                  <img style="position: absolute;top:1px;right: 1px;width: 20px;height: 20px;" :src="event.src" alt="">
+                                </template>
                               </template>
                             </div>
                           </div>
@@ -560,9 +566,9 @@ export default defineComponent({
       if (!userinfo || userinfo.level == 0) {
         return this.$t('base.loginoutUser')
       }
-      if (this.normalUser()) {
-        return this.$t('base.normalUser')
-      }
+      // if (this.normalUser()) {
+      //   return this.$t('base.normalUser')
+      // }
       if (roomStatus.disabled == ROOM_STATUS.DISABLED) {
         return this.$t('base.roomDisabled')
       }
@@ -600,9 +606,9 @@ export default defineComponent({
       if (nextTimeStamp < this.currenTimestamp) {
         return
       }
-      if (this.normalUser()) {
-        return
-      }
+      // if (this.normalUser()) {
+      //   return
+      // }
       if (room.disabled == ROOM_STATUS.DISABLED) {
         console.log('Home toMeet disabled', room.disabled)
         return
@@ -611,8 +617,9 @@ export default defineComponent({
     },
 
     editMeet(event) {
-      console.log('SingleMeet editMeet event', event)
-      if (this.normalUser()) {
+      const userinfo = JSON.parse(localStorage.getItem(STORAGE.USER_INFO))
+      console.log('SingleMeet editMeet event', event,userinfo)
+      if (this.normalUser() && event.book_by !== userinfo.username) {
         return
       }
       if (event.status == MEETING_STATUS.END) {
@@ -639,6 +646,14 @@ export default defineComponent({
         return false
       }
       return true
+    },
+
+    normalSelfMeet(book_by) {
+      const userinfo = JSON.parse(localStorage.getItem(STORAGE.USER_INFO))
+      if (this.normalUser() && userinfo.username === book_by) {
+        return true
+      }
+      return false
     },
 
     choseArea(e) {
@@ -772,6 +787,7 @@ export default defineComponent({
                 date: Common.translateWeekDay(moment(Number(entry.start_time * 1000)).format(this.localLangFormat)),
                 startTime: entry.duration.split('-')[0].trim(),
                 endTime: entry.duration.split('-')[1].trim(),
+                src: entry.repeat_id > 0?'/imgs/cycle_meet_tag.png':this.normalSelfMeet(entry.book_by)?'/imgs/person_meet_tag.png':'',
                 ...entry
               });
             });
