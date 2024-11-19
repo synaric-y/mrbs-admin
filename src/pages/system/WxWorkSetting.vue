@@ -11,6 +11,7 @@
         <el-form-item label="企微secret" prop="secret">
           <div class="form-item-content">
             <el-input v-model="form.secret" class="form-item-input" placeholder="请输入" />
+            <TestButton :status="urlStatus" @test="verify" />
           </div>
         </el-form-item>
         <data value=""></data>
@@ -36,11 +37,13 @@ import {ElMessage} from "element-plus";
 import {Clock, Monitor, User} from "@element-plus/icons-vue";
 import {HOST} from "@/config.js";
 import Layout from "@/components/Layout.vue";
+import TestButton from "@/components/TestButton.vue";
+import axios from "axios";
 const SECOND_PER_MINUTE = 60
 
 
 export default {
-  components: {Layout},
+  components: {Layout,TestButton},
   mixins: [PageMixin],
   data() {
     return {
@@ -59,7 +62,8 @@ export default {
         agentId: [
           {required: true, message: '请输入agentId', trigger: 'blur'},
         ],
-      }
+      },
+      urlStatus: 'untested', //枚举值untested testing tested
     }
   },
   created() {
@@ -133,7 +137,37 @@ export default {
           })
         }
       })
-    }
+    },
+
+    verify() {
+      if (this.form.corpId.trim() === '' || this.form.secret.trim() === '') {
+        ElMessage.error({
+          message: 'corpid或者secret不能未空！'
+        })
+        return
+      }
+      // 测试联通
+      this.urlStatus = 'testing'
+      axios({
+        url: `${HOST}/web/call.php?act=test%2Ftest_wxwork`,
+        method: 'POST',
+        data: { corpid: this.form.corpId, secret: this.form.secret },
+      }).then(({ data }) => {
+        if (data.code !== 0) {
+          ElMessage.error({
+            message: '无效的请求地址'
+          })
+          this.urlStatus = 'untested'
+          return
+        }
+        this.urlStatus = 'tested'
+        ElMessage.success({
+          message: '请求地址验证成功！'
+        })
+      }).catch(e => {
+
+      })
+    },
   },
   mounted() {
 
