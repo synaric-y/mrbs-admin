@@ -81,10 +81,9 @@
                           <div :key="indexeve"
                             :class="[event.status == 0 ? 'room-meet-event' : event.status == 1 ? 'room-meet-in-event' : 'room-meet-timeout-event']"
                             @click="editMeet(event)"
-                            :style="{top: minItemHeight * getTimeSlotIndex(event.startTime) + 30 + 'px', left: (itemWidth + 21) * (indexday * rooms.length + roomIndex) + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * minItemHeight + 'px' }">
+                            :style="{top: minItemHeight * getTimeSlotIndex(event.startTime) + 30 + 'px', left: (itemWidth + 21) * (indexday * rooms.length + roomIndex) + 'px', width: itemWidth + 'px', height: event.height + 'px' }">
                             <div class="event-center">
-                              <template
-                                v-if="(getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) == 1">
+                              <template v-if="(event.end_time - event.start_time) / 60 === 15">
                                 <div class="event-title" :style="{ margin: 1 + 'px' }">{{ event.entry_name
                                   }}</div>
                                 <div class="event-person" :style="{ margin: 1 + 'px' }">{{ event.duration }}-({{
@@ -161,6 +160,8 @@ export default defineComponent({
       startStamp: 0,
       endStamp: 0,
       nowTime: '',
+      min_time: '',
+      max_time: '',
       screenHeight: 700,
       localLangFormat: 'dddd, MMMM Do YYYY',
       interval: null,
@@ -504,37 +505,42 @@ export default defineComponent({
       return formattedDates;
     },
 
-    canHoverDiv(day, hoverTime, room) {
-      let canHover = true
-      for (let i = 0; i < this.events.length; i++) {
-        const event = this.events[i]
-        if (day.date === event.date && event.startTime === hoverTime && room.room_id === event.room_id) {
-          canHover = false
-          break
-        }
-      }
-      return canHover
-    },
+    // canHoverDiv(day, hoverTime, room) {
+    //   let canHover = true
+    //   for (let i = 0; i < this.events.length; i++) {
+    //     const event = this.events[i]
+    //     if (day.date === event.date && event.startTime === hoverTime && room.room_id === event.room_id) {
+    //       canHover = false
+    //       break
+    //     }
+    //   }
+    //   return canHover
+    // },
 
     getMeetStatusText(dayTime, roomStatus, minuteTime) {
       const userinfo = JSON.parse(localStorage.getItem(STORAGE.USER_INFO))
       if (!userinfo || userinfo.level == 0) {
         return this.$t('base.loginoutUser')
       }
-      // if (this.normalUser()) {
-      //   return this.$t('base.normalUser')
-      // }
       if (roomStatus.disabled == ROOM_STATUS.DISABLED) {
         return this.$t('base.roomDisabled')
       }
-      const lang = Common.getLocalLang()
-      const appeedStr = dayTime.date + ' ' + minuteTime
-      const formatStr = Common.getAssignFormatWithAM(appeedStr, lang)
-      const nextTimeStamp = moment.tz(formatStr, this.currentTimeZone).unix();
+      const nextTimeStamp = this.getDateTimeStamp(dayTime.date,minuteTime)
       if (nextTimeStamp < this.currenTimestamp) {
         return this.$t('base.passTime')
       }
       return this.$t('base.roomAbled')
+    },
+
+    getDateTimeStamp(date,hour_minute) {
+      if (!date || !hour_minute) {
+        return 0
+      }
+      const lang = Common.getLocalLang()
+      const appeedStr = date + ' ' + hour_minute
+      const formatStr = Common.getAssignFormatWithAM(appeedStr, lang)
+      const nextTimeStamp = moment.tz(formatStr, this.currentTimeZone).unix();
+      return nextTimeStamp
     },
 
     toMeet(time, room, day) {
@@ -545,17 +551,11 @@ export default defineComponent({
       this.addParams.resolution = room.resolution
       this.addParams.area_id = room.area_id
       this.addParams.area_name = room.area_name
-      const lang = Common.getLocalLang()
-      const appeedStr = day.date + ' ' + time
-      const formatStr = Common.getAssignFormatWithAM(appeedStr, lang)
-      const nextTimeStamp = moment.tz(formatStr, this.currentTimeZone).unix();
-      this.addParams.timeStamp = nextTimeStamp
-      if (nextTimeStamp < this.currenTimestamp) {
+      console.log('toMeet day.date--time',day.date,time)
+      this.addParams.timeStamp = this.getDateTimeStamp(day.date,time)
+      if (this.addParams.timeStamp < this.currenTimestamp) {
         return
       }
-      // if (this.normalUser()) {
-      //   return
-      // }
       if (room.disabled == ROOM_STATUS.DISABLED) {
         return
       }
@@ -702,8 +702,12 @@ export default defineComponent({
           return
         }
         this.currenTimestamp = data.timestamp
+        this.min_time = data.min_time
+        this.max_time = data.max_time
         this.min_start = Common.convertTo24Hour(data.min_time)
         this.max_end = Common.convertTo24Hour(data.max_time)
+        // console.log('getMeetRooms data.min_time--data.max_time',data.min_time,data.max_time)
+        // console.log('getMeetRooms this.min_start--this.max_end',this.min_start,this.max_end)
         this.nowTime = data.time
         this.getInMeeting(data)
         this.$nextTick(() => {
@@ -726,16 +730,21 @@ export default defineComponent({
           const roomName = room.room_name
           if (room && room.entries && room.entries.length > 0) {
             room.entries.forEach(entry => {
+              const week_day = Common.translateWeekDay(moment(Number(entry.start_time * 1000)).format(this.localLangFormat))
+              const min_stamp = this.getDateTimeStamp(week_day,this.min_time)
+              const max_stamp = this.getDateTimeStamp(week_day,this.max_time)
               entriesRoom.push({
                 area_id: areaId,
                 area_name: areaName,
                 room_id: roomId,
                 room_name: roomName,
                 disabled: room.disabled,
-                date: Common.translateWeekDay(moment(Number(entry.start_time * 1000)).format(this.localLangFormat)),
+                date: week_day,
                 startTime: entry.duration.split('-')[0].trim(),
                 endTime: entry.duration.split('-')[1].trim(),
                 src: entry.repeat_id > 0?'/admin/imgs/cycle_meet_tag.png':this.normalSelfMeet(entry.book_by)?'/admin/imgs/person_meet_tag.png':'',
+                top: (entry.start_time - min_stamp) / (max_stamp - min_stamp),
+                height: (entry.end_time - entry.start_time) / 900 * this.minItemHeight,
                 ...entry
               });
             });
