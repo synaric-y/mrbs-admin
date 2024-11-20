@@ -1003,7 +1003,7 @@ export default defineComponent({
   height: 40px;
   transition: all 0.3s ease;
   padding: 0px 10px;
-  z-index: -1;
+  z-index: 100;
 }
 
 .empty-meet-div {
