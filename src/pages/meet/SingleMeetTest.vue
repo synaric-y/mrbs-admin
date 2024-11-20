@@ -764,6 +764,18 @@ export default defineComponent({
   width: auto;
 }
 
+.el-icon {
+  margin-right: 8px;
+}
+
+.el-button {
+  margin: 10px;
+}
+
+.el-select {
+  min-width: 150px;
+}
+
 .now-time {
   display: flex;
   flex-direction: row;

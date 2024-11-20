@@ -499,16 +499,4 @@ body {
   top: 10px;
 }
 
-.el-icon {
-  margin-right: 8px;
-}
-
-.el-button {
-  margin: 10px;
-}
-
-.el-select {
-  min-width: 150px;
-}
-
 </style>
