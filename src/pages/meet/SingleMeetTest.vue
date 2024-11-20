@@ -2,7 +2,7 @@
   <el-container class="container-sub-page">
     <el-main class="container-sub-page-main">
       <div class="sub-title-wrapper">
-        <div class="sub-title">单次会议</div>
+        <div class="sub-title">{{$t('base.singleMeet')}}</div>
       </div>
       <div class="menu-content-wrapper">
         <div class="toolbar" v-if="!showLoading">
@@ -12,7 +12,7 @@
               <span class="now-time-span">{{ nowTime }}</span>
             </div>
             <div class="all-area">
-              <el-select v-model="currenAreaName" placeholder="所有区域" @change="choseArea">
+              <el-select v-model="currenAreaName" :placeholder="$t('base.allAreas')" @change="choseArea">
                 <el-option v-for="(area, index) in page_cache_areas" :label="area.area_name" :value="area.area_id"
                   :key="index">
                 </el-option>
@@ -145,7 +145,6 @@ export default defineComponent({
     return {
       currenArea: '',
       currenAreaName: this.$t('base.all'),
-      hoursNumber: 24,
       dayRrangeVal: SELECT_DAY.THREE,
       baseTime: '',
       startTime: this.$t('base.startDate'),

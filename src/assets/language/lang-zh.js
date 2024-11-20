@@ -61,6 +61,7 @@ export const langZh = {
         copiedToClipboard: '已复制到剪贴板',
         none: '无',
         viewMore: '查看更多',
+        singleMeet: '单次会议',
     },
     meet: {
         title: '编辑会议',

@@ -61,6 +61,7 @@ export const langEn = {
         copiedToClipboard: 'Copied to clipboard',
         none: 'None',
         viewMore: 'More',
+        singleMeet: 'Single meeting',
     },
     meet: {
         title: 'Editing Meetings',

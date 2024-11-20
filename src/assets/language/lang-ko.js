@@ -61,6 +61,7 @@ export const langKo = {
         copiedToClipboard: '클립보드에 복사됨',
         none: '없음',
         viewMore: '자세히 보기',
+        singleMeet: '단일 회의',
     },
     meet: {
         title: '편집회의',
