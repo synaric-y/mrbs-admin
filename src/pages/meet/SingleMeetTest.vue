@@ -207,7 +207,7 @@ export default defineComponent({
   },
   computed: {
     scrollbarWidth() {
-      return this.rooms.length * this.days.length * (this.itemWidth + 21) + 'px';
+      return this.rooms.length * this.days.length * (this.itemWidth + 21) + 'px'
     },
   },
 
@@ -259,7 +259,7 @@ export default defineComponent({
           this.dayRrangeVal = selectDays
           this.dayRrange(selectDays,true)
         } else {
-          this.dayRrange(SELECT_DAY.THREE,true);
+          this.dayRrange(SELECT_DAY.THREE,true)
         }
       }
       if (selectArea && selectAreaName) {
@@ -294,16 +294,16 @@ export default defineComponent({
     },
 
     scrollHorizontal(scrollValue) {
-      if (this.isScrolling) return;
-      this.isScrolling = true;
-      const maxScrollLeft = this.$refs.contentScroll.$refs.wrapRef.scrollWidth - this.$refs.contentScroll.$refs.wrapRef.clientWidth;
-      const tempScrollValue = Math.max(0, Math.min(maxScrollLeft, maxScrollLeft));
+      if (this.isScrolling) return
+      this.isScrolling = true
+      const maxScrollLeft = this.$refs.contentScroll.$refs.wrapRef.scrollWidth - this.$refs.contentScroll.$refs.wrapRef.clientWidth
+      const tempScrollValue = Math.max(0, Math.min(maxScrollLeft, maxScrollLeft))
       const syncHirizontalScroll = () => {
         this.$refs.contentScroll.$refs.wrapRef.scrollLeft = maxScrollLeft / 100 * scrollValue
         this.$refs.calendarScroll.$refs.wrapRef.scrollLeft = maxScrollLeft / 100 * scrollValue
-        this.isScrolling = false;
-      };
-      window.requestAnimationFrame(syncHirizontalScroll);
+        this.isScrolling = false
+      }
+      window.requestAnimationFrame(syncHirizontalScroll)
     },
 
     closeDialogMeetForm() {
@@ -317,13 +317,13 @@ export default defineComponent({
     },
 
     getAllRoom(areas) {
-      const allRoom = [];
+      const allRoom = []
       areas.forEach(area => {
         const areaId = area.area_id
         const areaName = area.area_name
         area.rooms.forEach(room => {
-          const roomId = room.room_id;
-          const roomName = room.room_name;
+          const roomId = room.room_id
+          const roomName = room.room_name
           allRoom.push({
             area_id: areaId,
             area_name: areaName,
@@ -333,9 +333,9 @@ export default defineComponent({
             disabled: room.disabled,
             room_id: roomId,
             room_name: `${areaName} ${roomName}`,
-          });
-        });
-      });
+          })
+        })
+      })
       console.log('SingleMeet allRoom:', allRoom)
       return allRoom
     },
@@ -356,7 +356,7 @@ export default defineComponent({
         const minResolution = temp_areas.reduce((min, area) => {
           const resolution = parseInt(area.resolution, 10)
           return resolution < min ? resolution : min
-        }, 900);
+        }, 900)
         this.minDuration = minResolution
         const firstArea = {
           "area_id": "",
@@ -440,31 +440,31 @@ export default defineComponent({
       const today = moment().tz(timeZone)
       const oneDays = [
         Common.translateWeekDay(today.format(this.localLangFormat)),
-      ];
+      ]
       return oneDays
     },
 
     getThreeDays(timeZone) {
-      const today = moment().tz(timeZone);
+      const today = moment().tz(timeZone)
       const nextThreeDays = [
         Common.translateWeekDay(today.format(this.localLangFormat)),
         Common.translateWeekDay(today.add(1, 'days').format(this.localLangFormat)),
         Common.translateWeekDay(today.add(1, 'days').format(this.localLangFormat))
-      ];
+      ]
       return nextThreeDays
     },
 
     getCurrenWeek(timeZone) {
-      const startDay = moment().tz(timeZone);
-      const startOfWeek = startDay.clone().startOf('week');
-      const endOfWeek = startDay.clone().endOf('week');
-      const weekDays = [];
-      let day = startOfWeek;
+      const startDay = moment().tz(timeZone)
+      const startOfWeek = startDay.clone().startOf('week')
+      const endOfWeek = startDay.clone().endOf('week')
+      const weekDays = []
+      let day = startOfWeek
       while (day <= endOfWeek) {
-        weekDays.push(Common.translateWeekDay(day.format(this.localLangFormat)));
-        day = day.add(1, 'days');
+        weekDays.push(Common.translateWeekDay(day.format(this.localLangFormat)))
+        day = day.add(1, 'days')
       }
-      return weekDays;
+      return weekDays
     },
 
     getDaysBetween(startDate, endDate) {
@@ -483,10 +483,10 @@ export default defineComponent({
         return {
           date: day,
           color: (index + 1) % 2 == 0 ? "#0288d1" : "#6a1b9a"
-        };
-      });
+        }
+      })
       console.log('formatDays days :',formattedDates)
-      return formattedDates;
+      return formattedDates
     },
 
     getMeetStatusText(dayTime, roomStatus, minuteTime) {
@@ -511,7 +511,7 @@ export default defineComponent({
       const lang = Common.getLocalLang()
       const appeedStr = date + ' ' + hour_minute
       const formatStr = Common.getAssignFormatWithAM(appeedStr, lang)
-      const nextTimeStamp = moment.tz(formatStr, this.currentTimeZone).unix();
+      const nextTimeStamp = moment.tz(formatStr, this.currentTimeZone).unix()
       return nextTimeStamp
     },
 
@@ -537,7 +537,7 @@ export default defineComponent({
     editMeet(event) {
       const userinfo = JSON.parse(localStorage.getItem(STORAGE.USER_INFO))
       console.log('SingleMeet editMeet event', event,userinfo)
-      if (this.normalUser() && event.book_by !== userinfo.username) {
+      if (Common.normalUser() && event.book_by !== userinfo.username) {
         return
       }
       if (event.status == MEETING_STATUS.END) {
@@ -556,34 +556,17 @@ export default defineComponent({
       this.dialogMeetForm = true
     },
 
-    normalUser() {
-      const userinfo = JSON.parse(localStorage.getItem(STORAGE.USER_INFO))
-      const level = {}
-      if (userinfo && userinfo.level == USER_TYPE.ADMIN) {
-        return false
-      }
-      return true
-    },
-
-    normalSelfMeet(book_by) {
-      const userinfo = JSON.parse(localStorage.getItem(STORAGE.USER_INFO))
-      if (this.normalUser() && userinfo.username === book_by) {
-        return true
-      }
-      return false
-    },
-
     resetScroll() {
       if (this.isSyncing) return
       this.isSyncing = true
+      const contentScrollWrap = this.$refs.contentScroll?.$refs.wrapRef
+      const timeScrollWrap = this.$refs.timeScroll?.$refs.wrapRef
+      const calendarScrollWrap = this.$refs.calendarScroll?.$refs.wrapRef
+      if (!contentScrollWrap || !timeScrollWrap || !calendarScrollWrap) {
+        this.isSyncing = false
+        return
+      }
       requestAnimationFrame(() => {
-        const contentScrollWrap = this.$refs.contentScroll?.$refs.wrapRef
-        const timeScrollWrap = this.$refs.timeScroll?.$refs.wrapRef
-        const calendarScrollWrap = this.$refs.calendarScroll?.$refs.wrapRef
-        if (!contentScrollWrap || !timeScrollWrap || !calendarScrollWrap) {
-          this.isSyncing = false
-          return;
-        }
         timeScrollWrap.scrollTop = 0
         calendarScrollWrap.scrollLeft = 0
         contentScrollWrap.scrollTop = 0
@@ -593,12 +576,12 @@ export default defineComponent({
       })
     },
 
-    choseArea(e) {
-      this.currenArea = e;
-      const area = this.page_cache_areas.filter(area => area.area_id == e)
+    choseArea(selected_area) {
+      this.currenArea = selected_area
+      const area = this.page_cache_areas.filter(area => area.area_id == selected_area)
       const areaName = area[0].area_name
       this.currenAreaName = areaName
-      this.filterDateStore.setArea(e)
+      this.filterDateStore.setArea(selected_area)
       this.filterDateStore.setAreaName(areaName)
       this.getCurrentAreaRooms(this.currenArea)
       this.resetScroll()
@@ -616,10 +599,10 @@ export default defineComponent({
       }
     },
 
-    choseDate(e) {
-      if (e.length > 0) {
-        const start_date = moment(e[0]).format('YYYY-MM-DD')
-        const end_date = moment(e[1]).format('YYYY-MM-DD')
+    choseDate(date) {
+      if (date.length > 0) {
+        const start_date = moment(date[0]).format('YYYY-MM-DD')
+        const end_date = moment(date[1]).format('YYYY-MM-DD')
         const start = moment(start_date)
         const end = moment(end_date)
         const diffDay = (end - start) / (24 * 60 * 60 * 1000)
@@ -649,11 +632,11 @@ export default defineComponent({
 
     formatTime(timestr) {
       if (!timestr) {
-        return 0;
+        return 0
       }
-      const date = new Date(timestr);
-      const timestamp = date.getTime();
-      return timestamp;
+      const date = new Date(timestr)
+      const timestamp = date.getTime()
+      return timestamp
     },
 
     getMeetRooms() {
@@ -693,7 +676,7 @@ export default defineComponent({
       if (!data || data.areas == null || data.areas.length == 0) {
         return
       }
-      const entriesRoom = [];
+      const entriesRoom = []
       data.areas.forEach(area => {
         const areaId = area.area_id
         const areaName = area.area_name
@@ -714,15 +697,15 @@ export default defineComponent({
                 date: week_day,
                 startTime: entry.duration.split('-')[0].trim(),
                 endTime: entry.duration.split('-')[1].trim(),
-                src: entry.repeat_id > 0?'/admin/imgs/cycle_meet_tag.png':this.normalSelfMeet(entry.book_by)?'/admin/imgs/person_meet_tag.png':'',
+                src: entry.repeat_id > 0?'/admin/imgs/cycle_meet_tag.png':Common.normalSelfMeet(entry.book_by)?'/admin/imgs/person_meet_tag.png':'',
                 top: (entry.start_time - min_stamp) / (max_stamp - min_stamp),
                 height: (entry.end_time - entry.start_time) / 900 * this.minItemHeight,
                 ...entry
-              });
-            });
+              })
+            })
           }
-        });
-      });
+        })
+      })
       this.events = entriesRoom
       console.log('SingleMeet getMeetRooms entriesRoom:', entriesRoom)
     },

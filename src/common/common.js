@@ -373,4 +373,12 @@ export class Common {
         }
         return true
     }
+
+    static normalSelfMeet(book_by) {
+        const userinfo = JSON.parse(localStorage.getItem(STORAGE.USER_INFO))
+        if (Common.normalUser() && userinfo.username === book_by) {
+            return true
+        }
+        return false
+    }
 }
