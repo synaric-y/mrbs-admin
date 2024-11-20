@@ -2,7 +2,7 @@
   <el-container class="container-sub-page">
     <el-main class="container-sub-page-main">
       <div class="sub-title-wrapper">
-        <div class="sub-title">单次会议</div>
+        <div class="sub-title">{{$t('base.singleMeet')}}</div>
       </div>
       <div class="menu-content-wrapper">
         <div class="toolbar" v-if="!showLoading">
@@ -12,7 +12,7 @@
               <span class="now-time-span">{{ nowTime }}</span>
             </div>
             <div class="all-area">
-              <el-select v-model="currenAreaName" placeholder="All Areas" @change="choseArea">
+              <el-select v-model="currenAreaName" :placeholder="$t('base.allAreas')" @change="choseArea">
                 <el-option v-for="(area, index) in page_cache_areas" :label="area.area_name" :value="area.area_id"
                   :key="index">
                 </el-option>
@@ -21,8 +21,8 @@
             <div class="group-buttons">
               <el-button v-for="(item, index) in groupButtons" type="primary" size="small"
                 :class="['', item.day == dayRrangeVal ? 'day-button-active' : 'day-button']"
-                @click="dayRrange(item.day)">{{
-                item.name }}</el-button>
+                @click="dayRrange(item.day,false)">{{
+                  item.name }}</el-button>
             </div>
             <div class="date-picker">
               <el-date-picker v-model="baseTime" type="daterange" value-format="YYYY-MM-DD"
@@ -32,31 +32,44 @@
           </div>
         </div>
         <div class="table-container" v-if="!showLoading">
-          <el-scrollbar ref="timeScroll" id="time-scrollbar" class="time-table-view" @scroll="syncScroll('timeScroll')"
-            :style="{ height: 'calc(100vh - 150px - 65px)' }">
-            <div class="time-slots-wrapper">
-              <div v-for="(time, timeIndex) in timeSlots" :key="timeIndex" class="time-slot">
-                {{ time }}
+          <div class="calendar-scrollbar-wrapper">
+            <div class="placeholder-view"></div>
+            <el-scrollbar ref="calendarScroll" id="calendar-scrollbar" :style="{ width: scrollbarWidth }"
+              @scroll="syncScroll('calendarScroll')">
+              <div class="day-header-wrapper">
+                <div v-for="(day, indexday) in days" class="day-header" :key="indexday"
+                  :style="{ backgroundColor: day.color }">
+                  {{ day.date }}
+                  <div class="room-header-wrapper">
+                    <div class="room-header" :style="{ width: itemWidth + 20 + 'px' }" v-for="(room, roomIndex) in rooms"
+                      :key="roomIndex">
+                      {{ room.room_name }}
+                    </div>
+                  </div>
+                </div>
               </div>
-            </div>
-          </el-scrollbar>
-
-          <el-scrollbar ref="contentScroll" id="content-scrollbar" class="scroll-table-view" @scroll="syncScroll('contentScroll')" always
-            :style="{ height: 'calc(100vh - 150px + 40px)' }">
-            <div class="calendar-header">
-              <div class="time-header">
+            </el-scrollbar>
+          </div>
+          <div class="meet-scrollbar-wrapper">
+            <el-scrollbar ref="timeScroll" id="time-scrollbar" class="slots-time-scrollbar"
+              @scroll="syncScroll('timeScroll')" :style="{ height: 'calc(100vh - 150px - 65px)' }">
+              <div class="time-slots-wrapper">
+                <div v-for="(time, timeIndex) in timeSlots" :key="timeIndex" class="time-slot">
+                  {{ time }}
+                </div>
               </div>
-              <div v-for="(day, indexday) in days" :key="indexday" class="day-header"
-                :style="{ backgroundColor: day.color }">
-                {{ day.date }}
-                <div class="room-header">
-                  <div v-for="(room, roomIndex) in rooms" :key="roomIndex" class="room-name"
-                    :style="{ height: timeSlots.length * 40 + 70 + 'px', width: itemWidth + 'px' }">
-                    {{ room.room_name }}
+            </el-scrollbar>
+            <el-scrollbar :view-style="{ width: scrollbarWidth }" ref="contentScroll" id="content-scrollbar"
+              class="content-meet-scrollbar" @scroll="syncScroll('contentScroll')" always
+              :style="{ height: 'calc(100vh - 150px - 25px)' }">
+              <div class="calendar-header">
+                <template v-for="(day, indexday) in days" :key="indexday" :style="{ backgroundColor: day.color }">
+                  <div v-for="(room, roomIndex) in rooms" class="room-wrapper" :key="roomIndex"
+                    :style="{ height: timeSlots.length * 40 + 30 + 'px', width: itemWidth + 20.5 + 'px', left: roomIndex * (itemWidth + 20.5) + 'px', top: 0,borderLeft: '1px solid #9A9A9A' }">
                     <template v-for="(time, timeIndex) in localTimeSlots">
                       <div v-if="timeIndex != localTimeSlots.length - 1"
                         :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div' : 'empty-meet-div']"
-                        :style="{ height: minItemHeight + 'px', width: itemWidth + 'px', top: ((timeIndex) * minItemHeight + 70) + 'px' }"
+                        :style="{ height: minItemHeight + 'px', width: itemWidth + 'px', left: (indexday * rooms.length + roomIndex) * (itemWidth + 21) + 'px', top: ((timeIndex) * minItemHeight + 30) + 'px' }"
                         @click="toMeet(time, room, day)">
                         <text class="empty-meet-duration">{{ time }}</text>
                         <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text>
@@ -68,19 +81,24 @@
                           <div :key="indexeve"
                             :class="[event.status == 0 ? 'room-meet-event' : event.status == 1 ? 'room-meet-in-event' : 'room-meet-timeout-event']"
                             @click="editMeet(event)"
-                            :style="{ top: minItemHeight * getTimeSlotIndex(event.startTime) + 70 + 'px', left: ((itemWidth + 20) * roomIndex) + roomIndex * 0.5 + 'px', width: itemWidth + 'px', height: (getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) * minItemHeight + 'px' }">
+                            :style="{top: minItemHeight * getTimeSlotIndex(event.startTime) + 30 + 'px', left: (itemWidth + 21) * (indexday * rooms.length + roomIndex) + 'px', width: itemWidth + 'px', height: event.height + 'px' }">
                             <div class="event-center">
-                              <template
-                                v-if="(getTimeSlotIndex(event.endTime) - getTimeSlotIndex(event.startTime)) == 1">
+                              <template v-if="(event.end_time - event.start_time) / 60 === 15">
                                 <div class="event-title" :style="{ margin: 1 + 'px' }">{{ event.entry_name
                                   }}</div>
-                                <div class="event-person" :style="{ margin: 2 + 'px' }">{{ event.duration }}-({{
+                                <div class="event-person" :style="{ margin: 1 + 'px' }">{{ event.duration }}-({{
                                   event.book_by }})</div>
+                                <template v-if="event.src">
+                                  <img style="position: absolute;top:1px;right: 1px;width: 20px;height: 20px;" :src="event.src" alt="">
+                                </template>
                               </template>
                               <template v-else>
                                 <div class="event-title">{{ event.entry_name }}</div>
                                 <div class="event-time">{{ event.duration }}</div>
                                 <div class="event-person">{{ event.book_by }}</div>
+                                <template v-if="event.src">
+                                  <img style="position: absolute;top:1px;right: 1px;width: 20px;height: 20px;" :src="event.src" alt="">
+                                </template>
                               </template>
                             </div>
                           </div>
@@ -88,20 +106,14 @@
                       </template>
                     </template>
                   </div>
-                  <div class="room-devide-line"></div>
-                </div>
+                </template>
               </div>
-            </div>
-          </el-scrollbar>
+            </el-scrollbar>
+          </div>
         </div>
-
-        <!-- <div class="slider-container-horizontal">
+        <div class="slider-container-horizontal">
           <el-slider v-model="scrollLeft" @input="scrollHorizontal" />
         </div>
-        <div class="slider-container-vertical">
-          <el-slider :show-tooltip="false" v-model="scrollTop" vertical height="calc( 100vh - 75px - 40px )"
-            @input="scrollVertical" />
-        </div> -->
         <SingleMeetCMP v-if="dialogMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas"
           :entry_id="entry_id" @close="closeDialogMeetForm" />
         <CycleMeetCMP v-if="dialogCycleMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas"
@@ -133,21 +145,18 @@ export default defineComponent({
     return {
       currenArea: '',
       currenAreaName: this.$t('base.all'),
-      customDate: null,
-      hoursNumber: 24,
       dayRrangeVal: SELECT_DAY.THREE,
       baseTime: '',
       startTime: this.$t('base.startDate'),
       endTime: this.$t('base.endDate'),
       currentTimeZone: 'Asia/Shanghai',
-      areas: [],
-      meetRooms: [],
       screenSize: {},
       itemWidth: 228,
-      scrollY: 0,
       startStamp: 0,
       endStamp: 0,
       nowTime: '',
+      min_time: '',
+      max_time: '',
       screenHeight: 700,
       localLangFormat: 'dddd, MMMM Do YYYY',
       interval: null,
@@ -175,23 +184,11 @@ export default defineComponent({
       days: [],
       rooms: ["A", "B", "C", "D"],
       events: [],
-      timeSlots: [
-        "08:00AM", "ㆍ",
-        "09:00AM", "ㆍ", "10:00AM", "ㆍ", "11:00AM", "ㆍ", "12:00PM", "ㆍ",
-        "01:00PM", "ㆍ", "02:00PM", "ㆍ", "03:00PM", "ㆍ", "04:00PM", "ㆍ",
-        "05:00PM", "ㆍ", "06:00PM", "ㆍ", "07:00PM", "ㆍ", "08:00PM", "ㆍ", "09:00PM"
-      ],
-      localTimeSlots: [
-        "08:00AM", "08:30AM",
-        "09:00AM", "09:30AM", "10:00AM", "10:30AM", "11:00AM", "11:30AM", "12:00PM", "12:30PM",
-        "01:00PM", "01:30PM", "02:00PM", "02:30PM", "03:00PM", "03:30PM", "04:00PM", "04:30PM",
-        "05:00PM", "05:30PM", "06:00PM", "06:30PM", "07:00PM", "07:30PM", "08:00PM", "08:30PM", "09:00PM"
-      ],
+      timeSlots: [],
+      localTimeSlots: [],
       dialogMeetForm: false,
       dialogCycleMeetForm: false,
       form_mode: 0,
-      currentHourMinute: '',
-      currentTimeZone: 'Asia/Shanghai',
       page_cache_areas: [],
       addParams: {
         area_id: '',
@@ -203,9 +200,14 @@ export default defineComponent({
       },
       repeat_id: 0,
       isSyncing: false,
+      isScrolling: false,
       scrollLeft: 0,
-      scrollTop: 100,
     };
+  },
+  computed: {
+    scrollbarWidth() {
+      return this.rooms.length * this.days.length * (this.itemWidth + 21) + 'px'
+    },
   },
 
   mounted() {
@@ -225,63 +227,6 @@ export default defineComponent({
   },
 
   methods: {
-
-    syncScroll(refName) {
-      if (this.isSyncing) return;
-      this.isSyncing = true;
-      requestAnimationFrame(() => {
-        const contentScrollWrap = this.$refs.contentScroll?.$refs.wrapRef;
-        const timeScrollWrap = this.$refs.timeScroll?.$refs.wrapRef;
-        if (!contentScrollWrap || !timeScrollWrap) {
-          this.isSyncing = false;
-          return;
-        }
-        if (refName === 'contentScroll') {
-          timeScrollWrap.scrollTop = contentScrollWrap.scrollTop;
-        } else if (refName === 'timeScroll') {
-          contentScrollWrap.scrollTop = timeScrollWrap.scrollTop;
-        }
-        this.isSyncing = false;
-      });
-    },
-
-    scrollHorizontal(){
-      const that = this
-      const contentScrollDom = document.getElementById('content-scrollbar')
-      const timeScroll = document.getElementById('time-scrollbar')
-      if (window.requestAnimationFrame) {
-        let fun = () => {
-          scrollDom.scrollLeft = that.scrollLeft / 100 * (table.scrollWidth-scrollDom.clientWidth)
-        };
-        window.requestAnimationFrame(fun);
-      }
-    },
-    scrollVertical(){
-      const that = this
-      const contentScrollDom = document.getElementById('content-scrollbar')
-      const timeScroll = document.getElementById('time-scrollbar')
-      if (window.requestAnimationFrame) {
-        let fun = () => {
-          scrollDom.scrollTop = (100-that.scrollTop) / 100 * (table.scrollHeight-scrollDom.clientHeight)
-        };
-        window.requestAnimationFrame(fun);
-      }
-    },
-
-    // syncScroll(refName) {
-    //   console.log('SingleMeet syncScroll')
-    //   const contentScrollWrap = this.$refs.contentScroll.$refs.wrapRef;
-    //   const timeScrollWrap = this.$refs.timeScroll.$refs.wrapRef;
-    //   if (refName === 'contentScroll') {
-    //     timeScrollWrap.scrollTop = contentScrollWrap.scrollTop;
-    //   } else if (refName === 'timeScroll') {
-    //     contentScrollWrap.scrollTop = timeScrollWrap.scrollTop;
-    //   }
-    // },
-
-    disabledDate(time) {
-      return time.getTime() < Date.now() - 86400000;
-    },
     startSync() {
       if (this.interval) {
         clearInterval(this.interval)
@@ -290,7 +235,7 @@ export default defineComponent({
       this.getSyncInterval()
       this.interval = setInterval(() => {
         this.getSyncInterval()
-      }, 20000)
+      }, 1000 * 20)
     },
     getSyncInterval() {
       this.filterDateStore = FilterDateStore()
@@ -311,17 +256,53 @@ export default defineComponent({
         this.endStamp = Common.getThreeDaysTimestamps().end
         if (selectDays) {
           this.dayRrangeVal = selectDays
-          this.dayRrange(selectDays)
+          this.dayRrange(selectDays,true)
         } else {
-          this.dayRrange(SELECT_DAY.THREE);
+          this.dayRrange(SELECT_DAY.THREE,true)
         }
       }
       if (selectArea && selectAreaName) {
         this.currenAreaName = selectAreaName
         this.currenArea = selectArea
       }
-      this.getCurrentAreaRooms(this.currenArea)
+      this.getCurrentAreaRooms(this.currenArea,true)
       this.getMeetRooms()
+    },
+
+    syncScroll(refName) {
+      if (this.isSyncing) return
+      this.isSyncing = true
+      const contentScrollWrap = this.$refs.contentScroll?.$refs.wrapRef
+      const timeScrollWrap = this.$refs.timeScroll?.$refs.wrapRef
+      const calendarScrollWrap = this.$refs.calendarScroll?.$refs.wrapRef
+      if (!contentScrollWrap || !timeScrollWrap || !calendarScrollWrap) {
+        this.isSyncing = false
+        return
+      }
+      requestAnimationFrame(() => {
+        if (refName === 'contentScroll') {
+          timeScrollWrap.scrollTop = contentScrollWrap.scrollTop
+          calendarScrollWrap.scrollLeft = contentScrollWrap.scrollLeft
+        } else if (refName === 'timeScroll') {
+          contentScrollWrap.scrollTop = timeScrollWrap.scrollTop
+        } else if (refName === 'calendarScroll') {
+          contentScrollWrap.scrollLeft = calendarScrollWrap.scrollLeft
+        }
+        this.isSyncing = false
+      });
+    },
+
+    scrollHorizontal(scrollValue) {
+      if (this.isScrolling) return
+      this.isScrolling = true
+      const maxScrollLeft = this.$refs.contentScroll.$refs.wrapRef.scrollWidth - this.$refs.contentScroll.$refs.wrapRef.clientWidth
+      const tempScrollValue = Math.max(0, Math.min(maxScrollLeft, maxScrollLeft))
+      const syncHirizontalScroll = () => {
+        this.$refs.contentScroll.$refs.wrapRef.scrollLeft = maxScrollLeft / 100 * scrollValue
+        this.$refs.calendarScroll.$refs.wrapRef.scrollLeft = maxScrollLeft / 100 * scrollValue
+        this.isScrolling = false
+      }
+      window.requestAnimationFrame(syncHirizontalScroll)
     },
 
     closeDialogMeetForm() {
@@ -335,13 +316,13 @@ export default defineComponent({
     },
 
     getAllRoom(areas) {
-      const allRoom = [];
+      const allRoom = []
       areas.forEach(area => {
         const areaId = area.area_id
         const areaName = area.area_name
         area.rooms.forEach(room => {
-          const roomId = room.room_id;
-          const roomName = room.room_name;
+          const roomId = room.room_id
+          const roomName = room.room_name
           allRoom.push({
             area_id: areaId,
             area_name: areaName,
@@ -351,10 +332,10 @@ export default defineComponent({
             disabled: room.disabled,
             room_id: roomId,
             room_name: `${areaName} ${roomName}`,
-          });
-        });
-      });
-      console.log('Home allRoom:', allRoom)
+          })
+        })
+      })
+      console.log('SingleMeet allRoom:', allRoom)
       return allRoom
     },
 
@@ -374,7 +355,7 @@ export default defineComponent({
         const minResolution = temp_areas.reduce((min, area) => {
           const resolution = parseInt(area.resolution, 10)
           return resolution < min ? resolution : min
-        }, 900);
+        }, 900)
         this.minDuration = minResolution
         const firstArea = {
           "area_id": "",
@@ -383,9 +364,7 @@ export default defineComponent({
           "rooms": []
         }
         this.minItemHeight = 40
-        // 获取开始、结束时间
-        const { minStart, maxEnd } = this.getMaxAreaDuration()
-        const { timeSlots, localTimeSlots } = Common.generateTimeSlots(minStart, maxEnd)
+        const { timeSlots, localTimeSlots } = Common.generateTimeSlots(this.min_start, this.max_end)
         this.timeSlots = timeSlots
         this.localTimeSlots = localTimeSlots
         if (temp_areas) {
@@ -396,7 +375,7 @@ export default defineComponent({
       })
     },
 
-    getCurrentAreaRooms(area_id) {
+    getCurrentAreaRooms(area_id,timedRefresh) {
       if (!this.page_cache_areas || this.page_cache_areas.length == 0) {
         this.getAllAreas()
         return
@@ -411,20 +390,13 @@ export default defineComponent({
         item.area_id === area_id
       )
       if (this.dayRrangeVal != 0) {
-        this.dayRrange(this.dayRrangeVal)
+        this.dayRrange(this.dayRrangeVal,timedRefresh?true:false)
       }
       const tmp_areas = []
       tmp_areas.push(area_rooms)
       this.rooms = this.getAllRoom(tmp_areas[0])
-      console.log('Home getCurrentAreaRooms this.rooms', this.rooms)
-      // this.getMeetRooms()
+      console.log('SingleMeet getCurrentAreaRooms this.rooms', this.rooms)
       return
-    },
-
-    getMaxAreaDuration() {
-      const minStart = this.min_start
-      const maxEnd = this.max_end
-      return { minStart, maxEnd }
     },
 
     getTimeSlotIndex(time) {
@@ -432,7 +404,7 @@ export default defineComponent({
       return slot_index
     },
 
-    dayRrange(day) {
+    dayRrange(day,timedRefresh) {
       let days = []
       let tempTime = {}
       if (day == SELECT_DAY.TODAY) {
@@ -457,6 +429,9 @@ export default defineComponent({
       this.filterDateStore.setEndDate(this.endTime)
       this.dayRrangeVal = day
       this.days = this.formatDays(days)
+      if (!timedRefresh) {
+        this.resetScroll()
+      }
       this.getMeetRooms()
     },
 
@@ -464,31 +439,31 @@ export default defineComponent({
       const today = moment().tz(timeZone)
       const oneDays = [
         Common.translateWeekDay(today.format(this.localLangFormat)),
-      ];
+      ]
       return oneDays
     },
 
     getThreeDays(timeZone) {
-      const today = moment().tz(timeZone);
+      const today = moment().tz(timeZone)
       const nextThreeDays = [
         Common.translateWeekDay(today.format(this.localLangFormat)),
         Common.translateWeekDay(today.add(1, 'days').format(this.localLangFormat)),
         Common.translateWeekDay(today.add(1, 'days').format(this.localLangFormat))
-      ];
+      ]
       return nextThreeDays
     },
 
     getCurrenWeek(timeZone) {
-      const startDay = moment().tz(timeZone);
-      const startOfWeek = startDay.clone().startOf('week');
-      const endOfWeek = startDay.clone().endOf('week');
-      const weekDays = [];
-      let day = startOfWeek;
+      const startDay = moment().tz(timeZone)
+      const startOfWeek = startDay.clone().startOf('week')
+      const endOfWeek = startDay.clone().endOf('week')
+      const weekDays = []
+      let day = startOfWeek
       while (day <= endOfWeek) {
-        weekDays.push(Common.translateWeekDay(day.format(this.localLangFormat)));
-        day = day.add(1, 'days');
+        weekDays.push(Common.translateWeekDay(day.format(this.localLangFormat)))
+        day = day.add(1, 'days')
       }
-      return weekDays;
+      return weekDays
     },
 
     getDaysBetween(startDate, endDate) {
@@ -507,21 +482,10 @@ export default defineComponent({
         return {
           date: day,
           color: (index + 1) % 2 == 0 ? "#0288d1" : "#6a1b9a"
-        };
-      });
-      return formattedDates;
-    },
-
-    canHoverDiv(day, hoverTime, room) {
-      let canHover = true
-      for (let i = 0; i < this.events.length; i++) {
-        const event = this.events[i]
-        if (day.date === event.date && event.startTime === hoverTime && room.room_id === event.room_id) {
-          canHover = false
-          break
         }
-      }
-      return canHover
+      })
+      console.log('formatDays days :',formattedDates)
+      return formattedDates
     },
 
     getMeetStatusText(dayTime, roomStatus, minuteTime) {
@@ -529,20 +493,25 @@ export default defineComponent({
       if (!userinfo || userinfo.level == 0) {
         return this.$t('base.loginoutUser')
       }
-      if (this.normalUser()) {
-        return this.$t('base.normalUser')
-      }
       if (roomStatus.disabled == ROOM_STATUS.DISABLED) {
         return this.$t('base.roomDisabled')
       }
-      const lang = Common.getLocalLang()
-      const appeedStr = dayTime.date + ' ' + minuteTime
-      const formatStr = Common.getAssignFormatWithAM(appeedStr, lang)
-      const nextTimeStamp = moment.tz(formatStr, this.currentTimeZone).unix();
+      const nextTimeStamp = this.getDateTimeStamp(dayTime.date,minuteTime)
       if (nextTimeStamp < this.currenTimestamp) {
         return this.$t('base.passTime')
       }
       return this.$t('base.roomAbled')
+    },
+
+    getDateTimeStamp(date,hour_minute) {
+      if (!date || !hour_minute) {
+        return 0
+      }
+      const lang = Common.getLocalLang()
+      const appeedStr = date + ' ' + hour_minute
+      const formatStr = Common.getAssignFormatWithAM(appeedStr, lang)
+      const nextTimeStamp = moment.tz(formatStr, this.currentTimeZone).unix()
+      return nextTimeStamp
     },
 
     toMeet(time, room, day) {
@@ -553,15 +522,9 @@ export default defineComponent({
       this.addParams.resolution = room.resolution
       this.addParams.area_id = room.area_id
       this.addParams.area_name = room.area_name
-      const lang = Common.getLocalLang()
-      const appeedStr = day.date + ' ' + time
-      const formatStr = Common.getAssignFormatWithAM(appeedStr, lang)
-      const nextTimeStamp = moment.tz(formatStr, this.currentTimeZone).unix();
-      this.addParams.timeStamp = nextTimeStamp
-      if (nextTimeStamp < this.currenTimestamp) {
-        return
-      }
-      if (this.normalUser()) {
+      console.log('toMeet day.date--time',day.date,time)
+      this.addParams.timeStamp = this.getDateTimeStamp(day.date,time)
+      if (this.addParams.timeStamp < this.currenTimestamp) {
         return
       }
       if (room.disabled == ROOM_STATUS.DISABLED) {
@@ -571,8 +534,9 @@ export default defineComponent({
     },
 
     editMeet(event) {
-      console.log('SingleMeet editMeet event', event)
-      if (this.normalUser()) {
+      const userinfo = JSON.parse(localStorage.getItem(STORAGE.USER_INFO))
+      console.log('SingleMeet editMeet event', event,userinfo)
+      if (Common.normalUser() && event.book_by !== userinfo.username) {
         return
       }
       if (event.status == MEETING_STATUS.END) {
@@ -591,42 +555,53 @@ export default defineComponent({
       this.dialogMeetForm = true
     },
 
-    normalUser() {
-      const userinfo = JSON.parse(localStorage.getItem(STORAGE.USER_INFO))
-      const level = {}
-      if (userinfo && userinfo.level == USER_TYPE.ADMIN) {
-        return false
+    resetScroll() {
+      if (this.isSyncing) return
+      this.isSyncing = true
+      const contentScrollWrap = this.$refs.contentScroll?.$refs.wrapRef
+      const timeScrollWrap = this.$refs.timeScroll?.$refs.wrapRef
+      const calendarScrollWrap = this.$refs.calendarScroll?.$refs.wrapRef
+      if (!contentScrollWrap || !timeScrollWrap || !calendarScrollWrap) {
+        this.isSyncing = false
+        return
       }
-      return true
+      requestAnimationFrame(() => {
+        timeScrollWrap.scrollTop = 0
+        calendarScrollWrap.scrollLeft = 0
+        contentScrollWrap.scrollTop = 0
+        contentScrollWrap.scrollLeft = 0
+        this.scrollLeft = 0
+        this.isSyncing = false
+      })
     },
 
-    choseArea(e) {
-      this.currenArea = e;
-      const area = this.page_cache_areas.filter(area => area.area_id == e)
+    choseArea(selected_area) {
+      this.currenArea = selected_area
+      const area = this.page_cache_areas.filter(area => area.area_id == selected_area)
       const areaName = area[0].area_name
       this.currenAreaName = areaName
-      this.filterDateStore.setArea(e)
+      this.filterDateStore.setArea(selected_area)
       this.filterDateStore.setAreaName(areaName)
       this.getCurrentAreaRooms(this.currenArea)
+      this.resetScroll()
       this.getMeetRooms()
     },
 
     getAreaRooms() {
-      console.log('Home getAreaRooms this.currenArea', this.currenArea)
+      console.log('SingleMeet getAreaRooms this.currenArea', this.currenArea)
       if (this.currenArea == 'All' || this.currenArea == '') {
         const temp_areas = this.page_cache_areas.flatMap(area => area.rooms)
         this.rooms = temp_areas.flatMap(room => room.room_name)
       } else {
         const temp_areas = this.page_cache_areas.filter(area => area.area_id == this.currenArea)
-        // this.rooms = temp_areas.rooms.flatMap(room => room.room_name)
         this.rooms = temp_areas.rooms
       }
     },
 
-    choseDate(e) {
-      if (e.length > 0) {
-        const start_date = moment(e[0]).format('YYYY-MM-DD')
-        const end_date = moment(e[1]).format('YYYY-MM-DD')
+    choseDate(date) {
+      if (date.length > 0) {
+        const start_date = moment(date[0]).format('YYYY-MM-DD')
+        const end_date = moment(date[1]).format('YYYY-MM-DD')
         const start = moment(start_date)
         const end = moment(end_date)
         const diffDay = (end - start) / (24 * 60 * 60 * 1000)
@@ -646,6 +621,7 @@ export default defineComponent({
         this.endStamp = Common.getTimestamp(end_date, 'end')
         this.filterDateStore.setStartDate(start_date)
         this.filterDateStore.setEndDate(end_date)
+        this.resetScroll()
         this.getMeetRooms()
         const days = this.getDaysBetween(start_date, end_date)
         const tempdays = this.formatDays(days)
@@ -655,11 +631,11 @@ export default defineComponent({
 
     formatTime(timestr) {
       if (!timestr) {
-        return 0;
+        return 0
       }
-      const date = new Date(timestr);
-      const timestamp = date.getTime();
-      return timestamp;
+      const date = new Date(timestr)
+      const timestamp = date.getTime()
+      return timestamp
     },
 
     getMeetRooms() {
@@ -671,15 +647,6 @@ export default defineComponent({
       }
       const itemNumber = this.rooms.length * this.days.length
       this.itemWidth = 229
-      if (itemNumber <= 2) {
-        this.itemWidth = 229
-      } else if (itemNumber <= 4) {
-        this.itemWidth = (this.screenSize['width'] - 130) / itemNumber
-      } else if (itemNumber <= 6) {
-        this.itemWidth = (this.screenSize['width'] - 130) / itemNumber
-      } else {
-        this.itemWidth = 229
-      }
       Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp, end_time: this.endStamp, timezone: this.currentTimeZone }).then(({ data, code, msg }) => {
         if (!data && code != 0) {
           ElMessage({
@@ -689,10 +656,12 @@ export default defineComponent({
           return
         }
         this.currenTimestamp = data.timestamp
-        // max_time: "05:00 AM"
-        // min_time: "02:00 PM"
+        this.min_time = data.min_time
+        this.max_time = data.max_time
         this.min_start = Common.convertTo24Hour(data.min_time)
         this.max_end = Common.convertTo24Hour(data.max_time)
+        // console.log('getMeetRooms data.min_time--data.max_time',data.min_time,data.max_time)
+        // console.log('getMeetRooms this.min_start--this.max_end',this.min_start,this.max_end)
         this.nowTime = data.time
         this.getInMeeting(data)
         this.$nextTick(() => {
@@ -702,11 +671,11 @@ export default defineComponent({
     },
 
     getInMeeting(data) {
-      console.log('Home getInMeeting areas', data.areas)
+      console.log('SingleMeet getInMeeting areas', data.areas)
       if (!data || data.areas == null || data.areas.length == 0) {
         return
       }
-      const entriesRoom = [];
+      const entriesRoom = []
       data.areas.forEach(area => {
         const areaId = area.area_id
         const areaName = area.area_name
@@ -715,24 +684,29 @@ export default defineComponent({
           const roomName = room.room_name
           if (room && room.entries && room.entries.length > 0) {
             room.entries.forEach(entry => {
+              const week_day = Common.translateWeekDay(moment(Number(entry.start_time * 1000)).format(this.localLangFormat))
+              const min_stamp = this.getDateTimeStamp(week_day,this.min_time)
+              const max_stamp = this.getDateTimeStamp(week_day,this.max_time)
               entriesRoom.push({
                 area_id: areaId,
                 area_name: areaName,
                 room_id: roomId,
                 room_name: roomName,
                 disabled: room.disabled,
-                date: Common.translateWeekDay(moment(Number(entry.start_time * 1000)).format(this.localLangFormat)),
+                date: week_day,
                 startTime: entry.duration.split('-')[0].trim(),
                 endTime: entry.duration.split('-')[1].trim(),
-                src: entry.repeat_id > 0?'/imgs/cycle_meet_tag.png':this.normalSelfMeet(entry.book_by)?'/imgs/person_meet_tag.png':'',
+                src: entry.repeat_id > 0?'/admin/imgs/cycle_meet_tag.png':Common.normalSelfMeet(entry.book_by)?'/admin/imgs/person_meet_tag.png':'',
+                top: (entry.start_time - min_stamp) / (max_stamp - min_stamp),
+                height: (entry.end_time - entry.start_time) / 900 * this.minItemHeight,
                 ...entry
-              });
-            });
+              })
+            })
           }
-        });
-      });
+        })
+      })
       this.events = entriesRoom
-      console.log('Home getMeetRooms entriesRoom:', entriesRoom)
+      console.log('SingleMeet getMeetRooms entriesRoom:', entriesRoom)
     },
   },
 
@@ -750,24 +724,19 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.container-sub-page-main {
-  background-color: white;
-  margin-left: 20px;
-  margin-top: 20px;
-  margin-bottom: 20px;
-}
-
-.el-table {}
-
-::-webkit-scrollbar {
-  display: none;
-}
-
+// 不可以选择复制
 * {
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+}
+
+.container-sub-page-main {
+  background-color: white;
+  margin-left: 20px;
+  margin-top: 20px;
+  margin-bottom: 5px;
 }
 
 .menu-content-wrapper {
@@ -792,6 +761,18 @@ export default defineComponent({
   display: flex;
   align-items: center;
   width: auto;
+}
+
+.el-icon {
+  margin-right: 8px;
+}
+
+.el-button {
+  margin: 10px;
+}
+
+.el-select {
+  min-width: 150px;
 }
 
 .now-time {
@@ -853,81 +834,113 @@ export default defineComponent({
   margin-left: 50px;
 }
 
-.el-icon {
-  margin-right: 8px;
-}
-
-.el-button {
-  margin: 10px;
-}
-
-.el-select {
-  min-width: 150px;
+.meet-scrollbar-wrapper {
+  display: flex;
+  flex-direction: row;
+  background-color: white;
 }
 
 .home-calendar {
   margin-left: 20px;
 }
 
+:deep(.el-scrollbar__bar.is-horizontal) {
+  height: 0 !important;
+}
+
+.slots-time-scrollbar:deep(.el-scrollbar__bar.is-vertical) {
+  width: 0 !important;
+  display: none !important;
+}
+
+/* 会议展示公共代码 */
 .table-container {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   position: relative;
   background-color: white;
-  width: 100%;
-  height: 600px;
+  height: 620px;
   margin: 0px;
   padding: 0;
   flex: 1;
 }
 
-.scroll-table-view {
-  height: 550px;
-  width: 100%;
-}
-
-.time-table-view {
-  margin-top: 85px;
-  width: 100px;
-  // height: 550px;
-}
-
-.scroll-table-big-view {
-  height: 660px;
-  width: 100%;
-}
-
-// .el-scrollbar__wrap {
-//   overflow-x: hidden !important;
-// }
-// :deep(.el-scrollbar__bar.is-horizontal) {
-//   height: 0 !important;
-// }
-
-.calendar-header {
+.calendar-scrollbar-wrapper {
   display: flex;
   flex-direction: row;
-  // background-color: #f0f0f0;
+  height: auto;
+  width: auto;
+  background-color: white;
+}
+
+.placeholder-view {
+  min-width: 99px;
+  width: 46px !important;
+  height: 80px;
+  background-color: clear;
+}
+
+.day-header-wrapper {
+  background-color: white;
+  display: flex;
+  flex-direction: row;
+  height: 80px;
+  width: auto;
+}
+
+.day-header {
+  display: flex;
+  flex-direction: column;
   text-align: center;
-  width: 150px;
-  // padding: 5px;
+  color: #FFFFFF;
+  font-size: 12px;
+  padding: 9px 0;
+  font-weight: 600;
+  border-bottom: 2px solid #9A9A9A;
+  /* // -webkit-line-clamp: 2; */
+}
+
+.day-header-wrapper:last-child {
+  border-right: 1px solid #9A9A9A;
+}
+
+.room-header-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  margin-top: 3px;
+}
+
+.room-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000000;
+  font-size: 12px;
+  text-align: center;
+  padding: 5px 0px;
   padding-bottom: 0px;
   font-weight: bold;
-  color: white;
+  width: 100%;
+  line-height: 45px;
+  height: 45px;
+  text-align: center;
+  background-color: white;
+  border-left: 1px solid #9A9A9A;
+  border-bottom: 1px solid #9A9A9A;
   position: relative;
+}
+
+.slots-time-scrollbar {
+  margin-top: 25px;
+  width: 90px;
 }
 
 .time-slots-wrapper {
   display: flex;
   flex-direction: column;
-  width: 90px;
-}
-
-.time-slots {
-  margin-top: 80px;
-  display: flex;
-  flex-direction: column;
-  z-index: 200;
+  width: 80px;
 }
 
 .time-slot {
@@ -941,6 +954,41 @@ export default defineComponent({
   width: 80px;
 }
 
+.content-meet-scrollbar {
+  height: 550px;
+  width: 100%;
+  margin-left: 15.5px;
+  padding: 0px;
+  background-color: white;
+  position: relative;
+}
+
+.calendar-header {
+  display: flex;
+  flex-direction: row;
+  background-color: #f0f0f0;
+  text-align: center;
+  border-right: 1px solid #9A9A9A;
+  font-weight: bold;
+  color: white;
+  position: relative;
+}
+
+.room-wrapper:first-child {
+  /* // border-left: 1px solid #9A9A9A; */
+}
+
+.room-wrapper:last-child {
+  border-right: 1px solid #9A9A9A;
+}
+
+.room-wrapper {
+  width: 229px;
+  margin: 0px;
+  padding: 0px;
+  background-color: white;
+}
+
 .empty-abled-meet-div {
   display: flex;
   flex-direction: column;
@@ -952,6 +1000,7 @@ export default defineComponent({
   height: 40px;
   transition: all 0.3s ease;
   padding: 0px 10px;
+  z-index: 100;
 }
 
 .empty-meet-div {
@@ -965,6 +1014,8 @@ export default defineComponent({
   height: 40px;
   transition: background-color 0.3s ease, color 0.3s ease;
   padding: 0px 10px;
+  z-index: 100;
+  pointer-events: auto;
 }
 
 .empty-meet-duration {
@@ -977,45 +1028,16 @@ export default defineComponent({
   font-size: 12px;
 }
 
-.empty-meet-div:hover {
+#content-scrollbar .empty-meet-div:hover {
   color: white;
-  /* background:
-    linear-gradient(to bottom right,
-      transparent 0%,
-      transparent calc(50% - 1px),
-      white 50%,
-      transparent calc(50% + 1px),
-      transparent 100%);
-  background-size: 100% 100%;
-  background-blend-mode: normal; */
   background-color: #CECECE;
+  z-index: 100;
 }
 
-.empty-abled-meet-div:hover {
+#content-scrollbar .empty-abled-meet-div:hover {
   color: white;
-  /* "#0288d" */
   background-color: #6a1b9a;
-}
-
-.day-header {
-  padding: 5px 0px;
-  padding-bottom: 0px;
-  color: #FFFFFF;
-  font-size: 12px;
-  -webkit-line-clamp: 2;
-}
-
-.room-header {
-  display: flex;
-  color: #000000;
-  font-size: 12px;
-  text-align: center;
-  padding: 5px 0px;
-  padding-bottom: 0px;
-  font-weight: bold;
-  position: relative;
-  border-left: 1px solid #9A9A9A;
-  // background-color: #29591BB7;
+  z-index: 100;
 }
 
 .room-name {
@@ -1027,25 +1049,6 @@ export default defineComponent({
   padding-bottom: 0px;
   border-right: 1px solid #9A9A9A;
   background-color: #FFFFFF;
-}
-
-.room-devide-line {
-  position: absolute;
-  top: 50px;
-  background-color: #333333;
-  height: 2px;
-  width: 100%;
-}
-
-.calendar-body {
-  display: flex;
-  flex-direction: row;
-}
-
-.room-column {
-  position: relative;
-  border-right: 1px solid #e0e0e0;
-  min-height: 600px;
 }
 
 .room-meet-event {
@@ -1061,8 +1064,10 @@ export default defineComponent({
   margin: 2px 0;
   color: #000;
   font-size: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  /* // box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); */
   border-left: 10px solid #54BCBD;
+  opacity: 1;
+  z-index: 101;
 }
 
 .room-meet-in-event {
@@ -1080,6 +1085,7 @@ export default defineComponent({
   font-size: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   border-left: 10px solid #BD3124;
+  z-index: 101;
 }
 
 .room-meet-timeout-event {
@@ -1097,6 +1103,7 @@ export default defineComponent({
   font-size: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   border-left: 10px solid #9A9A9A;
+  z-index: 101;
 }
 
 .event-title {
@@ -1106,31 +1113,22 @@ export default defineComponent({
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  z-index: 101;
 }
 
 .event-time,
 .event-person {
   font-size: 10px;
   color: #555;
+  z-index: 101;
 }
 
-.empty-bottom {
-  height: 10px;
-  width: 100%;
-}
-
-.slider-container-horizontal{
+.slider-container-horizontal {
   position: fixed;
   z-index: 999;
   width: calc(100vw - 189px - 40px);
-  bottom: 0;
+  bottom: 20px;
   right: 20px;
 }
 
-.slider-container-vertical{
-  position: fixed;
-  z-index: 999;
-  bottom: 20px;
-  right: 0;
-}
 </style>

@@ -8,7 +8,7 @@ const router = createRouter({
     {
       path: '/single_meet',
       name: 'single_meet',
-      component: () => import('@/pages/meet/SingleMeetTest.vue')
+      component: () => import('@/pages/meet/SingleMeet.vue')
     },
     {
       path: '/user_list',
@@ -18,7 +18,7 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component:  () => import('@/pages/meet/SingleMeetTest.vue')
+      component:  () => import('@/pages/meet/SingleMeet.vue')
     },{
       path: '/guide_start',
       name: 'guide_start',
