@@ -5,9 +5,9 @@
         欢迎使用XXX会议系统。<br>
         接下来，我们诚挚地邀请您为系统做初始化配置，<br>
         仅需数分钟，您将迅速熟悉系统，并完成配置。</div>
-    </template>
+    </template>s
     <template #btns>
-      <el-button class="btn" type="primary" @click="switchTab('/guide_two')">开始</el-button>
+      <el-button class="btn" type="primary" @click="switchTab('/guide_basics')">开始</el-button>
       <el-button class="btn" @click="switchTab('../single_meet')">下次再说</el-button>
     </template>
   </Layout>

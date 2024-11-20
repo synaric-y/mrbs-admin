@@ -2,7 +2,7 @@
 
   <Layout :title="'会议系统配置向导'" :section-center="true">
     <template #section>
-      <ProgressBar :active-index="3"/>
+      <ProgressBar :active-index="4"/>
 
       <el-form :model="form" :rules="rules" ref="formRef" label-width="150px">
         <el-form-item label="会议室名称" prop="room_name">
@@ -28,7 +28,7 @@
     </template>
     <template #btns>
       <el-button plain class="btn" @click="jumpGuide">跳过向导</el-button>
-      <el-button type="primary" class="btn" @click="switchTab('/guide_three')">上一步</el-button>
+      <el-button type="primary" class="btn" @click="switchTab('/guide_calendar')">上一步</el-button>
       <el-button plain class="btn" @click="skipCurrentGuide">暂不需要</el-button>
       <el-button type="primary" class="btn" @click="nextStep">下一步</el-button>
     </template>
@@ -142,7 +142,7 @@ export default {
       Api.setVariables(
           {"init_status": 3}
       ).then(res => {
-        this.switchTab('/guide_five')
+        this.switchTab('/guide_complete')
       }).catch(e=>{
         console.log(e)
       })
@@ -168,7 +168,7 @@ export default {
               ElMessage.success({
                 message: '设置成功',
               })
-              this.switchTab('/guide_five')
+              this.switchTab('/guide_complete')
             } else {
               ElMessage.error({
                 message: '设置失败',

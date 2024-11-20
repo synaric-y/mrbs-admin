@@ -71,7 +71,7 @@ export default {
           icon: '/admin/imgs/dashboard_manager.png',
           active_icon: '/admin/imgs/dashboard_manager_selected.png',
           title: '仪表盘',//Dashboard
-          path: '/guide_one',
+          path: '/guide_start',
           children: []
         },{
           index: "3",
@@ -204,7 +204,7 @@ export default {
           icon: '/admin/imgs/dashboard_manager.png',
           active_icon: '/admin/imgs/dashboard_manager_selected.png',
           title: '仪表盘',//Dashboard
-          path: '/guide_one',
+          path: '/guide_start',
           children: []
         },{
           index: "3",
@@ -306,10 +306,10 @@ export default {
       })
     },
     toPath(path) {
-      if (path === '/guide_one' && this.init_status !== 0) {
-        this.switchTab('../single_meet')
-        return
-      }
+      // if (path === '/guide_start' && this.init_status !== 0) {
+      //   this.switchTab('../single_meet')
+      //   return
+      // }
       this.switchTab(path)
     },
     toLogout() {

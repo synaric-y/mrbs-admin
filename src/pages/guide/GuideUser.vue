@@ -1,38 +1,28 @@
 <template>
   <Layout :title="'会议系统配置向导'" :section-center="true">
-
     <template #section>
-      <ProgressBar :active-index="1"/>
-
-
+      <ProgressBar :active-index="2"/>
       <div style="margin-top: 20px;">
         <el-form :model="form" :rules="rules" ref="formRef" label-width="150px">
-
           <el-form-item label="选择服务">
             <img class="form-item-img" src="../../../public/imgs/ad.png" alt="#">
           </el-form-item>
-
           <el-form-item prop="hosts" label="服务器地址(hosts)">
             <el-input v-model="form.hosts" class="form-item-input" placeholder="示例:172.16.88.180" @input="adStatus = 'untested'"/>
           </el-form-item>
-
           <el-form-item prop="port" label="服务器端口(port)">
             <el-input v-model="form.port" class="form-item-input" placeholder="示例:3136" @input="adStatus = 'untested'" />
           </el-form-item>
-
           <el-form-item prop="base_dn" label="基础地址(base_dn)">
             <el-input v-model="form.base_dn" class="form-item-input" placeholder="示例:0U=BCC,DC=businessconnectchina,DC=com" @input="adStatus = 'untested'"/>
           </el-form-item>
-
           <el-form-item prop="username" label="用户名(username)">
             <el-input v-model="form.username" class="form-item-input" placeholder="示例:CN=meet. dap,0U=LDAP,DC=businessconnectchina,DC=com" @input="adStatus = 'untested'"/>
           </el-form-item>
-
           <el-form-item prop="password" label="密码(password)">
             <el-input type="password" v-model="form.password" class="form-item-input" placeholder="请输入包含数字、字母、特殊符号最低8位密码" @input="adStatus = 'untested'"/>
             <TestButton :status="adStatus" @test="verify"/>
           </el-form-item>
-
           <el-form-item prop="autoSync" label="开启定时同步">
             <el-switch v-model="form.autoSync" />
           </el-form-item>
@@ -44,14 +34,12 @@
         </el-form>
       </div>
     </template>
-
     <template #btns>
       <el-button plain class="btn" @click="jumpGuide">跳过向导</el-button>
-      <el-button type="primary" class="btn" @click="switchTab('/guide_one')">上一步</el-button>
+      <el-button type="primary" class="btn" @click="switchTab('/guide_basics')">上一步</el-button>
       <el-button plain class="btn" @click="skipCurrentGuide">暂不需要</el-button>
       <el-button type="primary" class="btn" @click="nextStep">下一步</el-button>
     </template>
-
   </Layout>
 </template>
 
@@ -280,7 +268,7 @@ export default {
       Api.setVariables(
           {"init_status": 1}
       ).then(res => {
-        this.switchTab('/guide_three')
+        this.switchTab('/guide_calendar')
       }).catch(e=>{
         console.log(e)
       })
@@ -313,7 +301,7 @@ export default {
               ElMessage.success({
                 message: '设置成功',
               })
-              this.switchTab('/guide_three')
+              this.switchTab('/guide_calendar')
             }else{
               ElMessage.error({
                 message: '设置失败',

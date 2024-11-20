@@ -36,7 +36,7 @@
           <template #default="scope">
             <div class="operate-wrapper" v-if="scope.row.is_set == 1">
               <span class="operate-item" @click="unbindDeviceDialog(scope.row)">{{ $t('base.unbind') }}</span>
-              <!-- <span class="operate-item" @click="bindDeviceDialog(scope.row)">绑定终端</span> -->
+              <span v-if="scope.row.is_set != 1" class="operate-item" @click="bindDeviceDialog(scope.row)">绑定终端</span>
             </div>
             <div v-else>{{ $t('base.none')}}</div>
           </template>

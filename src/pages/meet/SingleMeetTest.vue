@@ -735,7 +735,7 @@ export default defineComponent({
                 date: Common.translateWeekDay(moment(Number(entry.start_time * 1000)).format(this.localLangFormat)),
                 startTime: entry.duration.split('-')[0].trim(),
                 endTime: entry.duration.split('-')[1].trim(),
-                src: entry.repeat_id > 0?'/imgs/cycle_meet_tag.png':this.normalSelfMeet(entry.book_by)?'/imgs/person_meet_tag.png':'',
+                src: entry.repeat_id > 0?'/admin/imgs/cycle_meet_tag.png':this.normalSelfMeet(entry.book_by)?'/admin/imgs/person_meet_tag.png':'',
                 ...entry
               });
             });
@@ -931,7 +931,7 @@ export default defineComponent({
   text-align: center;
   color: #FFFFFF;
   font-size: 12px;
-  padding: 10px 0;
+  padding: 9px 0;
   font-weight: 600;
   border-bottom: 2px solid #9A9A9A;
   // -webkit-line-clamp: 2;
@@ -994,7 +994,7 @@ export default defineComponent({
 .content-meet-scrollbar {
   height: 550px;
   width: 100%;
-  margin-left: 16px;
+  margin-left: 15.5px;
   padding: 0px;
   background-color: white;
   position: relative;

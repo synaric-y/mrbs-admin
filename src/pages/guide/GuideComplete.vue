@@ -1,7 +1,7 @@
 <template>
   <Layout :title="'会议系统配置向导'" :section-center="true">
     <template #section>
-      <ProgressBar :active-index="4"/>
+      <ProgressBar :active-index="5"/>
       <div class="guide-success">
         <img class="guide-img" src="../../../public/imgs/guide_success.png" alt="">
         <div class="guide-success-text">您已经完成初始化配置！<br>
