@@ -8,7 +8,7 @@ const router = createRouter({
     {
       path: '/single_meet',
       name: 'single_meet',
-      component: () => import('@/pages/meet/SingleMeet.vue')
+      component: () => import('@/pages/meet/SingleMeetTest.vue')
     },
     {
       path: '/user_list',
@@ -18,27 +18,33 @@ const router = createRouter({
     {
       path: '/',
       name: 'home',
-      component:  () => import('@/pages/meet/SingleMeet.vue')
+      component:  () => import('@/pages/meet/SingleMeetTest.vue')
     },{
-      path: '/guide_one',
-      name: 'guide_one',
-      component: () => import('@/pages/guide/GuideOne.vue')
+      path: '/guide_start',
+      name: 'guide_start',
+      component: () => import('@/pages/guide/GuideStart.vue')
+    },
+    {
+      path: '/guide_basics',
+      name: 'guide_basics',
+      component: () => import('@/pages/guide/GuideBasics.vue')
+    },
+    {
+      path: '/guide_user',
+      name: 'guide_user',
+      component: () => import('@/pages/guide/GuideUser.vue')
     },{
-      path: '/guide_two',
-      name: 'guide_two',
-      component: () => import('@/pages/guide/GuideTwo.vue')
+      path: '/guide_calendar',
+      name: 'guide_calendar',
+      component: () => import('@/pages/guide/GuideCalendar.vue')
     },{
-      path: '/guide_three',
-      name: 'guide_three',
-      component: () => import('@/pages/guide/GuideThree.vue')
+      path: '/guide_meet',
+      name: 'guide_meet',
+      component: () => import('@/pages/guide/GuideMeet.vue')
     },{
-      path: '/guide_four',
-      name: 'guide_four',
-      component: () => import('@/pages/guide/GuideFour.vue')
-    },{
-      path: '/guide_five',
-      name: 'guide_five',
-      component: () => import('@/pages/guide/GuideFive.vue')
+      path: '/guide_complete',
+      name: 'guide_complete',
+      component: () => import('@/pages/guide/GuideComplete.vue')
     },
     {
       path: '/user_detail',
