@@ -1,28 +1,26 @@
 <template>
-
   <Layout :title="'会议系统配置向导'" :section-center="true">
     <template #section>
-      <ProgressBar :active-index="4"/>
-
+      <ProgressBar :active-index="4" />
       <el-form :model="form" :rules="rules" ref="formRef" label-width="150px">
         <el-form-item label="会议室名称" prop="room_name">
-          <el-input maxlength="30" class="form-item-input" v-model="form.room_name" placeholder="请输入会议室名称"/>
+          <el-input maxlength="30" class="form-item-input" v-model="form.room_name" placeholder="请输入会议室名称" />
         </el-form-item>
         <el-form-item label="容纳人数" prop="capacity">
-          <el-input maxlength="5" class="form-item-input" v-model="form.capacity" placeholder="请输入会议室容纳人数"/>
+          <el-input maxlength="5" class="form-item-input" v-model="form.capacity" placeholder="请输入会议室容纳人数" />
         </el-form-item>
-
-        <el-divider/>
-
+        <el-divider />
         <el-form-item label="关联第三方日历">
           <img class="form-item-img" src="../../../public/imgs/exchange.png" alt="#">
         </el-form-item>
         <el-form-item label="账号" prop="exchange_username">
-          <el-input :disabled="exchangeStatus==='testing'" @input="exchangeStatus='untested'" class="form-item-input" v-model="form.exchange_username" placeholder="请输入三方账号"/>
+          <el-input :disabled="exchangeStatus === 'testing'" @input="exchangeStatus = 'untested'" class="form-item-input"
+            v-model="form.exchange_username" placeholder="请输入三方账号" />
         </el-form-item>
         <el-form-item label="密码" prop="exchange_password">
-          <el-input :disabled="exchangeStatus==='testing'" class="form-item-input" v-model="form.exchange_password" placeholder="请输入三方账号密码" />
-          <TestButton :status="exchangeStatus" @test="verify"/>
+          <el-input :disabled="exchangeStatus === 'testing'" class="form-item-input" v-model="form.exchange_password"
+            placeholder="请输入三方账号密码" />
+          <TestButton :status="exchangeStatus" @test="verify" />
         </el-form-item>
       </el-form>
     </template>
@@ -33,7 +31,6 @@
       <el-button type="primary" class="btn" @click="nextStep">下一步</el-button>
     </template>
   </Layout>
-
 </template>
 
 <script>
@@ -48,7 +45,7 @@ import axios from "@/network/axios.js";
 import AraleQRCode from "arale-qrcode";
 import Layout from "@/components/Layout.vue";
 export default {
-  components: {Layout, TestButton, ProgressBar},
+  components: { Layout, TestButton, ProgressBar },
   mixins: [PageMixin],
   data() {
     return {
@@ -61,35 +58,32 @@ export default {
       exchangeStatus: 'untested', //枚举值untested testing tested
       rules: {
         room_name: [
-            { required:true, message: '房间不能为空', trigger: 'blur' },
-            { min: 1, max: 30, message: '房间名的字符个数必须在1到30之间', trigger: 'blur' }
+          { required: true, message: '房间不能为空', trigger: 'blur' },
+          { min: 1, max: 30, message: '房间名的字符个数必须在1到30之间', trigger: 'blur' }
         ],
         capacity: [
-            { required:true, message: '房间容纳人数不能为空', trigger: 'blur' },
-            { validator: this.capacityValidator, message: '房间容纳人数必须是大于0且小于等于100的整数', trigger: 'blur' }
+          { required: true, message: '房间容纳人数不能为空', trigger: 'blur' },
+          { validator: this.capacityValidator, message: '房间容纳人数必须是大于0且小于等于100的整数', trigger: 'blur' }
         ],
-        exchange_username:[{ required:true, message: 'exchange用户名不能为空', trigger: 'blur' },],
-        exchange_password:[{ required:true, message: 'exchange密码不能为空', trigger: 'blur' },]
+        exchange_username: [{ required: true, message: 'exchange用户名不能为空', trigger: 'blur' },],
+        exchange_password: [{ required: true, message: 'exchange密码不能为空', trigger: 'blur' },]
       },
     }
   },
   methods: {
-    verify(){
-
-      if(!this.form.exchange_username || this.form.exchange_username===''){
+    verify() {
+      if (!this.form.exchange_username || this.form.exchange_username === '') {
         ElMessage.error({
           message: 'exchange用户名不能为空！'
         })
         return
       }
-
-      if(!this.form.exchange_password || this.form.exchange_password===''){
+      if (!this.form.exchange_password || this.form.exchange_password === '') {
         ElMessage.error({
           message: 'exchange密码不能为空！'
         })
         return
       }
-
       // 测试联通
       // this.exchangeStatus='testing'
       // axios({
@@ -116,34 +110,31 @@ export default {
       //   })
       //   this.exchangeStatus='untested'
       // })
-
-
     },
-    capacityValidator(rule, value, callback){
+    capacityValidator(rule, value, callback) {
       let reg = /^[1-9][0-9]*$/;
-      if(reg.test(value) === false) callback(new Error('房间容纳人数必须是大于0的整数'))
-      else{
+      if (reg.test(value) === false) callback(new Error('房间容纳人数必须是大于0的整数'))
+      else {
         const res = parseInt(value)
-
-        if(!res || res<=0 || res > 100) callback(new Error('房间容纳人数必须是大于0且小于等于100的整数'))
+        if (!res || res <= 0 || res > 100) callback(new Error('房间容纳人数必须是大于0且小于等于100的整数'))
         else callback()
       }
     },
-    jumpGuide(){
+    jumpGuide() {
       Api.setVariables(
-          {"init_status": 3}
+        { "init_status": 3 }
       ).then(res => {
         this.switchTab('../single_meet')
-      }).catch(e=>{
+      }).catch(e => {
         console.log(e)
       })
     },
-    skipCurrentGuide(){
+    skipCurrentGuide() {
       Api.setVariables(
-          {"init_status": 3}
+        { "init_status": 3 }
       ).then(res => {
         this.switchTab('/guide_complete')
-      }).catch(e=>{
+      }).catch(e => {
         console.log(e)
       })
     },
@@ -157,11 +148,10 @@ export default {
           //     ElMessage.error(message)
           //   }
           // })
-
           Api.setVariables(
-              {
-                "init_status": 3,
-              }
+            {
+              "init_status": 3,
+            }
           ).then(res => {
             console.log(res)
             if (res?.code == 0) {
@@ -197,6 +187,4 @@ export default {
 }
 </script>
 
-<style  lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

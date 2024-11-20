@@ -337,7 +337,7 @@ export default {
               ElMessage.success({
                 message: '设置成功',
               })
-              this.switchTab('/guide_calendar')
+              this.switchTab('/guide_user')
             } else {
               ElMessage.error({
                 message: '设置失败',
