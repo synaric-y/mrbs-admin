@@ -137,11 +137,11 @@ export default {
       rules: {
         companyName: [
           { required: true, message: '请输入公司或组织名称', trigger: 'blur' },
-          { max: 100, message: '公司名长度必须小于100字符', trigger: 'blur' },
+          // { max: 100, message: '公司名长度必须小于100字符', trigger: 'blur' },
         ],
         requestUrl: [
           { required: true, message: '请输入服务器地址', trigger: 'blur' },
-          { max: 300, message: '服务器地址长度必须小于300字符', trigger: 'blur' },
+          // { max: 300, message: '服务器地址长度必须小于300字符', trigger: 'blur' },
         ],
         webLogo: [
           {
