@@ -145,18 +145,14 @@ export default defineComponent({
     return {
       currenArea: '',
       currenAreaName: this.$t('base.all'),
-      customDate: null,
       hoursNumber: 24,
       dayRrangeVal: SELECT_DAY.THREE,
       baseTime: '',
       startTime: this.$t('base.startDate'),
       endTime: this.$t('base.endDate'),
       currentTimeZone: 'Asia/Shanghai',
-      areas: [],
-      meetRooms: [],
       screenSize: {},
       itemWidth: 228,
-      scrollY: 0,
       startStamp: 0,
       endStamp: 0,
       nowTime: '',
@@ -194,8 +190,6 @@ export default defineComponent({
       dialogMeetForm: false,
       dialogCycleMeetForm: false,
       form_mode: 0,
-      currentHourMinute: '',
-      currentTimeZone: 'Asia/Shanghai',
       page_cache_areas: [],
       addParams: {
         area_id: '',
@@ -234,43 +228,6 @@ export default defineComponent({
   },
 
   methods: {
-    syncScroll(refName) {
-      if (this.isSyncing) return
-      this.isSyncing = true
-      requestAnimationFrame(() => {
-        const contentScrollWrap = this.$refs.contentScroll?.$refs.wrapRef
-        const timeScrollWrap = this.$refs.timeScroll?.$refs.wrapRef
-        const calendarScrollWrap = this.$refs.calendarScroll?.$refs.wrapRef
-        if (!contentScrollWrap || !timeScrollWrap || !calendarScrollWrap) {
-          this.isSyncing = false
-          return;
-        }
-        if (refName === 'contentScroll') {
-          timeScrollWrap.scrollTop = contentScrollWrap.scrollTop
-          calendarScrollWrap.scrollLeft = contentScrollWrap.scrollLeft
-        } else if (refName === 'timeScroll') {
-          contentScrollWrap.scrollTop = timeScrollWrap.scrollTop
-        } else if (refName === 'calendarScroll') {
-          contentScrollWrap.scrollLeft = calendarScrollWrap.scrollLeft
-        }
-        this.isSyncing = false
-      });
-    },
-
-    scrollHorizontal(scrollValue) {
-      if (this.isScrolling) return;
-      this.isScrolling = true;
-      const maxScrollLeft = this.$refs.contentScroll.$refs.wrapRef.scrollWidth - this.$refs.contentScroll.$refs.wrapRef.clientWidth;
-      const tempScrollValue = Math.max(0, Math.min(maxScrollLeft, maxScrollLeft));
-      // console.log('scrollHorizontal scrollLeft:',maxScrollLeft / 100 * scrollValue,tempScrollValue)
-      const syncHirizontalScroll = () => {
-        this.$refs.contentScroll.$refs.wrapRef.scrollLeft = maxScrollLeft / 100 * scrollValue
-        this.$refs.calendarScroll.$refs.wrapRef.scrollLeft = maxScrollLeft / 100 * scrollValue
-        this.isScrolling = false;
-      };
-      window.requestAnimationFrame(syncHirizontalScroll);
-    },
-
     startSync() {
       if (this.interval) {
         clearInterval(this.interval)
@@ -311,6 +268,42 @@ export default defineComponent({
       }
       this.getCurrentAreaRooms(this.currenArea,true)
       this.getMeetRooms()
+    },
+
+    syncScroll(refName) {
+      if (this.isSyncing) return
+      this.isSyncing = true
+      const contentScrollWrap = this.$refs.contentScroll?.$refs.wrapRef
+      const timeScrollWrap = this.$refs.timeScroll?.$refs.wrapRef
+      const calendarScrollWrap = this.$refs.calendarScroll?.$refs.wrapRef
+      if (!contentScrollWrap || !timeScrollWrap || !calendarScrollWrap) {
+        this.isSyncing = false
+        return
+      }
+      requestAnimationFrame(() => {
+        if (refName === 'contentScroll') {
+          timeScrollWrap.scrollTop = contentScrollWrap.scrollTop
+          calendarScrollWrap.scrollLeft = contentScrollWrap.scrollLeft
+        } else if (refName === 'timeScroll') {
+          contentScrollWrap.scrollTop = timeScrollWrap.scrollTop
+        } else if (refName === 'calendarScroll') {
+          contentScrollWrap.scrollLeft = calendarScrollWrap.scrollLeft
+        }
+        this.isSyncing = false
+      });
+    },
+
+    scrollHorizontal(scrollValue) {
+      if (this.isScrolling) return;
+      this.isScrolling = true;
+      const maxScrollLeft = this.$refs.contentScroll.$refs.wrapRef.scrollWidth - this.$refs.contentScroll.$refs.wrapRef.clientWidth;
+      const tempScrollValue = Math.max(0, Math.min(maxScrollLeft, maxScrollLeft));
+      const syncHirizontalScroll = () => {
+        this.$refs.contentScroll.$refs.wrapRef.scrollLeft = maxScrollLeft / 100 * scrollValue
+        this.$refs.calendarScroll.$refs.wrapRef.scrollLeft = maxScrollLeft / 100 * scrollValue
+        this.isScrolling = false;
+      };
+      window.requestAnimationFrame(syncHirizontalScroll);
     },
 
     closeDialogMeetForm() {
@@ -372,9 +365,7 @@ export default defineComponent({
           "rooms": []
         }
         this.minItemHeight = 40
-        // 获取开始、结束时间
-        const { minStart, maxEnd } = this.getMaxAreaDuration()
-        const { timeSlots, localTimeSlots } = Common.generateTimeSlots(minStart, maxEnd)
+        const { timeSlots, localTimeSlots } = Common.generateTimeSlots(this.min_start, this.max_end)
         this.timeSlots = timeSlots
         this.localTimeSlots = localTimeSlots
         if (temp_areas) {
@@ -406,14 +397,7 @@ export default defineComponent({
       tmp_areas.push(area_rooms)
       this.rooms = this.getAllRoom(tmp_areas[0])
       console.log('SingleMeet getCurrentAreaRooms this.rooms', this.rooms)
-      // this.getMeetRooms()
       return
-    },
-
-    getMaxAreaDuration() {
-      const minStart = this.min_start
-      const maxEnd = this.max_end
-      return { minStart, maxEnd }
     },
 
     getTimeSlotIndex(time) {
@@ -504,18 +488,6 @@ export default defineComponent({
       console.log('formatDays days :',formattedDates)
       return formattedDates;
     },
-
-    // canHoverDiv(day, hoverTime, room) {
-    //   let canHover = true
-    //   for (let i = 0; i < this.events.length; i++) {
-    //     const event = this.events[i]
-    //     if (day.date === event.date && event.startTime === hoverTime && room.room_id === event.room_id) {
-    //       canHover = false
-    //       break
-    //     }
-    //   }
-    //   return canHover
-    // },
 
     getMeetStatusText(dayTime, roomStatus, minuteTime) {
       const userinfo = JSON.parse(localStorage.getItem(STORAGE.USER_INFO))
@@ -890,18 +862,6 @@ export default defineComponent({
   margin-left: 20px;
 }
 
-.table-container {
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  background-color: white;
-  // width: 100%;
-  height: 620px;
-  margin: 0px;
-  padding: 0;
-  flex: 1;
-}
-
 :deep(.el-scrollbar__bar.is-horizontal) {
   height: 0 !important;
 }
@@ -911,269 +871,4 @@ export default defineComponent({
   display: none !important;
 }
 
-.calendar-scrollbar-wrapper {
-  display: flex;
-  flex-direction: row;
-  height: auto;
-  width: auto;
-  background-color: white;
-}
-
-.placeholder-view {
-  min-width: 99px;
-  width: 46px !important;
-  height: 80px;
-  background-color: clear;
-}
-
-.day-header-wrapper {
-  background-color: white;
-  display: flex;
-  flex-direction: row;
-  height: 80px;
-  width: auto;
-}
-
-.day-header {
-  display: flex;
-  flex-direction: column;
-  text-align: center;
-  color: #FFFFFF;
-  font-size: 12px;
-  padding: 9px 0;
-  font-weight: 600;
-  border-bottom: 2px solid #9A9A9A;
-  // -webkit-line-clamp: 2;
-}
-
-.day-header-wrapper:last-child {
-  border-right: 1px solid #9A9A9A;
-}
-
-.room-header-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: row;
-  margin-top: 3px;
-}
-
-.room-header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #000000;
-  font-size: 12px;
-  text-align: center;
-  padding: 5px 0px;
-  padding-bottom: 0px;
-  font-weight: bold;
-  width: 100%;
-  line-height: 45px;
-  height: 45px;
-  text-align: center;
-  background-color: white;
-  border-left: 1px solid #9A9A9A;
-  border-bottom: 1px solid #9A9A9A;
-  position: relative;
-}
-
-.slots-time-scrollbar {
-  margin-top: 25px;
-  width: 90px;
-}
-
-.time-slots-wrapper {
-  display: flex;
-  flex-direction: column;
-  width: 80px;
-}
-
-.time-slot {
-  height: 40px;
-  color: #000;
-  font-size: 12px;
-  color: #000000;
-  font-weight: normal;
-  font-family: PingFangSC-regular;
-  text-align: right;
-  width: 80px;
-}
-
-.content-meet-scrollbar {
-  height: 550px;
-  width: 100%;
-  margin-left: 15.5px;
-  padding: 0px;
-  background-color: white;
-  position: relative;
-}
-
-.calendar-header {
-  display: flex;
-  flex-direction: row;
-  background-color: #f0f0f0;
-  text-align: center;
-  border-right: 1px solid #9A9A9A;
-  font-weight: bold;
-  color: white;
-  position: relative;
-}
-
-.room-wrapper:first-child {
-  // border-left: 1px solid #9A9A9A;
-}
-
-.room-wrapper:last-child {
-  border-right: 1px solid #9A9A9A;
-}
-
-.room-wrapper {
-  width: 229px;
-  margin: 0px;
-  padding: 0px;
-  background-color: white;
-}
-
-.empty-abled-meet-div {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  top: 100px;
-  width: 60px;
-  height: 40px;
-  transition: all 0.3s ease;
-  padding: 0px 10px;
-  z-index: 100;
-}
-
-.empty-meet-div {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  top: 100px;
-  width: 60px;
-  height: 40px;
-  transition: background-color 0.3s ease, color 0.3s ease;
-  padding: 0px 10px;
-  z-index: 100;
-  pointer-events: auto;
-}
-
-.empty-meet-duration {
-  color: white;
-  font-size: 12px;
-}
-
-.empty-meet-reason {
-  color: white;
-  font-size: 12px;
-}
-
-#content-scrollbar .empty-meet-div:hover {
-  color: white;
-  background-color: #CECECE;
-  z-index: 100;
-}
-
-#content-scrollbar .empty-abled-meet-div:hover {
-  color: white;
-  background-color: #6a1b9a;
-  z-index: 100;
-}
-
-.room-name {
-  flex-shrink: 0;
-  display: flex;
-  justify-content: center;
-  height: 800px;
-  padding: 10px;
-  padding-bottom: 0px;
-  border-right: 1px solid #9A9A9A;
-  background-color: #FFFFFF;
-}
-
-.room-meet-event {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  left: 5px;
-  right: 5px;
-  background-color: #e1f5fe;
-  width: 218px;
-  padding: 0px 5px;
-  margin: 2px 0;
-  color: #000;
-  font-size: 12px;
-  // box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  border-left: 10px solid #54BCBD;
-  opacity: 1;
-  z-index: 101;
-}
-
-.room-meet-in-event {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  left: 5px;
-  right: 5px;
-  background-color: rgba(189, 49, 36, 0.11);
-  width: 218px;
-  padding: 0px 5px;
-  margin: 2px 0;
-  color: #000;
-  font-size: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  border-left: 10px solid #BD3124;
-  z-index: 101;
-}
-
-.room-meet-timeout-event {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: absolute;
-  left: 5px;
-  right: 5px;
-  background-color: rgba(206, 206, 206, 0.14);
-  width: 218px;
-  margin: 2px 0;
-  padding: 0px 5px;
-  color: #000;
-  font-size: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
-  border-left: 10px solid #9A9A9A;
-  z-index: 101;
-}
-
-.event-title {
-  font-weight: bold;
-  margin-bottom: 2px;
-  width: 220px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  z-index: 101;
-}
-
-.event-time,
-.event-person {
-  font-size: 10px;
-  color: #555;
-  z-index: 101;
-}
-
-.slider-container-horizontal {
-  position: fixed;
-  z-index: 999;
-  width: calc(100vw - 189px - 40px);
-  bottom: 20px;
-  right: 20px;
-}
 </style>
