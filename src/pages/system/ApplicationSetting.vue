@@ -45,51 +45,55 @@
                 <span class="form-item-tip">推荐尺寸300x300的PNG图片类型，彩色Logo透明底</span>
               </div>
             </el-form-item>
-            <el-form-item label="平板端首页Logo" prop="appLogo">
-              <div class="form-item-content">
-                <div class="img-bg" v-if="originalAppLogoURL">
-                  <el-image class="form-item-logo" :src="onlineWebImage(originalAppLogoURL)"
-                    :preview-src-list="[onlineWebImage(originalAppLogoURL)]" fit="contain" />
-                </div>
-                <el-upload :class="{ hide: form.appLogo && form.appLogo.length === 1 }" v-model:file-list="form.appLogo"
-                  ref="appLogo" action="#" list-type="picture-card" :auto-upload="false" :limit="1" :max-size="1024"
-                  :accept="'image/*'">
-                  <el-icon class="el-icon--upload">
-                    <Plus />
-                  </el-icon>
-                  <template #file="{ file }">
-                    <div class="image-wrapper">
-                      <el-image class="el-upload-list__item-thumbnail" :src="file.url" :preview-src-list="[file.url]"
-                        fit="contain" />
-                      <div class="remove-btn" @click="removeImage('app', file)">
-                        <el-icon>
-                          <SemiSelect />
-                        </el-icon>
-                      </div>
-                    </div>
-                  </template>
-                </el-upload>
-                <span class="form-item-tip">推荐尺寸450x50的PNG图片类型，白色Logo透明底</span>
-              </div>
-            </el-form-item>
-            <el-form-item label="时间格式" prop="timeFormat">
-              <el-select v-model="form.timeFormat" style="width: 200px" placeholder="请选择">
-                <el-option label="12小时制" :value="12" />
-                <el-option label="24小时制" :value="24" />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="主题" prop="theme">
-              <el-radio-group v-model="form.theme">
-                <el-radio :value="0">
-                  <div class="theme theme-0"></div>
-                </el-radio>
-                <el-radio :value="1">
-                  <div class="theme theme-1"></div>
-                </el-radio>
-              </el-radio-group>
-            </el-form-item>
           </el-form>
         </div>
+      </div>
+
+      <div class="section-title">平板端展示</div>
+      <div class="section-content">
+        <el-form-item label="平板端首页Logo" prop="appLogo">
+          <div class="form-item-content">
+            <div class="img-bg" v-if="originalAppLogoURL">
+              <el-image class="form-item-logo" :src="onlineWebImage(originalAppLogoURL)"
+                :preview-src-list="[onlineWebImage(originalAppLogoURL)]" fit="contain" />
+            </div>
+            <el-upload :class="{ hide: form.appLogo && form.appLogo.length === 1 }" v-model:file-list="form.appLogo"
+              ref="appLogo" action="#" list-type="picture-card" :auto-upload="false" :limit="1" :max-size="1024"
+              :accept="'image/*'">
+              <el-icon class="el-icon--upload">
+                <Plus />
+              </el-icon>
+              <template #file="{ file }">
+                <div class="image-wrapper">
+                  <el-image class="el-upload-list__item-thumbnail" :src="file.url" :preview-src-list="[file.url]"
+                    fit="contain" />
+                  <div class="remove-btn" @click="removeImage('app', file)">
+                    <el-icon>
+                      <SemiSelect />
+                    </el-icon>
+                  </div>
+                </div>
+              </template>
+            </el-upload>
+            <span class="form-item-tip">推荐尺寸450x50的PNG图片类型，白色Logo透明底</span>
+          </div>
+        </el-form-item>
+        <el-form-item label="时间格式" prop="timeFormat">
+          <el-select v-model="form.timeFormat" style="width: 200px" placeholder="请选择">
+            <el-option label="12小时制" :value="12" />
+            <el-option label="24小时制" :value="24" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="主题" prop="theme">
+          <el-radio-group v-model="form.theme">
+            <el-radio :value="0">
+              <div class="theme theme-0"></div>
+            </el-radio>
+            <el-radio :value="1">
+              <div class="theme theme-1"></div>
+            </el-radio>
+          </el-radio-group>
+        </el-form-item>
       </div>
       <div>
         <div class="section-title">平板端升级</div>
@@ -226,8 +230,8 @@ export default {
         })
       }
     }).catch(e => {
-        console.log(e)
-      })
+      console.log(e)
+    })
 
     Api.getVersions({})
       .then(({ code, data }) => {
@@ -341,9 +345,9 @@ export default {
                 message: '设置成功',
               })
 
-              setTimeout(()=>{
+              setTimeout(() => {
                 location.reload() // 刷新页面
-              },1000)
+              }, 1000)
             })
             .catch((error) => {
               ElMessage.error({
@@ -413,6 +417,7 @@ export default {
     linear-gradient(45deg, #c9c9c9 25%, transparent 0, transparent 75%, #c9c9c9 0);
   background-position: 0 0, 10px 10px;
   background-size: 20px 20px;
+
   .form-item-logo {
     width: 100%;
     height: 100%;
@@ -437,6 +442,7 @@ export default {
     linear-gradient(45deg, #c9c9c9 25%, transparent 0, transparent 75%, #c9c9c9 0);
   background-position: 0 0, 10px 10px;
   background-size: 20px 20px;
+
   .remove-btn {
     position: absolute;
     top: 0;
