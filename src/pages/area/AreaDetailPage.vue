@@ -23,7 +23,7 @@
         </el-form-item>
         <el-form-item label="仅允许该用户组成员预定" prop="group_ids">
           <el-tree-select ref="multipleTree" multiple lazy v-model="form.group_ids" :load="loadGroup"
-            :props="groupProps" @change="handleTreeSelect" node-key="id" highlight-current
+            :props="groupProps" @change="handleTreeSelect" show-checkbox node-key="id" highlight-current
             :default-checked-keys="cacheGroupsData" :cache-data="cacheGroupsData"/>
         </el-form-item>
         <el-form-item :label="$t('area.formArea.timeDuration')" prop="area_res_mins">
@@ -166,7 +166,6 @@ export default {
     loadGroup(node, resolve) {
       console.log('AreaDetailPage loadGroup sync node', node)
       if (node.level === 0) {
-        // console.log('loadGroup sync level0', node.level)
         resolve([
           { name: this.$t('userGroup.groupAD'), id: '-1', source: 'ad', group_source: 'ad', isLeaf: false, third_id: 0, disabled: false, user_count: 0, sync_state: 0, has_child: 1 },
           { name: '系统分组', id: '-1', isLeaf: false, source: 'system', group_source: 'system', third_id: 0, disabled: false, user_count: 0, sync_state: 0, has_child: 1 },
@@ -182,7 +181,6 @@ export default {
                 item.disabled = false
               }
               item.checked = true
-              // this.$refs.multipleTree.setCurrentKey(item.id)
             })
             console.log('AreaDetailPage getAdTreeWithId 1 groups', childrenData)
             resolve(childrenData)
@@ -191,7 +189,6 @@ export default {
           });
         } else {
           this.getAdTreeWithId(-1).then(childrenData => {
-            // console.log('AreaDetailPage getAdTreeWithId 1 groups', childrenData)
             resolve(childrenData)
           }).catch(() => {
             resolve([])
@@ -201,14 +198,12 @@ export default {
         console.log('AreaDetailPage loadGroup sync level2', node.data.group_source)
         if (node && node.data && node.data.group_source == 'system') {
           this.getSystemTreeWithId(node.data.id).then(childrenData => {
-            // console.log('AreaDetailPage getAdTreeWithId 3 childrenData', childrenData)
             resolve(childrenData)
           }).catch(() => {
             resolve([])
           });
         } else {
           this.getAdTreeWithId(node.data.id).then(childrenData => {
-            // console.log('AreaDetailPage getAdTreeWithId 3 childrenData', childrenData)
             resolve(childrenData)
           }).catch(() => {
             resolve([])
@@ -231,7 +226,6 @@ export default {
               item['children'] = []
             })
             resolve(groups)
-            // console.log('AreaDetailPage getAdTreeWithId groups', groups)
           } else {
             ElMessage.error(msg)
             reject(msg)
@@ -254,7 +248,6 @@ export default {
               item['children'] = []
             })
             resolve(groups)
-            // console.log('AreaDetailPage getAdTreeWithId groups', groups)
           } else {
             ElMessage.error(msg)
             reject(msg)
@@ -264,10 +257,6 @@ export default {
     },
     handleTreeSelect(id) {
       console.log('AreaDetailPage handleTreeSelect', id)
-      this.form['group_ids'] = id
-      const selectedItem = this.findNodeById(this.treeData, id)
-      console.log('选中的 item 数据:', selectedItem)
-      // this.selectedItem = selectedItem
     },
     findNodeById(nodes, id) {
       for (let node of nodes) {
