@@ -360,13 +360,11 @@ export default {
       this.selectedGroupId = row.id
     },
     moreGroupMember(row) {
-      console.log(430)
       this.selectedGroupId = row.id
       this.selectedGroupName = row.name
       this.dialogGroupMember = true
       this.isEdit = false
       this.ad_more_member = true
-      console.log(435)
     },
 
     closeGroupMember() {
@@ -544,7 +542,6 @@ export default {
         Api.getAdGroupTree({
           "group_id": group_id,
           "page": 1,
-          // "search": ""
         }).then(({ data, code, msg }) => {
           if (code == 0) {
             let groups = data.group.child_groups
@@ -554,7 +551,7 @@ export default {
             if (group_id == -1) {
               this.treeData = groups
               const res = {
-                id: uuidv4(),
+                id: -100,
                 date: '2016-05-04',
                 name: this.$t('userGroup.groupAD'),
                 source: 'AD',
@@ -582,6 +579,9 @@ export default {
 
     handleExpandChange(row, expanded) {
       console.log('UserGroup handleExpandChange: row', row.id, expanded);
+      // if (row.id == -1 || row.id == -100) {
+      //   return
+      // }
       if (expanded) {
         if (!this.expandedKeys.includes(row.id)) {
           this.expandedKeys.push(row.id);
@@ -596,15 +596,14 @@ export default {
     },
 
     getRowKeys(row) {
+      // return 'id'
       // console.log('UserGroup getRowKeys row.id',row.id)
       return row.id;
     },
   },
   mounted() {
-    // this.setTab('/user')
     this.getADStatus(true)
     this.getTableData()
-    // this.syncADState(true)
   }
 }
 </script>

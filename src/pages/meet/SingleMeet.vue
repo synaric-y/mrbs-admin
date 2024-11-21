@@ -861,6 +861,11 @@ export default defineComponent({
   height: 0 !important;
 }
 
+.content-meet-scrollbar:deep(.el-scrollbar__bar.is-horizontal) {
+  z-index: 1000;
+  height: 10px;
+}
+
 .slots-time-scrollbar:deep(.el-scrollbar__bar.is-vertical) {
   width: 0 !important;
   display: none !important;
