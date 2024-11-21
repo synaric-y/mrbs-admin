@@ -22,7 +22,7 @@
             end="18:30" :placeholder="$t('base.plzSelect')" />
         </el-form-item>
         <el-form-item label="仅允许该用户组成员预定" prop="group_ids">
-          <el-tree-select ref="multipleTree" multiple lazy v-model="form.group_ids" :load="loadGroup"
+          <el-tree-select ref="multipleTree" multiple lazy clearable v-model="form.group_ids" :load="loadGroup"
             :props="groupProps" @change="handleTreeSelect" show-checkbox node-key="id" highlight-current
             :default-checked-keys="cacheGroupsData" :cache-data="cacheGroupsData"/>
         </el-form-item>
@@ -77,8 +77,8 @@ export default {
         area_reminders_enabled: "on",
         area_private_default: 0,
         area_private_override: "none",
-        group_ids: [1, 3892, 3930],
-        group_names: ['Admin', '测试组2', 'iOS-group1'],
+        group_ids: [],
+        group_names: [],
 
         area_use_exchange: 0,
         area_exchange_server: "",
