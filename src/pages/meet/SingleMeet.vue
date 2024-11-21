@@ -296,10 +296,11 @@ export default defineComponent({
     },
 
     scrollHorizontalDebounce(scrollValue) {
-      clearTimeout(this.debounceTimer);
-      this.debounceTimer = setTimeout(() => {
-        this.scrollHorizontal(scrollValue);
-      }, 10);
+      // clearTimeout(this.debounceTimer)
+      // this.debounceTimer = setTimeout(() => {
+      //   this.scrollHorizontal(scrollValue)
+      // }, 50)
+      this.scrollHorizontal(scrollValue)
     },
 
     scrollHorizontal(scrollValue) {
@@ -309,12 +310,14 @@ export default defineComponent({
       const tempScrollValue = Math.max(0, Math.min(maxScrollLeft, maxScrollLeft))
       const scrollLeft = maxScrollLeft / 100 * scrollValue
       // setTimeout(() => {
+      if (window.requestAnimationFrame) {
         const syncHirizontalScroll = () => {
           this.$refs.contentScroll.$refs.wrapRef.scrollLeft = scrollLeft
           this.$refs.calendarScroll.$refs.wrapRef.scrollLeft = scrollLeft
           this.isScrolling = false
         }
         window.requestAnimationFrame(syncHirizontalScroll)
+      }
       // }, 10)
     },
 
