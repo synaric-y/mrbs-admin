@@ -112,7 +112,7 @@
           </div>
         </div>
         <div class="slider-container-horizontal">
-          <el-slider v-model="scrollLeft" @input="scrollHorizontal" />
+          <el-slider v-model="scrollLeft" @input="scrollHorizontalDebounce" />
         </div>
         <SingleMeetCMP v-if="dialogMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas"
           :entry_id="entry_id" @close="closeDialogMeetForm" />
@@ -202,6 +202,8 @@ export default defineComponent({
       isSyncing: false,
       isScrolling: false,
       scrollLeft: 0,
+      debounceTimer: null,
+      contentScrollRef: null,
     };
   },
   computed: {
@@ -224,6 +226,7 @@ export default defineComponent({
     this.$nextTick(() => {
       this.showLoading = false
     })
+    this.contentScrollRef = this.$refs.contentScroll?.$refs.wrapRef
   },
 
   methods: {
@@ -292,17 +295,27 @@ export default defineComponent({
       });
     },
 
+    scrollHorizontalDebounce(scrollValue) {
+      clearTimeout(this.debounceTimer);
+      this.debounceTimer = setTimeout(() => {
+        this.scrollHorizontal(scrollValue);
+      }, 10);
+    },
+
     scrollHorizontal(scrollValue) {
       if (this.isScrolling) return
       this.isScrolling = true
       const maxScrollLeft = this.$refs.contentScroll.$refs.wrapRef.scrollWidth - this.$refs.contentScroll.$refs.wrapRef.clientWidth
       const tempScrollValue = Math.max(0, Math.min(maxScrollLeft, maxScrollLeft))
-      const syncHirizontalScroll = () => {
-        this.$refs.contentScroll.$refs.wrapRef.scrollLeft = maxScrollLeft / 100 * scrollValue
-        this.$refs.calendarScroll.$refs.wrapRef.scrollLeft = maxScrollLeft / 100 * scrollValue
-        this.isScrolling = false
-      }
-      window.requestAnimationFrame(syncHirizontalScroll)
+      const scrollLeft = maxScrollLeft / 100 * scrollValue
+      // setTimeout(() => {
+        const syncHirizontalScroll = () => {
+          this.$refs.contentScroll.$refs.wrapRef.scrollLeft = scrollLeft
+          this.$refs.calendarScroll.$refs.wrapRef.scrollLeft = scrollLeft
+          this.isScrolling = false
+        }
+        window.requestAnimationFrame(syncHirizontalScroll)
+      // }, 10)
     },
 
     closeDialogMeetForm() {
@@ -715,10 +728,6 @@ export default defineComponent({
       clearInterval(this.interval)
       this.interval = null
     }
-    if (this.batteryInterval) {
-      clearInterval(this.batteryInterval)
-      this.batteryInterval = null
-    }
   }
 });
 </script>
@@ -1127,7 +1136,7 @@ export default defineComponent({
   position: fixed;
   z-index: 999;
   width: calc(100vw - 189px - 40px);
-  bottom: 20px;
+  bottom: 10px;
   right: 20px;
 }
 
