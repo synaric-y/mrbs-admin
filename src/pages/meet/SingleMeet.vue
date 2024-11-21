@@ -34,7 +34,7 @@
         <div class="table-container" v-if="!showLoading">
           <div class="calendar-scrollbar-wrapper">
             <div class="placeholder-view"></div>
-            <el-scrollbar ref="calendarScroll" id="calendar-scrollbar" :style="{ width: scrollbarWidth }"
+            <el-scrollbar ref="calendarScroll" class="calendar-scrollbar" :style="{ width: scrollbarWidth }"
               @scroll="syncScroll('calendarScroll')">
               <div class="day-header-wrapper">
                 <div v-for="(day, indexday) in days" class="day-header" :key="indexday"
@@ -857,7 +857,7 @@ export default defineComponent({
   margin-left: 20px;
 }
 
-#calendar-scrollbar :deep(.el-scrollbar__bar.is-horizontal) {
+.calendar-scrollbar:deep(.el-scrollbar__bar.is-horizontal) {
   height: 0 !important;
 }
 

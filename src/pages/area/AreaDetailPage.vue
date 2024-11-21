@@ -21,25 +21,10 @@
           <el-time-select v-model="form.area_start_last_slot" style="width: 240px" start="06:00" step="00:30"
             end="18:30" :placeholder="$t('base.plzSelect')" />
         </el-form-item>
-        <!-- <el-form-item prop="area_res_mins" :label="$t('area.formArea.timeDuration')">
-          <el-select v-model="form.area_res_mins" :placeholder="$t('base.plzSelect')" @change="onMinTimeChange">
-            <el-option v-for="item in minsOptions" :key="item.min_time" :label="item.min_time" :value="item.min_time_id" />
-          </el-select> -->
-        <!-- <el-time-select
-              v-model="form.area_res_mins"
-              style="width: 240px"
-              start="15"
-              step="15"
-              end="30"
-              :placeholder="$t('base.plzSelect')"
-          /> -->
-        <!-- </el-form-item> -->
-
-        <!-- show-checkbox -->
-        <el-form-item label="仅允许该用户组成员预定" prop="group_names">
-          <el-tree-select ref="multipleTree" multiple lazy v-model="form.group_names" :load="loadGroup"
+        <el-form-item label="仅允许该用户组成员预定" prop="group_ids">
+          <el-tree-select ref="multipleTree" multiple lazy v-model="form.group_ids" :load="loadGroup"
             :props="groupProps" @change="handleTreeSelect" node-key="id" highlight-current
-            :default-checked-keys="form.group_ids" />
+            :default-checked-keys="cacheGroupsData" :cache-data="cacheGroupsData"/>
         </el-form-item>
         <el-form-item :label="$t('area.formArea.timeDuration')" prop="area_res_mins">
           <el-select v-model="form.area_res_mins" :placeholder="$t('base.plzSelect')">
@@ -47,13 +32,6 @@
               :value="item.value" />
           </el-select>
         </el-form-item>
-        <!-- <div class="section-title">{{ $t('base.exchange') }}</div>
-        <el-form-item prop="use_exchange" :label="$t('area.formArea.useExchange')">
-          <el-switch disabled :active-value="1" :inactive-value="0" v-model="form.area_use_exchange" />
-        </el-form-item>
-        <el-form-item prop="exchange_server" :label="$t('area.formArea.exchangeServer')">
-          <el-input v-model="form.area_exchange_server" show-word-limit maxlength="255" />
-        </el-form-item> -->
       </el-form>
     </template>
     <template #btns>
@@ -108,6 +86,7 @@ export default {
         area_wxwork_corpid: "",
         area_wxwork_server: "",
       },
+      cacheGroupsData: [],
       rules: {
         area_name: [
           { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
@@ -206,16 +185,16 @@ export default {
               // this.$refs.multipleTree.setCurrentKey(item.id)
             })
             console.log('AreaDetailPage getAdTreeWithId 1 groups', childrenData)
-            resolve(childrenData);
+            resolve(childrenData)
           }).catch(() => {
-            resolve([]);
+            resolve([])
           });
         } else {
           this.getAdTreeWithId(-1).then(childrenData => {
             // console.log('AreaDetailPage getAdTreeWithId 1 groups', childrenData)
-            resolve(childrenData);
+            resolve(childrenData)
           }).catch(() => {
-            resolve([]);
+            resolve([])
           });
         }
       } else {
@@ -223,16 +202,16 @@ export default {
         if (node && node.data && node.data.group_source == 'system') {
           this.getSystemTreeWithId(node.data.id).then(childrenData => {
             // console.log('AreaDetailPage getAdTreeWithId 3 childrenData', childrenData)
-            resolve(childrenData);
+            resolve(childrenData)
           }).catch(() => {
-            resolve([]);
+            resolve([])
           });
         } else {
           this.getAdTreeWithId(node.data.id).then(childrenData => {
             // console.log('AreaDetailPage getAdTreeWithId 3 childrenData', childrenData)
-            resolve(childrenData);
+            resolve(childrenData)
           }).catch(() => {
-            resolve([]);
+            resolve([])
           });
         }
       }
@@ -286,21 +265,21 @@ export default {
     handleTreeSelect(id) {
       console.log('AreaDetailPage handleTreeSelect', id)
       this.form['group_ids'] = id
-      // const selectedItem = this.findNodeById(this.treeData, id);
-      // console.log('选中的 item 数据:', selectedItem);
+      const selectedItem = this.findNodeById(this.treeData, id)
+      console.log('选中的 item 数据:', selectedItem)
       // this.selectedItem = selectedItem
     },
     findNodeById(nodes, id) {
       for (let node of nodes) {
         if (node.id === id) {
-          return node;
+          return node
         }
         if (node.third_id === id) {
           return node
         }
         if (node.children && node.children.length > 0) {
-          const found = this.findNodeById(node.children, id);
-          if (found) return found;
+          const found = this.findNodeById(node.children, id)
+          if (found) return found
         }
       }
       return null;
@@ -343,7 +322,7 @@ export default {
       "use_exchange": 1,
       "exchange_server": 1,
     }).then(({ code, data, msg }) => {
-      console.log('getVariables data',data);
+      console.log('getVariables data',data)
       this.form.area_use_exchange = data.use_exchange
     })
 
@@ -366,10 +345,11 @@ export default {
       this.form["area_wxwork_secret"] = data["wxwork_secret"]
       this.form['area_res_mins'] = data['resolution'] / 60
       if (data['groups'] && data['groups'].length > 0) {
+        this.cacheGroupsData = data['groups']
         const group_ids = []
         const group_names = []
         for (let index = 0; index < data['groups'].length; index++) {
-          const ele = data['groups'][index];
+          const ele = data['groups'][index]
           group_ids.push(ele.id)
           group_names.push(ele.name)
         }
