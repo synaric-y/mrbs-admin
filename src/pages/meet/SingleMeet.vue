@@ -111,9 +111,9 @@
             </el-scrollbar>
           </div>
         </div>
-        <div class="slider-container-horizontal">
-          <el-slider v-model="scrollLeft" @input="scrollHorizontalDebounce" />
-        </div>
+        <!-- <div class="slider-container-horizontal">
+          <el-slider :value="scrollLeft" @input="scrollHorizontalDebounce" />
+        </div> -->
         <SingleMeetCMP v-if="dialogMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas"
           :entry_id="entry_id" @close="closeDialogMeetForm" />
         <CycleMeetCMP v-if="dialogCycleMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas"
@@ -296,11 +296,11 @@ export default defineComponent({
     },
 
     scrollHorizontalDebounce(scrollValue) {
-      // clearTimeout(this.debounceTimer)
-      // this.debounceTimer = setTimeout(() => {
-      //   this.scrollHorizontal(scrollValue)
-      // }, 50)
-      this.scrollHorizontal(scrollValue)
+      clearTimeout(this.debounceTimer)
+      this.debounceTimer = setTimeout(() => {
+        this.scrollHorizontal(scrollValue)
+      }, 50)
+      // this.scrollHorizontal(scrollValue)
     },
 
     scrollHorizontal(scrollValue) {
@@ -309,16 +309,17 @@ export default defineComponent({
       const maxScrollLeft = this.$refs.contentScroll.$refs.wrapRef.scrollWidth - this.$refs.contentScroll.$refs.wrapRef.clientWidth
       const tempScrollValue = Math.max(0, Math.min(maxScrollLeft, maxScrollLeft))
       const scrollLeft = maxScrollLeft / 100 * scrollValue
-      // setTimeout(() => {
-      if (window.requestAnimationFrame) {
-        const syncHirizontalScroll = () => {
-          this.$refs.contentScroll.$refs.wrapRef.scrollLeft = scrollLeft
-          this.$refs.calendarScroll.$refs.wrapRef.scrollLeft = scrollLeft
-          this.isScrolling = false
+      setTimeout(() => {
+        if (window.requestAnimationFrame) {
+          const syncHirizontalScroll = () => {
+            this.$refs.contentScroll.$refs.wrapRef.scrollLeft = scrollLeft
+            this.$refs.calendarScroll.$refs.wrapRef.scrollLeft = scrollLeft
+            this.isScrolling = false
+            this.scrollLeft = scrollValue
+          }
+          window.requestAnimationFrame(syncHirizontalScroll)
         }
-        window.requestAnimationFrame(syncHirizontalScroll)
-      }
-      // }, 10)
+      }, 10)
     },
 
     closeDialogMeetForm() {
@@ -856,7 +857,7 @@ export default defineComponent({
   margin-left: 20px;
 }
 
-:deep(.el-scrollbar__bar.is-horizontal) {
+#calendar-scrollbar :deep(.el-scrollbar__bar.is-horizontal) {
   height: 0 !important;
 }
 
@@ -1138,8 +1139,8 @@ export default defineComponent({
 .slider-container-horizontal {
   position: fixed;
   z-index: 999;
-  width: calc(100vw - 189px - 40px);
-  bottom: 10px;
+  width: calc(100vw - 189px - 30px);
+  bottom: 0px;
   right: 20px;
 }
 
