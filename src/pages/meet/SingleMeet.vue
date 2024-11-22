@@ -416,11 +416,6 @@ export default defineComponent({
       return
     },
 
-    getTimeSlotIndex(time) {
-      const slot_index = this.localTimeSlots.indexOf(time)
-      return slot_index
-    },
-
     dayRrange(day,timedRefresh) {
       let days = []
       let tempTime = {}
