@@ -81,7 +81,7 @@
                           <div :key="indexeve"
                             :class="[event.status == 0 ? 'room-meet-event' : event.status == 1 ? 'room-meet-in-event' : 'room-meet-timeout-event']"
                             @click="editMeet(event)"
-                            :style="{top: minItemHeight * getTimeSlotIndex(event.startTime) + 30 + 'px', left: (itemWidth + 21) * (indexday * rooms.length + roomIndex) + 'px', width: itemWidth + 'px', height: event.height + 'px' }">
+                            :style="{top: event.top + 'px', left: (itemWidth + 21) * (indexday * rooms.length + roomIndex) + 'px', width: itemWidth + 'px', height: event.height + 'px' }">
                             <div class="event-center">
                               <template v-if="(event.end_time - event.start_time) / 60 === 15">
                                 <div class="event-title" :style="{ margin: 1 + 'px' }">{{ event.entry_name
@@ -687,6 +687,22 @@ export default defineComponent({
       })
     },
 
+    getMinIndexTimeSlots(date,event) {
+      let top = 0
+      for (let index = 0; index < this.localTimeSlots.length - 1; index++) {
+        const timeslot = this.localTimeSlots[index]
+        const timestamp = this.getDateTimeStamp(date,timeslot)
+        const nextTimeslot = this.localTimeSlots[index + 1]
+        const nextTimestamp = this.getDateTimeStamp(date,nextTimeslot)
+        if (event.start_time >= timestamp && event.start_time <= nextTimestamp) {
+          top = index * 40 + (event.start_time - timestamp) * (40 / 900) + 30
+          console.log('getMinIndexTimeSlots event.date-timeslot-timestamp-index',date,timeslot,timestamp,index)
+          break
+        }
+      }
+      return top
+    },
+
     getInMeeting(data) {
       console.log('SingleMeet getInMeeting areas', data.areas)
       if (!data || data.areas == null || data.areas.length == 0) {
@@ -714,7 +730,7 @@ export default defineComponent({
                 startTime: entry.duration.split('-')[0].trim(),
                 endTime: entry.duration.split('-')[1].trim(),
                 src: entry.repeat_id > 0?'/admin/imgs/cycle_meet_tag.png':Common.normalSelfMeet(entry.book_by)?'/admin/imgs/person_meet_tag.png':'',
-                top: (entry.start_time - min_stamp) / (max_stamp - min_stamp),
+                top: this.getMinIndexTimeSlots(week_day,entry),
                 height: (entry.end_time - entry.start_time) / 900 * this.minItemHeight,
                 ...entry
               })
