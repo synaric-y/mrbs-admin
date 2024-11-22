@@ -534,7 +534,14 @@ export default defineComponent({
       this.addParams.resolution = room.resolution
       this.addParams.area_id = room.area_id
       this.addParams.area_name = room.area_name
-      console.log('toMeet day.date--time',day.date,time)
+      console.log('toMeet day.date--time',day,time,room)
+
+
+
+
+
+
+      return
       this.addParams.timeStamp = this.getDateTimeStamp(day.date,time)
       if (this.addParams.timeStamp < this.currenTimestamp) {
         return
@@ -672,8 +679,6 @@ export default defineComponent({
         this.max_time = data.max_time
         this.min_start = Common.convertTo24Hour(data.min_time)
         this.max_end = Common.convertTo24Hour(data.max_time)
-        // console.log('getMeetRooms data.min_time--data.max_time',data.min_time,data.max_time)
-        // console.log('getMeetRooms this.min_start--this.max_end',this.min_start,this.max_end)
         this.nowTime = data.time
         this.getInMeeting(data)
         this.$nextTick(() => {
@@ -691,7 +696,7 @@ export default defineComponent({
         const nextTimestamp = this.getDateTimeStamp(date,nextTimeslot)
         if (event.start_time >= timestamp && event.start_time <= nextTimestamp) {
           top = index * 40 + (event.start_time - timestamp) * (40 / 900) + 30
-          console.log('getMinIndexTimeSlots event.date-timeslot-timestamp-index',date,timeslot,timestamp,index)
+          // console.log('getMinIndexTimeSlots event.date-timeslot-timestamp-index',date,timeslot,timestamp,index)
           break
         }
       }
@@ -1093,7 +1098,7 @@ export default defineComponent({
   margin: 2px 0;
   color: #000;
   font-size: 12px;
-  /* // box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2); */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
   border-left: 10px solid #54BCBD;
   opacity: 1;
   z-index: 101;
