@@ -182,40 +182,40 @@ export default {
           { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
         ],
         end_date: [
-          { required: true, message: '请选择结束时间', trigger: 'blur' }
-          // {
-          //   validator: (rule, value, callback) => {
-          //     const startDate = this.meetForm.start_date;
-          //     if (!value || !startDate) {
-          //       callback();
-          //       return;
-          //     }
-          //     const isSameDay = new Date(startDate).toDateString() === new Date(value).toDateString();
-          //     if (!isSameDay) {
-          //       callback(new Error('结束时间必须与开始时间为同一天'));
-          //     } else {
-          //       callback();
-          //     }
-          //   },
-          //   trigger: 'blur'
-          // }
+          { required: true, message: '请选择结束时间', trigger: 'blur' },
+          {
+            validator: (rule, value, callback) => {
+              const startDate = this.meetForm.start_date;
+              if (!value || !startDate) {
+                callback();
+                return;
+              }
+              const isSameDay = new Date(startDate).toDateString() === new Date(value).toDateString();
+              if (!isSameDay) {
+                callback(new Error('结束时间必须与开始时间为同一天'));
+              } else {
+                callback();
+              }
+            },
+            trigger: 'blur'
+          }
         ],
         end_hour: [
-          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
-          // {
-          //   validator: (rule, value, callback) => {
-          //     const [hourPart, minutePart] = this.meetForm.start_hour.split(':')
-          //     const [endHourPart,endMinutePart] = value.split(':')
-          //     if (Number(hourPart) > Number(endHourPart)) {
-          //       callback(new Error('开始时间段不能大于结束的时间段'))
-          //     } else if(Number(hourPart) === Number(endHourPart) && Number(minutePart) >= Number(endMinutePart)) {
-          //       callback(new Error('开始时间段不能大于结束的时间段'))
-          //     } else {
-          //       callback();
-          //     }
-          //   },
-          //   trigger: 'blur'
-          // }
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' },
+          {
+            validator: (rule, value, callback) => {
+              const [hourPart, minutePart] = this.meetForm.start_hour.split(':')
+              const [endHourPart,endMinutePart] = value.split(':')
+              if ((Number(hourPart) > Number(endHourPart)) || (Number(hourPart) === Number(endHourPart) && Number(minutePart) >= Number(endMinutePart))) {
+                callback(new Error('开始时间段不能大于结束的时间段'))
+              } else if(Number(hourPart) === Number(endHourPart) && Number(endMinutePart) <= (Number(minutePart) + 4)) {
+                callback(new Error('选择的时间间隔必须大于5分钟'))
+              } else {
+                callback();
+              }
+            },
+            trigger: 'blur'
+          }
         ],
         repeat_week: [
           { required: true, message: '请选择会议重复时间', trigger: 'blur' }
@@ -242,10 +242,25 @@ export default {
       }
       return result
     },
+
     disabledHours() {
+      const currentHour = new Date().getHours()
+      return this.makeRange(0, currentHour - 1)
+    },
+
+    disabledMinutes(hour) {
+      const currentHour = new Date().getHours()
+      const currentMinute = new Date().getMinutes()
+      if (hour === currentHour) {
+        return this.makeRange(0, currentMinute - 1)
+      }
+      return []
+    },
+
+    disabledEndHours() {
       return this.makeRange(0, 6).concat(this.makeRange(22,23))
     },
-    disabledMinutes(hour) {
+    disabledEndMinutes(hour) {
       // if (hour === 15) {
       //   return this.makeRange(20, 40)
       // }
