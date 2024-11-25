@@ -244,8 +244,14 @@ export default {
     },
 
     disabledHours() {
+      const selectedDate = new Date(this.meetForm.start_date)
+      const currentDate = new Date()
       const currentHour = new Date().getHours()
-      return this.makeRange(0, currentHour - 1)
+      if (selectedDate.toDateString() === currentDate.toDateString()) {
+        return this.makeRange(6, currentHour - 1)
+      } else {
+        return this.makeRange(0, 6).concat(this.makeRange(22,23))
+      }
     },
 
     disabledMinutes(hour) {
@@ -257,9 +263,6 @@ export default {
       return []
     },
 
-    disabledEndHours() {
-      return this.makeRange(0, 6).concat(this.makeRange(22,23))
-    },
     disabledEndMinutes(hour) {
       // if (hour === 15) {
       //   return this.makeRange(20, 40)
@@ -453,7 +456,7 @@ export default {
   },
   created() {
     // this.minStartTime = Common.formatLastMinute(15)
-    console.log('SingleMeetCMP created params:', this.entry_id, this.add_params)
+    console.log('SingleMeetCMP created params:', this.entry_id, this.add_params,new Date().getDay)
     console.log('SingleMeetCMP created start - end',moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('HH:mm'),moment.tz((this.add_params.timeStamp + 1800) * 1000, 'Asia/Shanghai').format('HH:mm'));
     
     if (this.add_params && this.mode == 0) {

@@ -26,12 +26,12 @@
             :props="groupProps" @change="handleTreeSelect" show-checkbox node-key="id" highlight-current
             :default-checked-keys="cacheGroupsData" :cache-data="cacheGroupsData"/>
         </el-form-item>
-        <el-form-item :label="$t('area.formArea.timeDuration')" prop="area_res_mins">
+        <!-- <el-form-item :label="$t('area.formArea.timeDuration')" prop="area_res_mins">
           <el-select v-model="form.area_res_mins" :placeholder="$t('base.plzSelect')">
             <el-option v-for="(item, index) in resolutionOptions" :key="index" :label="item.label"
               :value="item.value" />
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
       </el-form>
     </template>
     <template #btns>

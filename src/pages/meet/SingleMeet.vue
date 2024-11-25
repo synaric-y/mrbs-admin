@@ -139,6 +139,7 @@ import SingleMeetCMP from '@/components/SingleMeetCMP.vue';
 import CycleMeetCMP from '@/components/CycleMeetCMP.vue';
 import { max } from 'moment/moment';
 import { MAX } from 'uuid';
+import { min } from 'moment/moment';
 
 export default defineComponent({
   components: { SingleMeetCMP, CycleMeetCMP },
@@ -536,41 +537,55 @@ export default defineComponent({
       this.addParams.resolution = room.resolution
       this.addParams.area_id = room.area_id
       this.addParams.area_name = room.area_name
-      console.log('toMeet day.date--time',day,time,room)
+      console.log('singleMeet toMeet day.date--time',day,time,room)
       // 计算当前会议室的会议室时间
       let hover_start_time = this.getDateTimeStamp(day.date,time)
       let hover_end_time = hover_start_time + 60 * 15
       let min_entry_start_time = MRBS_MAX
       let min_entry_end_time = MRBS_MAX
-      this.events.forEach(entry => {
-        if (entry.entry_id === room.room_id && day.date === entry.date) {
-          if (entry.end_time >= hover_start_time && entry.end_time <= min_entry_end_time) {
+      let min_end_gap = MRBS_MAX
+      let min_start_gap = MRBS_MAX
+      console.log('singleMeet toMeet hover_start_time - hover_end_time',hover_start_time,hover_end_time)
+      for (let index = 0; index < this.events.length; index++) {
+        const entry = this.events[index]
+        if (entry.room_id === room.room_id && day.date === entry.date) {
+          console.log('singleMeet toMeet entry.start_time -- entry.end_time',entry)
+          const start_gap = hover_start_time - entry.end_time
+          const end_gap = entry.start_time - hover_end_time
+          if (start_gap > 0 && start_gap < min_start_gap) {
             min_entry_end_time = entry.end_time
+            min_start_gap = start_gap
+            continue
           }
-          if (entry.start_time >= hover_end_time && entry.start_time <= min_entry_start_time) {
+          if (end_gap > 0 && end_gap < min_end_gap) {
             min_entry_start_time = entry.start_time
+            min_end_gap = end_gap
+            continue
           }
+          // if (entry.end_time >= hover_start_time && entry.end_time <= min_entry_end_time) {
+          //   min_entry_end_time = entry.end_time
+          //   continue
+          // }
+          // if (entry.start_time >= hover_end_time && entry.start_time <= min_entry_start_time) {
+          //   min_entry_start_time = entry.start_time
+          //   continue
+          // }
         }
-      });
-      console.log('toMeet MAX',MRBS_MAX)
-      console.log('toMeet min_entry_start_time-min_entry_end_time',min_entry_start_time,min_entry_end_time)
-      if (min_entry_start_time != MRBS_MAX) {
-        hover_end_time = min_entry_start_time
       }
-      if (min_entry_end_time != MRBS_MAX) {
-        hover_start_time = min_entry_end_time
-      }
-      
-      console.log('toMeet hover_start_time:',hover_start_time)
-      console.log('toMeet hover_end_time:',hover_end_time)
+      console.log('singleMeet toMeet min_entry_start_time - min_entry_end_time',min_entry_start_time,min_entry_end_time)
+      // if (min_entry_start_time != MRBS_MAX) {
+      //   hover_end_time = Math.min(min_entry_start_time,hover_end_time)
+      // }
+      // if (min_entry_end_time != MRBS_MAX) {
+      //   hover_start_time = Math.min(min_entry_end_time,hover_start_time)
+      // }
+      console.log('singleMeet toMeet hover_start_time - hover_end_time:',hover_start_time,hover_end_time)
       // 间隔少于5分钟不可以编辑
       if ((hover_end_time - hover_start_time) < 900) {
         return
       }
       this.addParams.start_time = hover_start_time
       this.addParams.end_time = hover_end_time
-
-
       // return
       this.addParams.timeStamp = this.getDateTimeStamp(day.date,time)
       if (this.addParams.timeStamp < this.currenTimestamp) {
