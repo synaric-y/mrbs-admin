@@ -25,15 +25,19 @@
         </el-form-item>
         <el-row style="margin-left: 97px">
           <el-form-item prop="start_hour" required>
-            <el-time-select v-model="meetForm.start_hour" style="width: 300px;" :start="minStartTime" :step="minStep"
+            <!-- <el-time-select v-model="meetForm.start_hour" style="width: 300px;" :start="minStartTime" :step="minStep"
               :end="maxEndTime" placeholder="会议开始" @change="choseDialogHour(0, meetForm.start_hour, $event)"
-              :min-time="currentHourMinute" />
+              :min-time="currentHourMinute" /> -->
+              <el-time-picker format="HH:mm" value-format="HH:mm" v-model="meetForm.start_hour" :disabled-hours="disabledHours"
+              :disabled-minutes="disabledMinutes" :placeholder="$t('base.plzSelect')" @change="choseDialogHour(0, meetForm.start_hour, $event)"/>
           </el-form-item>
           <span style="line-height: 32px;width: 20px;text-align: center;"> - </span>
           <el-form-item prop="end_hour" required>
-            <el-time-select v-model="meetForm.end_hour" style="width: 300px;" :start="minStartTime" :step="minStep"
+            <!-- <el-time-select v-model="meetForm.end_hour" style="width: 300px;" :start="minStartTime" :step="minStep"
               :end="maxEndTime" placeholder="会议结束" @change="choseDialogHour(1, meetForm.end_hour, $event)"
-              :min-time="currentHourMinute" />
+              :min-time="currentHourMinute" /> -->
+              <el-time-picker format="HH:mm" value-format="HH:mm" v-model="meetForm.end_hour" :disabled-hours="disabledHours" :disabled-minutes="disabledMinutes"
+              :placeholder="$t('base.plzSelect')" @change="choseDialogHour(1, meetForm.end_hour, $event)"/>
           </el-form-item>
         </el-row>
         <el-form-item label="重复间隔为" prop="rep_interval" style="margin-left: 7px" required>
@@ -241,6 +245,23 @@ export default {
       return time.getTime() < Date.now() - 86400000;
     },
 
+    makeRange(start, end) {
+      const result = []
+      for (let i = start; i <= end; i++) {
+        result.push(i)
+      }
+      return result
+    },
+    disabledHours() {
+      return this.makeRange(0, 6).concat(this.makeRange(22,23))
+    },
+    disabledMinutes(hour) {
+      // if (hour === 15) {
+      //   return this.makeRange(20, 40)
+      // }
+      return []
+    },
+
     OnAreaChange(e) {
       this.select_area_id = e
       console.log('CycleMeetCMP OnAreaChange e', e)
@@ -414,7 +435,7 @@ export default {
         this.meetForm.start_hour = moment.tz(data.start_time * 1000, 'Asia/Shanghai').format('HH:mm')
         this.meetForm.start_seconds = data.start_time
         this.meetForm.rep_end_date = data.end_date
-        this.meetForm.end_hour = this.start_hour = moment.tz(data.end_time * 1000, 'Asia/Shanghai').format('HH:mm')
+        this.meetForm.end_hour = moment.tz(data.end_time * 1000, 'Asia/Shanghai').format('HH:mm')
         this.meetForm.end_seconds = data.end_time
         this.meetForm.rep_day = data.rep_day
         this.meetForm.rep_interval = data.rep_interval

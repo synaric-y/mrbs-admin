@@ -29,9 +29,17 @@
           </el-col>
           <el-col :span="11">
             <el-form-item prop="start_hour">
-              <el-time-select v-model="meetForm.start_hour" style="width: 300px" :start="minStartTime"
+              <!-- <template v-if="mode == 0">
+                <el-time-select v-model="meetForm.start_hour" style="width: 300px" :start="minStartTime"
                 :step="minStep" :end="maxEndTime" :placeholder="$t('base.plzSelect')"
                 @change="choseDialogHour(0, meetForm.start_hour, $event)" :min-time="currentHourMinute" />
+              </template>
+              <template v-else>
+                <el-time-picker format="HH:mm" value-format="HH:mm" v-model="meetForm.start_hour" :disabled-hours="disabledHours"
+                :disabled-minutes="disabledMinutes" :placeholder="$t('base.plzSelect')" @change="choseDialogHour(0, meetForm.start_hour, $event)"/>
+              </template> -->
+              <el-time-picker format="HH:mm" value-format="HH:mm" v-model="meetForm.start_hour" :disabled-hours="disabledHours"
+                :disabled-minutes="disabledMinutes" :placeholder="$t('base.plzSelect')" @change="choseDialogHour(0, meetForm.start_hour, $event)"/>
             </el-form-item>
           </el-col>
         </el-form-item>
@@ -47,9 +55,17 @@
           </el-col>
           <el-col :span="11">
             <el-form-item prop="end_hour">
-              <el-time-select v-model="meetForm.end_hour" style="width: 300px" :start="minStartTime"
-                :step="minStep" :end="maxEndTime" :placeholder="$t('base.plzSelect')"
+              <!-- <template v-if="mode == 0">
+                <el-time-select v-model="meetForm.end_hour" style="width: 300px" :start="minStartTime" :step="minStep"
+                :end="maxEndTime" :placeholder="$t('base.plzSelect')"
                 @change="choseDialogHour(1, meetForm.end_hour, $event)" :min-time="currentHourMinute" />
+              </template>
+              <template v-else>
+                <el-time-picker format="HH:mm" value-format="HH:mm" v-model="meetForm.end_hour" :disabled-hours="disabledHours" :disabled-minutes="disabledMinutes"
+                :placeholder="$t('base.plzSelect')" @change="choseDialogHour(1, meetForm.end_hour, $event)"/>
+              </template> -->
+              <el-time-picker format="HH:mm" value-format="HH:mm" v-model="meetForm.end_hour" :disabled-hours="disabledHours" :disabled-minutes="disabledMinutes"
+                :placeholder="$t('base.plzSelect')" @change="choseDialogHour(1, meetForm.end_hour, $event)"/>
             </el-form-item>
           </el-col>
         </el-form-item>
@@ -166,40 +182,40 @@ export default {
           { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
         ],
         end_date: [
-          { required: true, message: '请选择结束时间', trigger: 'blur' },
-          {
-            validator: (rule, value, callback) => {
-              const startDate = this.meetForm.start_date;
-              if (!value || !startDate) {
-                callback();
-                return;
-              }
-              const isSameDay = new Date(startDate).toDateString() === new Date(value).toDateString();
-              if (!isSameDay) {
-                callback(new Error('结束时间必须与开始时间为同一天'));
-              } else {
-                callback();
-              }
-            },
-            trigger: 'blur'
-          }
+          { required: true, message: '请选择结束时间', trigger: 'blur' }
+          // {
+          //   validator: (rule, value, callback) => {
+          //     const startDate = this.meetForm.start_date;
+          //     if (!value || !startDate) {
+          //       callback();
+          //       return;
+          //     }
+          //     const isSameDay = new Date(startDate).toDateString() === new Date(value).toDateString();
+          //     if (!isSameDay) {
+          //       callback(new Error('结束时间必须与开始时间为同一天'));
+          //     } else {
+          //       callback();
+          //     }
+          //   },
+          //   trigger: 'blur'
+          // }
         ],
         end_hour: [
-          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' },
-          {
-            validator: (rule, value, callback) => {
-              const [hourPart, minutePart] = this.meetForm.start_hour.split(':')
-              const [endHourPart,endMinutePart] = value.split(':')
-              if (Number(hourPart) > Number(endHourPart)) {
-                callback(new Error('开始时间段不能大于结束的时间段'))
-              } else if(Number(hourPart) === Number(endHourPart) && Number(minutePart) >= Number(endMinutePart)) {
-                callback(new Error('开始时间段不能大于结束的时间段'))
-              } else {
-                callback();
-              }
-            },
-            trigger: 'blur'
-          }
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
+          // {
+          //   validator: (rule, value, callback) => {
+          //     const [hourPart, minutePart] = this.meetForm.start_hour.split(':')
+          //     const [endHourPart,endMinutePart] = value.split(':')
+          //     if (Number(hourPart) > Number(endHourPart)) {
+          //       callback(new Error('开始时间段不能大于结束的时间段'))
+          //     } else if(Number(hourPart) === Number(endHourPart) && Number(minutePart) >= Number(endMinutePart)) {
+          //       callback(new Error('开始时间段不能大于结束的时间段'))
+          //     } else {
+          //       callback();
+          //     }
+          //   },
+          //   trigger: 'blur'
+          // }
         ],
         repeat_week: [
           { required: true, message: '请选择会议重复时间', trigger: 'blur' }
@@ -211,13 +227,30 @@ export default {
           { required: false, message: '请输入会议信息', trigger: 'blur' }
         ],
       },
-      // select_area_id: -1,
-      // select_room_id: -1,
       currentTimeZone: 'Asia/Shanghai',
       roomOptions: [],
+      start_minute: '',
+      end_minute: ''
     }
   },
   methods: {
+
+    makeRange(start, end) {
+      const result = []
+      for (let i = start; i <= end; i++) {
+        result.push(i)
+      }
+      return result
+    },
+    disabledHours() {
+      return this.makeRange(0, 6).concat(this.makeRange(22,23))
+    },
+    disabledMinutes(hour) {
+      // if (hour === 15) {
+      //   return this.makeRange(20, 40)
+      // }
+      return []
+    },
 
     disabledDate(time) {
       return time.getTime() < Date.now() - 86400000;
@@ -296,15 +329,15 @@ export default {
       const area_rooms = this.areas.filter((item) =>
         item.area_id === area_id
       )
-      console.log('MeetList onAreaChange area_rooms', area_rooms[0])
+      console.log('SingleMeetCMP onAreaChange area_rooms', area_rooms[0])
       const select_rooms = [];
       const duration = area_rooms[0].resolution
       // 为半个小时
       if (duration == 1800) {
-        console.log('CycleMeetCMP onAreaChange area_rooms 00:30')
+        console.log('SingleMeetCMP onAreaChange area_rooms 00:30')
         this.minStep = '00:30'
       } else {
-        console.log('CycleMeetCMP onAreaChange area_rooms 00:15')
+        console.log('SingleMeetCMP onAreaChange area_rooms 00:15')
         this.minStep = '00:15'
       }
       // 设置选择开始结束时间
@@ -322,7 +355,7 @@ export default {
     },
     limitSelectHour(selected_date) {
       const now_date = moment.tz(Date.now(), this.currentTimeZone).format('YYYY-MM-DD')
-      console.log('CycleMeetCMP choseDate selected_date', selected_date)
+      console.log('SingleMeetCMP choseDate selected_date', selected_date)
       if (now_date != selected_date) {
         this.minStartTime = '06:00'
       } else {
@@ -347,7 +380,7 @@ export default {
         this.meetForm.start_date = moment.tz(data.start_time * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
         this.meetForm.start_hour = moment.tz(data.start_time * 1000, 'Asia/Shanghai').format('HH:mm')
         this.meetForm.end_date = moment.tz(data.end_time * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
-        this.meetForm.end_hour = this.start_hour = moment.tz(data.end_time * 1000, 'Asia/Shanghai').format('HH:mm')
+        this.meetForm.end_hour = moment.tz(data.end_time * 1000, 'Asia/Shanghai').format('HH:mm')
         this.meetForm.start_seconds = data.start_time
         this.meetForm.end_seconds = data.end_time
         this.roomOptions = this.getSelectedArea(data.area_id)
@@ -406,13 +439,14 @@ export default {
   created() {
     // this.minStartTime = Common.formatLastMinute(15)
     console.log('SingleMeetCMP created params:', this.entry_id, this.add_params)
+    console.log('SingleMeetCMP created start - end',moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('HH:mm'),moment.tz((this.add_params.timeStamp + 1800) * 1000, 'Asia/Shanghai').format('HH:mm'));
+    
     if (this.add_params && this.mode == 0) {
       this.meetForm.room_id = this.add_params.room_id
       this.meetForm.room_name = this.add_params.room_name
       this.meetForm.area_id = this.add_params.area_id
       this.meetForm.area_name = this.add_params.area_name
       this.meetForm.start_date = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
-      this.meetForm.start_hour = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('HH:mm')
       const now_date = moment.tz(Date.now(), this.currentTimeZone).format('YYYY-MM-DD')
       if (this.add_params.resolution == 1800) {
         const invaild_time = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('HH:mm')

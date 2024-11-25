@@ -29,3 +29,5 @@ export const USER_TYPE = {
     NORMAL: '1',
     ADMIN: '2'
 }
+
+export const MRBS_MAX = 9000000000000

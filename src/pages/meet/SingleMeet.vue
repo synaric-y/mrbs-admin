@@ -130,13 +130,15 @@ import { PageMixin } from "@/pages/PageMixin.js";
 import { Common } from "@/common/common";
 import { ElMessage } from "element-plus/es";
 import { Api } from '@/network/api';
-import { MEETING_STATUS, STORAGE } from "@/const";
+import { MEETING_STATUS, MRBS_MAX, STORAGE } from "@/const";
 import { SELECT_DAY, ROOM_STATUS, USER_TYPE } from '@/const';
 import moment from 'moment';
 import { FilterDateStore } from '@/stores/filterDateStore';
 import { areaData, homeData, testAreas } from '.././home';
 import SingleMeetCMP from '@/components/SingleMeetCMP.vue';
 import CycleMeetCMP from '@/components/CycleMeetCMP.vue';
+import { max } from 'moment/moment';
+import { MAX } from 'uuid';
 
 export default defineComponent({
   components: { SingleMeetCMP, CycleMeetCMP },
@@ -535,13 +537,41 @@ export default defineComponent({
       this.addParams.area_id = room.area_id
       this.addParams.area_name = room.area_name
       console.log('toMeet day.date--time',day,time,room)
+      // 计算当前会议室的会议室时间
+      let hover_start_time = this.getDateTimeStamp(day.date,time)
+      let hover_end_time = hover_start_time + 60 * 15
+      let min_entry_start_time = MRBS_MAX
+      let min_entry_end_time = MRBS_MAX
+      this.events.forEach(entry => {
+        if (entry.entry_id === room.room_id && day.date === entry.date) {
+          if (entry.end_time >= hover_start_time && entry.end_time <= min_entry_end_time) {
+            min_entry_end_time = entry.end_time
+          }
+          if (entry.start_time >= hover_end_time && entry.start_time <= min_entry_start_time) {
+            min_entry_start_time = entry.start_time
+          }
+        }
+      });
+      console.log('toMeet MAX',MRBS_MAX)
+      console.log('toMeet min_entry_start_time-min_entry_end_time',min_entry_start_time,min_entry_end_time)
+      if (min_entry_start_time != MRBS_MAX) {
+        hover_end_time = min_entry_start_time
+      }
+      if (min_entry_end_time != MRBS_MAX) {
+        hover_start_time = min_entry_end_time
+      }
+      
+      console.log('toMeet hover_start_time:',hover_start_time)
+      console.log('toMeet hover_end_time:',hover_end_time)
+      // 间隔少于5分钟不可以编辑
+      if ((hover_end_time - hover_start_time) < 900) {
+        return
+      }
+      this.addParams.start_time = hover_start_time
+      this.addParams.end_time = hover_end_time
 
 
-
-
-
-
-      return
+      // return
       this.addParams.timeStamp = this.getDateTimeStamp(day.date,time)
       if (this.addParams.timeStamp < this.currenTimestamp) {
         return

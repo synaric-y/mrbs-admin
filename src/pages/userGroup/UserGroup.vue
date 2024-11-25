@@ -228,6 +228,7 @@ export default {
       if (row.source === "system") {
         this.getSystemGroupTreeWithId(row.id).then(childrenData => {
           resolve(childrenData);
+          console.log('loadSubGroup sys table_data',this.tableData);
         }).catch(() => {
           resolve([]);
         });
@@ -236,6 +237,7 @@ export default {
       console.log('Loading children ad for:', row, treeNode);
       this.getAdGroupTreeWithId(row.id).then(childrenData => {
         resolve(childrenData);
+        console.log('loadSubGroup ad table_data',this.tableData);
       }).catch(() => {
         resolve([]);
       });
