@@ -22,7 +22,7 @@
               <el-button v-for="(item, index) in groupButtons" type="primary" size="small"
                 :class="['', item.day == dayRrangeVal ? 'day-button-active' : 'day-button']"
                 @click="dayRrange(item.day,false)">{{
-                  item.name }}</el-button>
+                item.name }}</el-button>
             </div>
             <div class="date-picker">
               <el-date-picker v-model="baseTime" type="daterange" value-format="YYYY-MM-DD"
@@ -41,8 +41,8 @@
                   :style="{ backgroundColor: day.color }">
                   {{ day.date }}
                   <div class="room-header-wrapper">
-                    <div class="room-header" :style="{ width: itemWidth + 20 + 'px' }" v-for="(room, roomIndex) in rooms"
-                      :key="roomIndex">
+                    <div class="room-header" :style="{ width: itemWidth + 20 + 'px' }"
+                      v-for="(room, roomIndex) in rooms" :key="roomIndex">
                       {{ room.room_name }}
                     </div>
                   </div>
@@ -89,7 +89,8 @@
                                 <div class="event-person" :style="{ margin: 1 + 'px' }">{{ event.duration }}-({{
                                   event.book_by }})</div>
                                 <template v-if="event.src">
-                                  <img style="position: absolute;top:1px;right: 1px;width: 20px;height: 20px;" :src="event.src" alt="">
+                                  <img style="position: absolute;top:1px;right: 1px;width: 20px;height: 20px;"
+                                    :src="event.src" alt="">
                                 </template>
                               </template>
                               <template v-else>
@@ -97,7 +98,8 @@
                                 <div class="event-time">{{ event.duration }}</div>
                                 <div class="event-person">{{ event.book_by }}</div>
                                 <template v-if="event.src">
-                                  <img style="position: absolute;top:1px;right: 1px;width: 20px;height: 20px;" :src="event.src" alt="">
+                                  <img style="position: absolute;top:1px;right: 1px;width: 20px;height: 20px;"
+                                    :src="event.src" alt="">
                                 </template>
                               </template>
                             </div>
@@ -111,9 +113,6 @@
             </el-scrollbar>
           </div>
         </div>
-        <!-- <div class="slider-container-horizontal">
-          <el-slider :value="scrollLeft" @input="scrollHorizontalDebounce" />
-        </div> -->
         <SingleMeetCMP v-if="dialogMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas"
           :entry_id="entry_id" @close="closeDialogMeetForm" />
         <CycleMeetCMP v-if="dialogCycleMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas"
@@ -121,6 +120,10 @@
       </div>
     </el-main>
     <el-skeleton v-if="showLoading" :rows="15" animated />
+
+    <div class="slider-container-horizontal">
+      <el-slider v-model="scrollLeft" @input="scrollHorizontalDebounce" />
+    </div>
   </el-container>
 </template>
 
@@ -299,11 +302,7 @@ export default defineComponent({
     },
 
     scrollHorizontalDebounce(scrollValue) {
-      clearTimeout(this.debounceTimer)
-      this.debounceTimer = setTimeout(() => {
-        this.scrollHorizontal(scrollValue)
-      }, 50)
-      // this.scrollHorizontal(scrollValue)
+      this.scrollHorizontal(scrollValue)
     },
 
     scrollHorizontal(scrollValue) {
@@ -923,13 +922,19 @@ export default defineComponent({
 }
 
 .content-meet-scrollbar:deep(.el-scrollbar__bar.is-horizontal) {
-  z-index: 1000;
-  height: 10px;
+  // z-index: 1000;
+  // height: 10px;
+  height: 0 !important;
 }
 
 .slots-time-scrollbar:deep(.el-scrollbar__bar.is-vertical) {
   width: 0 !important;
   display: none !important;
+}
+
+.content-meet-scrollbar:deep(.el-scrollbar__bar.is-vertical) {
+  z-index: 1000;
+  width: 10px;
 }
 
 /* 会议展示公共代码 */

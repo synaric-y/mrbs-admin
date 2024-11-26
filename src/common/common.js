@@ -376,7 +376,7 @@ export class Common {
 
     static normalSelfMeet(book_by) {
         const userinfo = JSON.parse(localStorage.getItem(STORAGE.USER_INFO))
-        if (Common.normalUser() && userinfo.username === book_by) {
+        if (userinfo.username === book_by) {
             return true
         }
         return false
