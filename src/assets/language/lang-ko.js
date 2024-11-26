@@ -390,6 +390,8 @@ export const langKo = {
         password1Hint: '두 번 입력한 비밀번호가 일치하지 않습니다.',
         plzEnterUsernameHint: '사용자 이름을 입력하세요',
         plzSelectLevel: '계정 권한을 선택하세요',
+        form_verify_email: '이메일을 입력해주세요',
+        form_valid_email: '유효한 이메일 주소를 입력해주세요',
     },
     userGroup: {
         userGroup: '사용자 그룹',
@@ -430,6 +432,9 @@ export const langKo = {
         bind: {
             offline: '오프라인',
             online: '온라인',
+            charging: '충전 중',
+            binded: '경계',
+            unbind: '구속되지 않음',
             all: '모두',
         }
     },

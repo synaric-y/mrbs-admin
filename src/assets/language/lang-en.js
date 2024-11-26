@@ -389,6 +389,8 @@ export const langEn = {
         password1Hint: 'The passwords are inconsistent',
         plzEnterUsernameHint: 'Enter username',
         plzSelectLevel: 'Select account level',
+        form_verify_email: 'Please enter your email address',
+        form_valid_email: 'Please enter a valid email address',
     },
     userGroup: {
         userGroup: 'User Group',
@@ -429,6 +431,9 @@ export const langEn = {
         bind: {
             offline: 'offline',
             online: 'online',
+            charging: 'charging',
+            binded: 'Bound',
+            unbind: 'Unbound',
             all: 'all',
         }
     },

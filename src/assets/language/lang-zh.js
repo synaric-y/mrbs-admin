@@ -392,6 +392,9 @@ export const langZh = {
         password1Hint: '两次输入的密码不一致',
         plzEnterUsernameHint: '请输入用户名称',
         plzSelectLevel: '请选择账号权限',
+        form_verify_email: '请输入邮箱',
+        form_valid_email: '请输入有效的邮箱地址',
+        
     },
     userGroup: {
         userGroup: '用户组',
@@ -432,6 +435,9 @@ export const langZh = {
         bind: {
             offline: '下线',
             online: '上线',
+            binded: '已绑定',
+            unbind: '未绑定',
+            charging: '充电中',
             all: '所有',
         }
     },

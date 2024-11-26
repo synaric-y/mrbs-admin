@@ -13,9 +13,6 @@
       <el-button type="primary" class="btn" :icon="Plus" @click="addUser(0, null)">
         {{ $t('base.add2') }}
       </el-button>
-      <!-- <el-button type="primary" class="btn" :icon="Refresh" style="width: 112px;">
-        {{ $t('base.userSync') }}
-      </el-button> -->
     </template>
     <template #table>
       <div class="table-wrapper" style="height: auto;">
@@ -46,7 +43,7 @@
             <template #default="scope">
               <div class="operate-wrapper">
                 <span class="operate-item" @click="resetPassword(scope.row)">{{ $t('base.resetPassword') }}</span>
-                <span class="operate-item" @click="addUser(1, scope.row)">编辑</span>
+                <span class="operate-item" @click="addUser(1, scope.row)">{{ $t('base.edit') }}</span>
                 <span class="operate-item" @click="deleteUserPop(scope.row)">{{ $t('base.delete') }}</span>
               </div>
             </template>
@@ -68,7 +65,6 @@
       </el-form-item>
       <el-form-item prop="display_name" :label="$t('user.tableUser.displayName')" label-width="140px"
         style="margin-right: 50px;">
-        <!-- :readonly="dialogUserDetailForm" -->
         <el-input v-model="userForm.display_name" autocomplete="off" />
       </el-form-item>
       <template v-if="mode==0">
@@ -96,9 +92,6 @@
       </div>
     </template>
   </el-dialog>
-
-
-  <!--  重置密码  -->
   <el-dialog v-model="dialogResetPasswordForm" :title="$t('base.resetPassword')" width="550">
     <el-form ref="passwordForm" :model="passwordForm" :rules="passwordRules" label-width="auto">
       <el-form-item :label="$t('user.tableUser.name')">
@@ -125,8 +118,6 @@
       </div>
     </template>
   </el-dialog>
-
-
   <el-dialog v-model="dialogDeleteVisible" :title="$t('user.deleteUser')" width="550">
     <div class="">
       {{ $t('user.deleteUserHint') }}
@@ -140,7 +131,6 @@
       </div>
     </template>
   </el-dialog>
-
 </template>
 
 <script>
@@ -194,7 +184,7 @@ export default {
           { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
         ],
         email: [
-          { required: true, message: '请输入邮箱', trigger: 'blur' },
+          { required: true, message: this.$t('user.form_verify_email'), trigger: 'blur' },
           { validator: this.validateEmail, trigger: 'blur' }
         ],
       },
@@ -209,7 +199,7 @@ export default {
           { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
         ],
         email: [
-          { required: true, message: '请输入邮箱', trigger: 'blur' },
+          { required: true, message: this.$t('user.form_verify_email'), trigger: 'blur' },
           { validator: this.validateEmail, trigger: 'blur' }
         ],
       },
@@ -259,14 +249,13 @@ export default {
       }
     },
     validateEmail(rule, value, callback) {
-      // 根据条件动态判断是否进行邮箱格式校验
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!value) {
-        callback(new Error('请输入邮箱'));
+        callback(new Error(this.$t('user.form_verify_email')));
       } else if (!emailRegex.test(value)) {
-        callback(new Error('请输入有效的邮箱地址'));
+        callback(new Error(this.$t('user.form_valid_email')));
       } else {
-        callback(); // 校验通过
+        callback();
       }
     },
 
@@ -278,7 +267,7 @@ export default {
       this.dialogFormVisible = true
       this.mode = val
       if (val === 1) {
-        this.dialogUserDetailForm = true // Read-only for viewing user details
+        this.dialogUserDetailForm = true
         this.rules = this.rulesUpdate
         this.userDetailTitle = '编辑用户'
         this.userForm.name = row.name

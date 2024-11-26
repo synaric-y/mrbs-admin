@@ -17,7 +17,8 @@
       </el-button>
     </template>
     <template #table>
-      <el-table class="table-wrapper" style="height: auto;"  :data="terminals" header-cell-class-name="tb-header" max-height="450">
+      <el-table class="table-wrapper" style="height: auto;" :data="terminals" header-cell-class-name="tb-header"
+        max-height="450">
         <el-table-column prop="number" :label="$t('terminal.tableTerminal.id')">
           <template #default="scope">
             {{ scope.$index + 1 }}
@@ -25,7 +26,6 @@
         </el-table-column>
         <el-table-column prop="device_id" :label="$t('terminal.tableTerminal.deviceId')"></el-table-column>
         <el-table-column prop="version" :label="$t('terminal.tableTerminal.version')"></el-table-column>
-        <!-- <el-table-column prop="description" :label="$t('terminal.tableTerminal.deviceInfo')"></el-table-column> -->
         <el-table-column prop="resolution" :label="$t('terminal.tableTerminal.resolution')"></el-table-column>
         <el-table-column prop="battry_text" :label="$t('terminal.tableTerminal.battery')"></el-table-column>
         <el-table-column prop="status" :label="$t('terminal.tableTerminal.status')"></el-table-column>
@@ -36,9 +36,9 @@
           <template #default="scope">
             <div class="operate-wrapper" v-if="scope.row.is_set == 1">
               <span class="operate-item" @click="unbindDeviceDialog(scope.row)">{{ $t('base.unbind') }}</span>
-              <span v-if="scope.row.is_set != 1" class="operate-item" @click="bindDeviceDialog(scope.row)">绑定终端</span>
+              <span v-if="scope.row.is_set != 1" class="operate-item" @click="bindDeviceDialog(scope.row)">{{ $t('meet.bind_terminal') }}</span>
             </div>
-            <div v-else>{{ $t('base.none')}}</div>
+            <div v-else>{{ $t('base.none') }}</div>
           </template>
         </el-table-column>
       </el-table>
@@ -81,7 +81,7 @@ export default {
       return Search
     }
   },
-  components: { Layout,BindTerminal },
+  components: { Layout, BindTerminal },
   mixins: [PageMixin],
   data() {
     return {
@@ -100,7 +100,7 @@ export default {
           value: 1,
           label: this.$t('terminal.bind.online'),
         }],
-      roomVal: '所有',
+      roomVal: this.$t('base.all'),
       roomOptions: [],
       pendingDeleteName: null,
       page_number: 1,
@@ -111,13 +111,13 @@ export default {
       select_status_id: -1,
       select_room_id: -1,
       page_cache_areas: [],
-      is_bind_terminal:false,
+      is_bind_terminal: false,
       bind_room_id: -1,
     }
   },
   methods: {
     bindDeviceDialog(row) {
-      console.log('bindDeviceDialog row:',row);
+      console.log('bindDeviceDialog row:', row);
       this.bind_room_id = row.id
       this.is_bind_terminal = true
     },
@@ -161,7 +161,7 @@ export default {
             });
           });
         });
-        select_rooms.unshift({ title: '所有', room_id: -1, room_name: '所有' })
+        select_rooms.unshift({ title: this.$t('base.all'), room_id: -1, room_name: this.$t('base.all') })
         this.roomOptions = select_rooms
       })
     },
@@ -175,7 +175,7 @@ export default {
       Api.unbindDevice({ device_id: this.selectRow.device_id }).then(({ data, code, msg }) => {
         if (code == 0) {
           this.dialogUnbindVisible = false
-          ElMessage.success('解绑操作成功')
+          ElMessage.success(msg)
           this.getTerminalList()
         } else {
           ElMessage.error(msg)
@@ -209,13 +209,13 @@ export default {
       Api.getTerminalList(params).then(({ data, code, msg }) => {
         if (code == 0) {
           if (data && data.devices) {
-              data.devices.forEach(it => {
-              it["version"] = !it["version"] ? '无' : it["version"]
-              it['description'] = !it['description'] ? '无' : it['description']
-              it['status'] = !it['status'] ? '下线' : '上线'
-              it['battry_text'] = it['is_charging'] ? `充电中 ${it['battery_level']}%` : `${it['battery_level']}%`
-              it['bind_room'] = it['is_set'] ? '已绑定' : '未绑定'
-              it['set_time'] =  moment.tz(it['set_time'] * 1000, 'Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss')
+            data.devices.forEach(it => {
+              it["version"] = !it["version"] ? this.$t('base.none') : it["version"]
+              it['description'] = !it['description'] ? this.$t('base.none') : it['description']
+              it['status'] = !it['status'] ? this.$t('terminal.bind.offline') : this.$t('terminal.bind.online')
+              it['battry_text'] = it['is_charging'] ? `${this.$t('terminal.bind.charging')} ${it['battery_level']}%` : `${it['battery_level']}%`
+              it['bind_room'] = it['is_set'] ? this.$t('terminal.bind.binded') : this.$t('terminal.bind.unbind')
+              it['set_time'] = moment.tz(it['set_time'] * 1000, 'Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss')
             })
             console.log(data.devices)
             this.terminals = data.devices
@@ -235,135 +235,3 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-//.sub-page-content {
-//  display: flex;
-//  // justify-content: center;
-//  align-items: center;
-//  flex-direction: column;
-//  // height: calc(100vh - 95px);
-//  height: auto;
-//  min-height: calc(100vh - 95px);
-//  background-color: white;
-//  padding: 0;
-//  margin: 0;
-//  // margin-top: 20px;
-//  position: relative;
-//}
-//
-//.sub-title-wrapper {
-//  display: flex;
-//  flex-direction: column;
-//  justify-content: flex-start;
-//  align-items: flex-start;
-//  margin-left: 20px;
-//}
-//
-//.page-title {
-//  font-family: PingFang SC;
-//  font-size: 20px;
-//  font-weight: 500;
-//  line-height: 28px;
-//  letter-spacing: 0px;
-//  color: #1D2129;
-//  margin-top: 20px;
-//  margin-left: 20px;
-//}
-//
-//.filter-wrapper {
-//  display: flex;
-//  flex-direction: row;
-//  justify-content: flex-start;
-//  align-items: flex-start;
-//  margin-left: 20px;
-//  padding: 0 5px;
-//}
-//
-//.el-main {
-//  margin: 0;
-//}
-//
-//.tb-header {
-//  font-size: 14px !important;
-//}
-//
-//.el-table {
-//  --el-table-tr-bg-color: white;
-//  padding: 0;
-//  margin: 0;
-//}
-//
-//::v-deep .el-input {
-//  height: 40px;
-//  line-height: 40px;
-//}
-//
-//::v-deep .el-input__inner {
-//  height: 40px;
-//  line-height: 40px;
-//}
-//
-//.el-button-content {
-//  width: 84px;
-//  height: 30px;
-//  background: #591BB7;
-//  font-family: PingFang SC;
-//  font-size: 14px;
-//  font-weight: normal;
-//  line-height: 30px;
-//  letter-spacing: 0px;
-//  color: #FFFFFF;
-//  margin-left: 20px;
-//  padding: 4px 0;
-//}
-//
-//.el-button-img {
-//  width: 16px;
-//  height: 16px;
-//  margin-right: 6px;
-//  margin-top: 2px;
-//}
-//
-//.tb-op-icon {
-//  width: 25px;
-//  height: 25px;
-//}
-//
-//.tb-op-icon-span {
-//  margin-right: 10px;
-//}
-//
-//.tb-state {
-//  width: 18px;
-//  height: 18px;
-//  border-radius: 20px;
-//  background: #08D50A;
-//  margin-left: 15px;
-//}
-//
-//.tb-state-disable {
-//  background: red;
-//}
-//
-//.table-pagination-block {
-//  display: flex;
-//  flex-direction: row;
-//  justify-content: center;
-//  // background-color: rebeccapurple;
-//}
-//
-//.table-demonstration {
-//  line-height: 50px;
-//  margin-right: 30px;
-//}
-//
-//.dialog-footer {
-//  display: flex;
-//  flex-direction: row;
-//  justify-content: center;
-//  align-items: center;
-//}
-//
-//.reset-password {
-//  display: flex;
-//  flex-direction: row;
-//}</style>
