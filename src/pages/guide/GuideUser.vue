@@ -1,37 +1,37 @@
 <template>
-  <Layout :title="'会议系统配置向导'" :section-center="true">
+  <Layout :title="$t('guide.basics_title')" :section-center="true">
     <template #section>
       <ProgressBar :active-index="2" />
       <div style="margin-top: 20px;">
         <el-form :model="form" :rules="rules" ref="formRef" label-width="150px">
-          <el-form-item label="选择服务">
+          <el-form-item :label="$t('guide.select_service')">
             <img class="form-item-img" src="../../../public/imgs/ad.png" alt="#">
           </el-form-item>
-          <el-form-item prop="hosts" label="服务器地址(hosts)">
-            <el-input v-model="form.hosts" class="form-item-input" placeholder="示例:172.16.88.180"
+          <el-form-item prop="hosts" :label="$t('guide.service_url')">
+            <el-input v-model="form.hosts" class="form-item-input" :placeholder="$t('guide.example_service')"
               @input="adStatus = 'untested'" />
           </el-form-item>
-          <el-form-item prop="port" label="服务器端口(port)">
-            <el-input v-model="form.port" class="form-item-input" placeholder="示例:3136"
+          <el-form-item prop="port" :label="$t('guide.select_service_port')">
+            <el-input v-model="form.port" class="form-item-input" :placeholder="$t('guide.example_port')"
               @input="adStatus = 'untested'" />
           </el-form-item>
-          <el-form-item prop="base_dn" label="基础地址(base_dn)">
-            <el-input v-model="form.base_dn" class="form-item-input"
-              placeholder="示例:0U=BCC,DC=businessconnectchina,DC=com" @input="adStatus = 'untested'" />
+          <el-form-item prop="base_dn" :label="$t('guide.select_base_dn')">
+            <el-input v-model="form.base_dn" class="form-item-input" :placeholder="$t('guide.example_base_dn')"
+              @input="adStatus = 'untested'" />
           </el-form-item>
-          <el-form-item prop="username" label="用户名(username)">
-            <el-input v-model="form.username" class="form-item-input"
-              placeholder="示例:CN=meet. dap,0U=LDAP,DC=businessconnectchina,DC=com" @input="adStatus = 'untested'" />
+          <el-form-item prop="username" :label="$t('guide.select_username')">
+            <el-input v-model="form.username" class="form-item-input" :placeholder="$t('guide.example_username')"
+              @input="adStatus = 'untested'" />
           </el-form-item>
-          <el-form-item prop="password" label="密码(password)">
+          <el-form-item prop="password" :label="$t('guide.select_password')">
             <el-input type="password" v-model="form.password" class="form-item-input"
-              placeholder="请输入包含数字、字母、特殊符号最低8位密码" @input="adStatus = 'untested'" />
+              :placeholder="$t('guide.password_placeholder')" @input="adStatus = 'untested'" />
             <TestButton :status="adStatus" @test="verify" />
           </el-form-item>
-          <el-form-item prop="autoSync" label="开启定时同步">
+          <el-form-item prop="autoSync" :label="$t('guide.start_time_sync')">
             <el-switch v-model="form.autoSync" />
           </el-form-item>
-          <el-form-item prop="syncDay" label="同步时间">
+          <el-form-item prop="syncDay" :label="$t('guide.sync_time')">
             <el-select :disabled="!form.autoSync" v-model="form.syncDay" :placeholder="$t('base.plzSelect')"
               size="large" style="width: 100px;margin-right: 10px;">
               <el-option v-for="item in everyDayOptions" :key="item.value" :label="item.label" :value="item.value" />
@@ -41,10 +41,10 @@
       </div>
     </template>
     <template #btns>
-      <el-button plain class="btn" @click="jumpGuide">跳过向导</el-button>
-      <el-button type="primary" class="btn" @click="switchTab('/guide_basics')">上一步</el-button>
-      <el-button plain class="btn" @click="skipCurrentGuide">暂不需要</el-button>
-      <el-button type="primary" class="btn" @click="nextStep">下一步</el-button>
+      <el-button plain class="btn" @click="jumpGuide">{{ $t('guide.jump_guide') }}</el-button>
+      <el-button type="primary" class="btn" @click="switchTab('/guide_basics')">{{ $t('guide.pre') }}</el-button>
+      <el-button plain class="btn" @click="skipCurrentGuide">{{ $t('guide.no_guide') }}</el-button>
+      <el-button type="primary" class="btn" @click="nextStep">{{ $t('guide.next') }}</el-button>
     </template>
   </Layout>
 </template>
@@ -71,21 +71,20 @@ export default {
         username: '',
         password: '',
         syncRange: undefined,
-        syncMethod: '用户和用户组',
         autoSync: true,
         syncDay: 1
       },
       adStatus: 'untested',
       rules: {
-        hosts: [{ required: true, message: '服务器地址不能为空', trigger: 'blur' }],
-        port: [{ required: true, message: '端口号不能为空', trigger: 'blur' },
-        { validator: this.portValidator, message: '端口号必须是大于0且小于65536的整数', trigger: 'blur' }],
-        base_dn: [{ required: true, message: '请填写基础地址', trigger: 'blur' }],
+        hosts: [{ required: true, message: this.$t('guide.form_empty_url'), trigger: 'blur' }],
+        port: [{ required: true, message: this.$t('guide.form_service_port'), trigger: 'blur' },
+        { validator: this.portValidator, message: this.$t('guide.form_limit_port'), trigger: 'blur' }],
+        base_dn: [{ required: true, message: this.$t('guide.form_base_service'), trigger: 'blur' }],
         username: [
-          { required: true, message: '用户名不能为空', trigger: 'blur' },
-          { min: 2, max: 200, message: '用户名的字符个数必须在2到200之间', trigger: 'blur' },
+          { required: true, message: this.$t('guide.form_username'), trigger: 'blur' },
+          { min: 2, max: 200, message: this.$t('guide.form_limit_username'), trigger: 'blur' },
         ],
-        password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+        password: [{ required: true, message: this.$t('guide.form_password'), trigger: 'blur' }]
       },
       everyDayOptions: [
         {
@@ -116,11 +115,10 @@ export default {
     portValidator(rule, value, callback) {
       if (value == '') callback()
       let reg = /^[1-9][0-9]*$/;
-      if (reg.test(value) === false) callback(new Error('端口号必须是大于0的整数'))
+      if (reg.test(value) === false) callback(new Error(this.$t('guide.form_limit_port')))
       else {
         const res = parseInt(value)
-
-        if (!res || res <= 0 || res > 65535) callback(new Error('端口号必须是大于0且小于65536的整数'))
+        if (!res || res <= 0 || res > 65535) callback(new Error(this.$t('guide.form_limit_port')))
         else callback()
       }
     },
@@ -128,7 +126,7 @@ export default {
       this.$refs.formRef.validate(valid => {
         if (!valid) {
           ElMessage.error({
-            message: '表单格式错误',
+            message: this.$t('guide.form_format_error'),
           })
         } else {
           this.adStatus = 'testing'
@@ -140,16 +138,16 @@ export default {
             password: this.form.password,
           }).then(({ code }) => {
             if (code !== 0) {
-              throw new Error('测试失败')
+              throw new Error(this.$t('guide.test_fail'))
             }
             this.adStatus = 'tested'
             ElMessage.success({
-              message: '测试成功',
+              message: this.$t('guide.test_success'),
             })
           }).catch(e => {
             this.adStatus = 'untested'
             ElMessage.error({
-              message: '测试失败',
+              message: this.$t('guide.test_fail'),
             })
           })
         }
@@ -179,7 +177,7 @@ export default {
 
           if (this.adStatus !== 'tested') {
             ElMessage.error({
-              message: 'AD连通性未测试，请先测试',
+              message: this.$t('guide.first_ad_test'),
             })
             return
           }
@@ -199,23 +197,23 @@ export default {
             console.log(res)
             if (res?.code == 0) {
               ElMessage.success({
-                message: '设置成功',
+                message: this.$t('guide.set_success'),
               })
               this.switchTab('/guide_calendar')
             } else {
               ElMessage.error({
-                message: '设置失败',
+                message: this.$t('guide.set_fail'),
               })
             }
           }).catch(e => {
             ElMessage.error({
-              message: '设置失败',
+              message: this.$t('guide.set_fail'),
             })
             console.log(e)
           })
         } else {
           ElMessage.error({
-            message: '表单格式错误',
+            message: this.$t('guide.form_format_error'),
           })
         }
       })

@@ -1,14 +1,14 @@
 <template>
-  <Layout :title="'会议系统配置向导'" :section-center="true">
+  <Layout :title="$t('guide.basics_title')" :section-center="true">
     <template #section>
       <div class="sub-text">
-        欢迎使用XXX会议系统。<br>
-        接下来，我们诚挚地邀请您为系统做初始化配置，<br>
-        仅需数分钟，您将迅速熟悉系统，并完成配置。</div>
+        {{ $t('guide.guide_start_sub1') }}<br>
+        {{ $t('guide.guide_start_sub2') }}<br>
+        {{ $t('guide.guide_start_sub3') }}</div>
     </template>s
     <template #btns>
-      <el-button class="btn" type="primary" @click="switchTab('/guide_basics')">开始</el-button>
-      <el-button class="btn" @click="switchTab('../single_meet')">下次再说</el-button>
+      <el-button class="btn" type="primary" @click="switchTab('/guide_basics')">{{ $t('guide.guide_start') }}</el-button>
+      <el-button class="btn" @click="switchTab('../single_meet')">{{ $t('guide.guide_jump') }}</el-button>
     </template>
   </Layout>
 </template>
@@ -22,16 +22,10 @@ import { Text } from "vue";
 import Layout from "@/components/Layout.vue";
 
 export default {
-  components: {Layout},
+  components: { Layout },
   mixins: [PageMixin],
   data() {
-    return {
-      mode: 'add',
-      form: {
-        username: '',
-        password: ''
-      },
-    }
+    return {}
   },
   methods: {
 
@@ -58,6 +52,5 @@ export default {
   letter-spacing: 0px;
   font-variation-settings: "opsz" auto;
   color: #3D3D3D;
-  /* background-color: red; */
 }
 </style>

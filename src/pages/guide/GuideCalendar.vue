@@ -1,22 +1,22 @@
 <template>
-  <Layout :title="'会议系统配置向导'" :section-center="true">
+  <Layout :title="$t('guide.basics_title')" :section-center="true">
     <template #section>
       <ProgressBar :active-index="3" />
       <el-form :model="form" :rules="rules" ref="formRef" label-width="150px">
-        <el-form-item label="选择服务">
+        <el-form-item :label="$t('guide.select_service')">
           <img class="form-item-img" src="../../../public/imgs/exchange.png" alt="#">
         </el-form-item>
-        <el-form-item prop="hosts" label="服务器地址(hosts)">
+        <el-form-item prop="hosts" :label="$t('guide.service_url')">
           <el-input :disabled="exchangeStatus === 'testing'" @input="exchangeStatus = 'untested'" v-model="form.hosts"
-            class="form-item-input" placeholder="示例:172.16.88.180" />
+            class="form-item-input" :placeholder="$t('guide.example_service')" />
           <TestButton :status="exchangeStatus" @test="verify" />
         </el-form-item>
-        <el-form-item prop="syncMethod" label="同步方式">
+        <el-form-item prop="syncMethod" :label="$t('guide.sync_way')">
           <el-select v-model="form.syncMethod" :placeholder="$t('base.plzSelect')" size="large" style="width: 340px">
             <el-option v-for="item in groupOptions" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
-        <el-form-item prop="syncMinute" label="同步间隔">
+        <el-form-item prop="syncMinute" :label="$t('guide.sync_interval')">
           <el-select v-model="form.syncMinute" :placeholder="$t('base.plzSelect')" size="large"
             style="width: 200px;margin-right: 10px;">
             <el-option v-for="item in everySecondOptions" :key="item.value" :label="item.label" :value="item.value" />
@@ -25,10 +25,10 @@
       </el-form>
     </template>
     <template #btns>
-      <el-button plain class="btn" @click="jumpGuide">跳过向导</el-button>
-      <el-button type="primary" class="btn" @click="switchTab('/guide_user')">上一步</el-button>
-      <el-button plain class="btn" @click="skipCurrentGuide">暂不需要</el-button>
-      <el-button type="primary" class="btn" @click="nextStep">下一步</el-button>
+      <el-button plain class="btn" @click="jumpGuide">{{ $t('guide.jump_guide') }}</el-button>
+      <el-button type="primary" class="btn" @click="switchTab('/guide_user')">{{ $t('guide.pre') }}</el-button>
+      <el-button plain class="btn" @click="skipCurrentGuide">{{ $t('guide.no_guide') }}</el-button>
+      <el-button type="primary" class="btn" @click="nextStep">{{ $t('guide.next') }}</el-button>
     </template>
   </Layout>
 </template>
@@ -54,31 +54,31 @@ export default {
       },
       exchangeStatus: 'untested',
       rules: {
-        hosts: [{ required: true, message: '服务器地址不能为空', trigger: 'blur' }],
-        syncMethod: [{ required: true, message: '请选择同步方式', trigger: 'blur' }],
-        syncMinute: [{ required: true, message: '请选择同步间隔', trigger: 'blur' }]
+        hosts: [{ required: true, message: this.$t('guide.form_empty_url'), trigger: 'blur' }],
+        syncMethod: [{ required: true, message: this.$t('guide.form_sync_way'), trigger: 'blur' }],
+        syncMinute: [{ required: true, message: this.$t('guide.form_sync_interval'), trigger: 'blur' }]
       },
       groupOptions: [
         {
           value: 1,
-          label: '双向，Exchange与系统产生日历相互同步',
+          label: this.$t('guide.select_sync_exchange'),
         }],
       everySecondOptions: [
         {
           value: 1,
-          label: '5秒',
+          label: this.$t('guide.five_seconds'),
         },
         {
           value: 2,
-          label: '10秒',
+          label: this.$t('guide.ten_seconds'),
         },
         {
           value: 3,
-          label: '30秒',
+          label: this.$t('guide.thirty_seconds'),
         },
         {
           value: 4,
-          label: '60秒',
+          label: this.$t('guide.sixty_seconds'),
         }
       ],
     }
@@ -87,7 +87,7 @@ export default {
     verify() {
       if (!this.form.hosts || this.form.hosts === '') {
         ElMessage.error({
-          message: '服务器地址不能为空',
+          message: this.$t('guide.alert_empty_request_url'),
         })
         return
       }
@@ -96,16 +96,16 @@ export default {
         server_address: this.form.hosts,
       }).then(({ code }) => {
         if (code !== 0) {
-          throw new Error('测试失败')
+          throw new Error(this.$t('guide.test_fail'))
         }
         this.exchangeStatus = 'tested'
         ElMessage.success({
-          message: '测试成功',
+          message: this.$t('guide.test_success'),
         })
       }).catch(e => {
         this.exchangeStatus = 'untested'
         ElMessage.error({
-          message: '测试失败',
+          message: this.$t('guide.test_fail'),
         })
       })
     },
@@ -130,7 +130,7 @@ export default {
     nextStep() {
       if (this.exchangeStatus !== 'tested') {
         ElMessage.error({
-          message: 'Exchange连通性未测试，请先测试',
+          message: this.$t('guide.first_exchange_test'),
         })
         return
       }
@@ -142,29 +142,28 @@ export default {
               "exchange_server": this.form.hosts,
               "exchange_sync_type": this.form.syncMethod,
               "exchange_sync_interval": this.form.syncMinute,
-              // "AD_interval_date": 12345,
             }
           ).then(res => {
             console.log(res)
             if (res?.code == 0) {
               ElMessage.success({
-                message: '设置成功',
+                message: this.$t('guide.set_success'),
               })
               this.switchTab('/guide_meet')
             } else {
               ElMessage.error({
-                message: '设置失败',
+                message: this.$t('guide.set_fail'),
               })
             }
           }).catch(e => {
             ElMessage.error({
-              message: '设置失败',
+              message: this.$t('guide.set_fail'),
             })
             console.log(e)
           })
         } else {
           ElMessage.error({
-            message: '表单格式错误',
+            message: this.$t('guide.form_format_error'),
           })
         }
       })

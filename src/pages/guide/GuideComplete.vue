@@ -1,17 +1,17 @@
 <template>
-  <Layout :title="'会议系统配置向导'" :section-center="true">
+  <Layout :title="$t('guide.basics_title')" :section-center="true">
     <template #section>
       <ProgressBar :active-index="5"/>
       <div class="guide-success">
         <img class="guide-img" src="../../../public/imgs/guide_success.png" alt="">
-        <div class="guide-success-text">您已经完成初始化配置！<br>
-          现在，您可以继续添加会议室，或者尝试预约一个会议。</div>
+        <div class="guide-success-text">{{ $t('guide.finished_guide_set')}}<br>
+          {{ $t('guide.try_create_meet')}}</div>
       </div>
     </template>
     <template #btns>
-      <el-button class="btn" @click="finishedGuide">结束向导</el-button>
-      <el-button class="btn" type="primary" @click="switchTab('../single_meet')">预约会议</el-button>
-      <el-button class="btn">继续添加会议室</el-button>
+      <el-button class="btn" @click="finishedGuide">{{ $t('guide.finished_guide') }}</el-button>
+      <el-button class="btn" type="primary" @click="switchTab('../single_meet')">{{ $t('guide.schedule_meet') }}</el-button>
+      <el-button class="btn">{{ $t('guide.add_meet') }}</el-button>
     </template>
   </Layout>
 </template>
