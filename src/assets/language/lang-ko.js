@@ -43,14 +43,14 @@ export const langKo = {
         endDate: '마치다',
         to: '-',
         allAreas: '모든 지역',
-        getMeetRoomError:'회의정보 입수 예외',
+        getMeetRoomError: '회의정보 입수 예외',
         deleteSuccess: '회의가 삭제되었습니다.',
         deleteError: '회의를 삭제하지 못했습니다.',
         all: '모든',
         roomDisabled: '방이 비활성화됨',
         roomAbled: '회의 예약 가능',
         normalUser: '일반 사용자',
-        passTime:'구식',
+        passTime: '구식',
         passTimeError: '과거 시간은 선택할 수 없습니다.',
         loginoutUser: '로그인되지 않은 상태',
         minMinuteTitle: '(15분)',
@@ -79,6 +79,24 @@ export const langKo = {
         tips: '힌트',
         deleteTips: '현재 회의 삭제 확인',
         search_create_by: '약속을 잡는 사람을 입력하세요.',
+        meet_title: '역사 회의',
+        not_started_meet: '시작하지 않음',
+        in_progress_meet: '진행 중',
+        ended_meet: '종료됨',
+        yes: '예',
+        no: '아니요',
+        table: {
+            id: '번호',
+            area: '지역',
+            room: '회의실',
+            room_title: '회의 제목',
+            start_meet: '예약 시작 시간',
+            end_meet: '예약 종료 시간',
+            is_repeat: '주기적인 회의 여부',
+            meet_status: '회의 상태',
+            creat_by: '예약자',
+        },
+
     },
     login: {
         account: '계정',
@@ -223,7 +241,7 @@ export const langKo = {
             all: '모두',
         }
     },
-    setting:{
+    setting: {
         title: 'System Setting',
         meeting_rule_setting: {
             title: 'Meeting Rule Setting'

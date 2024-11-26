@@ -43,14 +43,14 @@ export const langZh = {
         endDate: '结束',
         to: '-',
         allAreas: '所有区域',
-        getMeetRoomError:'获取会议信息异常',
+        getMeetRoomError: '获取会议信息异常',
         deleteSuccess: '删除会议成功',
         deleteError: '删除会议失败',
         all: '所有',
         roomDisabled: '房间禁用',
         roomAbled: '可预约会议',
         normalUser: '普通用户',
-        passTime:'已过时',
+        passTime: '已过时',
         passTimeError: '不能选择已过去的时间',
         loginoutUser: '未登录状态',
         minMinuteTitle: '(15分钟)',
@@ -79,7 +79,23 @@ export const langZh = {
         tips: '提示',
         deleteTips: '确认要删除当前会议！',
         search_create_by: '请输入预约人',
-
+        meet_title: '历史会议',
+        not_started_meet: '未开始',
+        in_progress_meet: '进行中',
+        ended_meet: '已结束',
+        yes: '是',
+        no: '否',
+        table: {
+            id: '序号',
+            area: '区域',
+            room: '会议室',
+            room_title: '会议标题',
+            start_meet: '预约开始时间',
+            end_meet: '预约结束时间',
+            is_repeat: '是否周期会议',
+            meet_status: '会议状态',
+            creat_by: '预约人',
+        },
     },
     login: {
         account: '账号',
@@ -224,7 +240,7 @@ export const langZh = {
             all: '所有',
         }
     },
-    setting:{
+    setting: {
         title: '系统设置',
         meeting_rule_setting: {
             title: '会议规则设置'

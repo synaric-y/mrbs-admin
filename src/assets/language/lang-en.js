@@ -43,14 +43,14 @@ export const langEn = {
         endDate: 'End date',
         to: '-',
         allAreas: 'All Areas',
-        getMeetRoomError:'Obtaining conference information is abnormal',
+        getMeetRoomError: 'Obtaining conference information is abnormal',
         deleteSuccess: 'Delete meeting successfully',
         deleteError: 'Failed to delete meeting',
         all: 'All',
         roomDisabled: 'Room disabled',
         roomAbled: 'Meetings can be scheduled',
         normalUser: 'Normal User',
-        passTime:'Obsolete',
+        passTime: 'Obsolete',
         passTimeError: 'Cannot select a time that has passed',
         loginoutUser: 'Not logged in',
         minMinuteTitle: '(15 minutes)',
@@ -79,6 +79,23 @@ export const langEn = {
         tips: 'Tips',
         deleteTips: 'Confirm that you want to delete the current meeting',
         search_create_by: 'Please enter the person who made the reservation',
+        meet_title: 'Historical Meeting',
+        not_started_meet: 'Not Started',
+        in_progress_meet: 'In Progress',
+        ended_meet: 'Ended',
+        yes: 'Yes',
+        no: 'No',
+        table: {
+            id: 'ID',
+            area: 'Area',
+            room: 'Meeting Room',
+            room_title: 'Meeting Title',
+            start_meet: 'Scheduled Start Time',
+            end_meet: 'Scheduled End Time',
+            is_repeat: 'Recurring Meeting',
+            meet_status: 'Meeting Status',
+            creat_by: 'Organizer',
+        },
     },
     login: {
         account: 'Account',
@@ -222,7 +239,7 @@ export const langEn = {
             all: 'all',
         }
     },
-    setting:{
+    setting: {
         title: 'System Setting',
         meeting_rule_setting: {
             title: 'Meeting Rule Setting'

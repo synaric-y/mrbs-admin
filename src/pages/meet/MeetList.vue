@@ -1,5 +1,5 @@
 <template>
-  <Layout title="历史会议">
+  <Layout :title="$t('meet.meet_title')">
     <template #filter>
       <el-input v-model="keyword" style="width: 140px;height: 32px;" :placeholder="$t('meet.search_create_by')" />
       <el-select class="account-status-select" v-model="statusVal" :placeholder="$t('base.plzSelect')" size="default"
@@ -17,39 +17,26 @@
         <el-option style="height: 30px;" v-for="item in roomOptions" :key="item.room_id" :label="item.room_name"
           :value="item.room_id" />
       </el-select>
-      <!-- <el-date-picker style="margin-left: 20px;" v-model="baseTime" type="daterange" :range-separator="$t('base.to')"
-        :start-placeholder="startTime" :end-placeholder="endTime" @change="choseDate" /> -->
       <el-button type="primary" @click="searchMeet" :icon="Search">
-        查询
+        {{ $t('base.search') }}
       </el-button>
     </template>
     <template #table>
       <el-table class="table-wrapper" style="height: auto;" :data="meetListData" header-cell-class-name="tb-header" max-height="450">
-        <el-table-column prop="number" label="序号">
+        <el-table-column prop="number" :label="$t('meet.table.id')">
           <template #default="scope">
             {{ scope.$index + 1 }}
           </template>
         </el-table-column>
-        <el-table-column prop="area_name" label="区域" ></el-table-column>
-        <el-table-column prop="room_name" label="会议室"></el-table-column>
-        <el-table-column prop="name" label="会议标题"></el-table-column>
-        <el-table-column prop="startTime" label="预约开始时间"></el-table-column>
-        <el-table-column prop="endTime" label="预约结束时间"></el-table-column>
-        <!-- <el-table-column prop="duration" label="会议时间"></el-table-column> -->
-        <el-table-column prop="is_repeat_text" label="是否周期会议"></el-table-column>
-        <el-table-column prop="status_text" label="会议状态"></el-table-column>
-        <el-table-column prop="create_by" label="预约人">
+        <el-table-column prop="area_name" :label="$t('meet.table.area')" ></el-table-column>
+        <el-table-column prop="room_name" :label="$t('meet.table.room')"></el-table-column>
+        <el-table-column prop="name" :label="$t('meet.table.room_title')"></el-table-column>
+        <el-table-column prop="startTime" :label="$t('meet.table.start_meet')"></el-table-column>
+        <el-table-column prop="endTime" :label="$t('meet.table.end_meet')"></el-table-column>
+        <el-table-column prop="is_repeat_text" :label="$t('meet.table.is_repeat')"></el-table-column>
+        <el-table-column prop="status_text" :label="$t('meet.table.meet_status')"></el-table-column>
+        <el-table-column prop="create_by" :label="$t('meet.table.creat_by')">
         </el-table-column>
-        <!-- <el-table-column prop="id" :label="$t('user.tableUser.operate')" width="200">
-          <template #default="scope">
-            <div class="operate-wrapper">
-              <span class="operate-item" style="color: #000000;" disable>无</span>
-            </div> -->
-            <!-- <div class="operate-wrapper" v-else>
-              <span class="operate-item" @click="editMeetDislog(scope.row)">编辑</span>
-            </div> -->
-          <!-- </template>
-        </el-table-column> -->
       </el-table>
     </template>
     <template #pagination>
@@ -58,9 +45,6 @@
         :default-page-size="20" :total="total_num" />
     </template>
   </Layout>
-
-  <!-- <CycleMeetCMP v-if="dialogCycleMeet" :entry_id="entry_id" @close="dialogCycleMeet = false" />
-  <SingleMeetCMP v-if="dialogSingleMeet" :entry_id="entry_id" @close="dialogSingleMeet = false" /> -->
   <SingleMeetCMP v-if="dialogMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas"
     :entry_id="entry_id" @close="closeDialogMeetForm" />
   <CycleMeetCMP v-if="dialogCycleMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas"
@@ -95,22 +79,22 @@ export default {
       statusOptions: [
         {
           value: -1,
-          label: '所有',
+          label: this.$t('base.all'),
         },
         {
           value: 0,
-          label: '未开始',
+          label: this.$t('meet.not_started_meet'),
         }, {
           value: 1,
-          label: '进行中',
+          label: this.$t('meet.in_progress_meet'),
         }, {
           value: 2,
-          label: '已结束',
+          label: this.$t('meet.ended_meet'),
         }],
 
-      areaStatusVal: '所有',
+      areaStatusVal: this.$t('base.all'),
       areaOptions: [],
-      roomVal: '所有',
+      roomVal: this.$t('base.all'),
       roomOptions: [],
       pendingDeleteName: null,
       role: [
@@ -272,9 +256,8 @@ export default {
           data.entries.forEach(it => {
             it["startTime"] = moment.tz(it['start_time'] * 1000, 'Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss')
             it['endTime'] = moment.tz(it['end_time'] * 1000, 'Asia/Shanghai').format('YYYY-MM-DD HH:mm:ss')
-            it['is_repeat_text'] = it['is_repeat'] == 0 ? '否' : '是'
-            it['status_text'] = it['status'] == 0 ? '未开始' : it['status'] == 1 ? '进行中' : '已结束'
-            // it['meet_time'] = '无'
+            it['is_repeat_text'] = it['is_repeat'] == 0 ? this.$t('meet.no') : this.$t('meet.yes')
+            it['status_text'] = it['status'] == 0 ? this.$t('meet.not_started_meet') : it['status'] == 1 ? this.$t('meet.in_progress_meet') : this.$t('meet.ended_meet')
           })
           console.log('MeetList getMeetList data:', data)
           this.meetListData = data.entries
@@ -296,15 +279,12 @@ export default {
 <style lang="scss" scoped>
 .sub-page-content {
   display: flex;
-  // justify-content: center;
   align-items: center;
   flex-direction: column;
-  // height: calc(100vh - 95px);
   height: auto;
   background-color: white;
   padding: 0;
   margin: 0;
-  // margin-top: 20px;
   position: relative;
 }
 
@@ -406,7 +386,6 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  // background-color: rebeccapurple;
 }
 
 .table-demonstration {
