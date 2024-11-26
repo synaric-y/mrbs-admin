@@ -2,24 +2,18 @@
   <el-container class="container-sub-page">
     <el-main class="container-sub-page-main">
       <div class="sub-title-wrapper">
-        <div class="sub-title">常见问题</div>
+        <div class="sub-title">{{ $t('questions.title') }}</div>
       </div>
-
-
       <div class="some-questions">
-
         <el-collapse class="collapse-q" accordion>
-          <el-collapse-item :title="item.title" :name="item.title" v-for="(item,index) in questionList">
+          <el-collapse-item :title="item.title" :name="item.title" v-for="(item, index) in questionList">
             <div style="white-space: pre-wrap; margin-left: 50px">
               {{ item.reply }}
             </div>
           </el-collapse-item>
         </el-collapse>
-        <br>
-        <br>
+        <br><br>
       </div>
-
-
       <el-dialog v-model="showDeleteRoomDialog" title="Tips" width="500">
         <span>{{ $t('room.deleteRoomHint') }}</span>
         <template #footer>
@@ -36,10 +30,10 @@
 </template>
 
 <script>
-import {PageMixin} from "@/pages/PageMixin.js";
-import {Api} from "@/network/api.js";
+import { PageMixin } from "@/pages/PageMixin.js";
+import { Api } from "@/network/api.js";
 import router from "@/router/index.js";
-import {ElMessage} from "element-plus/es";
+import { ElMessage } from "element-plus/es";
 
 export default {
   mixins: [PageMixin],
@@ -53,17 +47,16 @@ export default {
         name: '',
         description: '',
         capacity: '',
-        // room_admin_email: ''
       },
       rules: {
         name: [
-          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
         ],
         area: [
-          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
         ],
         capacity: [
-          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
         ],
       },
       areaList: [],
@@ -71,7 +64,7 @@ export default {
       areaId: '',
       pendingDeleteId: null,
       questionList: [
-        {title: '1、误关闭了引导页怎么办？', reply: '答：您也可以在系统设置中去配置用户和日历同步'},
+        { title: '1、误关闭了引导页怎么办？', reply: '答：您也可以在系统设置中去配置用户和日历同步' },
         {
           title: '2、首页展示为什么不一样？',
           reply: '答：权限不同首页展示的功能模块也不同，请先使用管理员账号在用户管理查看当前用户的权限配置'
@@ -133,7 +126,7 @@ export default {
   },
   methods: {
     getRoomList() {
-      Api.getRoomList({area: this.areaId}).then(({data}) => {
+      Api.getRoomList({ area: this.areaId }).then(({ data }) => {
         if (data) {
           data.forEach(item => {
             if (item["battery_level"]) {
@@ -150,7 +143,7 @@ export default {
       })
     },
     getAreaList() {
-      Api.getAreaList({}).then(({data}) => {
+      Api.getAreaList({}).then(({ data }) => {
         if (data) {
           this.areaListNoAll = JSON.parse(JSON.stringify(data))
           data.unshift({
@@ -173,8 +166,6 @@ export default {
 
 
 <style lang="scss" scoped>
-
-
 .collapse-q {
   --el-collapse-header-bg-color: #FFFFFF;
   --el-collapse-content-bg-color: #FFFFFF;

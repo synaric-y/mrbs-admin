@@ -2,19 +2,15 @@
   <el-container class="container-sub-page">
     <el-main class="container-sub-page-main">
       <div class="sub-title-wrapper">
-        <div class="sub-title">操作手册下载</div>
+        <div class="sub-title">{{ $t('manual.manual_title')}}</div>
       </div>
       <div class="manual-wrapper">
         <div class="manual-pdf">
-          <!-- <div class="preview-pdf-placeholder"></div> -->
           <iframe  class="preview-pdf-name"
           :src='manualHost'
           width='100%' height='100%' frameborder='1'>
-          操作手册</iframe>
-          <!-- <div class="preview-pdf-name">操作手册</div> -->
+          {{ $t('manual.operation_manual')}}</iframe>
         </div>
-        <!-- <div class="preview-pdf">在线浏览</div> -->
-        <!-- <div class="download-pdf">PDF下载</div> -->
       </div>
       <el-dialog v-model="showDeleteRoomDialog" title="Tips" width="500">
         <span>{{ $t('room.deleteRoomHint') }}</span>
