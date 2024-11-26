@@ -1,49 +1,46 @@
-
 <template>
   <Layout :title="$t('setting.wxwork_setting.title')" section-left-padding="50">
     <template #section>
       <el-form ref="formRef" :model="form" :rules="rules" label-width="auto" style="max-width: 650px">
-        <el-form-item label="企微corpId" prop="corpId">
+        <el-form-item :label="$t('system.wx_corpId')" prop="corpId">
           <div class="form-item-content">
             <el-input class="form-item-input" v-model="form.corpId" />
           </div>
         </el-form-item>
-        <el-form-item label="企微secret" prop="secret">
+        <el-form-item :label="$t('system.wx_secret')" prop="secret">
           <div class="form-item-content">
-            <el-input v-model="form.secret" class="form-item-input" placeholder="请输入" />
+            <el-input v-model="form.secret" class="form-item-input" :placeholder="$t('base.input')" />
             <TestButton :status="urlStatus" @test="verify" />
           </div>
         </el-form-item>
         <data value=""></data>
-        <el-form-item label="企微agentId" prop="agentId">
+        <el-form-item :label="$t('system.wx_agentId')" prop="agentId">
           <div class="form-item-content">
-            <el-input v-model="form.agentId" class="form-item-input" placeholder="请输入" />
+            <el-input v-model="form.agentId" class="form-item-input" :placeholder="$t('base.input')" />
           </div>
         </el-form-item>
       </el-form>
     </template>
     <template #btns>
-      <el-button type="primary" @click="submit">保存</el-button>
-      <el-button @click="back">取消</el-button>
+      <el-button type="primary" @click="submit">{{ $t('base.save') }}</el-button>
+      <el-button @click="back">{{ $t('base.cancle') }}</el-button>
     </template>
   </Layout>
 </template>
 
 <script>
-import {Api} from "@/network/api.js";
-import {PageMixin} from "@/pages/PageMixin.js";
-import {STORAGE} from "@/const.js";
-import {ElMessage} from "element-plus";
-import {Clock, Monitor, User} from "@element-plus/icons-vue";
-import {HOST} from "@/config.js";
+import { Api } from "@/network/api.js";
+import { PageMixin } from "@/pages/PageMixin.js";
+import { STORAGE } from "@/const.js";
+import { ElMessage } from "element-plus";
+import { Clock, Monitor, User } from "@element-plus/icons-vue";
+import { HOST } from "@/config.js";
 import Layout from "@/components/Layout.vue";
 import TestButton from "@/components/TestButton.vue";
 import axios from "axios";
 const SECOND_PER_MINUTE = 60
-
-
 export default {
-  components: {Layout,TestButton},
+  components: { Layout, TestButton },
   mixins: [PageMixin],
   data() {
     return {
@@ -54,16 +51,16 @@ export default {
       },
       rules: {
         corpId: [
-          {required: true, message: '请输入corpId', trigger: 'blur'},
+          { required: true, message: this.$t('system.form_corpId'), trigger: 'blur' },
         ],
         secret: [
-          {required: true, message: '请输入secret', trigger: 'blur'},
+          { required: true, message: this.$t('system.form_secret'), trigger: 'blur' },
         ],
         agentId: [
-          {required: true, message: '请输入agentId', trigger: 'blur'},
+          { required: true, message: this.$t('system.form_agentId'), trigger: 'blur' },
         ],
       },
-      urlStatus: 'untested', //枚举值untested testing tested
+      urlStatus: 'untested',
     }
   },
   created() {
@@ -72,10 +69,9 @@ export default {
       "corpid": 1,
       "secret": 1,
       "agentid": 1,
-    }).then(({code, data, msg}) => {
+    }).then(({ code, data, msg }) => {
       if (code == 0) {
         console.log(data)
-
         that.form = {
           ...that.form,
           corpId: data.corpid,
@@ -84,13 +80,13 @@ export default {
         }
       } else {
         ElMessage.error({
-          message: '设置获取失败',
+          message: this.$t('guide.set_get_fail'),
         })
       }
     })
-        .catch(e => {
-          console.log(e)
-        })
+      .catch(e => {
+        console.log(e)
+      })
   },
   methods: {
     back() {
@@ -103,37 +99,37 @@ export default {
           console.log('submit!')
 
           Api.setVariables(
-              {
-                "init_status": 3,
-                "corpid": this.form.corpId,
-                "secret": this.form.secret,
-                "agentid": this.form.agentId,
-              }
-          ).then(({code,data})=>{
-            if(code==0){
+            {
+              "init_status": 3,
+              "corpid": this.form.corpId,
+              "secret": this.form.secret,
+              "agentid": this.form.agentId,
+            }
+          ).then(({ code, data }) => {
+            if (code == 0) {
               ElMessage.success({
-                message: '设置成功',
+                message: this.$t('guide.set_success'),
               })
-              setTimeout(()=>{
-                location.reload() // 刷新页面
-              },1000)
-            }else{
+              setTimeout(() => {
+                location.reload()
+              }, 1000)
+            } else {
               ElMessage.error({
-                message: '设置失败',
+                message: this.$t('guide.set_fail'),
               })
             }
           })
-              .catch(e=>{
-                ElMessage.error({
-                  message: '设置失败',
-                })
-                console.log(e)
+            .catch(e => {
+              ElMessage.error({
+                message: this.$t('guide.set_fail'),
               })
+              console.log(e)
+            })
 
         } else {
           console.log('error submit!')
           ElMessage.error({
-            message: '表单格式错误',
+            message: this.$t('guide.form_format_error'),
           })
         }
       })
@@ -142,11 +138,10 @@ export default {
     verify() {
       if (this.form.corpId.trim() === '' || this.form.secret.trim() === '') {
         ElMessage.error({
-          message: 'corpid或者secret不能未空！'
+          message: this.$t('system.verify_form')
         })
         return
       }
-      // 测试联通
       this.urlStatus = 'testing'
       axios({
         url: `${HOST}/web/call.php?act=test%2Ftest_wxwork`,
@@ -155,14 +150,14 @@ export default {
       }).then(({ data }) => {
         if (data.code !== 0) {
           ElMessage.error({
-            message: '无效的请求地址'
+            message: this.$t('system.invalid_url')
           })
           this.urlStatus = 'untested'
           return
         }
         this.urlStatus = 'tested'
         ElMessage.success({
-          message: '请求地址验证成功！'
+          message: this.$t('base.test_url_success')
         })
       }).catch(e => {
 
@@ -179,6 +174,4 @@ export default {
 </script>
 
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

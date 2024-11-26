@@ -2,23 +2,23 @@
   <Layout :title="$t('setting.application_setting.title')" section-left-padding="50">
     <template #section>
       <div>
-        <div class="section-title">基本</div>
+        <div class="section-title">{{ $t('system.section_basic_title')}}</div>
         <div class="section-content">
           <el-form ref="formRef" :model="form" :rules="rules" label-width="auto" style="max-width: 650px">
-            <el-form-item label="公司/组织名称" prop="companyName">
+            <el-form-item :label="$t('guide.company_name')" prop="companyName">
               <div class="form-item-content">
                 <el-input class="form-item-input" v-model="form.companyName" />
               </div>
             </el-form-item>
-            <el-form-item label="服务器地址" prop="requestUrl">
+            <el-form-item :label="$t('guide.service_url')" prop="requestUrl">
               <div class="form-item-content">
                 <el-input :disabled="urlStatus === 'testing'" @input="urlStatus = 'untested'" v-model="form.requestUrl"
-                  class="form-item-input" placeholder="示例:172.16.88.180" />
+                  class="form-item-input" :placeholder="$t('guide.example_service')" />
                 <TestButton :status="urlStatus" @test="verify" />
-                <el-button type="primary" @click="pendingShowQRCode">查看二维码</el-button>
+                <el-button type="primary" @click="pendingShowQRCode">{{ $t('guide.look_qrcode')}}</el-button>
               </div>
             </el-form-item>
-            <el-form-item label="管理后台Logo" prop="webLogo">
+            <el-form-item :label="$t('guide.web_logo_label')" prop="webLogo">
               <div class="form-item-content">
                 <div class="img-bg" v-if="originalWebLogoURL">
                   <el-image class="form-item-logo" :src="onlineWebImage(originalWebLogoURL)"
@@ -42,16 +42,15 @@
                     </div>
                   </template>
                 </el-upload>
-                <span class="form-item-tip">推荐尺寸300x300的PNG图片类型，彩色Logo透明底</span>
+                <span class="form-item-tip">{{ $t('guide.logo_tips') }}</span>
               </div>
             </el-form-item>
           </el-form>
         </div>
       </div>
-
-      <div class="section-title">平板端展示</div>
+      <div class="section-title">{{ $t('system.section_pad_title')}}</div>
       <div class="section-content">
-        <el-form-item label="平板端首页Logo" prop="appLogo">
+        <el-form-item :label="$t('guide.pad_logo_label')" prop="appLogo">
           <div class="form-item-content">
             <div class="img-bg" v-if="originalAppLogoURL">
               <el-image class="form-item-logo" :src="onlineWebImage(originalAppLogoURL)"
@@ -75,16 +74,16 @@
                 </div>
               </template>
             </el-upload>
-            <span class="form-item-tip">推荐尺寸450x50的PNG图片类型，白色Logo透明底</span>
+            <span class="form-item-tip">{{ $t('guide.pad_logp_tips') }}</span>
           </div>
         </el-form-item>
-        <el-form-item label="时间格式" prop="timeFormat">
-          <el-select v-model="form.timeFormat" style="width: 200px" placeholder="请选择">
-            <el-option label="12小时制" :value="12" />
-            <el-option label="24小时制" :value="24" />
+        <el-form-item :label="$t('guide.time_format')" prop="timeFormat">
+          <el-select v-model="form.timeFormat" style="width: 200px" :placeholder="$t('base.plzSelect')">
+            <el-option :label="$t('guide.hour_format_12')" :value="12" />
+            <el-option :label="$t('guide.hour_format_24')" :value="24" />
           </el-select>
         </el-form-item>
-        <el-form-item label="主题" prop="theme">
+        <el-form-item :label="$t('guide.theme')" prop="theme">
           <el-radio-group v-model="form.theme">
             <el-radio :value="0">
               <div class="theme theme-0"></div>
@@ -96,20 +95,20 @@
         </el-form-item>
       </div>
       <div>
-        <div class="section-title">平板端升级</div>
+        <div class="section-title">{{ $t('system.section_pad_version')}}</div>
         <div class="section-content">
           <el-table :data="versionData" style="width: 100%">
-            <el-table-column prop="version" label="历史安装版本" width="180">
+            <el-table-column prop="version" :label="$('system.hository_version')" width="180">
               <template #default="scope">
-                <span>{{ scope.row.version + (scope.row.isCurrent ? '（当前版本）' : '') }}</span>
+                <span>{{ scope.row.version + (scope.row.isCurrent ? $t('system.curren_version') : '') }}</span>
               </template>
             </el-table-column>
-            <el-table-column prop="publish_time" label="发布时间" width="180" />
-            <el-table-column prop="update_time" label="更新时间" />
-            <el-table-column label="操作">
+            <el-table-column prop="publish_time" :label="$t('system.release_time')" width="180" />
+            <el-table-column prop="update_time" :label="$t('system.update_time')" />
+            <el-table-column :label="$t('system.btn')">
               <template #default="scope">
-                <el-button v-if="scope.row.isCurrent" type="primary">升级</el-button>
-                <el-button color="#b31e1e" v-else type="primary" :dark="true">回退</el-button>
+                <el-button v-if="scope.row.isCurrent" type="primary">{{ $t('system.update_btn') }}</el-button>
+                <el-button color="#b31e1e" v-else type="primary" :dark="true">{{ $t('system.fallback_btn') }}</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -118,13 +117,13 @@
       <el-dialog v-model="showQRCode" width="800" center align-center>
         <div style="width: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center">
           <div style="width: 200px;height: 200px" id="qrcode"></div>
-          <div style="margin-top: 10px">请打开未激活的平板并扫码</div>
+          <div style="margin-top: 10px">{{ $t('system.qrcode_tip') }}</div>
         </div>
       </el-dialog>
     </template>
     <template #btns>
-      <el-button type="primary" @click="submit">保存</el-button>
-      <el-button type="default" @click="back">取消</el-button>
+      <el-button type="primary" @click="submit">{{ $t('system.save_btn') }}</el-button>
+      <el-button type="default" @click="back">{{ $t('system.cancle_btn') }}</el-button>
     </template>
   </Layout>
 </template>
@@ -155,41 +154,39 @@ export default {
         timeFormat: '',
         theme: '',
       },
-      urlStatus: 'untested', //枚举值untested testing tested
+      urlStatus: 'untested',
       originalWebLogoURL: '',
       originalAppLogoURL: '',
       versionData: [],
       showQRCode: false,
       rules: {
         companyName: [
-          { required: true, message: '请输入公司或组织名称', trigger: 'blur' },
-          // { max: 100, message: '公司名长度必须小于100字符', trigger: 'blur' },
+          { required: true, message: this.$t('guide.company_name_placeholder'), trigger: 'blur' },
         ],
         requestUrl: [
-          { required: true, message: '请输入服务器地址', trigger: 'blur' },
-          // { max: 300, message: '服务器地址长度必须小于300字符', trigger: 'blur' },
+          { required: true, message: this.$t('guide.service_placeholder'), trigger: 'blur' },
         ],
         webLogo: [
           {
             type: 'array', validator: (rule, value, callback) => {
-              if (this.originalWebLogoURL === '' && value.length === 0) callback(new Error('请上传管理后台Logo图片'))
+              if (this.originalWebLogoURL === '' && value.length === 0) callback(new Error(this.$t('guide.alert_web_logo')))
               else callback()
-            }, message: '请上传管理后台Logo图片', trigger: 'blur'
+            }, message: this.$t('guide.alert_web_logo'), trigger: 'blur'
           },
         ],
         appLogo: [
           {
             type: 'array', validator: (rule, value, callback) => {
-              if (this.originalAppLogoURL === '' && value.length === 0) callback(new Error('请上传平板端Logo图片'))
+              if (this.originalAppLogoURL === '' && value.length === 0) callback(new Error(this.$t('guide.alert_pad_logo')))
               else callback()
-            }, message: '请上传平板端Logo图片', trigger: 'blur'
+            }, message: this.$t('guide.alert_pad_logo'), trigger: 'blur'
           },
         ],
         timeFormat: [
-          { required: true, message: '请选择一个时间格式', trigger: 'blur' },
+          { required: true, message: this.$t('guide.form_time_format'), trigger: 'blur' },
         ],
         theme: [
-          { required: true, message: '请选择一个主题', trigger: 'blur' },
+          { required: true, message: this.$t('guide.form_theme_format'), trigger: 'blur' },
         ],
       }
     }
@@ -226,7 +223,7 @@ export default {
         console.log(that.originalWebLogoURL, that.originalWebLogoURL)
       } else {
         ElMessage.error({
-          message: '设置获取失败',
+          message: this.$t('guide.set_get_fail'),
         })
       }
     }).catch(e => {
@@ -245,28 +242,26 @@ export default {
     verify() {
       if (!this.form.requestUrl || this.form.requestUrl === '') {
         ElMessage.error({
-          message: '请求地址不能为空！'
+          message: this.$t('guide.alert_empty_request_url')
         })
         return
       }
-      // 测试联通
       this.urlStatus = 'testing'
       axios({
-        // url: `${this.form.requestUrl}/web/call.php?act=system_setting%2Fset_variables`,
         url: `/web/call.php?act=system_setting%2Fget_variables`,
         method: 'POST',
         data: { server_address: this.form.requestUrl },
       }).then(({ data }) => {
         if (data.code !== 0) {
           ElMessage.error({
-            message: '无效的请求地址'
+            message: this.$t('guide.alert_invalid_url')
           })
           this.urlStatus = 'untested'
           return
         }
         this.urlStatus = 'tested'
         ElMessage.success({
-          message: '请求地址验证成功！'
+          message: this.$t('guide.alert_success_url')
         })
       }).catch(e => {
 
@@ -276,15 +271,15 @@ export default {
       this.showQRCode = true
       this.$nextTick(() => {
         const codeFigure = new AraleQRCode({
-          "render": "svg", // 生成的类型 'svg' or 'table'
-          "text": this.form.requestUrl, // 需要生成二维码的链接
-          "size": 200 // 生成二维码大小
+          "render": "svg",
+          "text": this.form.requestUrl,
+          "size": 200
         });
         const qrcodeContainer = document.querySelector('#qrcode')
-        while (qrcodeContainer.firstChild) { // 移除所有子元素
+        while (qrcodeContainer.firstChild) {
           qrcodeContainer.removeChild(qrcodeContainer.firstChild);
         }
-        qrcodeContainer.appendChild(codeFigure); // 增加新的子元素
+        qrcodeContainer.appendChild(codeFigure)
       })
     },
     removeImage(type, file) {
@@ -306,14 +301,13 @@ export default {
         if (valid) {
           console.log('submit!')
           const requests = []
-          // 管理端图片上传
           if (this.form.webLogo.length !== 0) {
             const webLogoData = new FormData();
             webLogoData.append('logo', this.form.webLogo[0].raw)
             requests.push(
               Api.uploadWebLogo(webLogoData)
                 .then(res => {
-                  if (res?.data?.code !== 0) throw new Error('图片上传失败')
+                  if (res?.data?.code !== 0) throw new Error(this.$t('guide.alert_fail_upload_image'))
                 })
             )
           }
@@ -324,7 +318,7 @@ export default {
             requests.push(
               Api.uploadAppLogo(appLogoData)
                 .then(res => {
-                  if (res?.data?.code !== 0) throw new Error('图片上传失败')
+                  if (res?.data?.code !== 0) throw new Error(this.$t('guide.alert_fail_upload_image'))
                 })
             )
           }
@@ -342,7 +336,7 @@ export default {
             .then((responses) => {
               console.log(responses)
               ElMessage.success({
-                message: '设置成功',
+                message: this.$t('guide.set_success'),
               })
 
               setTimeout(() => {
@@ -351,13 +345,13 @@ export default {
             })
             .catch((error) => {
               ElMessage.error({
-                message: '设置失败! ' + (error.message ? ('原因：' + error.message) : ''),
+                message: this.$t('guide.set_fail') + (error.message ? (this.$t('guide.set_fail_reason') + error.message) : ''),
               })
               console.log(error)
             });
         } else {
           ElMessage.error({
-            message: '表单格式错误',
+            message: this.$t('guide.form_format_error'),
           })
         }
       }

@@ -2,41 +2,30 @@
   <Layout :title="$t('setting.meeting_rule_setting.title')" section-left-padding="0">
     <template #section>
       <div>
-        <div class="section-title">终端会议展示</div>
+        <div class="section-title">{{$t('system.terminal_meet_title')}}</div>
         <div class="section-content">
           <div class="switches">
             <div class="switch-row">
-              <div class="label">预定人显示</div>
-              <el-switch
-                  v-model="form.bookerDisplay"
-                  style="--el-switch-on-color: #591bb7;"
-              />
-              <el-text v-if="form.bookerDisplay" class="mx-1" type="primary">终端将显示预定人姓名</el-text>
-              <el-text v-else class="mx-1">终端将显示默认文字：“**预定”</el-text>
+              <div class="label">{{ $t('system.show_booker') }}</div>
+              <el-switch v-model="form.bookerDisplay" style="--el-switch-on-color: #591bb7;" />
+              <el-text v-if="form.bookerDisplay" class="mx-1" type="primary">{{ $t('system.show_booker_tip') }}</el-text>
+              <el-text v-else class="mx-1">{{ $t('system.show_booker_text') }}</el-text>
             </div>
             <div class="switch-row">
-              <div class="label">预定会议名称显示</div>
-              <el-switch
-                  v-model="form.meetingNameDisplay"
-                  style="--el-switch-on-color: #591bb7;"
-              />
-              <el-text v-if="form.meetingNameDisplay" class="mx-1" type="primary">终端将显示会议名称</el-text>
-              <el-text v-else class="mx-1">终端将显示默认文字：“**会议”</el-text>
+              <div class="label">{{ $t('system.show_title') }}</div>
+              <el-switch v-model="form.meetingNameDisplay" style="--el-switch-on-color: #591bb7;" />
+              <el-text v-if="form.meetingNameDisplay" class="mx-1" type="primary">{{ $t('system.show_title_tip') }}</el-text>
+              <el-text v-else class="mx-1">{{ $t('system.show_title_text') }}</el-text>
             </div>
             <div class="switch-row">
-              <div class="label">开启临时会议</div>
-              <!-- <el-switch
-                  v-model="form.quickMeetingDisplay"
-                  style="--el-switch-on-color: #591bb7;"
-              /> -->
-
-              <el-select style="max-width: 170px" v-model="form.quickMeetingDisplay" placeholder="请选择">
-                <el-option label="从不" :value="0" key="0"/>
-                <el-option label="不记名预约" :value="1" key="1"/>
-                <el-option label="扫描身份证验证预约" :value="2" key="2"/>
+              <div class="label">{{ $t('system.show_temp_meet') }}</div>
+              <el-select style="max-width: 170px" v-model="form.quickMeetingDisplay" :placeholder="$t('base.plzSelect')">
+                <el-option :label="$t('system.temp_meet_no')" :value="0" key="0" />
+                <el-option :label="$t('system.temp_meet_no_verify')" :value="1" key="1" />
+                <el-option :label="$t('system.temp_meet_verify')" :value="2" key="2" />
               </el-select>
-              <el-text v-if="form.quickMeetingDisplay != 0" class="mx-1" type="primary">终端将显示临时会议按钮</el-text>
-              <el-text v-else class="mx-1">终端将不显示临时会议按钮</el-text>
+              <el-text v-if="form.quickMeetingDisplay != 0" class="mx-1" type="primary">{{ $t('system.show_temp_tip1') }}</el-text>
+              <el-text v-else class="mx-1">{{ $t('system.show_temp_tip2') }}</el-text>
             </div>
           </div>
           <div class="preview">
@@ -44,35 +33,33 @@
               <div class="times">
                 <div class="time" v-for="item in timeline">{{ item }}</div>
               </div>
-              <div class="btn" v-if="form.quickMeetingDisplay != 0">临时会议</div>
+              <div class="btn" v-if="form.quickMeetingDisplay != 0">{{ $t('system.temp_meet') }}</div>
             </div>
             <div class="right">
-              <div class="room">
-                会议室
+              <div class="room">{{ $t('system.room_name') }}
                 <span class="room-name">A</span>
               </div>
-              <div class="time">10:35AM 2024年7月19日</div>
-              <div class="title">会 议 中</div>
-
+              <div class="time">10:35AM 2024/7/19</div>
+              <div class="title">{{$t('system.meet_status')}}</div>
               <div class="info">
-                <div class="title">正在进行的会议:</div>
+                <div class="title">{{ $t('system.in_meet_info') }}</div>
                 <div class="info-row">
                   <el-icon>
-                    <Monitor/>
+                    <Monitor />
                   </el-icon>
-                  <div class="value">{{ form.meetingNameDisplay ? '销售部门会议' : '**会议' }}</div>
+                  <div class="value">{{ form.meetingNameDisplay ? $t('system.temp_meet_name') : $t('system.hide_meet_name') }}</div>
                 </div>
                 <div class="info-row">
                   <el-icon>
-                    <Clock/>
+                    <Clock />
                   </el-icon>
                   <div class="value">09:00AM - 11:00AM</div>
                 </div>
                 <div class="info-row">
                   <el-icon>
-                    <User/>
+                    <User />
                   </el-icon>
-                  <div class="value">{{ form.bookerDisplay ? 'Alvin' : '**预定' }}</div>
+                  <div class="value">{{ form.bookerDisplay ? $t('system.temp_meet_booker'): $t('system.hide_meet_booker') }}</div>
                 </div>
               </div>
             </div>
@@ -80,12 +67,13 @@
         </div>
       </div>
       <div>
-        <div class="section-title">会议规则参数</div>
+        <div class="section-title">{{ $t('system.meet_rule_title') }}</div>
         <div class="section-content">
           <el-form ref="formRef" :model="form" label-width="auto" :rules="rules">
-            <el-form-item label="预定时间最小间隔" prop="minScale">
-              <el-select style="min-width: 400px" v-model="form.minScale" placeholder="请选择">
-                <el-option v-for="(item,index) in resolutionOptions" :key="index" :label="item.label" :value="item.value"/>
+            <el-form-item :label="$t('system.meet_min_interval')" prop="minScale">
+              <el-select style="min-width: 400px" v-model="form.minScale" :placeholder="$t('base.plzSelect')">
+                <el-option v-for="(item, index) in resolutionOptions" :key="index" :label="item.label"
+                  :value="item.value" />
               </el-select>
             </el-form-item>
           </el-form>
@@ -93,24 +81,23 @@
       </div>
     </template>
     <template #btns>
-      <el-button type="primary" @click="submit">保存</el-button>
-      <el-button @click="back">取消</el-button>
+      <el-button type="primary" @click="submit">{{ $t('base.save')}}</el-button>
+      <el-button @click="back">{{ $t('base.cancle')}}</el-button>
     </template>
   </Layout>
 </template>
 
-
 <script>
-import {Api} from "@/network/api.js";
-import {PageMixin} from "@/pages/PageMixin.js";
-import {STORAGE} from "@/const.js";
-import {ElMessage} from "element-plus";
-import {Clock, Monitor, User} from "@element-plus/icons-vue";
-import {HOST} from "@/config.js";
+import { Api } from "@/network/api.js";
+import { PageMixin } from "@/pages/PageMixin.js";
+import { STORAGE } from "@/const.js";
+import { ElMessage } from "element-plus";
+import { Clock, Monitor, User } from "@element-plus/icons-vue";
+import { HOST } from "@/config.js";
 import Layout from "@/components/Layout.vue";
 const SECOND_PER_MINUTE = 60
 export default {
-  components: {User, Monitor, Clock, Layout},
+  components: { User, Monitor, Clock, Layout },
   mixins: [PageMixin],
   data() {
     return {
@@ -122,14 +109,14 @@ export default {
         minScale: '',
       },
 
-      resolutionOptions:[
+      resolutionOptions: [
         {
-          label: '15分钟',
-          value: 15*SECOND_PER_MINUTE
+          label: this.$t('system.fifteen_minute'),
+          value: 15 * SECOND_PER_MINUTE
         },
         {
-          label: '30分钟',
-          value: 30*SECOND_PER_MINUTE
+          label: this.$t('system.thirty_minute'),
+          value: 30 * SECOND_PER_MINUTE
         }
       ],
       timeline: [
@@ -137,7 +124,7 @@ export default {
       ],
       rules: {
         minScale: [
-          {required: true, message: '请选择预定时间最小间隔', trigger: 'blur'},
+          { required: true, message: this.$t('system.select_min_interval'), trigger: 'blur' },
         ],
       }
     }
@@ -149,26 +136,26 @@ export default {
       "show_meeting_name": 1,
       "temporary_meeting": 1,
       "resolution": 1,
-    }).then(({code, data, msg}) => {
+    }).then(({ code, data, msg }) => {
       if (code == 0) {
         console.log(data)
 
         that.form = {
           ...that.form,
-          bookerDisplay: data.show_book===1,
-          meetingNameDisplay: data.show_meeting_name===1,
+          bookerDisplay: data.show_book === 1,
+          meetingNameDisplay: data.show_meeting_name === 1,
           quickMeetingDisplay: data.temporary_meeting,
           minScale: data.resolution
         }
       } else {
         ElMessage.error({
-          message: '设置获取失败',
+          message: this.$t('guide.set_get_fail'),
         })
       }
     })
-    .catch(e => {
-      console.log(e)
-    })
+      .catch(e => {
+        console.log(e)
+      })
   },
   methods: {
     back() {
@@ -179,40 +166,39 @@ export default {
       this.$refs.formRef.validate((valid) => {
         if (valid) {
           console.log('submit!')
-
           Api.setVariables(
-              {
-                "init_status": 3,
-                "show_book": this.form.bookerDisplay?1:0,
-                "show_meeting_name": this.form.meetingNameDisplay?1:0,
-                "temporary_meeting": this.form.quickMeetingDisplay,
-                "resolution": this.form.minScale
-              }
-          ).then(({code,data})=>{
-            if(code==0){
+            {
+              "init_status": 3,
+              "show_book": this.form.bookerDisplay ? 1 : 0,
+              "show_meeting_name": this.form.meetingNameDisplay ? 1 : 0,
+              "temporary_meeting": this.form.quickMeetingDisplay,
+              "resolution": this.form.minScale
+            }
+          ).then(({ code, data }) => {
+            if (code == 0) {
               ElMessage.success({
-                message: '设置成功',
+                message: this.$t('guide.set_success'),
               })
-              setTimeout(()=>{
-                location.reload() // 刷新页面
-              },1000)
-            }else{
+              setTimeout(() => {
+                location.reload()
+              }, 1000)
+            } else {
               ElMessage.error({
-                message: '设置失败',
+                message: this.$t('guide.set_fail'),
               })
             }
           })
-          .catch(e=>{
-            ElMessage.error({
-              message: '设置失败',
+            .catch(e => {
+              ElMessage.error({
+                message: this.$t('guide.set_fail'),
+              })
+              console.log(e)
             })
-            console.log(e)
-          })
 
         } else {
           console.log('error submit!')
           ElMessage.error({
-            message: '表单格式错误',
+            message: this.$t('guide.form_format_error'),
           })
         }
       })
@@ -227,7 +213,6 @@ export default {
 }
 </script>
 
-
 <style lang="scss" scoped>
 .section-title {
   color: var(--el-color-primary);
@@ -239,7 +224,6 @@ export default {
 }
 
 .section-content {
-
   display: flex;
   align-items: center;
   gap: 50px;
@@ -255,7 +239,6 @@ export default {
     line-height: 3;
     color: #666;
     width: 500px;
-
     .label {
       min-width: 120px;
       text-align: right;
@@ -268,18 +251,15 @@ export default {
   display: flex;
   height: 300px;
   width: 480px;
-
   .left {
     width: 40%;
     background-color: #333333;
     padding: 5px;
     position: relative;
-
     .times {
       width: 100%;
       height: 260px;
       overflow: hidden;
-
       .time {
         color: #ccc;
         text-align: left;
@@ -287,7 +267,6 @@ export default {
         line-height: 3;
       }
     }
-
     .btn {
       position: absolute;
       bottom: 5px;
@@ -310,33 +289,27 @@ export default {
     gap: 10px;
     color: #fff;
     padding: 5px 10px;
-
     .room {
       border-bottom: 1px solid rgba(255, 255, 255, .3);
-
       .room-name {
         font-size: 22px;
       }
     }
-
     .title {
       font-size: 36px;
       line-height: 2;
     }
-
     .info {
       .title {
         font-size: 14px;
         line-height: 2;
         font-weight: normal;
       }
-
       .info-row {
         display: flex;
         gap: 5px;
         line-height: 2;
         align-items: center;
-
         .label {
           min-width: 60px;
         }
@@ -344,6 +317,4 @@ export default {
     }
   }
 }
-
-
 </style>
