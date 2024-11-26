@@ -21,17 +21,11 @@
           <el-time-select v-model="form.area_start_last_slot" style="width: 240px" start="06:00" step="00:30"
             end="18:30" :placeholder="$t('base.plzSelect')" />
         </el-form-item>
-        <el-form-item label="仅允许该用户组成员预定" prop="group_ids">
+        <el-form-item :label="$t('area.formArea.user_group')" prop="group_ids">
           <el-tree-select ref="multipleTree" multiple lazy clearable v-model="form.group_ids" :load="loadGroup"
             :props="groupProps" @change="handleTreeSelect" show-checkbox node-key="id" highlight-current
             :default-checked-keys="cacheGroupsData" :cache-data="cacheGroupsData"/>
         </el-form-item>
-        <!-- <el-form-item :label="$t('area.formArea.timeDuration')" prop="area_res_mins">
-          <el-select v-model="form.area_res_mins" :placeholder="$t('base.plzSelect')">
-            <el-option v-for="(item, index) in resolutionOptions" :key="index" :label="item.label"
-              :value="item.value" />
-          </el-select>
-        </el-form-item> -->
       </el-form>
     </template>
     <template #btns>
@@ -139,17 +133,6 @@ export default {
       },
       timezoneList: [],
       collapse: ["1", "2"],
-      resolutionOptions: [
-        {
-          label: '15分钟',
-          value: 15
-        },
-        {
-          label: '30分钟',
-          value: 30
-        }
-      ],
-
       groupVal: this.$t('base.plzSelect'),
       groupProps:
       {
@@ -168,7 +151,7 @@ export default {
       if (node.level === 0) {
         resolve([
           { name: this.$t('userGroup.groupAD'), id: '-1', source: 'ad', group_source: 'ad', isLeaf: false, third_id: 0, disabled: false, user_count: 0, sync_state: 0, has_child: 1 },
-          { name: '系统分组', id: '-1', isLeaf: false, source: 'system', group_source: 'system', third_id: 0, disabled: false, user_count: 0, sync_state: 0, has_child: 1 },
+          { name: this.$t('userGroup.system_group'), id: '-1', isLeaf: false, source: 'system', group_source: 'system', third_id: 0, disabled: false, user_count: 0, sync_state: 0, has_child: 1 },
         ]);
       } else if (node.level === 1) {
         console.log('AreaDetailPage loadGroup sync level1', node.data.group_source)

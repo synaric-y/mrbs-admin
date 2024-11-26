@@ -22,8 +22,8 @@
           <el-table-column prop="id" :label="$t('area.tableArea.operate')">
             <template #default="scope">
               <div class="operate-wrapper">
-                <span class="operate-item" @click="toAreaDetail(scope.row.id)">编辑</span>
-                <span class="operate-item" @click="pendingDeleteArea(scope.row.id)">删除</span>
+                <span class="operate-item" @click="toAreaDetail(scope.row.id)">{{$t('base.edit')}}</span>
+                <span class="operate-item" @click="pendingDeleteArea(scope.row.id)">>{{$t('base.delete')}}</span>
               </div>
             </template>
           </el-table-column>

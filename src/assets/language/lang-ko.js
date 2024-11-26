@@ -85,6 +85,9 @@ export const langKo = {
         ended_meet: '종료됨',
         yes: '예',
         no: '아니요',
+        bind_terminal: '터미널 바인딩',
+        terminal: '단말기',
+        select_device: '단말장치를 선택해주세요',
         table: {
             id: '번호',
             area: '지역',
@@ -127,6 +130,7 @@ export const langKo = {
             wxworkCorpId: '엔터프라이즈 WeChatCorpId',
             wxworkSecret: '기업 WeChat 비밀',
             timeDuration: '간격 시간',
+            user_group: '이 사용자 그룹의 구성원만 예약할 수 있습니다.',
         },
         addArea: '지역 추가',
         editArea: '편집 영역',
@@ -212,6 +216,7 @@ export const langKo = {
         confirmDeleteUserGroup: '현재 선택된 사용자/사용자 그룹을 삭제하시겠습니까?',
         editUserGroup: '사용자 그룹 편집',
         lastSyncTime: '마지막 동기화 시간：',
+        system_group: '시스템 그룹화',
         tableUserGroup: {
             name: '이름',
             syncFromAD: 'Active Directory 와 동기화',

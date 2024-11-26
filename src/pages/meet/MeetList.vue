@@ -71,9 +71,7 @@ export default {
   mixins: [PageMixin],
   data() {
     return {
-      meetListData: [
-        { "number": 1, "area": 'shanghai', "room": '会议室A', "meet_start": '2024-10-12', "meet_end": '2024-12-30', "meet_time": '13:00-14:00', "is_cycle": '是', "meet_status": '未开始', "display_name": 'joy', "is_edit": '1' },
-      ],
+      meetListData: [],
       statusVal: -1,
       accountSwitch: 1,
       statusOptions: [
@@ -225,7 +223,6 @@ export default {
     editMeet(params) {
       console.log('MeetList editMeet params', params)
       Api.editMeet(params).then(({ data, code, msg }) => {
-        // this.closedAlert()
         if (code == 0) {
           this.getMeetList()
         } else {

@@ -85,6 +85,9 @@ export const langEn = {
         ended_meet: 'Ended',
         yes: 'Yes',
         no: 'No',
+        bind_terminal: 'Binding Terminal',
+        terminal: 'Terminal',
+        select_device: 'Please select terminal device',
         table: {
             id: 'ID',
             area: 'Area',
@@ -126,6 +129,8 @@ export const langEn = {
             wxworkCorpId: 'Wxwork CorpId',
             wxworkSecret: 'Wxwork Secret',
             timeDuration: 'Interval Time',
+            user_group: 'Only members of this user group are allowed to book',
+
         },
         addArea: 'New Area',
         editArea: 'Edit Area',
@@ -210,6 +215,7 @@ export const langEn = {
         confirmDeleteUserGroup: 'Delete the currently selected user/user group?',
         editUserGroup: 'Edit User Group',
         lastSyncTime: 'Last sync time：',
+        system_group: 'System Grouping',
         tableUserGroup: {
             name: 'Name',
             syncFromAD: 'Sync from Active Directory',

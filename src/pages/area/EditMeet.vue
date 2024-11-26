@@ -21,14 +21,12 @@
         </el-table-column>
         <el-table-column prop="capacity" :label="$t('room.tableRoom.capacity')">
         </el-table-column>
-        <!-- <el-table-column prop="battery_level" :label="$t('room.tableRoom.battery')">
-        </el-table-column> -->
         <el-table-column prop="id" :label="$t('room.tableRoom.operate')">
           <template #default="scope">
             <div class="operate-wrapper">
-              <span class="operate-item" @click="toRoomDetail(scope.row.id)">编辑</span>
-              <span class="operate-item" @click="pendingDeleteRoom(scope.row.id)">删除</span>
-              <span class="operate-item" @click="pendingBindTerminal(scope.row)">终端绑定</span>
+              <span class="operate-item" @click="toRoomDetail(scope.row.id)">{{$t('base.edit')}}</span>
+              <span class="operate-item" @click="pendingDeleteRoom(scope.row.id)">{{$t('base.delete')}}</span>
+              <span class="operate-item" @click="pendingBindTerminal(scope.row)">{{$t('meet.bind_terminal')}}</span>
             </div>
           </template>
         </el-table-column>
@@ -72,10 +70,10 @@
       </div>
     </template>
   </el-dialog>
-  <el-dialog v-model="showTerminalDialog" title="终端绑定" width="550">
+  <el-dialog v-model="showTerminalDialog" :title="$t('meet.bind_terminal')" width="550">
     <el-form :model="terminalForm" :rules="terminal_rules">
-      <el-form-item label="终端" prop="device_id" required>
-        <el-select style="min-width: 120px" v-model="terminalForm.device_id" placeholder="终端">
+      <el-form-item :label="$t('meet.terminal')" prop="device_id" required>
+        <el-select style="min-width: 120px" v-model="terminalForm.device_id" :placeholder="$t('meet.terminal')">
           <el-option v-for="item in avaliableDevices" style="min-width: 120px;z-index: 99999" :key="item.device_id"
             :label="item.device_name" :value="item.device_id" />
         </el-select></el-form-item>
@@ -83,9 +81,9 @@
     <template #footer>
       <div class="dialog-footer">
         <el-button style="margin-left: 50px" type="primary" @click="sureBindTerminal">
-          确定
+          {{$t('base.confirm')}}
         </el-button>
-        <el-button @click="showTerminalDialog = false">取消</el-button>
+        <el-button @click="showTerminalDialog = false">{{$t('base.cancel')}}</el-button>
       </div>
     </template>
   </el-dialog>
@@ -114,7 +112,6 @@ export default {
         description: '',
         capacity: '',
         group_ids: [-1],
-        // room_admin_email: ''
       },
       rules: {
         name: [
@@ -133,10 +130,10 @@ export default {
       },
       terminal_rules: {
         terminal: [
-          { required: true, message: '请选择终端设备', trigger: 'blur' }
+          { required: true, message: this.$t('meet.select_device'), trigger: 'blur' }
         ],
       },
-      select_terminal: '请选择',
+      select_terminal: this.$t('base.plzSelect'),
       select_row: null,
       avaliableDevices: [],
       areaList: [],
@@ -207,7 +204,6 @@ export default {
         name: '',
         description: '',
         capacity: '',
-        // room_admin_email: ''
       }
     },
     pendingBindTerminal(row) {
@@ -252,8 +248,6 @@ export default {
 }
 </script>
 
-
-
 <style lang="scss" scoped>
 .container-sub-page-main {
   background-color: white;
@@ -261,8 +255,6 @@ export default {
   margin-top: 20px;
   margin-bottom: 20px;
 }
-
-.el-table {}
 
 .tb-op-icon {
   width: 25px;

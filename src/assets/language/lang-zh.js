@@ -85,6 +85,9 @@ export const langZh = {
         ended_meet: '已结束',
         yes: '是',
         no: '否',
+        bind_terminal: '绑定终端',
+        terminal: '终端',
+        select_device: '请选择终端设备',
         table: {
             id: '序号',
             area: '区域',
@@ -126,6 +129,9 @@ export const langZh = {
             wxworkCorpId: '企业微信CorpId',
             wxworkSecret: '企业微信Secret',
             timeDuration: '间隔时间',
+            user_group: '仅允许该用户组成员预定',
+
+
         },
         addArea: '添加区域',
         editArea: '编辑区域',
@@ -211,6 +217,7 @@ export const langZh = {
         confirmDeleteUserGroup: '是否删除当前选中的用户/用户组？',
         editUserGroup: '编辑用户组',
         lastSyncTime: `上次同步时间：{time}`,
+        system_group: '系统分组',
         tableUserGroup: {
             name: '名称',
             syncFromAD: '同步AD用户组',
