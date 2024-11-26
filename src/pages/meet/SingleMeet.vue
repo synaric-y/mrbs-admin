@@ -774,7 +774,7 @@ export default defineComponent({
                 date: week_day,
                 startTime: entry.duration.split('-')[0].trim(),
                 endTime: entry.duration.split('-')[1].trim(),
-                src: entry.repeat_id > 0?'/admin/imgs/cycle_meet_tag.png':Common.normalSelfMeet(entry.book_by)?'/admin/imgs/person_meet_tag.png':'',
+                src: Common.normalSelfMeet(entry.book_by)?'/admin/imgs/person_meet_tag.png':entry.repeat_id > 0?'/admin/imgs/cycle_meet_tag.png':'',
                 top: this.getMinIndexTimeSlots(week_day,entry),
                 height: (entry.end_time - entry.start_time) / 900 * this.minItemHeight,
                 ...entry
