@@ -79,10 +79,6 @@ const router = createRouter({
       name: 'meet_list',
       component: () => import('@/pages/meet/MeetList.vue')
     },{
-      path: '/meet_manager',
-      name: 'meet_manager',
-      component: () => import('@/pages/area/MeetManager.vue')
-    },{
       path: '/edit_area',
       name: 'edit_area',
       component: () => import('@/pages/area/EditArea.vue')
