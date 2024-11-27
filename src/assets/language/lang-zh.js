@@ -228,7 +228,7 @@ export const langZh = {
         show_temp_meet: '开启临时会议',
         temp_meet_no: '从不',
         temp_meet_no_verify: '不记名预约',
-        temp_meet_verify: '扫描身份证验证预约',
+        temp_meet_verify: '扫码身份验证预约',
         show_temp_tip1: '终端将显示临时会议按钮',
         show_temp_tip2: '终端将不显示临时会议按钮',
         temp_meet: '临时会议',

@@ -227,7 +227,7 @@ export const langEn = {
         show_temp_meet: 'Enable Temporary Meetings',
         temp_meet_no: 'Never',
         temp_meet_no_verify: 'Anonymous Booking',
-        temp_meet_verify: 'Verify Booking with ID Card Scan',
+        temp_meet_verify: 'Verify Booking with QR Scan',
         show_temp_tip1: 'The terminal will display a temporary meeting button',
         show_temp_tip2: 'The terminal will not display a temporary meeting button',
         temp_meet: 'Temporary Meeting',

@@ -227,7 +227,7 @@ export const langKo = {
         show_temp_meet: '임시 회의 활성화',
         temp_meet_no: '사용 안 함',
         temp_meet_no_verify: '익명 예약',
-        temp_meet_verify: '신분증 스캔으로 예약 확인',
+        temp_meet_verify: 'QR 코드를 스캔하여 예약하세요',
         show_temp_tip1: '단말기에 임시 회의 버튼이 표시됩니다',
         show_temp_tip2: '단말기에 임시 회의 버튼이 표시되지 않습니다',
         temp_meet: '임시 회의',
