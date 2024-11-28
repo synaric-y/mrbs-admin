@@ -240,7 +240,7 @@ export const langKo = {
         fallback_btn: '되돌리기',
         qrcode_tip: '활성화되지 않은 태블릿에서 QR 코드를 스캔하세요',
         save_btn: '저장',
-        cancle_btn: '취소',
+        cancel_btn: '취소',
         select_min_interval: '예약 최소 간격을 선택하세요',
         fifteen_minute: '15분',
         thirty_minute: '30분',

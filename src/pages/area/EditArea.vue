@@ -23,7 +23,7 @@
             <template #default="scope">
               <div class="operate-wrapper">
                 <span class="operate-item" @click="toAreaDetail(scope.row.id)">{{$t('base.edit')}}</span>
-                <span class="operate-item" @click="pendingDeleteArea(scope.row.id)">>{{$t('base.delete')}}</span>
+                <span class="operate-item" @click="pendingDeleteArea(scope.row.id)">{{$t('base.delete')}}</span>
               </div>
             </template>
           </el-table-column>

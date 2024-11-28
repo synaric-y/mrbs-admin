@@ -241,7 +241,7 @@ export const langZh = {
         fallback_btn: '回退',
         qrcode_tip: '请打开未激活的平板并扫码',
         save_btn: '保存',
-        cancle_btn: '取消',
+        cancel_btn: '取消',
         select_min_interval: '请选择预定时间最小间隔',
         fifteen_minute: '15分钟',
         thirty_minute: '30分钟',

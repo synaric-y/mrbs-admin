@@ -12,7 +12,7 @@
       </el-form>
       <div class="dialog-footer">
         <el-button type="primary" @click="sureBindTerminal">{{ $t('base.confirm') }}</el-button>
-        <el-button @click="$emit('close')">{{ $t('base.cancle') }}</el-button>
+        <el-button @click="$emit('close')">{{ $t('base.cancel') }}</el-button>
       </div>
     </div>
   </div>

@@ -23,7 +23,7 @@
     </template>
     <template #btns>
       <el-button type="primary" @click="submit">{{ $t('base.save') }}</el-button>
-      <el-button @click="back">{{ $t('base.cancle') }}</el-button>
+      <el-button @click="back">{{ $t('base.cancel') }}</el-button>
     </template>
   </Layout>
 </template>

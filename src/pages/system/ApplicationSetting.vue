@@ -123,7 +123,7 @@
     </template>
     <template #btns>
       <el-button type="primary" @click="submit">{{ $t('system.save_btn') }}</el-button>
-      <el-button type="default" @click="back">{{ $t('system.cancle_btn') }}</el-button>
+      <el-button type="default" @click="back">{{ $t('system.cancel_btn') }}</el-button>
     </template>
   </Layout>
 </template>

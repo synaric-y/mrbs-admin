@@ -240,7 +240,7 @@ export const langEn = {
         fallback_btn: 'Rollback',
         qrcode_tip: 'Please scan the QR code with an unactivated tablet',
         save_btn: 'Save',
-        cancle_btn: 'Cancel',
+        cancel_btn: 'Cancel',
         select_min_interval: 'Please select the minimum booking interval',
         fifteen_minute: '15 Minutes',
         thirty_minute: '30 Minutes',
