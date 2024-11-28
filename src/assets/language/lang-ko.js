@@ -229,8 +229,8 @@ export const langKo = {
     },
     system: {
         section_default_title: '기본 정보',
-        default_password: 'AD 가져오기 기본 비밀번호',
-        default_password_placeholder: 'AD 가져오기 기본 비밀번호를 입력하세요',
+        default_password: '가져온 사용자 기본 비밀번호',
+        default_password_placeholder: '가져온 사용자의 기본 비밀번호를 입력하세요',
         form_default_password: '기본 AD 비밀번호를 입력하세요',
         section_basic_title: '기본 설정',
         section_pad_title: '태블릿 화면 표시',

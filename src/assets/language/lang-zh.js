@@ -230,8 +230,8 @@ export const langZh = {
     },
     system: {
         section_default_title: '默认信息',
-        default_password: 'AD导入默认密码',
-        default_password_placeholder: '请输入AD导入时的默认密码',
+        default_password: '导入用户默认密码',
+        default_password_placeholder: '请输入导入用户的默认密码',
         form_default_password: '请输入默认的AD默认密码',
         section_basic_title: '基本信息',
         section_pad_title: '平板端展示',
