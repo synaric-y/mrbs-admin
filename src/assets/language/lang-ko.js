@@ -228,6 +228,10 @@ export const langKo = {
         question15_reply: '답변: 먼저 "사용 설명서"를 확인하세요. 문제가 해결되지 않으면 "문제 피드백"을 통해 문제를 제출하세요.',
     },
     system: {
+        section_default_title: '기본 정보',
+        default_password: 'AD 가져오기 기본 비밀번호',
+        default_password_placeholder: 'AD 가져오기 기본 비밀번호를 입력하세요',
+        form_default_password: '기본 AD 비밀번호를 입력하세요',
         section_basic_title: '기본 설정',
         section_pad_title: '태블릿 화면 표시',
         section_pad_version: '태블릿 업그레이드',

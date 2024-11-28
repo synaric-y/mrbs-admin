@@ -228,6 +228,10 @@ export const langEn = {
         question15_reply: 'Answer: Check the "User Manual" first. If the issue persists, submit it via "Feedback".',
     },
     system: {
+        section_default_title: 'Default Information',
+        default_password: 'Default Password for AD Import',
+        default_password_placeholder: 'Please enter the default password for AD import',
+        form_default_password: 'Please enter the default AD password',
         section_basic_title: 'Basic',
         section_pad_title: 'Tablet Display',
         section_pad_version: 'Tablet Upgrade',

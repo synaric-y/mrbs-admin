@@ -229,7 +229,11 @@ export const langZh = {
         question15_reply: '答：您可以先查看下“用户操作手册”，如果还未解决您的问题可在“问题反馈”中提交您的问题',
     },
     system: {
-        section_basic_title: '基本',
+        section_default_title: '默认信息',
+        default_password: 'AD导入默认密码',
+        default_password_placeholder: '请输入AD导入时的默认密码',
+        form_default_password: '请输入默认的AD默认密码',
+        section_basic_title: '基本信息',
         section_pad_title: '平板端展示',
         section_pad_version: '平板端升级',
         hository_version: '历史安装版本',

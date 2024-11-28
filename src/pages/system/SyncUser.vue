@@ -1,35 +1,49 @@
 <template>
   <Layout :title="$t('setting.user_synchronize_setting.title')" section-left-padding="50">
     <template #section>
-      <el-form :model="form" :rules="rules" ref="formRef" label-width="150px">
-        <el-form-item :label="$t('guide.select_service')">
-          <img class="form-item-img" src="../../../public/imgs/ad.png" alt="#">
-        </el-form-item>
-        <el-form-item prop="hosts" :label="$t('guide.service_url')">
-          <el-input v-model="form.hosts" class="form-item-input" :placeholder="$t('guide.example_service')"
-            @input="adStatus = 'untested'" />
-        </el-form-item>
-        <el-form-item prop="port" :label="$t('guide.select_service_port')">
-          <el-input v-model="form.port" class="form-item-input" :placeholder="$t('guide.example_port')"
-            @input="adStatus = 'untested'" />
-        </el-form-item>
-        <el-form-item prop="base_dn" :label="$t('guide.select_base_dn')">
-          <el-input v-model="form.base_dn" class="form-item-input" :placeholder="$t('guide.example_base_dn')"
-            @input="adStatus = 'untested'" />
-        </el-form-item>
-        <el-form-item prop="username" :label="$t('guide.select_username')">
-          <el-input v-model="form.username" class="form-item-input" :placeholder="$t('guide.example_username')"
-            @input="adStatus = 'untested'" />
-        </el-form-item>
-        <el-form-item prop="password" :label="$t('guide.select_password')">
-          <el-input type="password" v-model="form.password" class="form-item-input"
-            :placeholder="$t('guide.password_placeholder')" @input="adStatus = 'untested'" />
-          <TestButton :status="adStatus" @test="verify" />
-        </el-form-item>
-        <el-form-item prop="autoSync" :label="$t('guide.start_time_sync')">
-          <el-switch v-model="form.autoSync" />
-        </el-form-item>
-      </el-form>
+
+      <div class="section-title">{{ $t('system.section_default_title') }}</div>
+      <div class="section-content">
+        <el-form :model="form">
+          <el-form-item style="margin-left: 40px;" prop="default_password_hash" :label="$t('system.default_password')">
+            <el-input v-model="form.default_password_hash" class="form-item-input"
+              :placeholder="$t('system.default_password_placeholder')" />
+          </el-form-item>
+        </el-form>
+      </div>
+
+      <div class="section-title">{{ $t('system.section_basic_title') }}</div>
+      <div class="section-content">
+        <el-form :model="form" :rules="rules" ref="formRef" label-width="150px">
+          <el-form-item :label="$t('guide.select_service')">
+            <img class="form-item-img" src="../../../public/imgs/ad.png" alt="#">
+          </el-form-item>
+          <el-form-item prop="hosts" :label="$t('guide.service_url')">
+            <el-input v-model="form.hosts" class="form-item-input" :placeholder="$t('guide.example_service')"
+              @input="adStatus = 'untested'" />
+          </el-form-item>
+          <el-form-item prop="port" :label="$t('guide.select_service_port')">
+            <el-input v-model="form.port" class="form-item-input" :placeholder="$t('guide.example_port')"
+              @input="adStatus = 'untested'" />
+          </el-form-item>
+          <el-form-item prop="base_dn" :label="$t('guide.select_base_dn')">
+            <el-input v-model="form.base_dn" class="form-item-input" :placeholder="$t('guide.example_base_dn')"
+              @input="adStatus = 'untested'" />
+          </el-form-item>
+          <el-form-item prop="username" :label="$t('guide.select_username')">
+            <el-input v-model="form.username" class="form-item-input" :placeholder="$t('guide.example_username')"
+              @input="adStatus = 'untested'" />
+          </el-form-item>
+          <el-form-item prop="password" :label="$t('guide.select_password')">
+            <el-input type="password" v-model="form.password" class="form-item-input"
+              :placeholder="$t('guide.password_placeholder')" @input="adStatus = 'untested'" />
+            <TestButton :status="adStatus" @test="verify" />
+          </el-form-item>
+          <el-form-item prop="autoSync" :label="$t('guide.start_time_sync')">
+            <el-switch v-model="form.autoSync" />
+          </el-form-item>
+        </el-form>
+      </div>
     </template>
     <template #btns>
       <el-button type="primary" @click="submit">{{ $t('base.save') }}</el-button>
@@ -58,6 +72,7 @@ export default {
         username: '',
         password: '',
         autoSync: true,
+        default_password_hash: '',
       },
       rules: {
         hosts: [{ required: true, message: this.$t('guide.form_empty_url'), trigger: 'blur' }],
@@ -68,7 +83,8 @@ export default {
           { required: true, message: this.$t('guide.form_username'), trigger: 'blur' },
           { min: 2, max: 200, message: this.$t('guide.form_limit_username'), trigger: 'blur' },
         ],
-        password: [{ required: true, message: this.$t('guide.form_password'), trigger: 'blur' }]
+        password: [{ required: true, message: this.$t('guide.form_password'), trigger: 'blur' }],
+        default_password_hash: [{ required: true, message: this.$t('system.form_default_password'), trigger: 'blur' }]
       },
     }
   },
@@ -81,6 +97,7 @@ export default {
       "AD_username": 1,
       "AD_password": 1,
       "AD_interval_date": 1,
+      "default_password_hash": 1,
     }).then(({ code, data, msg }) => {
       if (code == 0) {
         console.log(data)
@@ -92,6 +109,7 @@ export default {
           base_dn: data.AD_base_dn,
           username: data.AD_username,
           password: data.AD_password,
+          // default_password_hash: data.default_password_hash,
         }
       } else {
         ElMessage.error({
@@ -173,6 +191,7 @@ export default {
               "AD_base_dn": this.form.base_dn,
               "AD_username": this.form.username,
               "AD_password": this.form.password,
+              "default_password_hash": this.form.default_password_hash,
             }
           ).then(res => {
             console.log(res)
@@ -213,4 +232,18 @@ export default {
 </script>
 
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.section-title {
+  color: var(--el-color-primary);
+  font-family: PingFang SC;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 2;
+  margin-bottom: 20px;
+}
+
+.section-content {
+  padding-left: 30px;
+}
+
+</style>
