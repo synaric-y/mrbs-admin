@@ -70,28 +70,28 @@ export default {
           index: "1",
           icon: '/admin/imgs/dashboard_manager.png',
           active_icon: '/admin/imgs/dashboard_manager_selected.png',
-          title: '仪表盘',//Dashboard
+          title: this.$t('left.dashboard'),
           path: '/guide_start',
           children: []
         },{
           index: "3",
           icon: '/admin/imgs/meet_manager.png',
           active_icon: '/admin/imgs/meet_manager_selected.png',
-          title: '会议预定',
+          title: this.$t('left.scheduleMeet'),
           children: [
             {
               index: "1",
-              title: '单次会议预定',
+              title: this.$t('left.singleMeet'),
               path: '/single_meet'
             },
             {
               index: "2",
-              title: '循环会议预定',
+              title: this.$t('left.cycleMeet'),
               path: '/cycle_meet'
             },
             {
               index: "3",
-              title: '历史会议',
+              title: this.$t('left.meetList'),
               path: '/meet_list'
             }
           ]
@@ -100,16 +100,16 @@ export default {
           index: "2",
           icon: '/admin/imgs/user_manager.png',
           active_icon: '/admin/imgs/user_manager_selected.png',
-          title: '用户管理',
+          title: this.$t('left.userManager'),
           children: [
             {
               index: "1",
-              title: '用户列表',
+              title: this.$t('left.userList'),
               path: '/user_list'
             },
             {
               index: "2",
-              title: '用户组配置',
+              title: this.$t('left.userGroup'),
               path: '/user_group'
             }
           ]
@@ -118,16 +118,16 @@ export default {
           index: "4",
           icon: '/admin/imgs/area_manager.png',
           active_icon: '/admin/imgs/area_manager_selected.png',
-          title: '区域&会议管理',
+          title: this.$t('left.areaManager'),
           children: [
             {
               index: "1",
-              title: '编辑区域',
+              title: this.$t('left.editArea'),
               path: '/edit_area'
             },
             {
               index: "2",
-              title: '编辑会议室',
+              title: this.$t('left.editMeet'),
               path: '/edit_meet'
             },
           ]
@@ -136,7 +136,7 @@ export default {
           index: "5",
           icon: '/admin/imgs/terminal_manager.png',
           active_icon: '/admin/imgs/terminal_manager_selected.png',
-          title: '终端设备管理',
+          title: this.$t('left.terminalManager'),
           path: '/terminal_manager',
           children: []
         },
@@ -144,31 +144,31 @@ export default {
           index: "6",
           icon: '/admin/imgs/check_circle.png',
           active_icon: '/admin/imgs/check_circle_selected.png',
-          title: '系统设置',
+          title: this.$t('left.systemSettings'),
           children: [
             {
               index: "1",
-              title: '应用设置',
+              title: this.$t('left.applicationSettings'),
               path: '/application_setting'
             },
             {
               index: "2",
-              title: '企业微信设置',
+              title: this.$t('left.wxworkSettings'),
               path: '/wxwork_setting'
             },
             {
               index: "3",
-              title: '会议规则设置',
+              title: this.$t('left.meetRules'),
               path: '/meet_rule'
             },
             {
               index: "4",
-              title: '用户同步',
+              title: this.$t('left.userSync'),
               path: '/sync_user'
             },
             {
               index: "5",
-              title: '日历同步',
+              title: this.$t('left.calendarSync'),
               path: '/sync_calendar'
             },
           ]
@@ -177,16 +177,16 @@ export default {
           index: "7",
           icon: '/admin/imgs/help_manager.png',
           active_icon: '/admin/imgs/help_manager_selected.png',
-          title: '帮助中心',
+          title: this.$t('left.helps'),
           children: [
             {
               index: "1",
-              title: '操作手册下载',
+              title: this.$t('left.manual'),
               path: '/manual'
             },
             {
               index: "2",
-              title: '常见问题',
+              title: this.$t('left.questions'),
               path: '/questions'
             },
             // {
@@ -203,28 +203,28 @@ export default {
           index: "1",
           icon: '/admin/imgs/dashboard_manager.png',
           active_icon: '/admin/imgs/dashboard_manager_selected.png',
-          title: '仪表盘',//Dashboard
+          title: this.$t('left.dashboard'),
           path: '/guide_start',
           children: []
         },{
           index: "3",
           icon: '/admin/imgs/meet_manager.png',
           active_icon: '/admin/imgs/meet_manager_selected.png',
-          title: '会议预定',
+          title: this.$t('left.scheduleMeet'),
           children: [
             {
               index: "1",
-              title: '单次会议预定',
+              title: this.$t('left.singleMeet'),
               path: '/single_meet'
             },
             {
               index: "2",
-              title: '循环会议预定',
+              title: this.$t('left.cycleMeet'),
               path: '/cycle_meet'
             },
             {
               index: "3",
-              title: '历史会议',
+              title: this.$t('left.meetList'),
               path: '/meet_list'
             }
           ]
@@ -233,16 +233,16 @@ export default {
           index: "7",
           icon: '/admin/imgs/help_manager.png',
           active_icon: '/admin/imgs/help_manager_selected.png',
-          title: '帮助中心',
+          title: this.$t('left.helps'),
           children: [
             {
               index: "1",
-              title: '操作手册下载',
+              title: this.$t('left.manual'),
               path: '/manual'
             },
             {
               index: "2",
-              title: '常见问题',
+              title: this.$t('left.questions'),
               path: '/questions'
             },
             // {
