@@ -98,7 +98,7 @@
         <div class="section-title">{{ $t('system.section_pad_version')}}</div>
         <div class="section-content">
           <el-table :data="versionData" style="width: 100%">
-            <el-table-column prop="version" :label="$('system.hository_version')" width="180">
+            <el-table-column prop="version" :label="$t('system.hository_version')" width="180">
               <template #default="scope">
                 <span>{{ scope.row.version + (scope.row.isCurrent ? $t('system.curren_version') : '') }}</span>
               </template>
