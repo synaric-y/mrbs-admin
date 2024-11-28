@@ -80,7 +80,6 @@ export default {
 </script>
 
 <template>
-
   <el-container class="container-sub-page">
     <el-main class="container-sub-page-main">
       <div class="sub-title-wrapper">
@@ -117,11 +116,6 @@ export default {
             :label="$t('area.tableArea.timezone')"
             width="220">
         </el-table-column>
-<!--        <el-table-column-->
-<!--            prop="address"-->
-<!--            :label="$t('area.tableArea.admin')"-->
-<!--            width="300">-->
-<!--        </el-table-column>-->
         <el-table-column
             prop="id"
             :label="$t('area.tableArea.operate')"
@@ -129,13 +123,9 @@ export default {
           <template #default="scope">
             <img class="tb-op-icon tb-op-icon-span" src="/imgs/edit.png" @click="toAreaDetail(scope.row.id)">
             <img class="tb-op-icon" src="/imgs/delete.png" @click="pendingDeleteArea(scope.row.id)">
-
           </template>
         </el-table-column>
       </el-table>
-
-
-
       <el-dialog v-model="showAddAreaDialog" :title="$t('area.addArea')" width="500">
         <el-form :model="form" ref="areaForm" :rules="rules">
           <el-form-item  prop="name" :label="$t('area.formArea.name')">

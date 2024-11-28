@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router'
-import HomePage from '@/pages/HomePage.vue'
 import {STORAGE} from "@/const.js";
 
 const router = createRouter({
@@ -122,11 +121,6 @@ const router = createRouter({
       path: '/manual',
       name: 'manual',
       component: () => import('@/pages/help/Manual.vue')
-    },
-    {
-      path: '/meet_detail/:id/:room_id/:area_id/:timestamp',
-      name: 'meet_detail',
-      component: () => import('@/pages/MeetDetail.vue')
     },
     {
       path: '/login',

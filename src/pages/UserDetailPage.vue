@@ -48,10 +48,6 @@ export default {
         ],
       },
       role: [
-        // {
-        //   name: this.$t('user.role.level0'),
-        //   value: 0,
-        // },
         {
           name: this.$t('user.role.level1'),
           value: 1,
@@ -112,35 +108,27 @@ export default {
       <div class="sub-title-wrapper">
         <div class="sub-title">{{ mode === "add" ? $t("user.addUser") : $t("user.editUser") }}</div>
       </div>
-
       <el-form :model="form" :rules="mode == 'add' ? rules2 : rules" :validate-on-rule-change="false" label-width="auto" ref="userForm" style="max-width: 530px">
-
         <el-form-item prop="name" :label="$t('user.formUser.name')" >
           <el-input v-model="form.name" show-word-limit maxlength="16" :disabled="mode == 'update'" />
         </el-form-item>
-
         <el-form-item prop="display_name" :label="$t('user.formUser.displayName')">
           <el-input v-model="form.display_name" show-word-limit maxlength="16" />
         </el-form-item>
-
         <el-form-item prop="level" :label="$t('user.formUser.level')">
           <el-select v-model="form.level" :placeholder="$t('base.plzSelect')" :disabled="mode == 'update'">
             <el-option :label="item.name" :value="item.value" v-for="(item, index) in role" :key="index"/>
           </el-select>
         </el-form-item>
-
         <el-form-item prop="email" :label="$t('user.formUser.email')">
           <el-input v-model="form.email" show-word-limit maxlength="64" />
         </el-form-item>
-
         <el-form-item prop="password0" :label="$t('user.formUser.password0')">
           <el-input v-model="form.password0" show-word-limit maxlength="32" />
         </el-form-item>
-
         <el-form-item prop="password1" :label="$t('user.formUser.password1')">
           <el-input v-model="form.password1" show-word-limit maxlength="32" />
         </el-form-item>
-
         <el-form-item style="margin-top: 60px">
           <el-button type="info" size="default" @click="back">{{ $t("base.cancel") }}</el-button>
           <el-button type="primary" size="default" @click="submit">{{ $t("base.confirm") }}</el-button>

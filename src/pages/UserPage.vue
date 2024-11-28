@@ -89,11 +89,6 @@ export default {
             :label="$t('user.tableUser.email')"
             width="320">
         </el-table-column>
-<!--        <el-table-column-->
-<!--            prop="last_login"-->
-<!--            :label="$t('user.tableUser.loginTime')"-->
-<!--            width="170">-->
-<!--        </el-table-column>-->
         <el-table-column
             prop="id"
             :label="$t('user.tableUser.operate')"
@@ -101,7 +96,6 @@ export default {
           <template #default="scope">
             <img class="tb-op-icon tb-op-icon-span" src="/imgs/edit.png" @click="toUserDetail('update', scope.row.id)">
             <img class="tb-op-icon" src="/imgs/delete.png" @click="pendingDeleteUser(scope.row.name)">
-
           </template>
         </el-table-column>
       </el-table>

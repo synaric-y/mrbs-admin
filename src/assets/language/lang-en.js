@@ -64,6 +64,7 @@ export const langEn = {
         viewMore: 'More',
         singleMeet: 'Single meeting',
         input: 'Please enter',
+        networkError: 'Network Error',
     },
     guide: {
         basics_title: 'Meeting System Configuration Guide',
@@ -291,6 +292,12 @@ export const langEn = {
         account: 'Account',
         password: 'Password',
         accountPH: 'Username / E-Mail',
+        tips: 'Welcome to the Meeting Reservation System',
+        username: 'Username',
+        password: 'Password',
+        passwordPlaceholder: 'Please enter your password',
+        savePassword: 'Remember Password',
+        forgetPassword: 'Forgot Password',
     },
     area: {
         tableArea: {

@@ -64,8 +64,8 @@ export const langZh = {
         viewMore: '查看更多',
         singleMeet: '单次会议',
         input: '请输入',
+        networkError: '网络异常',
     },
-
     guide: {
         basics_title: '会议系统配置向导',
         company_name: '公司/组织名称',
@@ -292,6 +292,12 @@ export const langZh = {
         account: '账号',
         password: '密码',
         accountPH: '用户名 / 邮箱',
+        tips: '欢迎使用会议预约系统',
+        username: '用户名',
+        password: '密码',
+        passwordPlaceholder: '请输入密码',
+        savePassword: '记住密码',
+        forgetPassword: '忘记密码？',
     },
     area: {
         tableArea: {
@@ -394,7 +400,6 @@ export const langZh = {
         plzSelectLevel: '请选择账号权限',
         form_verify_email: '请输入邮箱',
         form_valid_email: '请输入有效的邮箱地址',
-        
     },
     userGroup: {
         userGroup: '用户组',

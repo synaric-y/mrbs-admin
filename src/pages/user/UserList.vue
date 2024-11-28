@@ -269,7 +269,7 @@ export default {
       if (val === 1) {
         this.dialogUserDetailForm = true
         this.rules = this.rulesUpdate
-        this.userDetailTitle = '编辑用户'
+        this.userDetailTitle = this.$t('user.editUser')
         this.userForm.name = row.name
         this.userForm.display_name = row.display_name
         this.userForm.password = ''

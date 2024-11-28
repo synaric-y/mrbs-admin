@@ -1,8 +1,8 @@
 <script>
-import {PageMixin} from "@/pages/PageMixin.js";
-import {Api} from "@/network/api.js";
+import { PageMixin } from "@/pages/PageMixin.js";
+import { Api } from "@/network/api.js";
 import router from "@/router/index.js";
-import {ElMessage} from "element-plus/es";
+import { ElMessage } from "element-plus/es";
 
 export default {
   mixins: [PageMixin],
@@ -16,17 +16,16 @@ export default {
         name: '',
         description: '',
         capacity: '',
-        // room_admin_email: ''
       },
       rules: {
         name: [
-          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
         ],
         area: [
-          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
         ],
         capacity: [
-          {required: true, message: this.$t('base.noDataHint'), trigger: 'blur'}
+          { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
         ],
       },
       areaList: [],
@@ -45,7 +44,7 @@ export default {
     },
     deleteRoom() {
       this.showDeleteRoomDialog = false
-      Api.deleteRoom({room: Number(this.pendingDeleteId)}).then(({data, code, msg}) => {
+      Api.deleteRoom({ room: Number(this.pendingDeleteId) }).then(({ data, code, msg }) => {
         if (code == 0) {
           this.getRoomList()
         } else {
@@ -55,7 +54,7 @@ export default {
       })
     },
     getRoomList() {
-      Api.getRoomList({area: this.areaId}).then(({data}) => {
+      Api.getRoomList({ area: this.areaId }).then(({ data }) => {
         if (data) {
           data.forEach(item => {
             if (item["battery_level"]) {
@@ -71,7 +70,7 @@ export default {
       })
     },
     getAreaList() {
-      Api.getAreaList({}).then(({data}) => {
+      Api.getAreaList({}).then(({ data }) => {
         if (data) {
           this.areaListNoAll = JSON.parse(JSON.stringify(data))
           data.unshift({
@@ -89,7 +88,6 @@ export default {
         name: '',
         description: '',
         capacity: '',
-        // room_admin_email: ''
       }
     },
     addRoom() {
@@ -98,7 +96,7 @@ export default {
           return
         }
         this.showAddRoomDialog = false
-        Api.addRoom(this.form).then(({data, code, msg}) => {
+        Api.addRoom(this.form).then(({ data, code, msg }) => {
           if (code == 0) {
             this.getRoomList()
           } else {
@@ -125,96 +123,49 @@ export default {
         <div class="sub-title">{{ $t("base.roomManagement") }}</div>
       </div>
       <el-form-item>
-        <el-select
-            v-model="areaId"
-            style="width: 240px"
-            :empty-values="[null, undefined]"
-            @change="getRoomList"
-        >
-          <el-option
-              v-for="item in areaList"
-              :key="item.id"
-              :label="item.area_name"
-              :value="item.id"
-          />
+        <el-select v-model="areaId" style="width: 240px" :empty-values="[null, undefined]" @change="getRoomList">
+          <el-option v-for="item in areaList" :key="item.id" :label="item.area_name" :value="item.id" />
         </el-select>
         <div style="flex: 1"></div>
         <el-button type="primary" size="default" @click="pendingAddRoom">{{ $t("base.add") }}</el-button>
       </el-form-item>
-      <el-table
-          :data="tableData"
-          style="width: 100%"
-          header-cell-class-name="tb-header"
-          header-align="center"
-          max-height="600">
-        <el-table-column
-            fixed
-            prop="room_name"
-            :label="$t('room.tableRoom.name')"
-            width="330">
+      <el-table :data="tableData" style="width: 100%" header-cell-class-name="tb-header" header-align="center"
+        max-height="600">
+        <el-table-column fixed prop="room_name" :label="$t('room.tableRoom.name')" width="330">
         </el-table-column>
-        <el-table-column
-            prop="disabled"
-            :label="$t('room.tableRoom.state')"
-            width="120">
+        <el-table-column prop="disabled" :label="$t('room.tableRoom.state')" width="120">
           <template #default="scope">
             <div :class="['tb-state', scope.row.disabled == 1 ? 'tb-state-disable' : '']"></div>
           </template>
         </el-table-column>
-        <el-table-column
-            prop="id"
-            :label="$t('room.tableRoom.id')"
-            width="120">
+        <el-table-column prop="id" :label="$t('room.tableRoom.id')" width="120">
         </el-table-column>
-        <el-table-column
-            prop="capacity"
-            :label="$t('room.tableRoom.capacity')"
-            width="120">
+        <el-table-column prop="capacity" :label="$t('room.tableRoom.capacity')" width="120">
         </el-table-column>
-        <el-table-column
-            prop="battery_level"
-            :label="$t('room.tableRoom.battery')"
-            width="120">
+        <el-table-column prop="battery_level" :label="$t('room.tableRoom.battery')" width="120">
         </el-table-column>
-        <el-table-column
-            prop="id"
-            :label="$t('room.tableRoom.operate')"
-            width="120">
+        <el-table-column prop="id" :label="$t('room.tableRoom.operate')" width="120">
           <template #default="scope">
             <img class="tb-op-icon tb-op-icon-span" src="/imgs/edit.png" @click="toRoomDetail(scope.row.id)">
             <img class="tb-op-icon" src="/imgs/delete.png" @click="pendingDeleteRoom(scope.row.id)">
-
           </template>
         </el-table-column>
       </el-table>
-
-
       <el-dialog v-model="showAddRoomDialog" :title="$t('area.addArea')" width="500">
-        <el-form :model="form"
-                 :rules="rules"
-                 ref="roomForm"
-                 label-width="auto">
+        <el-form :model="form" :rules="rules" ref="roomForm" label-width="auto">
           <el-form-item prop="name" :label="$t('room.formRoom.name')" label-position="right">
             <el-input v-model="form.name" />
           </el-form-item>
           <el-form-item prop="area" :label="$t('room.formRoom.area')" label-position="right">
-            <el-select
-                v-model="form.area"
-                :empty-values="[null, undefined]"
-            >
-              <el-option
-                  v-for="item in areaListNoAll"
-                  :key="item.id"
-                  :label="item.area_name"
-                  :value="item.id"
-              />
+            <el-select v-model="form.area" :empty-values="[null, undefined]">
+              <el-option v-for="item in areaListNoAll" :key="item.id" :label="item.area_name" :value="item.id" />
             </el-select>
           </el-form-item>
           <el-form-item prop="description" :label="$t('room.formRoom.description')" label-position="right">
-            <el-input v-model="form.description" autocomplete="off"/>
+            <el-input v-model="form.description" autocomplete="off" />
           </el-form-item>
           <el-form-item prop="capacity" :label="$t('room.formRoom.capacity')" label-position="right">
-            <el-input v-model="form.capacity" autocomplete="off"/>
+            <el-input v-model="form.capacity" autocomplete="off" />
           </el-form-item>
         </el-form>
         <template #footer>
@@ -226,10 +177,7 @@ export default {
           </div>
         </template>
       </el-dialog>
-      <el-dialog
-          v-model="showDeleteRoomDialog"
-          title="Tips"
-          width="500">
+      <el-dialog v-model="showDeleteRoomDialog" title="Tips" width="500">
         <span>{{ $t('room.deleteRoomHint') }}</span>
         <template #footer>
           <div class="dialog-footer">
@@ -245,7 +193,6 @@ export default {
 </template>
 
 <style lang="scss" scoped>
-
 .tb-op-icon {
   width: 25px;
   height: 25px;

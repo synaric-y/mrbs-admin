@@ -64,6 +64,7 @@ export const langKo = {
         viewMore: '자세히 보기',
         singleMeet: '단일 회의',
         input: '입력해주세요',
+        networkError: '네트워크 오류',
     },
     guide: {
         basics_title: '회의 시스템 구성 가이드',
@@ -292,6 +293,12 @@ export const langKo = {
         account: '계정',
         password: '비밀번호',
         accountPH: '사용자 이름/이메일',
+        tips: '회의 예약 시스템에 오신 것을 환영합니다',
+        username: '사용자 이름',
+        password: '비밀번호',
+        passwordPlaceholder: '비밀번호를 입력하세요',
+        savePassword: '비밀번호 저장',
+        forgetPassword: '비밀번호를 잊으셨나요',
     },
     area: {
         tableArea: {
