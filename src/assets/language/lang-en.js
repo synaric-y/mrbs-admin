@@ -392,6 +392,7 @@ export const langEn = {
         deleteAreaFailed: 'Failed to delete the area',
     },
     room: {
+        section_title: 'Conference Room Settings',
         tableRoom: {
             name: 'Name',
             state: 'Enable',

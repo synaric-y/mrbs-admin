@@ -395,6 +395,7 @@ export const langZh = {
         deleteAreaFailed: '删除区域失败',
     },
     room: {
+        section_title: '会议室设置',
         tableRoom: {
             name: '名称',
             area: '区域',

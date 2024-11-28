@@ -392,6 +392,7 @@ export const langKo = {
         deleteAreaFailed: '영역 삭제 실패',
     },
     room: {
+        section_title: '회의실 설정',
         tableRoom: {
             name: '이름',
             area: '영역',
