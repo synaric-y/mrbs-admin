@@ -5,14 +5,14 @@
 // 属性：title（String）
 
 defineProps({
-  title:{
+  title: {
     type: String,
   },
-  sectionLeftPadding:{
+  sectionLeftPadding: {
     type: Number,
     default: 0
   },
-  sectionCenter:{
+  sectionCenter: {
     type: Boolean,
     default: false,
   }
@@ -23,28 +23,18 @@ defineProps({
   <el-container class="container-sub-page">
     <el-main class="container-sub-page-main">
       <div class="sub-page-content">
-        <div class="title">{{title}}</div>
-
-        <div class="section" :style="`padding-left:${sectionLeftPadding}px;`+(sectionCenter?'align-items:center':'')">
+        <div class="title">{{ title }}</div>
+        <div class="section" :style="`padding-left:${sectionLeftPadding}px;` + (sectionCenter ? 'align-items:center' : '')">
           <slot name="section">
-
           </slot>
-
           <div class="filter-wrapper">
             <slot name="filter"></slot>
           </div>
-
           <slot name="table"></slot>
-
           <div class="table-pagination-block">
             <slot name="pagination"></slot>
           </div>
-
         </div>
-
-
-
-
         <div class="btns">
           <slot name="btns"></slot>
         </div>
@@ -72,14 +62,14 @@ defineProps({
 }
 
 /* 标题 */
-.title{
+.title {
   font-family: PingFang SC;
   font-size: 20px;
   font-weight: 500;
 }
 
 /* 内容 */
-.section{
+.section {
   padding: 0;
   display: flex;
   flex-direction: column;
@@ -92,9 +82,9 @@ defineProps({
   display: flex;
   flex-direction: row;
   height: 50px;
-  //align-items: center;
   gap: 10px;
 }
+
 .form-ad {
   display: flex;
   flex-direction: row;
@@ -111,10 +101,12 @@ defineProps({
 .form-item-img {
   height: 53px;
 }
+
 .form-item-input {
   width: 400px;
   height: 33px;
 }
+
 .form-item-btn {
   border-radius: 2px;
   opacity: 1;
@@ -143,7 +135,7 @@ defineProps({
 }
 
 /*按钮*/
-.btns{
+.btns {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -160,14 +152,14 @@ defineProps({
 }
 
 /*表格*/
-.el-table thead th{
+.el-table thead th {
   font-family: PingFang SC;
   font-size: 14px;
-  font-weight: normal!important;
-  color:#737980;
+  font-weight: normal !important;
+  color: #737980;
 }
 
-.el-table thead th .cell{
+.el-table thead th .cell {
   line-height: 2;
 }
 

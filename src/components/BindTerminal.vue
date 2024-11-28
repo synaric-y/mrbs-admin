@@ -1,19 +1,18 @@
 <template>
   <div class="mask">
     <div class="content">
-      <div class="title">绑定终端</div>
+      <div class="title">{{ $t('meet.bind_terminal') }}</div>
       <el-form ref="terminalForm" :model="terminalForm" :rules="terminal_rules">
-        <el-form-item label="终端" prop="device_id" required>
-          <el-select style="min-width: 120px" v-model="terminalForm.device_id" placeholder="终端">
+        <el-form-item :label="$t('meet.terminal')" prop="device_id" required>
+          <el-select style="min-width: 120px" v-model="terminalForm.device_id" :placeholder="$t('meet.terminal')">
             <el-option v-for="item in avaliableDevices" style="min-width: 120px;z-index: 99999" :key="item.device_id"
               :label="item.device_name" :value="item.device_id" />
           </el-select>
         </el-form-item>
       </el-form>
-
       <div class="dialog-footer">
-        <el-button type="primary" @click="sureBindTerminal">确定</el-button>
-        <el-button @click="$emit('close')">取消</el-button>
+        <el-button type="primary" @click="sureBindTerminal">{{ $t('base.confirm') }}</el-button>
+        <el-button @click="$emit('close')">{{ $t('base.cancle') }}</el-button>
       </div>
     </div>
   </div>
@@ -39,7 +38,7 @@ export default {
       avaliableDevices: [],
       rules: {
         device_id: [
-          { required: true, message: '请选择可用设备', trigger: 'blur' }
+          { required: true, message: this.$t('meet.select_device'), trigger: 'blur' }
         ],
       },
     }
@@ -102,7 +101,6 @@ export default {
     border-radius: 4px;
     box-shadow: 0 2px 6px 2px rgba(0, 0, 0, .1);
     padding: 20px 30px;
-
     .title {
       line-height: 2;
       font-size: 16px;
@@ -124,7 +122,6 @@ export default {
       gap: 10px;
       align-items: center;
       margin-bottom: 20px;
-
       .table-demonstration {
         font-size: 16px;
         color: #333;

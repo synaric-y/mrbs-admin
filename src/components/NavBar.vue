@@ -88,7 +88,6 @@ export default {
           document.removeEventListener('mousedown', handleDocumentClick);
         }
       }
-
       if (visible) {
         this.showPop = true;
         document.addEventListener('mousedown', handleDocumentClick);
@@ -102,7 +101,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-
 /*去除dropdown的黑框*/
 ::v-deep .el-tooltip__trigger:focus-visible {
   outline: unset
@@ -137,8 +135,6 @@ export default {
   }
 }
 
-
-
 .nav-left {
   font-size: 20px;
 }
@@ -150,7 +146,6 @@ export default {
 }
 
 .nav-right {
-  /* width: 400px; */
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -168,7 +163,6 @@ export default {
   border: 1px solid #ccc;
   cursor: pointer;
 }
-
 
 /*顶部导航按钮*/
 .nav-button {

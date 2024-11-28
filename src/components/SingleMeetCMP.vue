@@ -1,26 +1,26 @@
 <template>
   <div class="mask">
     <div class="content">
-      <div class="title">{{ mode == 1 ? '编辑会议' : '新增会议' }}</div>
+      <div class="title">{{ mode == 1 ? $t('meet.editMeet') : $t('meet.addMeet') }}</div>
       <el-form ref="meetForm" :model="meetForm" :rules="rules">
-        <el-form-item prop="area_name" label="区域" label-width="100px" required>
-          <el-select v-model="meetForm.area_name" placeholder="请选择区域" :disabled="mode == 1" @change="OnAreaChange">
+        <el-form-item prop="area_name" :label="$t('base.area')" label-width="100px" required>
+          <el-select v-model="meetForm.area_name" :placeholder="$t('meet.plSelectArea')" :disabled="mode == 1" @change="OnAreaChange">
             <el-option v-for="item in areas" :key="item.area_id" :label="item.area_name" :value="item.area_id" />
           </el-select>
         </el-form-item>
-        <el-form-item prop="room_name" label="会议室" label-width="100px" required>
-          <el-select v-model="meetForm.room_name" placeholder="请选择会议室" :disabled="mode == 1" @change="onRoomChange">
+        <el-form-item prop="room_name" :label="$t('base.room')" label-width="100px" required>
+          <el-select v-model="meetForm.room_name" :placeholder="$t('meet.plSelectRoom')" :disabled="mode == 1" @change="onRoomChange">
             <el-option v-for="item in roomOptions" :key="item.room_id" :label="item.title" :value="item.room_id" />
           </el-select>
         </el-form-item>
-        <el-form-item prop="name" label="会议室标题" label-width="100px" required>
+        <el-form-item prop="name" :label="$t('meet.room_title')" label-width="100px" required>
           <el-input v-model="meetForm.name" autocomplete="off" show-word-limit maxlength="20" />
         </el-form-item>
-        <el-form-item prop="start_date" label="开始时间" style="margin-left: 20px" required>
+        <el-form-item prop="start_date" :label="$t('meet.start_time')" style="margin-left: 20px" required>
           <el-col :span="11">
             <el-form-item prop="start_date">
               <el-date-picker v-model="meetForm.start_date" type="date" :disabled-date="disabledDate"
-                value-format="YYYY-MM-DD" aria-label="请选择" placeholder="请选择" style="width: 100%"
+                value-format="YYYY-MM-DD" :aria-label="$t('base.plzSelect')" :placeholder="$t('base.plzSelect')" style="width: 100%"
                 @change="choseDate(0, $event)" />
             </el-form-item>
           </el-col>
@@ -43,11 +43,11 @@
             </el-form-item>
           </el-col>
         </el-form-item>
-        <el-form-item prop="end_date" label="结束时间" style="margin-left: 20px" required>
+        <el-form-item prop="end_date" :label="$t('meet.end_time')" style="margin-left: 20px" required>
           <el-col :span="11">
             <el-form-item prop="end_date">
               <el-date-picker v-model="meetForm.end_date" type="date" :disabled-date="disabledDate"
-                value-format="YYYY-MM-DD" aria-label="请选择" placeholder="请选择" style="width: 100%" />
+                value-format="YYYY-MM-DD" :aria-label="$t('base.plzSelect')" :placeholder="$t('base.plzSelect')" style="width: 100%" />
             </el-form-item>
           </el-col>
           <el-col class="text-center" :span="1">
@@ -69,15 +69,15 @@
             </el-form-item>
           </el-col>
         </el-form-item>
-        <el-form-item label="备注" label-width="100px">
-          <el-input v-model="meetForm.description" maxlength="100" style="width: 410px;" placeholder="请输入"
+        <el-form-item :label="$t('meet.remark')" label-width="100px">
+          <el-input v-model="meetForm.description" maxlength="100" style="width: 410px;" :placeholder="$t('base.input')"
             show-word-limit type="textarea" />
         </el-form-item>
       </el-form>
       <div class="dialog-footer">
-        <el-button type="primary" @click="commitForm">提交</el-button>
-        <el-button style="margin-left: 50px" @click="deleteMeet" v-if="mode == 1">删除</el-button>
-        <el-button style="margin-left: 50px" @click="$emit('close')">关闭</el-button>
+        <el-button type="primary" @click="commitForm">{{ $t('base.submit') }}</el-button>
+        <el-button style="margin-left: 50px" @click="deleteMeet" v-if="mode == 1">{{ $t('base.delete') }}</el-button>
+        <el-button style="margin-left: 50px" @click="$emit('close')">{{ $t('base.close') }}</el-button>
       </div>
     </div>
   </div>
@@ -106,10 +106,10 @@ export default {
       sourceOptions: [
         {
           value: 'system',
-          label: '系统创建',
+          label: this.$t('userGroup.local'),
         }, {
           value: 'ad',
-          label: 'AD绑定',
+          label: this.$t('meet.adBind'),
         }],
       isLoading: true,
       selectRow: null,
@@ -167,22 +167,22 @@ export default {
       maxEndTime: '21:00',
       rules: {
         area_name: [
-          { required: true, message: '请选择区域', trigger: 'blur' }
+          { required: true, message: this.$t('meet.plSelectArea'), trigger: 'blur' }
         ],
         room_name: [
-          { required: true, message: '请选择房间', trigger: 'blur' }
+          { required: true, message: this.$t('meet.plSelectRoom'), trigger: 'blur' }
         ],
         name: [
-          { required: true, message: '请输入会议标题', trigger: 'blur' }
+          { required: true, message: this.$t('meet.plSelectMeetTitle'), trigger: 'blur' }
         ],
         start_date: [
-          { required: true, message: '请选择开始时间', trigger: 'blur' }
+          { required: true, message: this.$t('meet.plSelectStartTime'), trigger: 'blur' }
         ],
         start_hour: [
           { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' }
         ],
         end_date: [
-          { required: true, message: '请选择结束时间', trigger: 'blur' },
+          { required: true, message: this.$t('meet.plSelectEndTime'), trigger: 'blur' },
           {
             validator: (rule, value, callback) => {
               const startDate = this.meetForm.start_date;
@@ -192,7 +192,7 @@ export default {
               }
               const isSameDay = new Date(startDate).toDateString() === new Date(value).toDateString();
               if (!isSameDay) {
-                callback(new Error('结束时间必须与开始时间为同一天'));
+                callback(new Error(this.$t('meet.isSameDay')));
               } else {
                 callback();
               }
@@ -207,9 +207,9 @@ export default {
               const [hourPart, minutePart] = this.meetForm.start_hour.split(':')
               const [endHourPart,endMinutePart] = value.split(':')
               if ((Number(hourPart) > Number(endHourPart)) || (Number(hourPart) === Number(endHourPart) && Number(minutePart) >= Number(endMinutePart))) {
-                callback(new Error('开始时间段不能大于结束的时间段'))
+                callback(new Error(this.$t('meet.verify_end_time')))
               } else if(Number(hourPart) === Number(endHourPart) && Number(endMinutePart) <= (Number(minutePart) + 4)) {
-                callback(new Error('选择的时间间隔必须大于5分钟'))
+                callback(new Error(this.$t('meet.verify_time_interval')))
               } else {
                 callback();
               }
@@ -218,13 +218,13 @@ export default {
           }
         ],
         repeat_week: [
-          { required: true, message: '请选择会议重复时间', trigger: 'blur' }
+          { required: true, message: this.$t('meet.plSelectRepeatMeet'), trigger: 'blur' }
         ],
         check_list: [
-          { required: true, message: '请选择会议重复list时间', trigger: 'blur' }
+          { required: true, message: this.$t('meet.plzSelectRepeatList'), trigger: 'blur' }
         ],
         description: [
-          { required: false, message: '请输入会议信息', trigger: 'blur' }
+          { required: false, message: this.$t('meet.plzSelectMeet'), trigger: 'blur' }
         ],
       },
       currentTimeZone: 'Asia/Shanghai',
@@ -275,7 +275,6 @@ export default {
     },
 
     OnAreaChange(e) {
-      // this.select_area_id = e
       this.meetForm.area_id = e
       console.log('SingleMeetCMP OnAreaChange e', e)
       if (this.meetForm.area_id != -1) {
@@ -528,8 +527,6 @@ export default {
 }
 </script>
 
-
-
 <style lang="scss" scoped>
 .mask {
   position: fixed;
@@ -543,42 +540,35 @@ export default {
   justify-content: center;
   align-items: center;
   backdrop-filter: blur(4px);
-
   .content {
     width: 50%;
     background-color: #fff;
     border-radius: 4px;
     box-shadow: 0 2px 6px 2px rgba(0, 0, 0, .1);
     padding: 20px 30px;
-
     .title {
       line-height: 2;
       font-size: 16px;
       font-weight: 700;
       margin-bottom: 20px;
     }
-
     .demo-form-inline {
       margin-bottom: 10px;
     }
-
     .el-table {
       min-height: 300px;
     }
-
     .table-pagination-block {
       display: flex;
       justify-content: center;
       gap: 10px;
       align-items: center;
       margin-bottom: 20px;
-
       .table-demonstration {
         font-size: 16px;
         color: #333;
       }
     }
-
     .dialog-footer {
       display: flex;
       justify-content: center;

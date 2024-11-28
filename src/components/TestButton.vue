@@ -2,6 +2,8 @@
 // el-button二次封装，有三种状态：未测试，测试中，已测试
 
 import {computed} from "vue";
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 
 const props = defineProps({
   status:{
@@ -10,15 +12,15 @@ const props = defineProps({
   },
   untestedText:{
     type: String,
-    default: "测试",
+    default: t('base.untested'),
   },
   testingText:{
     type: String,
-    default: "测试中",
+    default: t('base.testing'),
   },
   testedText:{
     type: String,
-    default: "已测试",
+    default: t('base.tested'),
   }
 })
 defineEmits(['test'])

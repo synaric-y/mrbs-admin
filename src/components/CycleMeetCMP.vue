@@ -1,25 +1,25 @@
 <template>
   <div class="mask">
     <div class="content">
-      <div class="title">{{ mode == 1 ? '编辑循环会议' : '新增循环会议' }}</div>
+      <div class="title">{{ mode == 1 ? $t('meet.editCycleMeet') : $t('meet.addCycleMeet') }}</div>
       <el-form ref="meetForm" :model="meetForm" :rules="rules">
-        <el-form-item prop="area_name" label="区域" label-width="100px" required>
-          <el-select v-model="meetForm.area_name" placeholder="请选择区域"  :disabled="mode == 1"  @change="OnAreaChange">
+        <el-form-item prop="area_name" :label="$t('base.area')" label-width="100px" required>
+          <el-select v-model="meetForm.area_name" :placeholder="$t('meet.plSelectArea')"  :disabled="mode == 1"  @change="OnAreaChange">
             <el-option v-for="item in areas" :key="item.area_id" :label="item.area_name" :value="item.area_id" />
           </el-select>
         </el-form-item>
-        <el-form-item prop="room_name" label="会议室" label-width="100px" required>
-          <el-select v-model="meetForm.room_name" :disabled="mode == 1" placeholder="请选择会议室" @change="onRoomChange">
+        <el-form-item prop="room_name" :label="$t('base.room')" label-width="100px" required>
+          <el-select v-model="meetForm.room_name" :disabled="mode == 1" :placeholder="$t('meet.plSelectRoom')" @change="onRoomChange">
             <el-option v-for="item in roomOptions" :key="item.room_name" :label="item.title" :value="item.room_id" />
           </el-select>
         </el-form-item>
-        <el-form-item prop="name" label="会议室标题" label-width="100px" required>
+        <el-form-item prop="name" :label="$t('meet.room_title')" label-width="100px" required>
           <el-input v-model="meetForm.name" autocomplete="off" show-word-limit maxlength="20" />
         </el-form-item>
-        <el-form-item prop="start_date" label="开始时间" style="margin-left: 20px;width: 300px;" required>
+        <el-form-item prop="start_date" :label="$t('meet.start_time')" style="margin-left: 20px;width: 300px;" required>
           <el-form-item prop="start_date" style="width: 300px">
             <el-date-picker v-model="meetForm.start_date" type="date" :disabled-date="disabledDate"
-              value-format="YYYY-MM-DD" aria-label="请选择" placeholder="请选择" 
+              value-format="YYYY-MM-DD" :aria-label="$t('base.plzSelect')" :placeholder="$t('base.plzSelect')" 
               @change="choseDate(0, $event)" />
           </el-form-item>
         </el-form-item>
@@ -40,31 +40,31 @@
               :placeholder="$t('base.plzSelect')" @change="choseDialogHour(1, meetForm.end_hour, $event)"/>
           </el-form-item>
         </el-row>
-        <el-form-item label="重复间隔为" prop="rep_interval" style="margin-left: 7px" required>
+        <el-form-item :label="$t('meet.repeatInterval')" prop="rep_interval" style="margin-left: 7px" required>
           <el-input-number style="width: 100px;" v-model="meetForm.rep_interval" @change="onRepeatIntervalChange" :min="1" :max="4" />
           <span
-            style="margin-left: 20px;color: #4E5969;font-family: PingFang SC;font-size: 14px;font-weight: normal;">周后的：</span>
+            style="margin-left: 20px;color: #4E5969;font-family: PingFang SC;font-size: 14px;font-weight: normal;">{{ $t('meet.someWeek') }}</span>
         </el-form-item>
         <el-form-item style="margin-left: 40px" prop="rep_day" required>
           <el-checkbox-group v-model="meetForm.rep_day" size="small">
             <el-checkbox v-for="(item, index) in check_box_list" :label="item.label" :value="item.value" :key="index" />
           </el-checkbox-group>
         </el-form-item>
-        <el-form-item prop="rep_end_date" label="结束时间" style="margin-left: 20px;width: 300px;" required>
+        <el-form-item prop="rep_end_date" :label="$t('meet.end_time')" style="margin-left: 20px;width: 300px;" required>
           <el-form-item prop="rep_end_date" style="width: 300px">
             <el-date-picker v-model="meetForm.rep_end_date" type="date" :disabled-date="disabledDate"
-              value-format="YYYY-MM-DD" aria-label="请选择" placeholder="请选择" />
+              value-format="YYYY-MM-DD" :aria-label="$t('base.plzSelect')" :placeholder="$t('base.plzSelect')" />
           </el-form-item>
         </el-form-item>
-        <el-form-item prop="description" label="备注" label-width="100px">
-          <el-input v-model="meetForm.description" maxlength="100" style="width: 410px;" placeholder="请输入"
+        <el-form-item prop="description" :label="$t('meet.remark')" label-width="100px">
+          <el-input v-model="meetForm.description" maxlength="100" style="width: 410px;" :placeholder="$t('base.input')"
             show-word-limit type="textarea" />
         </el-form-item>
       </el-form>
       <div class="dialog-footer">
-        <el-button type="primary" @click="commitForm">提交</el-button>
-        <el-button style="margin-left: 50px" @click="deleteMeet" v-if="mode == 1">删除</el-button>
-        <el-button style="margin-left: 50px" @click="$emit('close')">关闭</el-button>
+        <el-button type="primary" @click="commitForm">{{ $t('base.submit') }}</el-button>
+        <el-button style="margin-left: 50px" @click="deleteMeet" v-if="mode == 1">{{ $t('base.delete') }}</el-button>
+        <el-button style="margin-left: 50px" @click="$emit('close')">{{ $t('base.close') }}</el-button>
       </div>
     </div>
   </div>
@@ -96,10 +96,10 @@ export default {
       sourceOptions: [
         {
           value: 'system',
-          label: '系统创建',
+          label: this.$t('userGroup.local'),
         }, {
           value: 'ad',
-          label: 'AD绑定',
+          label: this.$t('meet.adBind'),
         }],
       isLoading: true,
       selectRow: null,
@@ -108,13 +108,13 @@ export default {
       minStartTime: '06:00',
       maxEndTime: '21:00',
       check_box_list: [
-        { label: '周一', value: 1 },
-        { label: '周二', value: 2 },
-        { label: '周三', value: 3 },
-        { label: '周四', value: 4 },
-        { label: '周五', value: 5 },
-        { label: '周六', value: 6 },
-        { label: '周日', value: 0 },
+        { label: this.$t('meet.selectMonday'), value: 1 },
+        { label: this.$t('meet.selectTuesday'), value: 2 },
+        { label: this.$t('meet.selectWednesday'), value: 3 },
+        { label: this.$t('meet.selectThursday'), value: 4 },
+        { label: this.$t('meet.selectFriday'), value: 5 },
+        { label: this.$t('meet.selectSaturday'), value: 6 },
+        { label: this.$t('meet.selectSunday'), value: 0 },
       ],
       meetForm: {
         tmp_repeat_id: 0,
@@ -169,16 +169,16 @@ export default {
       },
       rules: {
         area_name: [
-          { required: true, message: '请选择区域', trigger: 'blur' }
+          { required: true, message: this.$t('meet.plSelectArea'), trigger: 'blur' }
         ],
         room_name: [
-          { required: true, message: '请选择房间', trigger: 'blur' }
+          { required: true, message: this.$t('meet.plSelectRoom'), trigger: 'blur' }
         ],
         name: [
-          { required: true, message: '请输入会议标题', trigger: 'blur' }
+          { required: true, message: this.$t('meet.plSelectMeetTitle'), trigger: 'blur' }
         ],
         start_date: [
-          { required: true, message: '请选择开始时间', trigger: 'blur' }
+          { required: true, message: this.$t('meet.plSelectStartTime'), trigger: 'blur' }
         ],
         start_hour: [
           // { required: true, message: this.$t('base.noDataHint'), trigger: 'blur' },
@@ -186,7 +186,7 @@ export default {
             validator: (rule, value, callback, source, options) => {
               const errors = [];
               if (!value) {
-                errors.push(new Error(this.$t('请选择会议开始时间')))
+                errors.push(new Error(this.$t('meet.plSelectStartTime')))
               }
               return errors;
             },
@@ -195,11 +195,11 @@ export default {
         rep_end_date: [
           {
             validator: (rule, value, callback) => {
-              const startDate = this.meetForm.start_date;
+              const startDate = this.meetForm.start_date
               if (!value) {
-                callback(new Error(this.$t('请选择结束时间')));
+                callback(new Error(this.$t('meet.plSelectEndTime')))
               } else if (value <= startDate) {
-                callback(new Error(this.$t('结束时间必须大于开始时间')));
+                callback(new Error(this.$t('meet.endGreaterStartTime')))
               } else {
                 callback();
               }
@@ -214,9 +214,9 @@ export default {
               const [hourPart, minutePart] = this.meetForm.start_hour.split(':')
               const [endHourPart,endMinutePart] = value.split(':')
               if (Number(hourPart) > Number(endHourPart)) {
-                callback(new Error('开始时间段不能大于结束的时间段'))
+                callback(new Error(this.$t('meet.verify_end_time')))
               } else if(Number(hourPart) === Number(endHourPart) && Number(minutePart) >= Number(endMinutePart)) {
-                callback(new Error('开始时间段不能大于结束的时间段'))
+                callback(new Error(this.$t('meet.verify_end_time')))
               } else {
                 callback()
               }
@@ -225,10 +225,10 @@ export default {
           }
         ],
         rep_interval: [
-          { required: true, message: '请选择会议重复时间', trigger: 'blur' }
+          { required: true, message: this.$t('meet.plSelectRepeatMeet'), trigger: 'blur' }
         ],
         rep_day: [
-          { required: true, message: '请选择会议重复的周期时间', trigger: 'blur' }
+          { required: true, message: this.$t('meet.plzSelectRepeatList'), trigger: 'blur' }
         ],
         description: [
           { required: false, message: this.$t('base.noDataHint'), trigger: 'blur' }
