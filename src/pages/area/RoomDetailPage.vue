@@ -5,8 +5,8 @@
         <el-form-item prop="room_name" :label="$t('room.formRoom.name')">
           <el-input v-model="form.room_name" show-word-limit maxlength="32" />
         </el-form-item>
-        <el-form-item prop="room_disabled" :label="$t('room.formRoom.status')">
-          <el-switch :active-value="0" :inactive-value="1" v-model="form.room_disabled" />
+        <el-form-item prop="disabled" :label="$t('room.formRoom.status')">
+          <el-switch :active-value="0" :inactive-value="1" v-model="form.disabled" />
         </el-form-item>
         <el-form-item prop="area" :label="$t('room.formRoom.area')" label-position="right">
           <el-select v-model="form.area" :empty-values="[null, undefined]" @change="onAreaChange">
@@ -61,7 +61,7 @@ export default {
         room_name: '',
         old_room_name: '',
         sort_key: '',
-        room_disabled: '',
+        disabled: '',
         description: '',
         capacity: '',
         room_admin_email: '',
@@ -138,7 +138,7 @@ export default {
       this.form["room_name"] = data["room_name"]
       this.form["old_room_name"] = data["room_name"]
       this.form["sort_key"] = data["sort_key"]
-      this.form["room_disabled"] = Number(data["disabled"])
+      this.form["disabled"] = Number(data["disabled"])
       this.form["description"] = data["description"]
       this.form["capacity"] = Number(data["capacity"])
       this.form["room_admin_email"] = data["room_admin_email"] || ''
