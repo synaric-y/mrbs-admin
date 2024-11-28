@@ -1,57 +1,44 @@
 <script setup>
-// el-button二次封装，有三种状态：未测试，测试中，已测试
+import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 
-import {computed} from "vue";
-import { useI18n } from 'vue-i18n';
 const { t } = useI18n();
 
 const props = defineProps({
-  status:{
+  status: {
     type: String,
     default: "untested",
   },
-  untestedText:{
-    type: String,
-    default: t('base.untested'),
-  },
-  testingText:{
-    type: String,
-    default: t('base.testing'),
-  },
-  testedText:{
-    type: String,
-    default: t('base.tested'),
-  }
-})
-defineEmits(['test'])
+  untestedText: String,
+  testingText: String,
+  testedText: String,
+});
 
-const UNTESTED = 'untested'
-const TESTING = 'testing'
-const TESTED = 'tested'
+const UNTESTED = "untested";
+const TESTING = "testing";
+const TESTED = "tested";
 
 const btnText = computed(() => {
-  switch (props.status){
-    case UNTESTED: return props.untestedText
-    case TESTING: return props.testingText
-    case TESTED: return props.testedText
+  switch (props.status) {
+    case UNTESTED:
+      return props.untestedText || t("base.untested");
+    case TESTING:
+      return props.testingText || t("base.testing");
+    case TESTED:
+      return props.testedText || t("base.tested");
   }
-  return ''
-})
-
+  return "";
+});
 </script>
 
 <template>
   <el-button
-      :disabled="status!==UNTESTED"
-      :loading="status===TESTING"
-      type="primary"
-      style="margin-left: 10px"
-      @click="$emit('test')"
+    :disabled="status !== 'untested'"
+    :loading="status === 'testing'"
+    type="primary"
+    style="margin-left: 10px"
+    @click="$emit('test')"
   >
-    {{btnText}}
+    {{ btnText }}
   </el-button>
 </template>
-
-<style scoped lang="scss">
-
-</style>

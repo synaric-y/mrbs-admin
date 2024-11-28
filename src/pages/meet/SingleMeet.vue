@@ -83,7 +83,7 @@
                             @click="editMeet(event)"
                             :style="{top: event.top + 'px', left: (itemWidth + 21) * (indexday * rooms.length + roomIndex) + 'px', width: itemWidth + 'px', height: event.height + 'px' }">
                             <div class="event-center">
-                              <template v-if="(event.end_time - event.start_time) / 60 === 15">
+                              <template v-if="(event.end_time - event.start_time) / 60 <= 15">
                                 <div class="event-title" :style="{ margin: 1 + 'px' }">{{ event.entry_name
                                   }}</div>
                                 <div class="event-person" :style="{ margin: 1 + 'px' }">{{ event.duration }}-({{

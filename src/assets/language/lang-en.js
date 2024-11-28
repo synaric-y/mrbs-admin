@@ -68,7 +68,6 @@ export const langEn = {
         untested: 'Not Tested',
         testing: 'Testing',
         tested: 'Tested',
-
     },
     guide: {
         basics_title: 'Meeting System Configuration Guide',
