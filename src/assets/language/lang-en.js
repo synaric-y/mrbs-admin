@@ -405,6 +405,8 @@ export const langEn = {
         editUserGroup: 'Edit User Group',
         lastSyncTime: 'Last sync time：',
         system_group: 'System Grouping',
+        startSyncBack: 'Start Sync Backup!',
+        operate: 'Operation',
         tableUserGroup: {
             name: 'Name',
             syncFromAD: 'Sync from Active Directory',

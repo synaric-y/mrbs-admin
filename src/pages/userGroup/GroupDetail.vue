@@ -4,22 +4,16 @@
       <div class="title">{{ $t('userGroup.viewMember') }}</div>
       <el-form :inline="true" class="demo-form-inline">
         <el-form-item><el-input v-model="keyword" :placeholder="$t('user.plzEnterUsernameHint')" /></el-form-item>
-        <!--        <el-form-item><el-select style="min-width: 120px" v-model="sourceVal" placeholder="来源">-->
-        <!--          <el-option v-for="item in sourceOptions" style="min-width: 120px;z-index: 99999" :key="item.value" :label="item.label"-->
-        <!--                     :value="item.value" />-->
-        <!--        </el-select></el-form-item>-->
         <el-form-item>
           <el-button type="primary" :color="'#591bb7'" :dark="true" :icon="Search"
             @click="searchGroupMember">{{ $t('base.search') }}</el-button>
         </el-form-item>
       </el-form>
-
       <div class="group-member-wrapper">
         <el-table :data="groupMembers" max-height="250"
           style="--el-table-tr-bg-color:#fff!important;width: 100%;height: auto; margin-bottom: 20px;" row-key="id"
           default-expand-all>
           <template v-if="isEdit">
-            <!-- <el-table-column prop="id" :label="$t('user.tableUser.id')" label-width="100px" /> -->
             <el-table-column prop="number" :label="$t('user.tableUser.id')" width="120">
               <template #default="scope">
                 {{ scope.$index + 1 }}
@@ -36,7 +30,6 @@
             </el-table-column>
           </template>
           <template v-else>
-            <!-- <el-table-column prop="id" :label="$t('user.tableUser.id')" label-width="100px" /> -->
             <el-table-column prop="number" :label="$t('user.tableUser.id')" width="120">
               <template #default="scope">
                 {{ scope.$index + 1 }}
@@ -62,14 +55,12 @@
   </div>
 </template>
 
-
 <script>
 import { Api } from "@/network/api.js";
 import { PageMixin } from "@/pages/PageMixin.js";
 import { STORAGE } from "@/const.js";
 import { ElMessage } from "element-plus";
 import { Search } from '@element-plus/icons-vue'
-
 export default {
   computed: {
     Search() {
@@ -104,7 +95,7 @@ export default {
     handleCurrentChange(num) {
       console.log('UserList handleCurrentChange num:', num)
       this.pageNumber = num
-      this.getGroupMember() // 查询新页
+      this.getGroupMember()
     },
 
     searchGroupMember() {
@@ -182,7 +173,6 @@ export default {
   },
   created() {
     console.log('created:', this.groupId)
-    // this.getGroupMember()
   },
 
   mounted() {

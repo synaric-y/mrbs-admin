@@ -10,7 +10,6 @@
 </template>
 
 
-
 <script>
 import { Api } from "@/network/api.js";
 import { PageMixin } from "@/pages/PageMixin.js";

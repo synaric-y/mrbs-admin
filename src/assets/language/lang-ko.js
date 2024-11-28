@@ -406,6 +406,8 @@ export const langKo = {
         editUserGroup: '사용자 그룹 편집',
         lastSyncTime: '마지막 동기화 시간：',
         system_group: '시스템 그룹화',
+        startSyncBack: '동기화 백업 시작!',
+        operate: '작업',
         tableUserGroup: {
             name: '이름',
             syncFromAD: 'Active Directory 와 동기화',

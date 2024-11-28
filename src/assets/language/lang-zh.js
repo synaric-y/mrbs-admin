@@ -409,6 +409,8 @@ export const langZh = {
         editUserGroup: '编辑用户组',
         lastSyncTime: `上次同步时间：{time}`,
         system_group: '系统分组',
+        startSyncBack: '开始同步备份！',
+        operate: '操作',
         tableUserGroup: {
             name: '名称',
             syncFromAD: '同步AD用户组',

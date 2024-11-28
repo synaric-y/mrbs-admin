@@ -32,7 +32,7 @@
                 </div>
               </template>
             </el-table-column>
-            <el-table-column prop="name" label="操作" label-width="400px">
+            <el-table-column prop="name" :label="$t('userGroup.operate')" label-width="400px">
               <template #default="scope">
                 <div v-if="scope.row.source === 'system'">
                   <template v-if="scope.row.children">
@@ -215,7 +215,7 @@ export default {
       Api.syncAD().then(({ data, code, msg }) => {
         if (code == 0) {
           ElMessage.success({
-            message: '开始同步备份！'
+            message: this.$t('userGroup.startSyncBack')
           })
         } else {
           ElMessage.error(msg)
@@ -306,7 +306,6 @@ export default {
     handleTreeSelect(id) {
       console.log('UserGroup handleTreeSelect', id)
       const selectedItem = this.findNodeById(this.treeData, id);
-      console.log('选中的 item 数据:', selectedItem);
       this.selectedItem = selectedItem
     },
 
@@ -398,7 +397,7 @@ export default {
       Api.addGroup(params).then(({ data, code, msg }) => {
         if (code == 0) {
           this.dialogAddGroup = false
-          ElMessage.success('新增成功')
+          ElMessage.success(msg)
           this.getTableData()
         } else {
           ElMessage.error(msg)
@@ -416,7 +415,7 @@ export default {
       console.log('UserGroup updateUserStatus params', params)
       Api.editGroup(params).then(({ data, code, msg }) => {
         if (code == 0) {
-          ElMessage.success('编辑成功')
+          ElMessage.success(msg)
           this.dialogAddGroup = false
           this.getTableData()
         } else {
@@ -429,7 +428,7 @@ export default {
       console.log('UserList editUser params', params)
       Api.deleteGroup(params).then(({ data, code, msg }) => {
         if (code == 0) {
-          ElMessage.success('删除成功')
+          ElMessage.success(msg)
           this.getTableData()
         } else {
           ElMessage.error(msg)
@@ -598,8 +597,6 @@ export default {
     },
 
     getRowKeys(row) {
-      // return 'id'
-      // console.log('UserGroup getRowKeys row.id',row.id)
       return row.id;
     },
   },
@@ -615,7 +612,6 @@ export default {
   display: flex;
   align-items: center;
   flex-direction: column;
-  // min-height: calc(100vh - 95px);
   height: auto;
   background-color: white;
   padding: 0;
@@ -626,14 +622,12 @@ export default {
 .sub-page-content-main {
   width: 100%;
   height: auto;
-  // padding: 20px;
   box-sizing: border-box;
   margin: 0;
   position: relative;
   font-size: 14px;
   display: flex;
   flex-direction: column;
-  // gap: 30px;
   background-color: #fff;
 }
 
@@ -663,7 +657,6 @@ export default {
   align-items: center;
   margin-left: 20px;
   padding: 0 5px;
-  // margin-bottom: 20px;
 }
 
 .async-last-time {
@@ -678,7 +671,6 @@ export default {
 
 .el-table {
   --el-table-header-bg-color: #F9F9F9;
-  // --el-table-border: #E1E1E1;
   --el-table-border: 1px solid #E1E1E1;
   ;
 }
@@ -702,7 +694,6 @@ export default {
   flex-direction: row;
   position: relative;
   background-color: rebeccapurple;
-  // justify-content: start;
 }
 
 .group-more {
@@ -783,7 +774,6 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  // background-color: rebeccapurple;
 }
 
 .table-demonstration {
