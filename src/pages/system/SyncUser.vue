@@ -73,6 +73,7 @@ export default {
         password: '',
         autoSync: true,
         default_password_hash: '',
+        temp_default_password: '',
       },
       rules: {
         hosts: [{ required: true, message: this.$t('guide.form_empty_url'), trigger: 'blur' }],
@@ -101,7 +102,6 @@ export default {
     }).then(({ code, data, msg }) => {
       if (code == 0) {
         console.log(data)
-
         that.form = {
           ...that.form,
           hosts: data.AD_server,
@@ -109,7 +109,7 @@ export default {
           base_dn: data.AD_base_dn,
           username: data.AD_username,
           password: data.AD_password,
-          // default_password_hash: data.default_password_hash,
+          temp_default_password: data.default_password_hash,
         }
       } else {
         ElMessage.error({
@@ -191,7 +191,7 @@ export default {
               "AD_base_dn": this.form.base_dn,
               "AD_username": this.form.username,
               "AD_password": this.form.password,
-              "default_password_hash": this.form.default_password_hash,
+              "default_password_hash": this.form.default_password_hash||this.form.temp_default_password,
             }
           ).then(res => {
             console.log(res)
