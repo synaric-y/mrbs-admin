@@ -304,7 +304,7 @@ export const langEn = {
         select_device: 'Please select terminal device',
         plSelectArea: 'Please select an area',
         plSelectRoom: 'Please select a meeting room',
-        room_title: 'Meeting Room Title',
+        room_title: 'Title',
         start_time: 'Start Time',
         end_time: 'End Time',
         remark: 'Remark',
