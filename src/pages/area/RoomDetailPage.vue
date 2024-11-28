@@ -7,14 +7,14 @@
           <div class="switches">
             <div class="switch-row">
               <div class="label">{{ $t('system.show_booker') }}</div>
-              <el-switch active-value="1" inactive-value="0" v-model="form.show_book" style="--el-switch-on-color: #591bb7;" />
+              <el-switch :active-value="1" :inactive-value="0" v-model="form.show_book" style="--el-switch-on-color: #591bb7;" />
               <el-text v-if="form.show_book" class="mx-1" type="primary">{{ $t('system.show_booker_tip')
                 }}</el-text>
               <el-text v-else class="mx-1">{{ $t('system.show_booker_text') }}</el-text>
             </div>
             <div class="switch-row">
               <div class="label">{{ $t('system.show_title') }}</div>
-              <el-switch active-value="1" inactive-value="0" v-model="form.show_meeting_name" style="--el-switch-on-color: #591bb7;" />
+              <el-switch :active-value="1" :inactive-value="0" v-model="form.show_meeting_name" style="--el-switch-on-color: #591bb7;" />
               <el-text v-if="form.show_meeting_name" class="mx-1" type="primary">{{ $t('system.show_title_tip')
                 }}</el-text>
               <el-text v-else class="mx-1">{{ $t('system.show_title_text') }}</el-text>
@@ -187,12 +187,6 @@ export default {
         if (!req["new_area"]) {
           req["new_area"] = req["area"]
         }
-        // if (req["show_book"]) {
-        //   req["show_book"] = 1
-        // }
-        // if (req["show_meeting_name"]) {
-        //   req["show_meeting_name"] = 1
-        // }
         req["area"] = Number(req["area"])
         Api.editRoom(req).then(({ data, code, msg }) => {
           if (code == 0) {
@@ -232,10 +226,9 @@ export default {
       this.form["exchange_username"] = data["exchange_username"]
       this.form["exchange_password"] = data["exchange_password"]
       this.form["wxwork_mr_id"] = data["wxwork_mr_id"]
-      this.form["show_book"] = Number(data["show_book"])
-      this.form["show_meeting_name"] = Number(data["show_meeting_name"])
-      this.form["temporary_meeting"] = Number(data["temporary_meeting"])
-      console.log('getData data:',data)
+      this.form.show_book = Number(data["show_book"])
+      this.form.show_meeting_name = Number(data["show_meeting_name"])
+      this.form.temporary_meeting = Number(data["temporary_meeting"])
       let areaRep = await Api.getArea({ id: this.form.area })
       this.area = areaRep.data[0]
     },
