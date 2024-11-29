@@ -556,6 +556,8 @@ export default defineComponent({
       this.cycleAddParams.resolution = room.resolution
       this.cycleAddParams.area_id = room.area_id
       this.cycleAddParams.area_name = room.area_name
+      this.addParams.area_min_time = room.start_time
+      this.addParams.area_max_time = room.end_time
       console.log('CycleMeet toMeet day.date--time',day,time,room)
       // 计算当前会议室的会议室时间
       let hover_start_time = this.getDateTimeStamp(day.date,time)
@@ -629,6 +631,8 @@ export default defineComponent({
         return
       }
       this.form_mode = 1
+      this.cycleAddParams.area_min_time = event.area_min_time
+      this.cycleAddParams.area_max_time = event.area_max_time
       this.entry_id = event.entry_id
       if (event.repeat_id) {
         this.repeat_id = event.repeat_id
@@ -790,6 +794,8 @@ export default defineComponent({
                 room_id: roomId,
                 room_name: roomName,
                 disabled: room.disabled,
+                area_min_time: area.start_time,
+                area_max_time: area.end_time,
                 date: week_day,
                 startTime: entry.duration.split('-')[0].trim(),
                 endTime: entry.duration.split('-')[1].trim(),
