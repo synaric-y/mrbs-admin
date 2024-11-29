@@ -87,7 +87,7 @@
                                 <div class="event-title" :style="{ margin: 1 + 'px' }">{{ event.entry_name
                                   }}</div>
                                 <template v-if="event.src">
-                                  <img style="position: absolute;top:1px;right: 1px;width: 20px;height: 20px;"
+                                  <img style="position: absolute;top:1px;right: 1px;width: 10px;height: 10px;"
                                     :src="event.src" alt="">
                                 </template>
                               </template>
@@ -393,7 +393,7 @@ export default defineComponent({
           temp_areas.splice(0, 0, firstArea)
         }
         this.page_cache_areas = temp_areas
-        this.getCurrentAreaRooms(this.area_id)
+        this.getCurrentAreaRooms(this.currenArea)
       })
     },
 

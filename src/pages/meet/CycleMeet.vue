@@ -12,7 +12,7 @@
               <span class="now-time-span">{{ nowTime }}</span>
             </div>
             <div class="all-area">
-              <el-select v-model="currenAreaName" :placeholder="$t('base.allAreas')" @change="choseArea">
+              <el-select v-model="currenCycleAreaName" :placeholder="$t('base.allAreas')" @change="choseArea">
                 <el-option v-for="(area, index) in page_cache_areas" :label="area.area_name" :value="area.area_id"
                   :key="index">
                 </el-option>
@@ -25,8 +25,8 @@
                 item.name }}</el-button>
             </div>
             <div class="date-picker">
-              <el-date-picker v-model="baseTime" type="daterange" value-format="YYYY-MM-DD"
-                :range-separator="$t('base.to')" :start-placeholder="startTime" :end-placeholder="endTime"
+              <el-date-picker v-model="cycleBaseTime" type="daterange" value-format="YYYY-MM-DD"
+                :range-separator="$t('base.to')" :start-placeholder="cycleStartTime" :end-placeholder="cycleEndTime"
                 @change="choseDate" />
             </div>
           </div>
@@ -37,12 +37,12 @@
             <el-scrollbar ref="calendarScroll" class="calendar-scrollbar" :style="{ width: scrollbarWidth }"
               @scroll="syncScroll('calendarScroll')">
               <div class="day-header-wrapper">
-                <div v-for="(day, indexday) in days" class="day-header" :key="indexday"
+                <div v-for="(day, indexday) in cycleDays" class="day-header" :key="indexday"
                   :style="{ backgroundColor: day.color }">
                   {{ day.date }}
                   <div class="room-header-wrapper">
                     <div class="room-header" :style="{ width: itemWidth + 20 + 'px' }"
-                      v-for="(room, roomIndex) in rooms" :key="roomIndex">
+                      v-for="(room, roomIndex) in cycleRooms" :key="roomIndex">
                       {{ room.room_name }}
                     </div>
                   </div>
@@ -63,31 +63,31 @@
               class="content-meet-scrollbar" @scroll="syncScroll('contentScroll')" always
               :style="{ height: 'calc(100vh - 150px - 25px)' }">
               <div class="calendar-header">
-                <template v-for="(day, indexday) in days" :key="indexday" :style="{ backgroundColor: day.color }">
-                  <div v-for="(room, roomIndex) in rooms" class="room-border-wrapper" :key="roomIndex"
+                <template v-for="(day, indexday) in cycleDays" :key="indexday" :style="{ backgroundColor: day.color }">
+                  <div v-for="(room, roomIndex) in cycleRooms" class="room-border-wrapper" :key="roomIndex"
                     :style="{ height: timeSlots.length * 40 + 30 + 'px', width: itemWidth + 20 + 'px', left: roomIndex * (itemWidth + 21 - 0.5 * indexday) + 'px', top: 0,borderLeft: '1px solid #9A9A9A' }">
                     <template v-for="(time, timeIndex) in localTimeSlots">
                       <div v-if="timeIndex != localTimeSlots.length - 1"
                         :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div' : 'empty-meet-div']"
-                        :style="{ height: minItemHeight + 'px', width: itemWidth + 'px', left: (indexday * rooms.length + roomIndex) * (itemWidth + 21) + 'px', top: ((timeIndex) * minItemHeight + 30) + 'px' }"
+                        :style="{ height: minItemHeight + 'px', width: itemWidth + 'px', left: (indexday * cycleRooms.length + roomIndex) * (itemWidth + 21) + 'px', top: ((timeIndex) * minItemHeight + 30) + 'px' }"
                         @click="toMeet(time, room, day)">
                         <text class="empty-meet-duration">{{ time }}</text>
                         <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text>
                       </div>
                     </template>
-                    <template v-for="(event, indexeve) in events">
+                    <template v-for="(event, indexeve) in cycleEvents">
                       <template v-if="day.date === event.date && room.room_id === event.room_id">
                         <template v-if="event.status == 0 || event.status == 1 || event.status == 2">
                           <div :key="indexeve"
                             :class="[event.status == 0 ? 'room-meet-event' : event.status == 1 ? 'room-meet-in-event' : 'room-meet-timeout-event']"
                             @click="editMeet(event)"
-                            :style="{top: event.top + 'px', left: (itemWidth + 21) * (indexday * rooms.length + roomIndex) + 'px', width: itemWidth + 'px', height: event.height + 'px' }">
+                            :style="{top: event.top + 'px', left: (itemWidth + 21) * (indexday * cycleRooms.length + roomIndex) + 'px', width: itemWidth + 'px', height: event.height + 'px' }">
                             <div class="event-center">
                               <template v-if="(event.end_time - event.start_time) / 60 < 15">
                                 <div class="event-title" :style="{ margin: 1 + 'px' }">{{ event.entry_name
                                   }}</div>
                                 <template v-if="event.src">
-                                  <img style="position: absolute;top:1px;right: 1px;width: 20px;height: 20px;"
+                                  <img style="position: absolute;top:1px;right: 1px;width: 10px;height: 10px;"
                                     :src="event.src" alt="">
                                 </template>
                               </template>
@@ -121,9 +121,9 @@
             </el-scrollbar>
           </div>
         </div>
-        <SingleMeetCMP v-if="dialogMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas"
+        <SingleMeetCMP v-if="dialogMeetForm" :mode="form_mode" :add_params="cycleAddParams" :areas="page_cache_areas"
           :entry_id="entry_id" @close="closeDialogMeetForm" />
-        <CycleMeetCMP v-if="dialogCycleMeetForm" :mode="form_mode" :add_params="addParams" :areas="page_cache_areas"
+        <CycleMeetCMP v-if="dialogCycleMeetForm" :mode="form_mode" :add_params="cycleAddParams" :areas="page_cache_areas"
           :repeat_id="repeat_id" :entry_id="entry_id" @close="closeDialogCycleMeetForm" />
       </div>
     </el-main>
@@ -153,17 +153,17 @@ export default defineComponent({
   mixins: [PageMixin],
   data() {
     return {
-      currenArea: '',
-      currenAreaName: this.$t('base.all'),
+      currenCycleArea: '',
+      currenCycleAreaName: this.$t('base.all'),
       dayRrangeVal: SELECT_DAY.THREE,
-      baseTime: '',
-      startTime: this.$t('base.startDate'),
-      endTime: this.$t('base.endDate'),
+      cycleBaseTime: '',
+      cycleStartTime: this.$t('base.startDate'),
+      cycleEndTime: this.$t('base.endDate'),
       currentTimeZone: 'Asia/Shanghai',
       screenSize: {},
       itemWidth: 228,
-      startStamp: 0,
-      endStamp: 0,
+      cycleStartStamp: 0,
+      cycleEndStamp: 0,
       nowTime: '',
       min_time: '',
       max_time: '',
@@ -174,7 +174,7 @@ export default defineComponent({
       interval: null,
       currenTimestamp: 0,
       showLoading: true,
-      filterDateStore: null,
+      filterCycleDateStore: null,
       minDuration: 1800,
       minItemHeight: 40,
       groupButtons: [
@@ -191,9 +191,9 @@ export default defineComponent({
           day: 7
         },
       ],
-      days: [],
-      rooms: ["A", "B", "C", "D"],
-      events: [],
+      cycleDays: [],
+      cycleRooms: ["A", "B", "C", "D"],
+      cycleEvents: [],
       timeSlots: [
         "08:00AM", "ㆍ",
         "09:00AM", "ㆍ", "10:00AM", "ㆍ", "11:00AM", "ㆍ", "12:00PM", "ㆍ",
@@ -212,7 +212,7 @@ export default defineComponent({
       currentHourMinute: '',
       currentTimeZone: 'Asia/Shanghai',
       page_cache_areas: [],
-      addParams:{
+      cycleAddParams:{
         area_id: '',
         area_name: '',
         room_id: '',
@@ -230,7 +230,7 @@ export default defineComponent({
 
   computed: {
     scrollbarWidth() {
-      return this.rooms.length * this.days.length * (this.itemWidth + 21) + 'px'
+      return this.cycleRooms.length * this.cycleDays.length * (this.itemWidth + 21) + 'px'
     },
   },
 
@@ -261,22 +261,23 @@ export default defineComponent({
     },
 
     getSyncInterval() {
-      this.filterDateStore = FilterDateStore()
-      const selectDays = this.filterDateStore.cycleDays
-      const selectStartDate = this.filterDateStore.cycleStartDate
-      const selectEndDate = this.filterDateStore.cycleEndDate
-      const selectArea = this.filterDateStore.cycleArea
-      const selectAreaName = this.filterDateStore.cycleAreaName
+      this.filterCycleDateStore = FilterDateStore()
+      const selectDays = this.filterCycleDateStore.cycleDays
+      const selectStartDate = this.filterCycleDateStore.cycleStartDate
+      const selectEndDate = this.filterCycleDateStore.cycleEndDate
+      const selectArea = this.filterCycleDateStore.cycleArea
+      const selectAreaName = this.filterCycleDateStore.cycleAreaName
+      console.log('cycleMeet getSyncInterval selectArea-selectAreaName',selectArea,selectAreaName)
       this.dayRrangeVal = selectDays
       if (selectStartDate && selectEndDate) {
-        this.startTime = selectStartDate
-        this.endTime = selectEndDate
+        this.cycleStartTime = selectStartDate
+        this.cycleEndTime = selectEndDate
         const days = this.getDaysBetween(selectStartDate, selectEndDate)
         const tempdays = this.formatDays(days)
-        this.days = tempdays
+        this.cycleDays = tempdays
       } else {
-        this.startStamp = Common.getThreeDaysTimestamps().start
-        this.endStamp = Common.getThreeDaysTimestamps().end
+        this.cycleStartStamp = Common.getThreeDaysTimestamps().start
+        this.cycleEndStamp = Common.getThreeDaysTimestamps().end
         if (selectDays) {
           this.dayRrangeVal = selectDays
           this.dayRrange(selectDays,true)
@@ -285,10 +286,10 @@ export default defineComponent({
         }
       }
       if (selectArea && selectAreaName) {
-        this.currenAreaName = selectAreaName
-        this.currenArea = selectArea
+        this.currenCycleAreaName = selectAreaName
+        this.currenCycleArea = selectArea
       }
-      this.getCurrentAreaRooms(this.currenArea,true)
+      this.getCurrentAreaRooms(this.currenCycleArea,true)
       this.getMeetRooms()
     },
 
@@ -404,7 +405,7 @@ export default defineComponent({
           temp_areas.splice(0, 0, firstArea)
         }
         this.page_cache_areas = temp_areas
-        this.getCurrentAreaRooms(this.area_id)
+        this.getCurrentAreaRooms(this.currenCycleArea)
       })
     },
 
@@ -415,7 +416,7 @@ export default defineComponent({
       }
       console.log('CycleMeet getCurrentAreaRooms area_id', area_id)
       if (area_id == 0 || !area_id) {
-        this.rooms = this.getAllRoom(this.page_cache_areas)
+        this.cycleRooms = this.getAllRoom(this.page_cache_areas)
         this.getMeetRooms()
         return
       }
@@ -427,8 +428,8 @@ export default defineComponent({
       }
       const tmp_areas = []
       tmp_areas.push(area_rooms)
-      this.rooms = this.getAllRoom(tmp_areas[0])
-      console.log('CycleMeet getCurrentAreaRooms this.rooms', this.rooms)
+      this.cycleRooms = this.getAllRoom(tmp_areas[0])
+      console.log('CycleMeet getCurrentAreaRooms this.rooms', this.cycleRooms)
       return
     },
 
@@ -448,15 +449,15 @@ export default defineComponent({
         days = this.getThreeDays(this.currentTimeZone)
         tempTime = Common.getThreeDaysTimestamps(this.currentTimeZone)
       }
-      this.filterDateStore.setCycleDays(day)
-      this.startStamp = tempTime.start
-      this.endStamp = tempTime.end
-      this.startTime = moment.tz(tempTime.start * 1000, this.currentTimeZone).format('YYYY-MM-DD')
-      this.endTime = moment.tz(tempTime.end * 1000, this.currentTimeZone).format('YYYY-MM-DD')
-      this.filterDateStore.setCycleStartDate(this.startTime)
-      this.filterDateStore.setCycleEndDate(this.endTime)
+      this.filterCycleDateStore.setCycleDays(day)
+      this.cycleStartStamp = tempTime.start
+      this.cycleEndStamp = tempTime.end
+      this.cycleStartTime = moment.tz(tempTime.start * 1000, this.currentTimeZone).format('YYYY-MM-DD')
+      this.cycleEndTime = moment.tz(tempTime.end * 1000, this.currentTimeZone).format('YYYY-MM-DD')
+      this.filterCycleDateStore.setCycleStartDate(this.cycleStartTime)
+      this.filterCycleDateStore.setCycleEndDate(this.cycleEndTime)
       this.dayRrangeVal = day
-      this.days = this.formatDays(days)
+      this.cycleDays = this.formatDays(days)
       if (!timedRefresh) {
         this.resetScroll()
       }
@@ -544,12 +545,12 @@ export default defineComponent({
 
     toMeet(time, room, day) {
       this.form_mode = 0
-      this.addParams.room_id = room.room_id
+      this.cycleAddParams.room_id = room.room_id
       const [tmp_area_name, tmp_room_name] = room.room_name.split(" ")
-      this.addParams.room_name = tmp_room_name
-      this.addParams.resolution = room.resolution
-      this.addParams.area_id = room.area_id
-      this.addParams.area_name = room.area_name
+      this.cycleAddParams.room_name = tmp_room_name
+      this.cycleAddParams.resolution = room.resolution
+      this.cycleAddParams.area_id = room.area_id
+      this.cycleAddParams.area_name = room.area_name
       console.log('CycleMeet toMeet day.date--time',day,time,room)
       // 计算当前会议室的会议室时间
       let hover_start_time = this.getDateTimeStamp(day.date,time)
@@ -559,8 +560,8 @@ export default defineComponent({
       let min_end_gap = MRBS_MAX
       let min_start_gap = MRBS_MAX
       console.log('CycleMeet toMeet hover_start_time - hover_end_time',hover_start_time,hover_end_time)
-      for (let index = 0; index < this.events.length; index++) {
-        const entry = this.events[index]
+      for (let index = 0; index < this.cycleEvents.length; index++) {
+        const entry = this.cycleEvents[index]
         if (entry.room_id === room.room_id && day.date === entry.date) {
           console.log('CycleMeet toMeet entry.start_time -- entry.end_time',entry)
           const start_gap = hover_start_time - entry.end_time
@@ -597,11 +598,11 @@ export default defineComponent({
       if ((hover_end_time - hover_start_time) < 900) {
         return
       }
-      this.addParams.start_time = hover_start_time
-      this.addParams.end_time = hover_end_time
+      this.cycleAddParams.start_time = hover_start_time
+      this.cycleAddParams.end_time = hover_end_time
       // return
-      this.addParams.timeStamp = this.getDateTimeStamp(day.date,time)
-      if (this.addParams.timeStamp < this.currenTimestamp) {
+      this.cycleAddParams.timeStamp = this.getDateTimeStamp(day.date,time)
+      if (this.cycleAddParams.timeStamp < this.currenTimestamp) {
         return
       }
       if (room.disabled == ROOM_STATUS.DISABLED) {
@@ -653,25 +654,25 @@ export default defineComponent({
     },
 
     choseArea(selected_area) {
-      this.currenArea = selected_area
+      this.currenCycleArea = selected_area
       const area = this.page_cache_areas.filter(area => area.area_id == selected_area)
       const areaName = area[0].area_name
-      this.currenAreaName = areaName
-      this.filterDateStore.setCycleArea(selected_area)
-      this.filterDateStore.setCycleAreaName(areaName)
-      this.getCurrentAreaRooms(this.currenArea)
+      this.currenCycleAreaName = areaName
+      this.filterCycleDateStore.setCycleArea(selected_area)
+      this.filterCycleDateStore.setCycleAreaName(areaName)
+      this.getCurrentAreaRooms(this.currenCycleArea)
       this.resetScroll()
       this.getMeetRooms()
     },
 
     getAreaRooms() {
-      console.log('CycleMeet getAreaRooms this.currenArea', this.currenArea)
-      if (this.currenArea == 'All' || this.currenArea == '') {
+      console.log('CycleMeet getAreaRooms this.currenCycleArea', this.currenCycleArea)
+      if (this.currenCycleArea == this.$t('base.all') || this.currenCycleArea == '') {
         const temp_areas = this.page_cache_areas.flatMap(area => area.rooms)
-        this.rooms = temp_areas.flatMap(room => room.room_name)
+        this.cycleRooms = temp_areas.flatMap(room => room.room_name)
       } else {
-        const temp_areas = this.page_cache_areas.filter(area => area.area_id == this.currenArea)
-        this.rooms = temp_areas.rooms
+        const temp_areas = this.page_cache_areas.filter(area => area.area_id == this.currenCycleArea)
+        this.cycleRooms = temp_areas.rooms
       }
     },
 
@@ -687,22 +688,22 @@ export default defineComponent({
             message: this.$t('base.selectDateError'),
             type: 'warning'
           })
-          this.startTime = ''
-          this.endTime = ''
+          this.cycleStartTime = ''
+          this.cycleEndTime = ''
           return
         }
         // 2024-11-01(2024-11-01 00:00:00) 2024-11-09(2024-11-09 23:59:59)
-        this.startTime = start_date
-        this.endTime = end_date
-        this.startStamp = Common.getTimestamp(start_date, 'start')
-        this.endStamp = Common.getTimestamp(end_date, 'end')
-        this.filterDateStore.setCycleStartDate(start_date)
-        this.filterDateStore.setCycleEndDate(end_date)
+        this.cycleStartTime = start_date
+        this.cycleEndTime = end_date
+        this.cycleStartStamp = Common.getTimestamp(start_date, 'start')
+        this.cycleEndStamp = Common.getTimestamp(end_date, 'end')
+        this.filterCycleDateStore.setCycleStartDate(start_date)
+        this.filterCycleDateStore.setCycleEndDate(end_date)
         this.resetScroll()
         this.getMeetRooms()
         const days = this.getDaysBetween(start_date, end_date)
         const tempdays = this.formatDays(days)
-        this.days = tempdays
+        this.cycleDays = tempdays
       }
     },
 
@@ -716,15 +717,15 @@ export default defineComponent({
     },
 
     getMeetRooms() {
-      if (this.startStamp && this.endStamp) {
+      if (this.cycleStartStamp && this.cycleEndStamp) {
       } else {
         const temp = Common.getThreeDaysTimestamps()
-        this.startStamp = temp.start
-        this.endStamp = temp.end
+        this.cycleStartStamp = temp.start
+        this.cycleEndStamp = temp.end
       }
-      const itemNumber = this.rooms.length * this.days.length
+      const itemNumber = this.cycleRooms.length * this.cycleDays.length
       this.itemWidth = 229
-      Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp, end_time: this.endStamp, timezone: this.currentTimeZone }).then(({ data, code, msg }) => {
+      Api.getMeetRooms({ id: this.currenCycleArea, start_time: this.cycleStartStamp, end_time: this.endStamp, timezone: this.currentTimeZone }).then(({ data, code, msg }) => {
         if (!data && code != 0) {
           ElMessage({
             message: this.$t('base.getMeetRoomError'),
@@ -797,7 +798,7 @@ export default defineComponent({
         })
       })
       this.$nextTick(() => {
-        this.events = entriesRoom
+        this.cycleEvents = entriesRoom
         this.showLoading = false
       })
       console.log('CycleMeet getMeetRooms entriesRoom:', entriesRoom)
