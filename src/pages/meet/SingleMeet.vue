@@ -50,7 +50,7 @@
               </div>
             </el-scrollbar>
           </div>
-          <div class="meet-scrollbar-wrapper">
+          <div class="meet-scrollbar-wrapper" v-if="!showLoading">
             <el-scrollbar ref="timeScroll" id="time-scrollbar" class="slots-time-scrollbar"
               @scroll="syncScroll('timeScroll')" :style="{ height: 'calc(100vh - 150px - 65px)' }">
               <div class="time-slots-wrapper">
@@ -238,9 +238,6 @@ export default defineComponent({
     const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone
     this.currentTimeZone = timeZone
     this.startSync()
-    this.$nextTick(() => {
-      this.showLoading = false
-    })
     this.contentScrollRef = this.$refs.contentScroll?.$refs.wrapRef
   },
 
@@ -792,6 +789,9 @@ export default defineComponent({
         })
       })
       this.events = entriesRoom
+      this.$nextTick(() => {
+        this.showLoading = false
+      })
       console.log('SingleMeet getMeetRooms entriesRoom:', entriesRoom)
     },
   },
