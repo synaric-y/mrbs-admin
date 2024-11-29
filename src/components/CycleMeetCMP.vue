@@ -260,9 +260,9 @@ export default {
       const max = Common.formatAMPMTo24HM(this.add_params.area_max_time)
       // console.log('singleMeetCMP min:',min.format_hour,max.format_hour)
       if (selectedDate.toDateString() === currentDate.toDateString()) {
-        return this.makeRange(0, currentHour - 1).concat(this.makeRange(max.format_hour, 24))
+        return this.makeRange(0, currentHour - 1).concat(this.makeRange(max.format_hour + 1, 24))
       } else {
-        return this.makeRange(0, min.format_hour).concat(this.makeRange(max.format_hour, 24))
+        return this.makeRange(0, min.format_hour).concat(this.makeRange(max.format_hour + 1, 24))
       }
     },
 
@@ -279,7 +279,7 @@ export default {
           return this.makeRange(0, min.format_minute - 1)
         }
         if (hour === max.format_hour) {
-          return this.makeRange(max.format_minute - 1, 59)
+          return this.makeRange(max.format_minute + 1, 59)
         }
         if (hour === currentHour) {
           return this.makeRange(0, currentMinute - 1)
