@@ -213,12 +213,12 @@ export default {
             validator: (rule, value, callback) => {
               const [hourPart, minutePart] = this.meetForm.start_hour.split(':')
               const [endHourPart,endMinutePart] = value.split(':')
-              if (Number(hourPart) > Number(endHourPart)) {
+              if ((Number(hourPart) > Number(endHourPart)) || (Number(hourPart) === Number(endHourPart) && Number(minutePart) >= Number(endMinutePart))) {
                 callback(new Error(this.$t('meet.verify_end_time')))
-              } else if(Number(hourPart) === Number(endHourPart) && Number(minutePart) >= Number(endMinutePart)) {
-                callback(new Error(this.$t('meet.verify_end_time')))
+              } else if(Number(hourPart) === Number(endHourPart) && Number(endMinutePart) <= (Number(minutePart) + 4)) {
+                callback(new Error(this.$t('meet.verify_time_interval')))
               } else {
-                callback()
+                callback();
               }
             },
             trigger: 'blur'
