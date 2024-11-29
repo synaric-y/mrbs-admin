@@ -256,18 +256,34 @@ export default {
       const selectedDate = new Date(this.meetForm.start_date)
       const currentDate = new Date()
       const currentHour = new Date().getHours()
+      const min = Common.formatAMPMTo24HM(this.add_params.area_min_time)
+      const max = Common.formatAMPMTo24HM(this.add_params.area_max_time)
+      console.log('singleMeetCMP min:',min.format_hour,max.format_hour)
       if (selectedDate.toDateString() === currentDate.toDateString()) {
-        return this.makeRange(6, currentHour - 1)
+        return this.makeRange(0, currentHour - 1).concat(this.makeRange(max.format_hour + 1, 24))
       } else {
-        return this.makeRange(0, 6).concat(this.makeRange(22,23))
+        return this.makeRange(0, min.format_hour).concat(this.makeRange(max.format_hour + 1, 24))
       }
     },
 
     disabledMinutes(hour) {
+      const selectedDate = new Date(this.meetForm.start_date)
+      const currentDate = new Date()
       const currentHour = new Date().getHours()
       const currentMinute = new Date().getMinutes()
-      if (hour === currentHour) {
-        return this.makeRange(0, currentMinute - 1)
+      const min = Common.formatAMPMTo24HM(this.add_params.area_min_time)
+      const max = Common.formatAMPMTo24HM(this.add_params.area_max_time)
+      // 09:00 pm  08:00 am format_hour: 8, format_minute: 0
+      if (selectedDate.toDateString() === currentDate.toDateString()) {
+        if (hour === min.format_hour) {
+          return this.makeRange(0, min.format_minute - 1)
+        }
+        if (hour === max.format_hour) {
+          return this.makeRange(max.format_minute - 1, 59)
+        }
+        if (hour === currentHour) {
+          return this.makeRange(0, currentMinute - 1)
+        }
       }
       return []
     },

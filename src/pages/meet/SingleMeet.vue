@@ -543,7 +543,15 @@ export default defineComponent({
       this.addParams.resolution = room.resolution
       this.addParams.area_id = room.area_id
       this.addParams.area_name = room.area_name
-      console.log('singleMeet toMeet day.date--time',day,time,room)
+      this.addParams.area_min_time = room.start_time
+      this.addParams.area_max_time = room.end_time
+
+      // const min = Common.formatAMPMTo24HM(this.addParams.area_min_time)
+      // const max = Common.formatAMPMTo24HM(this.addParams.area_max_time)
+      // console.log('singleMeet toMeet day.date--time',day,time,room)
+      // console.log('singleMeet toMeet min_hour-min_minute',min)
+      // console.log('singleMeet toMeet max_hour-max_minute',max)
+      // return
       // 计算当前会议室的会议室时间
       let hover_start_time = this.getDateTimeStamp(day.date,time)
       let hover_end_time = hover_start_time + 60 * 15

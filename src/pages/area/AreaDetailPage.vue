@@ -19,7 +19,7 @@
         </el-form-item>
         <el-form-item prop="area_start_last_slot" :label="$t('area.formArea.startOfLastSlot')">
           <el-time-select v-model="form.area_start_last_slot" style="width: 240px" start="06:00" step="00:30"
-            end="18:30" :placeholder="$t('base.plzSelect')" />
+            end="23:30" :placeholder="$t('base.plzSelect')" />
         </el-form-item>
         <el-form-item :label="$t('area.formArea.user_group')" prop="group_ids">
           <el-tree-select ref="multipleTree" multiple lazy clearable v-model="form.group_ids" :load="loadGroup"

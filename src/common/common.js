@@ -335,21 +335,20 @@ export class Common {
         return `${formattedHours}:${formattedMinutes}`;
     }
 
-    static formatAMPMTo24(str) {
+    static formatAMPMTo24HM(str) {
         const [times, amstr] = str.split(' ')
+        let format_hour = 8
+        let format_minute = 0
         if (times) {
             let [hours, minutes] = times.split(':')
             let numberHour = Number(hours)
             let numberMinute = Number(minutes)
-            let hoursStr = ''
             if (amstr == 'PM' && numberHour != 12) {
                 numberHour += 12
-                hoursStr = `${numberHour}`
             }
-            if (numberHour < 10) {
-                hoursStr = '0' + hours
-            }
-            return hoursStr + ':' + minutes;
+            format_hour = numberHour
+            format_minute = numberMinute
+            return {format_hour, format_minute}
         }
     }
 
