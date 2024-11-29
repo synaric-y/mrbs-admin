@@ -788,8 +788,8 @@ export default defineComponent({
           }
         })
       })
-      this.events = entriesRoom
       this.$nextTick(() => {
+        this.events = entriesRoom
         this.showLoading = false
       })
       console.log('SingleMeet getMeetRooms entriesRoom:', entriesRoom)
