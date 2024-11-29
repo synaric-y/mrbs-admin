@@ -96,7 +96,7 @@
                                 </template>
                               </template>
 
-                              <template v-else-if="(event.end_time - event.start_time) / 60 == 15">
+                              <template v-else-if="((event.end_time - event.start_time) / 60 >= 15) && (event.end_time - event.start_time) / 60 <= 20">
                                 <div class="event-title" :style="{ margin: 1 + 'px' }">{{ event.entry_name
                                   }}</div>
                                 <div class="event-person" :style="{ margin: 1 + 'px' }">{{ event.duration }}-({{
