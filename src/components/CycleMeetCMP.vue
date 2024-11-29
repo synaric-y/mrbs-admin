@@ -275,15 +275,15 @@ export default {
       const max = Common.formatAMPMTo24HM(this.add_params.area_max_time)
       // 09:00 pm  08:00 am format_hour: 8, format_minute: 0
       if (selectedDate.toDateString() === currentDate.toDateString()) {
-        if (hour === min.format_hour) {
-          return this.makeRange(0, min.format_minute - 1)
-        }
-        if (hour === max.format_hour) {
-          return this.makeRange(max.format_minute + 1, 59)
-        }
         if (hour === currentHour) {
           return this.makeRange(0, currentMinute - 1)
         }
+      }
+      if (hour === min.format_hour) {
+        return this.makeRange(0, min.format_minute - 1)
+      }
+      if (hour === max.format_hour) {
+        return this.makeRange(max.format_minute + 1, 59)
       }
       return []
     },
