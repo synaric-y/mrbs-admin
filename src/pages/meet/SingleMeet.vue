@@ -1,6 +1,6 @@
 <template>
   <el-container class="container-sub-page">
-    <el-main class="container-sub-page-main">
+    <el-main class="container-sub-page-main" v-if="!showLoading">
       <div class="sub-title-wrapper">
         <div class="sub-title">{{$t('base.singleMeet')}}</div>
       </div>
@@ -31,7 +31,7 @@
             </div>
           </div>
         </div>
-        <div class="table-container" v-if="!showLoading">
+        <div class="table-container">
           <div class="calendar-scrollbar-wrapper">
             <div class="placeholder-view"></div>
             <el-scrollbar ref="calendarScroll" class="calendar-scrollbar" :style="{ width: scrollbarWidth }"
@@ -64,8 +64,8 @@
               :style="{ height: 'calc(100vh - 150px - 25px)' }">
               <div class="calendar-header">
                 <template v-for="(day, indexday) in days" :key="indexday" :style="{ backgroundColor: day.color }">
-                  <div v-for="(room, roomIndex) in rooms" class="room-wrapper" :key="roomIndex"
-                    :style="{ height: timeSlots.length * 40 + 30 + 'px', width: itemWidth + 20.5 + 'px', left: roomIndex * (itemWidth + 20.5) + 'px', top: 0,borderLeft: '1px solid #9A9A9A' }">
+                  <div v-for="(room, roomIndex) in rooms" class="room-border-wrapper" :key="roomIndex"
+                    :style="{ height: timeSlots.length * 40 + 30 + 'px', width: itemWidth + 20 + 'px', left: roomIndex * (itemWidth + 21 - 0.5 * indexday) + 'px', top: 0,borderLeft: '1px solid #9A9A9A' }">
                     <template v-for="(time, timeIndex) in localTimeSlots">
                       <div v-if="timeIndex != localTimeSlots.length - 1"
                         :class="[getMeetStatusText(day, room, time) == $t('base.roomAbled') ? 'empty-abled-meet-div' : 'empty-meet-div']"
@@ -83,7 +83,16 @@
                             @click="editMeet(event)"
                             :style="{top: event.top + 'px', left: (itemWidth + 21) * (indexday * rooms.length + roomIndex) + 'px', width: itemWidth + 'px', height: event.height + 'px' }">
                             <div class="event-center">
-                              <template v-if="(event.end_time - event.start_time) / 60 <= 15">
+                              <template v-if="(event.end_time - event.start_time) / 60 < 15">
+                                <div class="event-title" :style="{ margin: 1 + 'px' }">{{ event.entry_name
+                                  }}</div>
+                                <template v-if="event.src">
+                                  <img style="position: absolute;top:1px;right: 1px;width: 20px;height: 20px;"
+                                    :src="event.src" alt="">
+                                </template>
+                              </template>
+
+                              <template v-else-if="(event.end_time - event.start_time) / 60 == 15">
                                 <div class="event-title" :style="{ margin: 1 + 'px' }">{{ event.entry_name
                                   }}</div>
                                 <div class="event-person" :style="{ margin: 1 + 'px' }">{{ event.duration }}-({{
@@ -984,9 +993,9 @@ export default defineComponent({
   /* // -webkit-line-clamp: 2; */
 }
 
-.day-header-wrapper:last-child {
-  border-right: 1px solid #9A9A9A;
-}
+// .day-header-wrapper:last-child {
+//   border-right: 1px solid #9A9A9A;
+// }
 
 .room-header-wrapper {
   display: flex;
@@ -1006,14 +1015,16 @@ export default defineComponent({
   padding: 5px 0px;
   padding-bottom: 0px;
   font-weight: bold;
-  width: 100%;
+  // width: 100%;
   line-height: 45px;
   height: 45px;
   text-align: center;
   background-color: white;
+  margin: 0px;
   border-left: 1px solid #9A9A9A;
   border-bottom: 1px solid #9A9A9A;
   position: relative;
+  z-index: 99;
 }
 
 .slots-time-scrollbar {
@@ -1041,7 +1052,7 @@ export default defineComponent({
 .content-meet-scrollbar {
   height: 550px;
   width: 100%;
-  margin-left: 15.5px;
+  margin-left: 14.5px;
   padding: 0px;
   background-color: white;
   position: relative;
@@ -1058,15 +1069,15 @@ export default defineComponent({
   position: relative;
 }
 
-.room-wrapper:first-child {
-  /* // border-left: 1px solid #9A9A9A; */
-}
+// .room-border-wrapper:first-child {
 
-.room-wrapper:last-child {
+// }
+
+.room-border-wrapper:last-child {
   border-right: 1px solid #9A9A9A;
 }
 
-.room-wrapper {
+.room-border-wrapper {
   width: 229px;
   margin: 0px;
   padding: 0px;
