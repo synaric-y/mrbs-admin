@@ -253,12 +253,22 @@ export default {
       return result
     },
     disabledHours() {
-      return this.makeRange(0, 6).concat(this.makeRange(22,23))
+      const selectedDate = new Date(this.meetForm.start_date)
+      const currentDate = new Date()
+      const currentHour = new Date().getHours()
+      if (selectedDate.toDateString() === currentDate.toDateString()) {
+        return this.makeRange(6, currentHour - 1)
+      } else {
+        return this.makeRange(0, 6).concat(this.makeRange(22,23))
+      }
     },
+
     disabledMinutes(hour) {
-      // if (hour === 15) {
-      //   return this.makeRange(20, 40)
-      // }
+      const currentHour = new Date().getHours()
+      const currentMinute = new Date().getMinutes()
+      if (hour === currentHour) {
+        return this.makeRange(0, currentMinute - 1)
+      }
       return []
     },
 
