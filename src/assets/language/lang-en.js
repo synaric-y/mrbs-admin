@@ -63,6 +63,7 @@ export const langEn = {
         none: 'None',
         viewMore: 'More',
         singleMeet: 'Single meeting',
+        cycleMeet: 'Cycle Meeting',
         input: 'Please enter',
         networkError: 'Network Error',
         untested: 'Not Tested',

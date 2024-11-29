@@ -146,12 +146,9 @@ import { MEETING_STATUS, MRBS_MAX, STORAGE } from "@/const";
 import { SELECT_DAY, ROOM_STATUS, USER_TYPE } from '@/const';
 import moment from 'moment';
 import { FilterDateStore } from '@/stores/filterDateStore';
-import { areaData, homeData, testAreas } from '.././home';
 import SingleMeetCMP from '@/components/SingleMeetCMP.vue';
 import CycleMeetCMP from '@/components/CycleMeetCMP.vue';
-import { max } from 'moment/moment';
 import { MAX } from 'uuid';
-import { min } from 'moment/moment';
 
 export default defineComponent({
   components: { SingleMeetCMP, CycleMeetCMP },

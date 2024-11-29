@@ -63,6 +63,7 @@ export const langKo = {
         none: '없음',
         viewMore: '자세히 보기',
         singleMeet: '단일 회의',
+        CycleMeet: '주기 회의',
         input: '입력해주세요',
         networkError: '네트워크 오류',
         untested: '미테스트',

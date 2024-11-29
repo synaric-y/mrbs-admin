@@ -63,6 +63,7 @@ export const langZh = {
         none: '无',
         viewMore: '查看更多',
         singleMeet: '单次会议',
+        cycleMeet: '循环会议',
         input: '请输入',
         networkError: '网络异常',
         untested: '未测试',
