@@ -562,51 +562,102 @@ export default defineComponent({
       // 计算当前会议室的会议室时间
       let hover_start_time = this.getDateTimeStamp(day.date,time)
       let hover_end_time = hover_start_time + 60 * 15
-      let min_entry_start_time = MRBS_MAX
-      let min_entry_end_time = MRBS_MAX
+      let min_entry_start_id = -1
+      let min_entry_end_id = -1
       let min_end_gap = MRBS_MAX
       let min_start_gap = MRBS_MAX
-      console.log('CycleMeet toMeet hover_start_time - hover_end_time',hover_start_time,hover_end_time)
+      let min_result_end = MRBS_MAX
+      let min_result_start = MRBS_MAX
+      const temp_hover_start_time = moment.tz(hover_start_time * 1000, 'Asia/Shanghai').format('HH:mm')
+      const temp_hover_end_time = moment.tz(hover_end_time * 1000, 'Asia/Shanghai').format('HH:mm')
+      console.log('CycleMeet toMeet temp_hover_start_time - temp_hover_end_time',temp_hover_start_time,temp_hover_end_time)
       for (let index = 0; index < this.cycleEvents.length; index++) {
         const entry = this.cycleEvents[index]
         if (entry.room_id === room.room_id && day.date === entry.date) {
-          console.log('CycleMeet toMeet entry.start_time -- entry.end_time',entry)
-          const start_gap = hover_start_time - entry.end_time
-          const end_gap = entry.start_time - hover_end_time
-          if (start_gap > 0 && start_gap < min_start_gap) {
-            min_entry_end_time = entry.end_time
-            min_start_gap = start_gap
-            continue
+          // console.log('CycleMeet toMeet entry.start_time -- entry.end_time',entry)
+          // 1-1、计算会议开始时间最小的间隔
+          const min_start_abs1 = Math.abs(entry.start_time - hover_start_time)
+          const min_start_abs2 = Math.abs(entry.start_time - hover_end_time)
+          if (min_start_abs1 >= min_start_abs2) {
+            if (min_start_abs2 <= min_start_gap) {
+              min_result_end = entry.start_time
+              min_entry_start_id = entry.entry_id
+              min_start_gap = min_start_abs2
+            }
+          } else {
+            if (min_start_abs1 <= min_start_gap) {
+              min_result_end = entry.start_time
+              min_entry_start_id = entry.entry_id
+              min_start_gap = min_start_abs1
+            }
           }
-          if (end_gap > 0 && end_gap < min_end_gap) {
-            min_entry_start_time = entry.start_time
-            min_end_gap = end_gap
-            continue
+          // 1-2、计算会议结束时间最小的间隔
+          const min_end_abs1 = Math.abs(entry.end_time - hover_start_time)
+          const min_end_abs2 = Math.abs(entry.end_time - hover_end_time)
+          if (min_end_abs1 >= min_end_abs2) {
+            if (min_end_abs2 <= min_end_gap) {
+              min_result_start = entry.end_time
+              min_entry_end_id = entry.entry_id
+              min_end_gap = min_end_abs2
+              continue
+            }
+          } else {
+            if (min_end_abs1 <= min_end_gap) {
+              min_result_start = entry.end_time
+              min_entry_end_id = entry.entry_id
+              min_end_gap = min_end_abs1
+              continue
+            }
           }
-          // if (entry.end_time >= hover_start_time && entry.end_time <= min_entry_end_time) {
-          //   min_entry_end_time = entry.end_time
-          //   continue
-          // }
-          // if (entry.start_time >= hover_end_time && entry.start_time <= min_entry_start_time) {
-          //   min_entry_start_time = entry.start_time
-          //   continue
-          // }
         }
       }
-      console.log('CycleMeet toMeet min_entry_start_time - min_entry_end_time',min_entry_start_time,min_entry_end_time)
-      // if (min_entry_start_time != MRBS_MAX) {
-      //   hover_end_time = Math.min(min_entry_start_time,hover_end_time)
-      // }
-      // if (min_entry_end_time != MRBS_MAX) {
-      //   hover_start_time = Math.min(min_entry_end_time,hover_start_time)
-      // }
-      console.log('CycleMeet toMeet hover_start_time - hover_end_time:',hover_start_time,hover_end_time)
+      let cal_hover_start_time = hover_start_time
+      let cal_hover_end_time = hover_end_time
+      // 2、判断当前列是否没有会议
+      if (min_result_start === MRBS_MAX && min_result_end === MRBS_MAX) {
+        console.log('CycleMeet 判断当前列是否没有会议')
+      }
+      // 3、判断当前会议选择是否为同一场会议
+      else if (min_entry_start_id === min_entry_end_id) {
+        console.log('CycleMeet 判断当前会议选择是否为同一场会议')
+        // 3-1、hover的结束时间小于会议的开始时间
+        if (hover_start_time < min_result_end) {
+          if (hover_end_time >= min_result_end) {
+            cal_hover_start_time = hover_start_time
+            cal_hover_end_time = min_result_end
+          }
+        }
+        // 3-2、hover的开始结束大于会议的结束时间
+        if (hover_end_time > min_result_start) {
+          if (hover_start_time <= min_result_start) {
+            cal_hover_start_time = min_result_start
+            cal_hover_end_time = hover_end_time
+          }
+        }
+      } else {
+        // 4、在二个会议之间的hover（计算出来的最低结束会议时间、最低开始会议时间）
+        console.log('CycleMeet 在二个会议之间的hover（计算出来的最低结束会议时间、最低开始会议时间）')
+        if (min_result_start >= hover_start_time) {
+          cal_hover_start_time = min_result_start
+        }
+        if (min_result_end <= hover_end_time) {
+          cal_hover_end_time = min_result_end
+        }
+      }
+      const temp_min_start_time = moment.tz(min_result_start * 1000, 'Asia/Shanghai').format('HH:mm')
+      const temp_min_end_time = moment.tz(min_result_end * 1000, 'Asia/Shanghai').format('HH:mm')
+      console.log('CycleMeet toMeet min_start - min_end',temp_min_start_time,temp_min_end_time)
+      const temp_start_time = moment.tz(cal_hover_start_time * 1000, 'Asia/Shanghai').format('HH:mm')
+      const temp_end_time = moment.tz(cal_hover_end_time * 1000, 'Asia/Shanghai').format('HH:mm')
+      console.log('CycleMeet toMeet temp_start_time - temp_end_time',temp_start_time,temp_end_time)
+      console.log('CycleMeet toMeet hover_start_time - hover_end_time:',moment.tz(hover_start_time * 1000, 'Asia/Shanghai').format('HH:mm'),moment.tz(hover_end_time * 1000, 'Asia/Shanghai').format('HH:mm'))
+      console.log('CycleMeet toMeet cal_hover_start_time - cal_hover_end_time',cal_hover_start_time,cal_hover_end_time)
       // 间隔少于5分钟不可以编辑
-      if ((hover_end_time - hover_start_time) < 900) {
+      if ((cal_hover_end_time - cal_hover_start_time) / 60 < 5) {
         return
       }
-      this.cycleAddParams.start_time = hover_start_time
-      this.cycleAddParams.end_time = hover_end_time
+      this.cycleAddParams.cal_start_time = cal_hover_start_time
+      this.cycleAddParams.cal_end_time = cal_hover_end_time
       // return
       this.cycleAddParams.timeStamp = this.getDateTimeStamp(day.date,time)
       if (this.cycleAddParams.timeStamp < this.currenTimestamp) {

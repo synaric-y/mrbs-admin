@@ -536,23 +536,23 @@ export default {
       this.meetForm.area_name = this.add_params.area_name
       const now_date = moment.tz(Date.now(), this.currentTimeZone).format('YYYY-MM-DD')
       if (this.add_params.resolution == 1800) {
-        const invaild_time = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('HH:mm')
+        const invaild_time = moment.tz(this.add_params.cal_start_time * 1000, 'Asia/Shanghai').format('HH:mm')
         // 处理15、45分钟
         if (invaild_time.endsWith('15') || invaild_time.endsWith('45')) {
           const time_stamp = this.add_params.timeStamp - 900
           this.meetForm.start_date = moment.tz(time_stamp * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
-          this.meetForm.start_hour = moment.tz(time_stamp * 1000, 'Asia/Shanghai').format('HH:mm')
+          this.meetForm.start_hour = moment.tz(this.add_params.cal_start_time * 1000, 'Asia/Shanghai').format('HH:mm')
           this.meetForm.rep_end_date = moment.tz((time_stamp + 1800) * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
-          this.meetForm.end_hour = moment.tz((time_stamp + 1800) * 1000, 'Asia/Shanghai').format('HH:mm')
-          this.meetForm.start_seconds = time_stamp
-          this.meetForm.end_seconds = time_stamp + 1800
+          this.meetForm.end_hour = moment.tz((this.add_params.cal_end_time) * 1000, 'Asia/Shanghai').format('HH:mm')
+          this.meetForm.start_seconds = this.add_params.cal_start_time
+          this.meetForm.end_seconds = this.add_params.cal_end_time
         } else {
           this.meetForm.start_date = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
-          this.meetForm.start_hour = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('HH:mm')
+          this.meetForm.start_hour = moment.tz(this.add_params.cal_start_time * 1000, 'Asia/Shanghai').format('HH:mm')
           this.meetForm.rep_end_date = moment.tz((this.add_params.timeStamp + 1800) * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
-          this.meetForm.end_hour = moment.tz((this.add_params.timeStamp + 1800) * 1000, 'Asia/Shanghai').format('HH:mm')
-          this.meetForm.start_seconds = this.add_params.timeStamp
-          this.meetForm.end_seconds = this.add_params.timeStamp + 1800
+          this.meetForm.end_hour = moment.tz((this.add_params.cal_end_time) * 1000, 'Asia/Shanghai').format('HH:mm')
+          this.meetForm.start_seconds = this.add_params.cal_start_time
+          this.meetForm.end_seconds = this.add_params.cal_end_time
         }
         this.minStep = '00:30'
         if (now_date === this.meetForm.start_date) {
@@ -560,11 +560,11 @@ export default {
         }
       } else {
         this.meetForm.start_date = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
-        this.meetForm.start_hour = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('HH:mm')
+        this.meetForm.start_hour = moment.tz(this.add_params.cal_start_time * 1000, 'Asia/Shanghai').format('HH:mm')
         this.meetForm.rep_end_date = moment.tz((this.add_params.timeStamp + 900) * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
-        this.meetForm.end_hour = moment.tz((this.add_params.timeStamp + 900) * 1000, 'Asia/Shanghai').format('HH:mm')
-        this.meetForm.start_seconds = this.add_params.timeStamp
-        this.meetForm.end_seconds = this.add_params.timeStamp + 900
+        this.meetForm.end_hour = moment.tz((this.add_params.cal_end_time) * 1000, 'Asia/Shanghai').format('HH:mm')
+        this.meetForm.start_seconds = this.add_params.cal_start_time
+        this.meetForm.end_seconds = this.add_params.cal_end_time
         this.minStep = '00:15'
         if (now_date === this.meetForm.start_date) {
           this.minStartTime = Common.formatLastMinute(15)
