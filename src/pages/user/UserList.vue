@@ -375,6 +375,9 @@ export default {
           return
         }
         Api.resetPassword(this.passwordForm).then(({ data, code, msg }) => {
+          ElMessage.success({
+            message: msg,
+          })
           if (code == 0) {
             this.dialogResetPasswordForm = false
             this.getUserList()
@@ -391,6 +394,9 @@ export default {
       params['disabled'] = row.status ? 0 : 1
       console.log('UserList updateUserStatus params', params)
       Api.updateAccount(params).then(({ data, code, msg }) => {
+        ElMessage.success({
+          message: msg,
+        })
         if (code == 0) {
           this.getUserList()
         } else {
@@ -403,6 +409,9 @@ export default {
       console.log('UserList editUser params', params)
       Api.editUser(params).then(({ data, code, msg }) => {
         this.closedAlert()
+        ElMessage.success({
+          message: msg,
+        })
         if (code == 0) {
           this.getUserList()
         } else {
