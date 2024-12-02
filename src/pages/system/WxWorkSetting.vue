@@ -157,7 +157,7 @@ export default {
         }
         this.urlStatus = 'tested'
         ElMessage.success({
-          message: this.$t('base.test_url_success')
+          message: this.$t('system.test_url_success')
         })
       }).catch(e => {
 
