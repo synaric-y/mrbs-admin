@@ -250,11 +250,12 @@ export default {
       const min = Common.formatAMPMTo24HM(this.add_params.area_min_time)
       const max = Common.formatAMPMTo24HM(this.add_params.area_max_time)
       // console.log('singleMeetCMP min:',min.format_hour,max.format_hour)
-      if (selectedDate.toDateString() === currentDate.toDateString()) {
-        return this.makeRange(0, currentHour - 1).concat(this.makeRange(max.format_hour + 1, 24))
-      } else {
-        return this.makeRange(0, min.format_hour).concat(this.makeRange(max.format_hour + 1, 24))
+      if (this.mode === 0) {
+        if (selectedDate.toDateString() === currentDate.toDateString()) {
+          return this.makeRange(0, currentHour - 1).concat(this.makeRange(max.format_hour + 1, 24))
+        }
       }
+      return this.makeRange(0, min.format_hour).concat(this.makeRange(max.format_hour + 1, 24))
     },
 
     disabledMinutes(hour) {
@@ -265,9 +266,11 @@ export default {
       const min = Common.formatAMPMTo24HM(this.add_params.area_min_time)
       const max = Common.formatAMPMTo24HM(this.add_params.area_max_time)
       // 09:00 pm  08:00 am format_hour: 8, format_minute: 0
-      if (selectedDate.toDateString() === currentDate.toDateString()) {
-        if (hour === currentHour) {
-          return this.makeRange(0, currentMinute - 1)
+      if (this.mode === 0) {
+        if (selectedDate.toDateString() === currentDate.toDateString()) {
+          if (hour === currentHour) {
+            return this.makeRange(0, currentMinute - 1)
+          }
         }
       }
       if (hour === min.format_hour) {
@@ -410,6 +413,7 @@ export default {
         this.meetForm.start_seconds = data.start_time
         this.meetForm.end_seconds = data.end_time
         this.roomOptions = this.getSelectedArea(data.area_id)
+        console.log('getMeetDetail this.meetForm',this.meetForm);
         this.limitSelectHour(data.start_date)
       })
     },
@@ -463,7 +467,6 @@ export default {
     },
   },
   created() {
-    // this.minStartTime = Common.formatLastMinute(15)
     console.log('SingleMeetCMP created params:', this.entry_id, this.add_params,new Date().getDay)
     console.log('SingleMeetCMP created start - end',moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('HH:mm'),moment.tz((this.add_params.timeStamp + 1800) * 1000, 'Asia/Shanghai').format('HH:mm'))
     if (this.add_params && this.mode == 0) {
@@ -473,42 +476,6 @@ export default {
       this.meetForm.area_name = this.add_params.area_name
       this.meetForm.start_date = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
       const now_date = moment.tz(Date.now(), this.currentTimeZone).format('YYYY-MM-DD')
-      // if (this.add_params.resolution == 1800) {
-      //   const invaild_time = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('HH:mm')
-      //   // 处理15、45分钟
-      //   if (invaild_time.endsWith('15') || invaild_time.endsWith('45')) {
-      //     const time_stamp = this.add_params.timeStamp - 900
-      //     this.meetForm.start_date = moment.tz(time_stamp * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
-      //     this.meetForm.start_hour = moment.tz(time_stamp * 1000, 'Asia/Shanghai').format('HH:mm')
-      //     this.meetForm.end_date = moment.tz((time_stamp + 1800) * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
-      //     this.meetForm.end_hour = moment.tz((time_stamp + 1800) * 1000, 'Asia/Shanghai').format('HH:mm')
-      //     this.meetForm.start_seconds = time_stamp
-      //     this.meetForm.end_seconds = time_stamp + 1800
-      //   } else {
-      //     this.meetForm.start_date = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
-      //     this.meetForm.start_hour = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('HH:mm')
-      //     this.meetForm.end_date = moment.tz((this.add_params.timeStamp + 1800) * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
-      //     this.meetForm.end_hour = moment.tz((this.add_params.timeStamp + 1800) * 1000, 'Asia/Shanghai').format('HH:mm')
-      //     this.meetForm.start_seconds = this.add_params.timeStamp
-      //     this.meetForm.end_seconds = this.add_params.timeStamp + 1800
-      //   }
-      //   this.minStep = '00:30'
-      //   if (now_date === this.meetForm.start_date) {
-      //     this.minStartTime = Common.formatLastMinute(30)
-      //   }
-      // } else {
-      //   this.meetForm.start_date = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
-      //   this.meetForm.start_hour = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('HH:mm')
-      //   this.meetForm.end_date = moment.tz((this.add_params.timeStamp + 900) * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
-      //   this.meetForm.end_hour = moment.tz((this.add_params.timeStamp + 900) * 1000, 'Asia/Shanghai').format('HH:mm')
-      //   this.meetForm.start_seconds = this.add_params.timeStamp
-      //   this.meetForm.end_seconds = this.add_params.timeStamp + 900
-      //   this.minStep = '00:15'
-      //   if (now_date === this.meetForm.start_date) {
-      //     this.minStartTime = Common.formatLastMinute(15)
-      //   }
-      // }
-
       this.meetForm.start_date = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
       this.meetForm.start_hour = moment.tz(this.add_params.timeStamp * 1000, 'Asia/Shanghai').format('HH:mm')
       this.meetForm.end_date = moment.tz((this.add_params.timeStamp + 900) * 1000, 'Asia/Shanghai').format('YYYY-MM-DD')
