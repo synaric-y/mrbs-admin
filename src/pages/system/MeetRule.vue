@@ -11,12 +11,23 @@
               <el-text v-if="form.bookerDisplay" class="mx-1" type="primary">{{ $t('system.show_booker_tip') }}</el-text>
               <el-text v-else class="mx-1">{{ $t('system.show_booker_text') }}</el-text>
             </div>
+<!--            <div class="switch-row">-->
+<!--              <div style="width: 120px"></div>-->
+<!--              <el-text v-if="form.bookerDisplay" class="mx-1" type="primary">{{ $t('system.show_booker_tip') }}</el-text>-->
+<!--              <el-text v-else class="mx-1">{{ $t('system.show_booker_text') }}</el-text>-->
+<!--            </div>-->
+
             <div class="switch-row">
               <div class="label">{{ $t('system.show_title') }}</div>
               <el-switch v-model="form.meetingNameDisplay" style="--el-switch-on-color: #591bb7;" />
               <el-text v-if="form.meetingNameDisplay" class="mx-1" type="primary">{{ $t('system.show_title_tip') }}</el-text>
               <el-text v-else class="mx-1">{{ $t('system.show_title_text') }}</el-text>
             </div>
+<!--            <div class="switch-row">-->
+<!--              <div style="width: 120px"></div>-->
+<!--              <el-text v-if="form.meetingNameDisplay" class="mx-1" type="primary">{{ $t('system.show_title_tip') }}</el-text>-->
+<!--              <el-text v-else class="mx-1">{{ $t('system.show_title_text') }}</el-text>-->
+<!--            </div>-->
             <div class="switch-row">
               <div class="label">{{ $t('system.show_temp_meet') }}</div>
               <el-select style="max-width: 170px" v-model="form.quickMeetingDisplay" :placeholder="$t('base.plzSelect')">
@@ -24,6 +35,11 @@
                 <el-option :label="$t('system.temp_meet_no_verify')" :value="1" key="1" />
                 <el-option :label="$t('system.temp_meet_verify')" :value="2" key="2" />
               </el-select>
+<!--              <el-text v-if="form.quickMeetingDisplay != 0" class="mx-1" type="primary">{{ $t('system.show_temp_tip1') }}</el-text>-->
+<!--              <el-text v-else class="mx-1">{{ $t('system.show_temp_tip2') }}</el-text>-->
+            </div>
+            <div class="switch-row">
+              <div style="width: 120px"></div>
               <el-text v-if="form.quickMeetingDisplay != 0" class="mx-1" type="primary">{{ $t('system.show_temp_tip1') }}</el-text>
               <el-text v-else class="mx-1">{{ $t('system.show_temp_tip2') }}</el-text>
             </div>

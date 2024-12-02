@@ -27,6 +27,11 @@
                 <el-option :label="$t('system.temp_meet_no_verify')" :value="1" key="1" />
                 <el-option :label="$t('system.temp_meet_verify')" :value="2" key="2" />
               </el-select>
+<!--              <el-text v-if="form.temporary_meeting != 0" class="mx-1" type="primary">{{ $t('system.show_temp_tip1') }}</el-text>-->
+<!--              <el-text v-else class="mx-1">{{ $t('system.show_temp_tip2') }}</el-text>-->
+            </div>
+            <div class="switch-row">
+              <div style="width: 120px"></div>
               <el-text v-if="form.temporary_meeting != 0" class="mx-1" type="primary">{{ $t('system.show_temp_tip1')
                 }}</el-text>
               <el-text v-else class="mx-1">{{ $t('system.show_temp_tip2') }}</el-text>
