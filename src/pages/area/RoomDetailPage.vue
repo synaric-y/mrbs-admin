@@ -99,7 +99,7 @@
             <el-input v-model="form.description" show-word-limit maxlength="255" />
           </el-form-item>
           <el-collapse v-model="collapse" style="background-color: white;">
-            <el-collapse-item :title="$t('base.exchange')" name="1">
+            <el-collapse-item :title="$t('base.exchange')" name="3">
               <el-form-item prop="use_exchange" :label="$t('room.formRoom.useExchange')">
                 <el-switch active-value="1" inactive-value="0" v-model="area.use_exchange" disabled />
               </el-form-item>
