@@ -227,8 +227,8 @@ export default {
       let childrenData = []
       if (row.source === "system") {
         this.getSystemGroupTreeWithId(row.id).then(childrenData => {
-          resolve(childrenData);
-          console.log('loadSubGroup sys table_data',this.tableData);
+          resolve(childrenData)
+          console.log('loadSubGroup sys table_data',this.tableData)
         }).catch(() => {
           resolve([]);
         });
@@ -334,10 +334,8 @@ export default {
       if (mode == 1) {
         this.selectedGroupId = row.id
         this.addGroupForm.name = row.name
-        const selectedItem = this.findNodeById(this.treeData, row.third_id);
-        console.log('editGroupBtn selectedItem', selectedItem, this.treeData)
-        this.addGroupForm.sync_group_name = selectedItem ? selectedItem.name : ''
-        this.selectedItem = selectedItem
+        console.log('editGroupBtn row',row.id,row.name)
+        this.addGroupForm.sync_group_name = ''
       } else {
         this.addGroupForm.name = ''
         this.addGroupForm.sync_group_name = ''
@@ -405,6 +403,21 @@ export default {
       })
     },
 
+    editNodeByID(list,id,name) {
+      for (let node of list) {
+        if (node.id === id) {
+          node.name = name
+          console.log('editNodeByID node',node)
+          return node;
+        }
+        if (node.children && node.children.length > 0) {
+          const found = this.editNodeByID(node.children, id, name)
+          if (found) return found
+        }
+      }
+      return null
+    },
+
     editGroup(third_id) {
       let params = {}
       params['name'] = this.addGroupForm.name
@@ -417,7 +430,8 @@ export default {
         if (code == 0) {
           ElMessage.success(msg)
           this.dialogAddGroup = false
-          this.getTableData()
+          const selectedItem = this.editNodeByID(this.getSystemList(), this.selectedGroupId,this.addGroupForm.name)
+          // this.getTableData()
         } else {
           ElMessage.error(msg)
         }
@@ -505,13 +519,40 @@ export default {
               resolve(res)
               return
             }
+            this.addSystemChildrenProp(this.getSystemList(), group_id, groups)
             resolve(groups)
           } else {
             ElMessage.error(msg)
-            reject(msg);
+            reject(msg)
           }
         })
       })
+    },
+
+    getSystemList() {
+      let list = []
+      if (this.tableData.length === 2) {
+        if (this.tableData[0].source === 'system') {
+          list = this.tableData[0].children
+        } else if (this.tableData[1].source === 'ad') {
+          list = []
+        }
+      }
+      return list
+    },
+
+    addSystemChildrenProp(list, id, groups) {
+      for (let node of list) {
+        if (node.id === id) {
+          node.children = groups.length > 0? groups:[]
+          return node;
+        }
+        if (node.children && node.children.length > 0) {
+          const found = this.addSystemChildrenProp(node.children, id, groups)
+          if (found) return found
+        }
+      }
+      return null
     },
 
     getAdTreeWithId(group_id) {
