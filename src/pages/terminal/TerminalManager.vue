@@ -91,7 +91,7 @@ export default {
       statusOptions: [
         {
           value: -1,
-          label: this.$t('terminal.bind.all'),
+          label: this.$t('base.all'),
         },
         {
           value: 0,
