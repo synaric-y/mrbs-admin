@@ -264,6 +264,8 @@ export default defineComponent({
       if (selectStartDate && selectEndDate) {
         this.startTime = selectStartDate
         this.endTime = selectEndDate
+        this.startStamp = Common.getTimestamp(selectStartDate, 'start')
+        this.endStamp = Common.getTimestamp(selectEndDate, 'end')
         const days = this.getDaysBetween(selectStartDate, selectEndDate)
         const tempdays = this.formatDays(days)
         this.days = tempdays
@@ -281,6 +283,8 @@ export default defineComponent({
         this.currenAreaName = selectAreaName
         this.currenArea = selectArea
       }
+      console.log('getSyncInterval start_date-end_date',selectStartDate,selectEndDate)
+      console.log('getSyncInterval startStamp-endStamp',this.startStamp,this.endStamp)
       this.getCurrentAreaRooms(this.currenArea,true)
       this.getMeetRooms()
     },
@@ -415,9 +419,9 @@ export default defineComponent({
       const area_rooms = this.page_cache_areas.filter((item) =>
         item.area_id === area_id
       )
-      if (this.dayRrangeVal != 0) {
-        this.dayRrange(this.dayRrangeVal,timedRefresh?true:false)
-      }
+      // if (this.dayRrangeVal != 0) {
+      //   this.dayRrange(this.dayRrangeVal,timedRefresh?true:false)
+      // }
       const tmp_areas = []
       tmp_areas.push(area_rooms)
       this.rooms = this.getAllRoom(tmp_areas[0])
@@ -712,7 +716,7 @@ export default defineComponent({
 
     getAreaRooms() {
       console.log('SingleMeet getAreaRooms this.currenArea', this.currenArea)
-      if (this.currenArea == 'All' || this.currenArea == '') {
+      if (this.currenArea == this.$t('base.all') || this.currenArea == '') {
         const temp_areas = this.page_cache_areas.flatMap(area => area.rooms)
         this.rooms = temp_areas.flatMap(room => room.room_name)
       } else {
@@ -742,6 +746,7 @@ export default defineComponent({
         this.endTime = end_date
         this.startStamp = Common.getTimestamp(start_date, 'start')
         this.endStamp = Common.getTimestamp(end_date, 'end')
+        console.log('choseDate start_date-end_date',start_date,end_date)
         this.filterDateStore.setStartDate(start_date)
         this.filterDateStore.setEndDate(end_date)
         this.resetScroll()
@@ -770,6 +775,8 @@ export default defineComponent({
       }
       const itemNumber = this.rooms.length * this.days.length
       this.itemWidth = 229
+      console.log('getMeetRooms params:',this.startStamp,this.endStamp)
+      
       Api.getMeetRooms({ id: this.currenArea, start_time: this.startStamp, end_time: this.endStamp, timezone: this.currentTimeZone }).then(({ data, code, msg }) => {
         if (!data && code != 0) {
           ElMessage({

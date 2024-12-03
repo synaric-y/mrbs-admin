@@ -277,6 +277,8 @@ export default defineComponent({
       if (selectStartDate && selectEndDate) {
         this.cycleStartTime = selectStartDate
         this.cycleEndTime = selectEndDate
+        this.startStamp = Common.getTimestamp(selectStartDate, 'start')
+        this.endStamp = Common.getTimestamp(selectEndDate, 'end')
         const days = this.getDaysBetween(selectStartDate, selectEndDate)
         const tempdays = this.formatDays(days)
         this.cycleDays = tempdays
@@ -428,9 +430,9 @@ export default defineComponent({
       const area_rooms = this.page_cache_areas.filter((item) =>
         item.area_id === area_id
       )
-      if (this.dayRrangeVal != 0) {
-        this.dayRrange(this.dayRrangeVal,timedRefresh?true:false)
-      }
+      // if (this.dayRrangeVal != 0) {
+      //   this.dayRrange(this.dayRrangeVal,timedRefresh?true:false)
+      // }
       const tmp_areas = []
       tmp_areas.push(area_rooms)
       this.cycleRooms = this.getAllRoom(tmp_areas[0])
