@@ -1026,8 +1026,6 @@ export default defineComponent({
 }
 
 .content-meet-scrollbar:deep(.el-scrollbar__bar.is-horizontal) {
-  // z-index: 1000;
-  // height: 10px;
   height: 0 !important;
 }
 
@@ -1087,10 +1085,6 @@ export default defineComponent({
   border-bottom: 2px solid #9A9A9A;
   /* // -webkit-line-clamp: 2; */
 }
-
-// .day-header-wrapper:last-child {
-//   border-right: 1px solid #9A9A9A;
-// }
 
 .room-header-wrapper {
   display: flex;
@@ -1169,10 +1163,6 @@ export default defineComponent({
 .room-border-wrapper:first-child {
   border-left: 1px solid #9A9A9A;
 }
-
-// .room-border-wrapper:last-child {
-//   border-right: 1px solid #9A9A9A;
-// }
 
 .room-border-wrapper {
   width: 229px;

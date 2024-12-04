@@ -237,6 +237,7 @@ export default defineComponent({
     scrollbarWidth() {
       return this.cycleRooms.length * this.cycleDays.length * (this.itemWidth + 18) + this.cycleDays.length * (this.cycleRooms.length + 1) + 'px'
 
+      // return this.cycleRooms.length * this.cycleDays.length * (this.itemWidth + 18) + this.cycleDays.length * (this.cycleRooms.length + 1) + 'px'
     },
   },
 
@@ -1041,8 +1042,6 @@ export default defineComponent({
 }
 
 .content-meet-scrollbar:deep(.el-scrollbar__bar.is-horizontal) {
-  // z-index: 1000;
-  // height: 10px;
   height: 0 !important;
 }
 
@@ -1103,16 +1102,16 @@ export default defineComponent({
   /* // -webkit-line-clamp: 2; */
 }
 
-// .day-header-wrapper:last-child {
-//   border-right: 1px solid #9A9A9A;
-// }
-
 .room-header-wrapper {
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: row;
   margin-top: 3px;
+}
+
+.room-header-wrapper:first-child {
+  border-left: 1px solid #9A9A9A;
 }
 
 .room-header {
@@ -1125,16 +1124,14 @@ export default defineComponent({
   padding: 5px 0px;
   padding-bottom: 0px;
   font-weight: bold;
-  // width: 100%;
   line-height: 45px;
   height: 45px;
   text-align: center;
   background-color: white;
   margin: 0px;
-  border-left: 1px solid #9A9A9A;
+  border-right: 1px solid #9A9A9A;
   border-bottom: 1px solid #9A9A9A;
   position: relative;
-  z-index: 99;
 }
 
 .slots-time-scrollbar {
@@ -1182,10 +1179,6 @@ export default defineComponent({
 .room-border-wrapper:first-child {
   border-left: 1px solid #9A9A9A;
 }
-
-// .room-border-wrapper:last-child {
-//   border-right: 1px solid #9A9A9A;
-// }
 
 .room-border-wrapper {
   width: 229px;
