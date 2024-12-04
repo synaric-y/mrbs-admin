@@ -65,11 +65,11 @@
               <div class="calendar-header">
                 <template v-for="(day, indexday) in days" :key="indexday" :style="{ backgroundColor: day.color }">
                   <div v-for="(room, roomIndex) in rooms" class="room-border-wrapper" :key="roomIndex"
-                    :style="{ height: timeSlots.length * 40 + 30 + 'px', width: itemWidth + 19 + 'px', left: indexday * (rooms.length * (itemWidth + 19) + 1) + roomIndex * ((itemWidth + 19) + 1) + 'px', top: 0,borderRight: '1px solid #9A9A9A' }">
+                    :style="getRoomBorderStyle(indexday, roomIndex)">
                     <template v-for="(time, timeIndex) in localTimeSlots">
                       <div v-if="timeIndex != localTimeSlots.length - 1"
                         :class="[getMeetStatusText(day, room, time) === $t('base.roomAbled') ? 'empty-abled-meet-div' : 'empty-meet-div']"
-                        :style="{ height: minItemHeight + 'px', width: itemWidth + 'px', left: indexday * (rooms.length * (itemWidth + 19) + 0) + roomIndex * ((itemWidth + 18) + 1) + 'px', top: ((timeIndex) * minItemHeight + 30) + 'px' }"
+                        :style="getHoverStyle(indexday,roomIndex,timeIndex)"
                         @click="toMeet(time, room, day)">
                         <text class="empty-meet-duration">{{ time }}</text>
                         <text class="empty-meet-reason">{{ getMeetStatusText(day, room, time) }}</text>
@@ -81,7 +81,7 @@
                           <div :key="indexeve"
                             :class="[event.status === 0 ? 'room-meet-event' : event.status === 1 ? 'room-meet-in-event' : 'room-meet-timeout-event']"
                             @click="editMeet(event)"
-                            :style="{top: event.top + 'px', left: indexday * (rooms.length * (itemWidth + 19) + 0) + roomIndex * ((itemWidth + 18) + 1) + 'px', width: itemWidth + 'px', height: event.height + 'px' }">
+                            :style="getEventStyle(indexday,roomIndex,event)">
                             <div class="event-center">
                               <template v-if="((event.end_time - event.start_time) / 60 < 5)">
                                 <div class="event-title" :style="{ margin: 1 + 'px' }"></div>
@@ -243,6 +243,38 @@ export default defineComponent({
   },
 
   methods: {
+
+    getRoomBorderStyle(indexday, roomIndex) {
+      const baseWidth = this.itemWidth + 19
+      const borderRightStyle = roomIndex === (this.rooms.length - 1) ? '2px solid #9A9A9A' : '1px solid #9A9A9A'
+      return {
+        height: `${this.timeSlots.length * 40 + 30}px`,
+        width: `${baseWidth}px`,
+        left: `${indexday * (this.rooms.length * (baseWidth + 1)) + roomIndex * (baseWidth + 1)}px`,
+        top: '0px',
+        borderRight: borderRightStyle,
+      }
+    },
+
+    getHoverStyle(dayIndex,roomIndex,timeIndex) {
+      const baseWidth = this.itemWidth + 19
+      return {
+        height: `${this.minItemHeight}px`,
+        width: `${this.itemWidth}px`,
+        left: `${dayIndex * (this.rooms.length * (baseWidth + 0)) + roomIndex * (baseWidth + 0)}px`,
+        top: `${(timeIndex) * this.minItemHeight + 30}px`
+      }
+    },
+
+    getEventStyle(dayIndex,roomIndex,event) {
+      const baseWidth = this.itemWidth + 19
+      return {
+        top: `${event.top}px`,
+        left: `${dayIndex * (this.rooms.length * (baseWidth + 0)) + roomIndex * (baseWidth + 0)}px`,
+        width: `${this.itemWidth}px`,
+        height: `${event.height}px`,
+      }
+    },
     startSync() {
       if (this.interval) {
         clearInterval(this.interval)
