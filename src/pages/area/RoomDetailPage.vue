@@ -7,28 +7,29 @@
           <div class="switches">
             <div class="switch-row">
               <div class="label">{{ $t('system.show_booker') }}</div>
-              <el-switch :active-value="1" :inactive-value="0" v-model="form.show_book" style="--el-switch-on-color: #591bb7;" />
+              <el-switch :active-value="1" :inactive-value="0" v-model="form.show_book"
+                style="--el-switch-on-color: #591bb7;" />
               <el-text v-if="form.show_book" class="mx-1" type="primary">{{ $t('system.show_booker_tip')
                 }}</el-text>
               <el-text v-else class="mx-1">{{ $t('system.show_booker_text') }}</el-text>
             </div>
             <div class="switch-row">
               <div class="label">{{ $t('system.show_title') }}</div>
-              <el-switch :active-value="1" :inactive-value="0" v-model="form.show_meeting_name" style="--el-switch-on-color: #591bb7;" />
+              <el-switch :active-value="1" :inactive-value="0" v-model="form.show_meeting_name"
+                style="--el-switch-on-color: #591bb7;" />
               <el-text v-if="form.show_meeting_name" class="mx-1" type="primary">{{ $t('system.show_title_tip')
                 }}</el-text>
               <el-text v-else class="mx-1">{{ $t('system.show_title_text') }}</el-text>
             </div>
             <div class="switch-row">
               <div class="label">{{ $t('system.show_temp_meet') }}</div>
-              <el-select style="max-width: 170px" v-model="form.temporary_meeting"
-                :placeholder="$t('base.plzSelect')">
+              <el-select style="max-width: 170px" v-model="form.temporary_meeting" :placeholder="$t('base.plzSelect')">
                 <el-option :label="$t('system.temp_meet_no')" :value="0" key="0" />
                 <el-option :label="$t('system.temp_meet_no_verify')" :value="1" key="1" />
                 <el-option :label="$t('system.temp_meet_verify')" :value="2" key="2" />
               </el-select>
-<!--              <el-text v-if="form.temporary_meeting != 0" class="mx-1" type="primary">{{ $t('system.show_temp_tip1') }}</el-text>-->
-<!--              <el-text v-else class="mx-1">{{ $t('system.show_temp_tip2') }}</el-text>-->
+              <!--              <el-text v-if="form.temporary_meeting != 0" class="mx-1" type="primary">{{ $t('system.show_temp_tip1') }}</el-text>-->
+              <!--              <el-text v-else class="mx-1">{{ $t('system.show_temp_tip2') }}</el-text>-->
             </div>
             <div class="switch-row">
               <div style="width: 120px"></div>
@@ -99,9 +100,9 @@
             <el-input v-model="form.description" show-word-limit maxlength="255" />
           </el-form-item>
           <el-collapse v-model="collapse" style="background-color: white;">
-            <el-collapse-item :title="$t('base.exchange')" name="3">
+            <el-collapse-item :title="$t('base.exchange')" :name="is_collapse">
               <el-form-item prop="use_exchange" :label="$t('room.formRoom.useExchange')">
-                <el-switch active-value="1" inactive-value="0" v-model="area.use_exchange" disabled />
+                <el-switch :active-value="1" :inactive-value="0" v-model="area.use_exchange" disabled />
               </el-form-item>
               <el-form-item prop="exchange_username" :label="$t('room.formRoom.exchangeUsername')">
                 <el-input v-model="form.exchange_username" show-word-limit maxlength="255" />
@@ -178,7 +179,8 @@ export default {
       },
       area: {},
       areaList: [],
-      collapse: ['1', '2']
+      collapse: ['1', '2'],
+      is_collapse: '3',
     }
   },
   methods: {
@@ -234,15 +236,33 @@ export default {
       this.form.show_book = Number(data["show_book"])
       this.form.show_meeting_name = Number(data["show_meeting_name"])
       this.form.temporary_meeting = Number(data["temporary_meeting"])
+      console.log('is_collapse:', this.is_collapse)
       let areaRep = await Api.getArea({ id: this.form.area })
       this.area = areaRep.data[0]
     },
     onAreaChange(e) {
       this.form["new_area"] = e
-    }
+    },
+
+    getExchangeStatus() {
+      Api.getVariables({
+        "logo_dir": 1,
+        "company_name": 1,
+        "server_address": 1,
+        "init_status": 1,
+        "use_wxwork": 1,
+        "use_exchange": 1,
+        "exchange_server": 1,
+      }).then(({ code, data, msg }) => {
+        console.log('getVariables data', data)
+        this.is_collapse = Number(data['use_exchange']) === 1 ? '1' : '3'
+        this.area.use_exchange = Number(data['use_exchange']) === 1
+      })
+    },
   },
   mounted() {
     this.getData()
+    this.getExchangeStatus()
   }
 }
 </script>
@@ -278,6 +298,7 @@ export default {
     line-height: 3;
     color: #666;
     width: 500px;
+
     .label {
       min-width: 120px;
       text-align: right;
@@ -290,15 +311,18 @@ export default {
   display: flex;
   height: 300px;
   width: 480px;
+
   .left {
     width: 40%;
     background-color: #333333;
     padding: 5px;
     position: relative;
+
     .times {
       width: 100%;
       height: 260px;
       overflow: hidden;
+
       .time {
         color: #ccc;
         text-align: left;
@@ -306,6 +330,7 @@ export default {
         line-height: 3;
       }
     }
+
     .btn {
       position: absolute;
       bottom: 5px;
@@ -328,27 +353,33 @@ export default {
     gap: 10px;
     color: #fff;
     padding: 5px 10px;
+
     .room {
       border-bottom: 1px solid rgba(255, 255, 255, .3);
+
       .room-name {
         font-size: 22px;
       }
     }
+
     .title {
       font-size: 36px;
       line-height: 2;
     }
+
     .info {
       .title {
         font-size: 14px;
         line-height: 2;
         font-weight: normal;
       }
+
       .info-row {
         display: flex;
         gap: 5px;
         line-height: 2;
         align-items: center;
+
         .label {
           min-width: 60px;
         }
