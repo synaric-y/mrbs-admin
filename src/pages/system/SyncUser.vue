@@ -65,6 +65,7 @@ export default {
   data() {
     return {
       adStatus: 'untested',
+      default_password_placeholder: this.$t('system.default_password'),
       form: {
         hosts: '',
         port: '',
@@ -111,6 +112,7 @@ export default {
           password: data.AD_password,
           temp_default_password: data.default_password_hash,
         }
+        this.default_password_placeholder = data.default_password_hash.length > 0? this.$t('system.modify_password_placeholder'):this.$t('system.default_password')
       } else {
         ElMessage.error({
           message: this.$t('guide.set_get_fail'),

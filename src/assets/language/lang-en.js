@@ -230,6 +230,7 @@ export const langEn = {
     system: {
         section_default_title: 'Default Information',
         default_password: 'Default Password for Imported Users',
+        modify_password_placeholder: 'Modify the default password',
         default_password_placeholder: 'Please enter the default password for imported users',
         form_default_password: 'Please enter the default AD password',
         section_basic_title: 'Basic',
