@@ -63,12 +63,29 @@ export default {
       Api.login(this.form).then(({ data, code, msg }) => {
         if (code == 0) {
           this.login(data)
-          this.switchTab('../single_meet')
+          this.getVariables()
         } else {
           ElMessage.error(msg)
         }
       }).catch(() => {
         ElMessage.error(this.$t('base.networkError'))
+      })
+    },
+
+    // 获取初始化配置信息
+    getVariables() {
+      Api.getVariables({
+        "logo_dir": 1,
+        "company_name": 1,
+        "server_address": 1,
+        "init_status": 1,
+        "use_wxwork": 1,
+      }).then(({ code, data, msg }) => {
+        if (Number(data['init_status']) == 0) {
+          this.switchTab('../guide_start')
+        } else {
+          this.switchTab('../single_meet')
+        }
       })
     },
     forgetPassword() {

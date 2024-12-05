@@ -5,6 +5,11 @@ const router = createRouter({
   history: createWebHashHistory(import.meta.env.BASE_URL),
   routes: [
     {
+      path: '/',
+      name: 'single_meet',
+      component: () => import('@/pages/meet/SingleMeet.vue')
+    },
+    {
       path: '/single_meet',
       name: 'single_meet',
       component: () => import('@/pages/meet/SingleMeet.vue')
@@ -13,11 +18,6 @@ const router = createRouter({
       path: '/user_list',
       name: 'user_list',
       component: () => import('@/pages/user/UserList.vue')
-    },
-    {
-      path: '/',
-      name: 'home',
-      component:  () => import('@/pages/meet/SingleMeet.vue')
     },{
       path: '/guide_start',
       name: 'guide_start',
