@@ -61,11 +61,11 @@
   <el-dialog v-model="dialogFormVisible" :title="userDetailTitle" width="550">
     <el-form ref="userForm" :model="userForm" :rules="rules">
       <el-form-item prop="name" :label="$t('user.tableUser.name')" label-width="140px" style="margin-right: 50px;">
-        <el-input v-model="userForm.name" autocomplete="off" />
+        <el-input v-model="userForm.name" autocomplete="off" :disabled="mode != 0"/>
       </el-form-item>
       <el-form-item prop="display_name" :label="$t('user.tableUser.displayName')" label-width="140px"
         style="margin-right: 50px;">
-        <el-input v-model="userForm.display_name" autocomplete="off" />
+        <el-input v-model="userForm.display_name" autocomplete="off" :disabled="mode != 0"/>
       </el-form-item>
       <template v-if="mode==0">
         <el-form-item prop="password" :label="$t('user.formUser.password0')" label-width="140px"
@@ -95,7 +95,7 @@
   <el-dialog v-model="dialogResetPasswordForm" :title="$t('base.resetPassword')" width="550">
     <el-form ref="passwordForm" :model="passwordForm" :rules="passwordRules" label-width="auto">
       <el-form-item :label="$t('user.tableUser.name')">
-        <el-input class="form-item-input" v-model="passwordForm.name" autocomplete="off" readonly />
+        <el-input class="form-item-input" v-model="passwordForm.name" autocomplete="off" :disabled="mode != 0" />
       </el-form-item>
       <el-form-item prop="password0" :label="$t('user.formUser.password0')">
         <div class="form-item">
