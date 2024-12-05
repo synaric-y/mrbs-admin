@@ -95,7 +95,7 @@
   <el-dialog v-model="dialogResetPasswordForm" :title="$t('base.resetPassword')" width="550">
     <el-form ref="passwordForm" :model="passwordForm" :rules="passwordRules" label-width="auto">
       <el-form-item :label="$t('user.tableUser.name')">
-        <el-input class="form-item-input" v-model="passwordForm.name" autocomplete="off" :disabled="mode != 0" />
+        <el-input class="form-item-input" v-model="passwordForm.name" autocomplete="off" disabled />
       </el-form-item>
       <el-form-item prop="password0" :label="$t('user.formUser.password0')">
         <div class="form-item">
