@@ -20,10 +20,6 @@
             </el-form-item>
             <el-form-item :label="$t('guide.web_logo_label')" prop="webLogo" required>
               <div class="form-item-content">
-                <!-- <div class="img-bg" v-if="originalWebLogoURL">
-                  <el-image class="form-item-logo" :src="onlineWebImage(originalWebLogoURL)"
-                    :preview-src-list="[onlineWebImage(originalWebLogoURL)]" fit="contain" />
-                </div> -->
                 <el-upload :class="{ hide: false }" v-model:file-list="form.webLogo" ref="webLogo" action="#"
                   list-type="picture-card" :auto-upload="false" :limit="1" :max-size="1024" :accept="'image/*'">
                   <el-icon class="el-icon--upload">
@@ -44,16 +40,6 @@
                       </span>
                     </div>
                   </template>
-                  <!-- <template #file="{ file }">
-                    <div class="image-wrapper">
-                      <img class="el-upload-list__item-thumbnail" :src="file.url" fit="contain" />
-                      <div class="remove-btn" @click="removeImage('web', file)">
-                        <el-icon>
-                          <SemiSelect />
-                        </el-icon>
-                      </div>
-                    </div>
-                  </template> -->
                 </el-upload>
                 <span class="form-item-tip">{{ $t('guide.logo_tips') }}</span>
               </div>
@@ -63,12 +49,8 @@
       </div>
       <div class="section-title">{{ $t('system.section_pad_title') }}</div>
       <div class="section-content">
-        <el-form-item :label="$t('guide.pad_logo_label')" prop="appLogo" required>
+        <el-form-item :label="$t('guide.pad_logo_label')" prop="appLogo">
           <div class="form-item-content">
-            <!-- <div class="img-bg" v-if="originalAppLogoURL">
-              <el-image class="form-item-logo" :src="onlineWebImage(originalAppLogoURL)"
-                :preview-src-list="[onlineWebImage(originalAppLogoURL)]" fit="contain" />
-            </div> -->
             <el-upload :class="{ hide: false }" v-model:file-list="form.appLogo" ref="appLogo" action="#"
               list-type="picture-card" :auto-upload="false" :limit="1" :max-size="1024" :accept="'image/*'">
               <el-icon class="el-icon--upload">
@@ -89,17 +71,6 @@
                   </span>
                 </div>
               </template>
-              <!-- <template #file="{ file }">
-                <div class="image-wrapper">
-                  <el-image class="el-upload-list__item-thumbnail" :src="file.url" :preview-src-list="[file.url]"
-                    fit="contain" />
-                  <div class="remove-btn" @click="removeImage('app', file)">
-                    <el-icon>
-                      <SemiSelect />
-                    </el-icon>
-                  </div>
-                </div>
-              </template> -->
             </el-upload>
             <span class="form-item-tip">{{ $t('guide.pad_logp_tips') }}</span>
           </div>
@@ -206,7 +177,7 @@ export default {
         webLogo: [
           {
             type: 'array', validator: (rule, value, callback) => {
-              if (this.originalWebLogoURL === '') callback(new Error(this.$t('guide.alert_web_logo')))
+              if (this.originalWebLogoURL === '' && value) callback(new Error(this.$t('guide.alert_web_logo')))
               else callback()
             }, message: this.$t('guide.alert_web_logo'), trigger: 'blur'
           },

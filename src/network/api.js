@@ -245,6 +245,6 @@ export class Api {
     }
 
     static async applyNewVersion(params) {
-        return Request.post('apply_new_version',params)
+        return Request.post('system_setting/apply_new_version',params)
     }
 }

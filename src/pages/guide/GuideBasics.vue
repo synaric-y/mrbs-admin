@@ -15,57 +15,55 @@
                 <el-input :disabled="urlStatus === 'testing'" @input="urlStatus = 'untested'" v-model="form.requestUrl"
                   class="form-item-input" :placeholder="$t('guide.example_service')" />
                 <TestButton :status="urlStatus" @test="verify" />
-                <el-button type="primary" @click="pendingShowQRCode">{{ $t('guide.look_qrcode')}}</el-button>
+                <el-button type="primary" @click="pendingShowQRCode">{{ $t('guide.look_qrcode') }}</el-button>
               </div>
             </el-form-item>
-            <el-form-item :label="$t('guide.web_logo_label')" prop="webLogo" required >
+            <el-form-item :label="$t('guide.web_logo_label')" prop="webLogo" required>
               <div class="form-item-content">
-                <div class="img-bg" v-if="originalWebLogoURL">
-                  <el-image class="form-item-logo" :src="onlineWebImage(originalWebLogoURL)"
-                    :preview-src-list="[onlineWebImage(originalWebLogoURL)]" fit="contain" />
-                </div>
-                <el-upload :class="{ hide: form.webLogo && form.webLogo.length === 1 }" v-model:file-list="form.webLogo"
-                  ref="webLogo" action="#" list-type="picture-card" :auto-upload="false" :limit="1" :max-size="1024"
-                  :accept="'image/*'">
+                <el-upload :class="{ hide: false }" v-model:file-list="form.webLogo" ref="webLogo" action="#"
+                  list-type="picture-card" :auto-upload="false" :limit="1" :max-size="1024" :accept="'image/*'">
                   <el-icon class="el-icon--upload">
                     <Plus />
                   </el-icon>
                   <template #file="{ file }">
-                    <div class="image-wrapper">
-                      <el-image class="el-upload-list__item-thumbnail" :src="file.url" :preview-src-list="[file.url]"
-                        fit="contain" />
-                      <div class="remove-btn" @click="removeImage('web', file)">
-                        <el-icon>
-                          <SemiSelect />
-                        </el-icon>
-                      </div>
+                    <div>
+                      <img class="el-upload-list__item-thumbnail" :src="file.url" alt="#" />
+                      <span class="el-upload-list__item-actions">
+                        <span class="el-upload-list__item-preview" @click="handlePreview(file)">
+                          <el-icon><zoom-in /></el-icon>
+                        </span>
+                        <span class="el-upload-list__item-delete" @click="removeImage('web', file)">
+                          <el-icon>
+                            <Delete />
+                          </el-icon>
+                        </span>
+                      </span>
                     </div>
                   </template>
                 </el-upload>
                 <span class="form-item-tip">{{ $t('guide.logo_tips') }}</span>
               </div>
             </el-form-item>
-            <el-form-item :label="$t('guide.pad_logo_label')" prop="appLogo" required >
+            <el-form-item :label="$t('guide.pad_logo_label')" prop="appLogo">
               <div class="form-item-content">
-                <div class="img-bg" v-if="originalAppLogoURL">
-                  <el-image class="form-item-logo" :src="onlineWebImage(originalAppLogoURL)"
-                    :preview-src-list="[onlineWebImage(originalAppLogoURL)]" fit="contain" />
-                </div>
-                <el-upload :class="{ hide: form.appLogo && form.appLogo.length === 1 }" v-model:file-list="form.appLogo"
-                  ref="appLogo" action="#" list-type="picture-card" :auto-upload="false" :limit="1" :max-size="1024"
-                  :accept="'image/*'">
+                <el-upload :class="{ hide: false }" v-model:file-list="form.appLogo" ref="appLogo" action="#"
+                  list-type="picture-card" :auto-upload="false" :limit="1" :max-size="1024" :accept="'image/*'">
                   <el-icon class="el-icon--upload">
                     <Plus />
                   </el-icon>
                   <template #file="{ file }">
-                    <div class="image-wrapper">
-                      <el-image class="el-upload-list__item-thumbnail" :src="file.url" :preview-src-list="[file.url]"
-                        fit="contain" />
-                      <div class="remove-btn" @click="removeImage('app', file)">
-                        <el-icon>
-                          <SemiSelect />
-                        </el-icon>
-                      </div>
+                    <div>
+                      <img class="el-upload-list__item-thumbnail" :src="file.url" alt="" />
+                      <span class="el-upload-list__item-actions">
+                        <span class="el-upload-list__item-preview" @click="handlePreview(file)">
+                          <el-icon><zoom-in /></el-icon>
+                        </span>
+                        <span class="el-upload-list__item-delete" @click="removeImage('app', file)">
+                          <el-icon>
+                            <Delete />
+                          </el-icon>
+                        </span>
+                      </span>
                     </div>
                   </template>
                 </el-upload>
@@ -95,7 +93,7 @@
     <template #btns>
       <el-button plain class="btn" @click="jumpGuide">{{ $t('guide.jump_guide') }}</el-button>
       <el-button type="primary" class="btn" @click="switchTab('/guide_start')"> {{ $t('guide.pre') }}</el-button>
-      <el-button plain class="btn" @click="skipCurrentGuide">{{$t('guide.no_guide')}}</el-button>
+      <el-button plain class="btn" @click="skipCurrentGuide">{{ $t('guide.no_guide') }}</el-button>
       <el-button type="primary" class="btn" @click="nextStep">{{ $t('guide.next') }}</el-button>
     </template>
   </Layout>
@@ -134,6 +132,8 @@ export default {
       originalAppLogoURL: '',
       versionData: [],
       showQRCode: false,
+      dialogVisible: false,
+      dialogImageUrl: '',
       rules: {
         companyName: [
           { required: true, message: this.$t('guide.company_name_placeholder'), trigger: 'blur' },
@@ -144,7 +144,7 @@ export default {
         webLogo: [
           {
             type: 'array', validator: (rule, value, callback) => {
-              if (this.originalWebLogoURL === '' && value.length === 0) callback(new Error(this.$t('guide.alert_web_logo')))
+              if (this.originalWebLogoURL === '') callback(new Error(this.$t('guide.alert_web_logo')))
               else callback()
             }, message: this.$t('guide.alert_web_logo'), trigger: 'blur'
           },
@@ -152,7 +152,7 @@ export default {
         appLogo: [
           {
             type: 'array', validator: (rule, value, callback) => {
-              if (this.originalAppLogoURL === '' && value.length === 0) callback(new Error(this.$t('guide.alert_pad_logo')))
+              if (this.originalAppLogoURL === '') callback(new Error(this.$t('guide.alert_pad_logo')))
               else callback()
             }, message: this.$t('guide.alert_pad_logo'), trigger: 'blur'
           },
@@ -174,6 +174,20 @@ export default {
     }
   },
   methods: {
+    updateVersion(version) {
+      this.applyNewVersion(version)
+    },
+    fallbackVersion(version) {
+      this.applyNewVersion(version)
+    },
+    applyNewVersion(newVersion) {
+      Api.applyNewVersion({ version: newVersion })
+        .then(({ code, data, msg }) => {
+          ElMessage.success({
+            message: msg
+          })
+        })
+    },
     verify() {
       if (!this.form.requestUrl || this.form.requestUrl === '') {
         ElMessage.error({
@@ -222,9 +236,11 @@ export default {
       switch (type) {
         case 'web': {
           this.$refs.webLogo.handleRemove(file)
+          this.originalWebLogoURL = ''
         } break;
         case 'app': {
           this.$refs.appLogo.handleRemove(file)
+          this.originalAppLogoURL = ''
         } break;
       }
     },
@@ -237,7 +253,7 @@ export default {
         if (valid) {
           console.log('submit!')
           const requests = []
-          if (this.form.webLogo.length !== 0) {
+          if (this.form.webLogo.length !== 0 && this.form.webLogo[0].raw) {
             const webLogoData = new FormData();
             webLogoData.append('logo', this.form.webLogo[0].raw)
             requests.push(
@@ -247,7 +263,7 @@ export default {
                 })
             )
           }
-          if (this.form.appLogo.length !== 0) {
+          if (this.form.appLogo.length !== 0 && this.form.appLogo[0].raw) {
             const appLogoData = new FormData();
             appLogoData.append('logo', this.form.appLogo[0].raw)
             requests.push(
@@ -264,6 +280,8 @@ export default {
               "company_name": this.form.companyName,
               "server_address": encodeURIComponent(this.form.requestUrl),
               "theme_type": this.form.theme,
+              "logo_dir": this.form.webLogo.length > 0?this.originalWebLogoURL: '',
+              "app_logo_dir": this.form.appLogo.length > 0?this.originalAppLogoURL: '',
             }
           ))
           Promise.all(requests)
@@ -281,7 +299,7 @@ export default {
                 message: this.$t('guide.set_fail') + (error.message ? (this.$t('guide.set_fail_reason') + error.message) : ''),
               })
               console.log(error)
-            });
+            })
         } else {
           ElMessage.error({
             message: this.$t('guide.form_format_error'),
@@ -354,7 +372,6 @@ export default {
     }
   },
   mounted() {
-    const that = this
     Api.getVariables({
       "logo_dir": 1,
       "app_logo_dir": 1,
@@ -365,7 +382,7 @@ export default {
     }).then(({ code, data, msg }) => {
       if (code == 0) {
         console.log(data)
-        that.form = {
+        this.form = {
           companyName: data.company_name,
           requestUrl: data.server_address,
           webLogo: [],
@@ -373,9 +390,26 @@ export default {
           timeFormat: data.time_type,
           theme: data.theme_type,
         }
-        that.originalWebLogoURL = data.logo_dir
-        that.originalAppLogoURL = data.app_logo_dir
-        console.log(that.originalWebLogoURL, that.originalWebLogoURL)
+        this.originalWebLogoURL = data.logo_dir
+        this.originalAppLogoURL = data.app_logo_dir
+        if (data.logo_dir.length > 5) {
+          const logoObject = {
+            name: data.logo_dir.split('/').pop(),
+            url: this.onlineWebImage(data.logo_dir),
+            uid: Date.now(),
+          }
+          this.form.webLogo.push(logoObject)
+        }
+        if (data.app_logo_dir.length > 5) {
+          const appObject = {
+            name: data.app_logo_dir.split('/').pop(),
+            url: this.onlineWebImage(data.app_logo_dir),
+            uid: Date.now(),
+          }
+          this.form.appLogo.push(appObject)
+        }
+        this.nowVersion = data.now_version
+        console.log(this.originalWebLogoURL, this.originalAppLogoURL)
       } else {
         ElMessage.error({
           message: this.$t('guide.set_get_fail'),
