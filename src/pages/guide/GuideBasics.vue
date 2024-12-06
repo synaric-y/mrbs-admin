@@ -150,12 +150,12 @@ export default {
           },
         ],
         appLogo: [
-          {
-            type: 'array', validator: (rule, value, callback) => {
-              if (this.originalAppLogoURL === '') callback(new Error(this.$t('guide.alert_pad_logo')))
-              else callback()
-            }, message: this.$t('guide.alert_pad_logo'), trigger: 'blur'
-          },
+          // {
+          //   type: 'array', validator: (rule, value, callback) => {
+          //     if (this.originalAppLogoURL === '') callback(new Error(this.$t('guide.alert_pad_logo')))
+          //     else callback()
+          //   }, message: this.$t('guide.alert_pad_logo'), trigger: 'blur'
+          // },
         ],
         timeFormat: [
           { required: true, message: this.$t('guide.form_time_format'), trigger: 'blur' },

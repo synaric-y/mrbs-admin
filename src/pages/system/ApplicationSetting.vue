@@ -106,10 +106,12 @@
             <el-table-column prop="update_time" :label="$t('system.update_time')" />
             <el-table-column :label="$t('system.btn')">
               <template #default="scope">
-                <el-button @click="updateVersion(scope.row.version)" v-if="nowVersion < scope.row.version" type="primary">{{ $t('system.update_btn')
+                <el-button @click="updateVersion(scope.row.version)" v-if="nowVersion < scope.row.version"
+                  type="primary">{{ $t('system.update_btn')
                   }}</el-button>
-                <el-button @click="fallbackVersion(scope.row.version)" color="#b31e1e" v-else-if="nowVersion > scope.row.version" type="primary" :dark="true">{{
-                  $t('system.fallback_btn') }}</el-button>
+                <el-button @click="fallbackVersion(scope.row.version)" color="#b31e1e"
+                  v-else-if="nowVersion > scope.row.version" type="primary" :dark="true">{{
+                    $t('system.fallback_btn') }}</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -164,7 +166,7 @@ export default {
       originalAppLogoURL: '',
       versionData: [],
       showQRCode: false,
-      nowVersion: 0.1,
+      nowVersion: 'V0.1',
       dialogVisible: false,
       dialogImageUrl: '',
       rules: {
@@ -207,64 +209,68 @@ export default {
     }
   },
   created() {
-    Api.getVariables({
-      "logo_dir": 1,
-      "app_logo_dir": 1,
-      "time_type": 1,
-      "company_name": 1,
-      "server_address": 1,
-      "theme_type": 1,
-      "now_version": 1,
-    }).then(({ code, data, msg }) => {
-      if (code == 0) {
-        console.log(data)
-        this.form = {
-          companyName: data.company_name,
-          requestUrl: data.server_address,
-          webLogo: [],
-          appLogo: [],
-          timeFormat: data.time_type,
-          theme: data.theme_type,
-        }
-        this.originalWebLogoURL = data.logo_dir
-        this.originalAppLogoURL = data.app_logo_dir
-
-        if (data.logo_dir.length > 5) {
-          const logoObject = {
-            name: data.logo_dir.split('/').pop(),
-            url: this.onlineWebImage(data.logo_dir),
-            uid: Date.now(),
-          }
-          this.form.webLogo.push(logoObject)
-        }
-        if (data.app_logo_dir.length > 5) {
-          const appObject = {
-            name: data.app_logo_dir.split('/').pop(),
-            url: this.onlineWebImage(data.app_logo_dir),
-            uid: Date.now(),
-          }
-          this.form.appLogo.push(appObject)
-        }
-        this.nowVersion = data.now_version
-        console.log(this.originalWebLogoURL, this.originalAppLogoURL)
-      } else {
-        ElMessage.error({
-          message: this.$t('guide.set_get_fail'),
-        })
-      }
-    }).catch(e => {
-      console.log(e)
-    })
-
-    Api.getVersions({})
-      .then(({ code, data }) => {
-        data.forEach((item, index, arr) => {
-          arr[index].publish_time = dayjs.unix(item.publish_time).format('YYYY-MM-DD HH:mm:ss')
-        })
-        this.versionData = data
-      })
+    this.initPage()
   },
   methods: {
+
+    initPage() {
+      Api.getVariables({
+        "logo_dir": 1,
+        "app_logo_dir": 1,
+        "time_type": 1,
+        "company_name": 1,
+        "server_address": 1,
+        "theme_type": 1,
+        "now_version": 1,
+      }).then(({ code, data, msg }) => {
+        if (code == 0) {
+          console.log(data)
+          this.form = {
+            companyName: data.company_name,
+            requestUrl: data.server_address,
+            webLogo: [],
+            appLogo: [],
+            timeFormat: data.time_type,
+            theme: data.theme_type,
+          }
+          this.originalWebLogoURL = data.logo_dir
+          this.originalAppLogoURL = data.app_logo_dir
+
+          if (data.logo_dir.length > 5) {
+            const logoObject = {
+              name: data.logo_dir.split('/').pop(),
+              url: this.onlineWebImage(data.logo_dir),
+              uid: Date.now(),
+            }
+            this.form.webLogo.push(logoObject)
+          }
+          if (data.app_logo_dir.length > 5) {
+            const appObject = {
+              name: data.app_logo_dir.split('/').pop(),
+              url: this.onlineWebImage(data.app_logo_dir),
+              uid: Date.now(),
+            }
+            this.form.appLogo.push(appObject)
+          }
+          this.nowVersion = data.now_version
+          console.log(this.originalWebLogoURL, this.originalAppLogoURL)
+        } else {
+          ElMessage.error({
+            message: this.$t('guide.set_get_fail'),
+          })
+        }
+      }).catch(e => {
+        console.log(e)
+      })
+
+      Api.getVersions({})
+        .then(({ code, data }) => {
+          data.forEach((item, index, arr) => {
+            arr[index].publish_time = dayjs.unix(item.publish_time).format('YYYY-MM-DD HH:mm:ss')
+          })
+          this.versionData = data
+        })
+    },
     updateVersion(version) {
       this.applyNewVersion(version)
     },
@@ -272,18 +278,19 @@ export default {
       this.applyNewVersion(version)
     },
     applyNewVersion(newVersion) {
-      Api.applyNewVersion({version: newVersion})
-      .then(({ code, data, msg }) => {
-        ElMessage.success({
-          message: msg
+      Api.applyNewVersion({ version: newVersion })
+        .then(({ code, data, msg }) => {
+          this.initPage()
+          ElMessage.success({
+            message: msg
+          })
         })
-      })
     },
     handlePreview(file) {
-      console.log('handlePreview file',file)
+      console.log('handlePreview file', file)
       this.dialogVisible = true
       this.dialogImageUrl = file.url
-      console.log('handlePreview dialogImageUrl',this.dialogImageUrl)
+      console.log('handlePreview dialogImageUrl', this.dialogImageUrl)
     },
     verify() {
       if (!this.form.requestUrl || this.form.requestUrl === '') {
@@ -344,9 +351,9 @@ export default {
       this.$router.go(-1)
     },
     submit() {
-      console.log('submit form',this.form)
-      console.log('submit originalWebLogoURL',this.originalWebLogoURL)
-      console.log('submit originalAppLogoURL',this.originalAppLogoURL)
+      console.log('submit form', this.form)
+      console.log('submit originalWebLogoURL', this.originalWebLogoURL)
+      console.log('submit originalAppLogoURL', this.originalAppLogoURL)
       // return
       this.$refs.formRef.validate((valid) => {
         if (valid) {
@@ -381,8 +388,8 @@ export default {
               "company_name": this.form.companyName,
               "server_address": encodeURIComponent(this.form.requestUrl),
               "theme_type": this.form.theme,
-              "logo_dir": this.form.webLogo.length > 0?this.originalWebLogoURL: '',
-              "app_logo_dir": this.form.appLogo.length > 0?this.originalAppLogoURL: '',
+              "logo_dir": this.form.webLogo.length > 0 ? this.originalWebLogoURL : '',
+              "app_logo_dir": this.form.appLogo.length > 0 ? this.originalAppLogoURL : '',
             }
           ))
           Promise.all(requests)
