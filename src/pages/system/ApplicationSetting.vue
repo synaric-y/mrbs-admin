@@ -20,8 +20,9 @@
             </el-form-item>
             <el-form-item :label="$t('guide.web_logo_label')" prop="webLogo">
               <div class="form-item-content">
-                <el-upload :class="{ hide: false }" v-model:file-list="form.webLogo" ref="webLogo" action="#"
-                  list-type="picture-card" :auto-upload="false" :limit="1" :accept="'image/*'">
+                <el-upload :class="{ hide: false }" v-model:file-list="form.webLogo" ref="webLogo" action="/logo"
+                  list-type="picture-card" :auto-upload="false" :limit="1" :accept="'image/png'":on-success="handleUploadSuccess"
+                  :on-error="handleUploadError">
                   <el-icon class="el-icon--upload">
                     <Plus />
                   </el-icon>
@@ -51,8 +52,8 @@
       <div class="section-content">
         <el-form-item :label="$t('guide.pad_logo_label')" prop="appLogo">
           <div class="form-item-content">
-            <el-upload :class="{ hide: false }" v-model:file-list="form.appLogo" ref="appLogo" action="#"
-              list-type="picture-card" :auto-upload="false" :limit="1" :accept="'image/*'">
+            <el-upload :class="{ hide: false }" v-model:file-list="form.appLogo" ref="appLogo" action="/logo"
+              list-type="picture-card" :auto-upload="false" :limit="1" :accept="'image/png'">
               <el-icon class="el-icon--upload">
                 <Plus />
               </el-icon>
@@ -294,6 +295,16 @@ export default {
       this.dialogImageUrl = file.url
       console.log('handlePreview dialogImageUrl', this.dialogImageUrl)
     },
+
+    // 上传成功
+    handleUploadSuccess(response, file, fileList) {
+      console.log('上传成功的文件:', response, file, fileList);
+    },
+
+    // 上传失败
+    handleUploadError(error, file) {
+      console.error('上传错误信息:', error, file);
+    },
     verify() {
       if (!this.form.requestUrl || this.form.requestUrl === '') {
         ElMessage.error({
@@ -363,6 +374,7 @@ export default {
           const requests = []
           if (this.form.webLogo && this.form.webLogo[0] && this.form.webLogo[0].raw) {
             const webLogoData = new FormData()
+            console.log('webLogo submit new')
             webLogoData.append('logo', this.form.webLogo[0].raw)
             requests.push(
               Api.uploadWebLogo(webLogoData)
@@ -374,6 +386,7 @@ export default {
           // 平板端图片上传
           if (this.form.appLogo && this.form.appLogo[0] && this.form.appLogo[0].raw) {
             const appLogoData = new FormData()
+            console.log('appLogo submit new')
             appLogoData.append('logo', this.form.appLogo[0].raw)
             requests.push(
               Api.uploadAppLogo(appLogoData)
@@ -390,13 +403,13 @@ export default {
             "server_address": encodeURIComponent(this.form.requestUrl),
             "theme_type": this.form.theme,
           };
-          if (this.form.webLogo && this.form.webLogo[0] && this.form.webLogo[0].row) {
+          if (this.form.webLogo && this.form.webLogo[0] && this.form.webLogo[0].raw) {
             delete params.logo_dir
           } else {
             console.log('submit this.form.webLogo not')
             params['logo_dir'] = this.originalWebLogoURL
           }
-          if (this.form.appLogo && this.form.appLogo[0] && this.form.appLogo[0].row) {
+          if (this.form.appLogo && this.form.appLogo[0] && this.form.appLogo[0].raw) {
             delete params.app_logo_dir
           } else {
             console.log('submit this.form.appLogo not')
@@ -408,13 +421,13 @@ export default {
           ))
           Promise.all(requests)
             .then((responses) => {
-              console.log(responses)
+              console.log('submit Promise.all',responses)
               ElMessage.success({
                 message: this.$t('guide.set_success'),
               })
-              // setTimeout(() => {
-              //   location.reload() // 刷新页面
-              // }, 1000)
+              setTimeout(() => {
+                location.reload() // 刷新页面
+              }, 1000)
             })
             .catch((error) => {
               ElMessage.error({

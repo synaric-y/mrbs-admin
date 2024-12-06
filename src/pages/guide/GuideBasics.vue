@@ -12,8 +12,8 @@
             </el-form-item>
             <el-form-item :label="$t('guide.service_url')" prop="requestUrl">
               <div class="form-item-content">
-                <el-input :disabled="urlStatus === 'testing'" @input="urlStatus = 'untested'" v-model="basicsform.requestUrl"
-                  class="form-item-input" :placeholder="$t('guide.example_service')" />
+                <el-input :disabled="urlStatus === 'testing'" @input="urlStatus = 'untested'"
+                  v-model="basicsform.requestUrl" class="form-item-input" :placeholder="$t('guide.example_service')" />
                 <TestButton :status="urlStatus" @test="verify" />
                 <el-button type="primary" @click="pendingShowQRCode">{{ $t('guide.look_qrcode') }}</el-button>
               </div>
@@ -21,7 +21,7 @@
             <el-form-item :label="$t('guide.web_logo_label')" prop="webLogo">
               <div class="form-item-content">
                 <el-upload :class="{ hide: false }" v-model:file-list="basicsform.webLogo" ref="guideWebLogo" action="#"
-                  list-type="picture-card" :auto-upload="false" :limit="1" :accept="'image/*'">
+                  list-type="picture-card" :auto-upload="false" :limit="1" :accept="'image/png'">
                   <el-icon class="el-icon--upload">
                     <Plus />
                   </el-icon>
@@ -47,7 +47,7 @@
             <el-form-item :label="$t('guide.pad_logo_label')" prop="appLogo">
               <div class="form-item-content">
                 <el-upload :class="{ hide: false }" v-model:file-list="basicsform.appLogo" ref="guideAppLogo" action="#"
-                  list-type="picture-card" :auto-upload="false" :limit="1" :accept="'image/*'">
+                  list-type="picture-card" :auto-upload="false" :limit="1" :accept="'image/png'">
                   <el-icon class="el-icon--upload">
                     <Plus />
                   </el-icon>
@@ -122,8 +122,10 @@ import axios from "@/network/axios.js";
 import * as dayjs from 'dayjs'
 
 export default {
+  name: 'GuideBasics',
   components: { Layout, TestButton, ProgressBar, SemiSelect, Minus },
   mixins: [PageMixin],
+  
   data() {
     return {
       basicsform: {
@@ -137,7 +139,6 @@ export default {
       urlStatus: 'untested',
       originalWebLogoURL: '',
       originalAppLogoURL: '',
-      versionData: [],
       showQRCode: false,
       dialogVisible: false,
       dialogImageUrl: '',
@@ -148,22 +149,6 @@ export default {
         requestUrl: [
           { required: true, message: this.$t('guide.service_placeholder'), trigger: 'blur' },
         ],
-        webLogo: [
-          // {
-          //   type: 'array', validator: (rule, value, callback) => {
-          //     if (this.originalWebLogoURL === '') callback(new Error(this.$t('guide.alert_web_logo')))
-          //     else callback()
-          //   }, message: this.$t('guide.alert_web_logo'), trigger: 'blur'
-          // },
-        ],
-        appLogo: [
-          // {
-          //   type: 'array', validator: (rule, value, callback) => {
-          //     if (this.originalAppLogoURL === '') callback(new Error(this.$t('guide.alert_pad_logo')))
-          //     else callback()
-          //   }, message: this.$t('guide.alert_pad_logo'), trigger: 'blur'
-          // },
-        ],
         timeFormat: [
           { required: true, message: this.$t('guide.form_time_format'), trigger: 'blur' },
         ],
@@ -173,273 +158,243 @@ export default {
       }
     }
   },
+
   computed: {
     onlineWebImage() {
-      return (url) => {
-        return (HOST + url + '?time=' + new Date().getTime())
-      }
+      return (url) => HOST + url + '?time=' + Date.now()
     }
   },
+
   methods: {
-    updateVersion(version) {
-      this.applyNewVersion(version)
+    // 图片上传前验证
+    beforeUpload(file) {
+      const isPNG = file.type === 'image/png'
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isPNG) {
+        ElMessage.error(this.$t('guide.only_png_allowed'))
+        return false
+      }
+      if (!isLt2M) {
+        ElMessage.error(this.$t('guide.file_too_large'))
+        return false
+      }
+      return true
     },
-    fallbackVersion(version) {
-      this.applyNewVersion(version)
-    },
-    applyNewVersion(newVersion) {
-      Api.applyNewVersion({ version: newVersion })
-        .then(({ code, data, msg }) => {
-          ElMessage.success({
-            message: msg
-          })
-        })
-    },
-    verify() {
-      if (!this.basicsform.requestUrl || this.basicsform.requestUrl === '') {
-        ElMessage.error({
-          message: this.$t('guide.alert_empty_request_url')
-        })
+
+    // 验证服务器地址
+    async verify() {
+      if (!this.basicsform.requestUrl) {
+        ElMessage.error({ message: this.$t('guide.alert_empty_request_url') })
         return
       }
-      this.urlStatus = 'testing'
-      axios({
-        url: `/web/call.php?act=system_setting%2Fget_variables`,
-        method: 'POST',
-        data: { server_address: this.basicsform.requestUrl },
-      }).then(({ data }) => {
-        if (data.code !== 0) {
-          ElMessage.error({
-            message: this.$t('guide.alert_invalid_url')
-          })
-          this.urlStatus = 'untested'
-          return
-        }
-        this.urlStatus = 'tested'
-        ElMessage.success({
-          message: this.$t('guide.alert_success_url')
-        })
-      }).catch(e => {
 
-      })
+      this.urlStatus = 'testing'
+      try {
+        const { data } = await axios({
+          url: `/web/call.php?act=system_setting%2Fget_variables`,
+          method: 'POST',
+          data: { server_address: this.basicsform.requestUrl },
+        })
+
+        if (data.code !== 0) {
+          throw new Error(this.$t('guide.alert_invalid_url'))
+        }
+
+        this.urlStatus = 'tested'
+        ElMessage.success({ message: this.$t('guide.alert_success_url') })
+      } catch (error) {
+        this.urlStatus = 'untested'
+        ElMessage.error({ message: error.message || this.$t('guide.alert_invalid_url') })
+      }
     },
 
+    // 显示二维码
     pendingShowQRCode() {
+      if (!this.basicsform.requestUrl) {
+        ElMessage.warning(this.$t('guide.alert_empty_request_url'))
+        return
+      }
+
       this.showQRCode = true
       this.$nextTick(() => {
-        const codeFigure = new AraleQRCode({
-          "render": "svg",
-          "text": this.basicsform.requestUrl,
-          "size": 200
-        });
         const qrcodeContainer = document.querySelector('#qrcode')
-        while (qrcodeContainer.firstChild) {
+        while (qrcodeContainer?.firstChild) {
           qrcodeContainer.removeChild(qrcodeContainer.firstChild)
         }
-        qrcodeContainer.appendChild(codeFigure)
+
+        const codeFigure = new AraleQRCode({
+          render: "svg",
+          text: this.basicsform.requestUrl,
+          size: 200
+        })
+        qrcodeContainer?.appendChild(codeFigure)
       })
     },
+
+    // 移除图片
     removeImage(type, file) {
-      switch (type) {
-        case 'web': {
-          this.$refs.guideWebLogo.handleRemove(file)
-          this.originalWebLogoURL = ''
-        } break;
-        case 'app': {
-          this.$refs.guideAppLogo.handleRemove(file)
-          this.originalAppLogoURL = ''
-        } break;
+      if (type === 'web') {
+        this.$refs.guideWebLogo?.handleRemove(file)
+        this.originalWebLogoURL = ''
+      } else if (type === 'app') {
+        this.$refs.guideAppLogo?.handleRemove(file)
+        this.originalAppLogoURL = ''
       }
-    },
-    back() {
-      this.$router.go(-1)
-    },
-    submit() {
-      console.log(this.basicsform)
-      this.$refs.guideFormRef.validate((valid) => {
-        if (valid) {
-          console.log('submit!')
-          const requests = []
-          if (this.basicsform.webLogo && this.basicsform.webLogo[0] && this.basicsform.webLogo[0].raw) {
-            const webLogoData = new FormData();
-            webLogoData.append('logo', this.basicsform.webLogo[0].raw)
-            requests.push(
-              Api.uploadWebLogo(webLogoData)
-                .then(res => {
-                  console.log('uploadWebLogo res',res);
-                  if (res?.data?.code !== 0) throw new Error(this.$t('guide.alert_fail_upload_image'))
-                })
-            )
-          }
-          if (this.basicsform.appLogo && this.basicsform.appLogo[0] && this.basicsform.appLogo[0].raw) {
-            const appLogoData = new FormData();
-            appLogoData.append('logo', this.basicsform.appLogo[0].raw)
-            requests.push(
-              Api.uploadAppLogo(appLogoData)
-                .then(res => {
-                  console.log('uploadAppLogo res',res);
-                  if (res?.data?.code !== 0) throw new Error(this.$t('guide.alert_fail_upload_image'))
-                })
-            )
-          }
-          Promise.all(requests)
-            .then((responses) => {
-              console.log(responses)
-              ElMessage.success({
-                message: this.$t('guide.set_success'),
-              })
-              setTimeout(() => {
-                location.reload()
-              }, 1000)
-            })
-            .catch((error) => {
-              ElMessage.error({
-                message: this.$t('guide.set_fail') + (error.message ? (this.$t('guide.set_fail_reason') + error.message) : ''),
-              })
-              console.log(error)
-            })
-        } else {
-          ElMessage.error({
-            message: this.$t('guide.form_format_error'),
-          })
-        }
-      }
-      )
     },
 
-    jumpGuide() {
-      Api.setVariables(
-        { "init_status": 3 }
-      ).then(res => {
-        this.switchTab('../single_meet')
-      }).catch(e => {
-        console.log(e)
-      })
+    // 处理图片预览
+    handlePreview(file) {
+      this.dialogImageUrl = file.url
+      this.dialogVisible = true
     },
-    skipCurrentGuide() {
-      Api.setVariables(
-        { "init_status": 1 }
-      ).then(res => {
+
+    // 跳过引导
+    async skipCurrentGuide() {
+      try {
+        await Api.setVariables({ "init_status": 1 })
         this.switchTab('/guide_user')
-      }).catch(e => {
-        console.log(e)
-      })
+      } catch (error) {
+        ElMessage.error(this.$t('guide.operation_failed'))
+        console.error(error)
+      }
     },
-    nextStep() {
-      this.$refs.guideFormRef.validate((valid) => {
-        if (valid) {
-          if (this.urlStatus !== 'tested') {
-            ElMessage.error({
-              message: this.$t('guide.first_ad_test'),
-            })
-            return
-          }
 
-          // 其他数据修改
-          // 其他数据修改
-          const params = {
-            "init_status": 3,
-            "time_type": this.basicsform.timeFormat,
-            "company_name": this.basicsform.companyName,
-            "server_address": encodeURIComponent(this.basicsform.requestUrl),
-            "theme_type": this.basicsform.theme,
-          };
-          if (this.basicsform.webLogo && this.basicsform.webLogo[0] && this.basicsform.webLogo[0].row) {
-            delete params.logo_dir
-          } else {
-            console.log('submit this.form.webLogo not')
-            params['logo_dir'] = this.originalWebLogoURL
-          }
-          if (this.basicsform.appLogo && this.basicsform.appLogo[0] && this.basicsform.appLogo[0].row) {
-            delete params.app_logo_dir
-          } else {
-            console.log('submit this.form.appLogo not')
-            params['app_logo_dir'] = this.originalAppLogoURL
-          }
-          console.log('submit params',params)
-          Api.setVariables(
-            params
-          ).then(res => {
-            console.log(res)
-            if (res?.code == 0) {
-              ElMessage.success({
-                message: this.$t('guide.set_success'),
-              })
-              this.switchTab('/guide_user')
-            } else {
-              ElMessage.error({
-                message: this.$t('guide.set_fail'),
-              })
+    // 跳过所有引导
+    async jumpGuide() {
+      try {
+        await Api.setVariables({ "init_status": 3 })
+        this.switchTab('../single_meet')
+      } catch (error) {
+        ElMessage.error(this.$t('guide.operation_failed'))
+        console.error(error)
+      }
+    },
+
+    // 下一步
+    async nextStep() {
+      try {
+        // 表单验证
+        const valid = await this.$refs.guideFormRef.validate()
+        if (!valid) {
+          ElMessage.error({ message: this.$t('guide.form_format_error') })
+          return
+        }
+
+        // 检查URL测试状态
+        if (this.urlStatus !== 'tested') {
+          ElMessage.error({ message: this.$t('guide.first_ad_test') })
+          return
+        }
+
+        // 处理图片上传
+        const uploadPromises = []
+        if (this.basicsform.webLogo?.[0]?.raw) {
+          const webLogoData = new FormData()
+          webLogoData.append('logo', this.basicsform.webLogo[0].raw)
+          uploadPromises.push(Api.uploadWebLogo(webLogoData))
+        }
+
+        if (this.basicsform.appLogo?.[0]?.raw) {
+          const appLogoData = new FormData()
+          appLogoData.append('logo', this.basicsform.appLogo[0].raw)
+          uploadPromises.push(Api.uploadAppLogo(appLogoData))
+        }
+
+        // 等待所有图片上传完成
+        if (uploadPromises.length > 0) {
+          const results = await Promise.all(uploadPromises)
+          for (const res of results) {
+            if (res?.data?.code !== 0) {
+              throw new Error(this.$t('guide.alert_fail_upload_image'))
             }
-          }).catch(e => {
-            ElMessage.error({
-              message: this.$t('guide.set_fail'),
-            })
-            console.log(e)
-          })
+          }
+        }
+
+        // 提交表单数据
+        const params = {
+          init_status: 3,
+          time_type: this.basicsform.timeFormat,
+          company_name: this.basicsform.companyName,
+          server_address: encodeURIComponent(this.basicsform.requestUrl),
+          theme_type: this.basicsform.theme,
+          logo_dir: this.basicsform.webLogo?.[0]?.raw ? undefined : this.originalWebLogoURL,
+          app_logo_dir: this.basicsform.appLogo?.[0]?.raw ? undefined : this.originalAppLogoURL
+        }
+
+        const res = await Api.setVariables(params)
+        if (res?.code === 0) {
+          ElMessage.success({ message: this.$t('guide.set_success') })
+          this.switchTab('/guide_user')
         } else {
-          ElMessage.error({
-            message: this.$t('guide.form_format_error'),
+          throw new Error(res?.msg || this.$t('guide.set_fail'))
+        }
+      } catch (error) {
+        ElMessage.error({
+          message: this.$t('guide.set_fail') +
+            (error.message ? ` (${error.message})` : '')
+        })
+        console.error(error)
+      }
+    },
+
+    // 初始化页面数据
+    async initPage() {
+      try {
+        const { code, data } = await Api.getVariables({
+          logo_dir: 1,
+          app_logo_dir: 1,
+          time_type: 1,
+          company_name: 1,
+          server_address: 1,
+          theme_type: 1,
+          now_version: 1,
+        })
+
+        if (code !== 0) {
+          throw new Error(this.$t('guide.set_get_fail'))
+        }
+
+        // 设置基础表单数据
+        this.basicsform = {
+          companyName: data.company_name,
+          requestUrl: data.server_address,
+          webLogo: [],
+          appLogo: [],
+          timeFormat: data.time_type,
+          theme: data.theme_type,
+        }
+
+        this.originalWebLogoURL = data.logo_dir
+        this.originalAppLogoURL = data.app_logo_dir
+
+        // 处理网页logo
+        if (data.logo_dir?.length > 5) {
+          this.basicsform.webLogo.push({
+            name: data.logo_dir.split('/').pop(),
+            url: this.onlineWebImage(data.logo_dir),
+            uid: Date.now(),
           })
         }
-      })
-    }
+
+        // 处理APP logo
+        if (data.app_logo_dir?.length > 5) {
+          this.basicsform.appLogo.push({
+            name: data.app_logo_dir.split('/').pop(),
+            url: this.onlineWebImage(data.app_logo_dir),
+            uid: Date.now() + 1,
+          })
+        }
+      } catch (error) {
+        ElMessage.error(error.message || this.$t('guide.set_get_fail'))
+        console.error(error)
+      }
+    },
   },
+
   created() {
-    Api.getVariables({
-        "logo_dir": 1,
-        "app_logo_dir": 1,
-        "time_type": 1,
-        "company_name": 1,
-        "server_address": 1,
-        "theme_type": 1,
-        "now_version": 1,
-      }).then(({ code, data, msg }) => {
-        if (code == 0) {
-          console.log(data)
-          this.basicsform = {
-            companyName: data.company_name,
-            requestUrl: data.server_address,
-            webLogo: [],
-            appLogo: [],
-            timeFormat: data.time_type,
-            theme: data.theme_type,
-          }
-          this.originalWebLogoURL = data.logo_dir
-          this.originalAppLogoURL = data.app_logo_dir
-
-          if (data.logo_dir.length > 5) {
-            const logoObject = {
-              name: data.logo_dir.split('/').pop(),
-              url: this.onlineWebImage(data.logo_dir),
-              uid: Date.now(),
-            }
-            this.basicsform.webLogo.push(logoObject)
-            console.log('logoObject-applogo',logoObject)
-          }
-          if (data.app_logo_dir.length > 5) {
-            const appObject = {
-              name: data.app_logo_dir.split('/').pop(),
-              url: this.onlineWebImage(data.app_logo_dir),
-              uid: Date.now(),
-            }
-            this.basicsform.appLogo.push(appObject)
-            console.log('appObject-applogo',appObject)
-          }
-          this.nowVersion = data.now_version
-          console.log('weblogo-applogo',this.originalWebLogoURL, this.originalAppLogoURL)
-        } else {
-          ElMessage.error({
-            message: this.$t('guide.set_get_fail'),
-          })
-        }
-      }).catch(e => {
-        console.log(e)
-      })
+    this.initPage()
   },
-  unmounted() {
-
-  }
 }
 </script>
 
