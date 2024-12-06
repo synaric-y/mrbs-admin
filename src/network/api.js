@@ -243,4 +243,8 @@ export class Api {
     static async syncAD(params) {
         return Request.post('user_group/sync_ad',params)
     }
+
+    static async applyNewVersion(params) {
+        return Request.post('apply_new_version',params)
+    }
 }
