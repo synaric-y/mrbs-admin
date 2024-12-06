@@ -306,8 +306,7 @@ export default {
       })
     },
     toPath(path) {
-      if (path === '/guide_start' && this.init_status == 0) {
-        console.log('topath this.init_status:',typeof(this.init_status))
+      if (path === '/guide_start' && this.init_status != 0) {
         this.switchTab('../single_meet')
         return
       }

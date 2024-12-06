@@ -18,7 +18,7 @@
                 <el-button type="primary" @click="pendingShowQRCode">{{ $t('guide.look_qrcode')}}</el-button>
               </div>
             </el-form-item>
-            <el-form-item :label="$t('guide.web_logo_label')" prop="webLogo">
+            <el-form-item :label="$t('guide.web_logo_label')" prop="webLogo" required >
               <div class="form-item-content">
                 <div class="img-bg" v-if="originalWebLogoURL">
                   <el-image class="form-item-logo" :src="onlineWebImage(originalWebLogoURL)"
@@ -45,7 +45,7 @@
                 <span class="form-item-tip">{{ $t('guide.logo_tips') }}</span>
               </div>
             </el-form-item>
-            <el-form-item :label="$t('guide.pad_logo_label')" prop="appLogo">
+            <el-form-item :label="$t('guide.pad_logo_label')" prop="appLogo" required >
               <div class="form-item-content">
                 <div class="img-bg" v-if="originalAppLogoURL">
                   <el-image class="form-item-logo" :src="onlineWebImage(originalAppLogoURL)"
@@ -312,7 +312,7 @@ export default {
     nextStep() {
       this.$refs.formRef.validate((valid) => {
         if (valid) {
-          if (this.adStatus !== 'tested') {
+          if (this.urlStatus !== 'tested') {
             ElMessage.error({
               message: this.$t('guide.first_ad_test'),
             })
