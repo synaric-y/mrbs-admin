@@ -52,6 +52,7 @@ import { PageMixin } from "@/pages/PageMixin.js";
 import { STORAGE } from "@/const.js";
 import { Api } from "@/network/api.js";
 import NavBar from "@/components/NavBar.vue";
+import { HOST } from "./config";
 
 export default {
   components: { NavBar },
@@ -300,7 +301,7 @@ export default {
         "init_status": 1,
       }).then(({ code, data, msg }) => {
         this.originalLogo = data.logo_dir
-        this.logo = data.server_address + data.logo_dir + '?time=' + new Date().getTime() // 强制刷新logo
+        this.logo = HOST + data.logo_dir + '?time=' + new Date().getTime() // 强制刷新logo
         this.companyName = data.company_name
         this.init_status = data.init_status
       })
