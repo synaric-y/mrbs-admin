@@ -89,7 +89,14 @@
           </el-form>
         </div>
       </div>
+      <el-dialog v-model="showQRCode" width="800" center align-center>
+        <div style="width: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center">
+          <div style="width: 200px;height: 200px" id="qrcode"></div>
+          <div style="margin-top: 10px">{{ $t('system.qrcode_tip') }}</div>
+        </div>
+      </el-dialog>
     </template>
+    
     <template #btns>
       <el-button plain class="btn" @click="jumpGuide">{{ $t('guide.jump_guide') }}</el-button>
       <el-button type="primary" class="btn" @click="switchTab('/guide_start')"> {{ $t('guide.pre') }}</el-button>
