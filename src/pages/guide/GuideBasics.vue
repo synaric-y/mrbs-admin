@@ -4,24 +4,24 @@
       <ProgressBar :active-index="1" />
       <div>
         <div class="section-content">
-          <el-form ref="formRef" :model="form" :rules="rules" label-width="auto" style="max-width: 750px">
+          <el-form ref="guideFormRef" :model="basicsform" :rules="rules" label-width="auto" style="max-width: 750px">
             <el-form-item :label="$t('guide.company_name')" prop="companyName">
               <div class="form-item-content">
-                <el-input class="form-item-input" v-model="form.companyName" />
+                <el-input class="form-item-input" v-model="basicsform.companyName" />
               </div>
             </el-form-item>
             <el-form-item :label="$t('guide.service_url')" prop="requestUrl">
               <div class="form-item-content">
-                <el-input :disabled="urlStatus === 'testing'" @input="urlStatus = 'untested'" v-model="form.requestUrl"
+                <el-input :disabled="urlStatus === 'testing'" @input="urlStatus = 'untested'" v-model="basicsform.requestUrl"
                   class="form-item-input" :placeholder="$t('guide.example_service')" />
                 <TestButton :status="urlStatus" @test="verify" />
                 <el-button type="primary" @click="pendingShowQRCode">{{ $t('guide.look_qrcode') }}</el-button>
               </div>
             </el-form-item>
-            <el-form-item :label="$t('guide.web_logo_label')" prop="webLogo" required>
+            <el-form-item :label="$t('guide.web_logo_label')" prop="webLogo">
               <div class="form-item-content">
-                <el-upload :class="{ hide: false }" v-model:file-list="form.webLogo" ref="webLogo" action="#"
-                  list-type="picture-card" :auto-upload="false" :limit="1" :max-size="1024" :accept="'image/*'">
+                <el-upload :class="{ hide: false }" v-model:file-list="basicsform.webLogo" ref="guideWebLogo" action="#"
+                  list-type="picture-card" :auto-upload="false" :limit="1" :accept="'image/*'">
                   <el-icon class="el-icon--upload">
                     <Plus />
                   </el-icon>
@@ -46,8 +46,8 @@
             </el-form-item>
             <el-form-item :label="$t('guide.pad_logo_label')" prop="appLogo">
               <div class="form-item-content">
-                <el-upload :class="{ hide: false }" v-model:file-list="form.appLogo" ref="appLogo" action="#"
-                  list-type="picture-card" :auto-upload="false" :limit="1" :max-size="1024" :accept="'image/*'">
+                <el-upload :class="{ hide: false }" v-model:file-list="basicsform.appLogo" ref="guideAppLogo" action="#"
+                  list-type="picture-card" :auto-upload="false" :limit="1" :accept="'image/*'">
                   <el-icon class="el-icon--upload">
                     <Plus />
                   </el-icon>
@@ -71,13 +71,13 @@
               </div>
             </el-form-item>
             <el-form-item :label="$t('guide.time_format')" prop="timeFormat">
-              <el-select v-model="form.timeFormat" style="width: 200px" :placeholder="$t('base.plzSelect')">
+              <el-select v-model="basicsform.timeFormat" style="width: 200px" :placeholder="$t('base.plzSelect')">
                 <el-option :label="$t('guide.hour_format_12')" :value="12" />
                 <el-option :label="$t('guide.hour_format_24')" :value="24" />
               </el-select>
             </el-form-item>
             <el-form-item :label="$t('guide.theme')" prop="theme">
-              <el-radio-group v-model="form.theme">
+              <el-radio-group v-model="basicsform.theme">
                 <el-radio :value="0">
                   <div class="theme theme-0"></div>
                 </el-radio>
@@ -96,7 +96,7 @@
         </div>
       </el-dialog>
     </template>
-    
+
     <template #btns>
       <el-button plain class="btn" @click="jumpGuide">{{ $t('guide.jump_guide') }}</el-button>
       <el-button type="primary" class="btn" @click="switchTab('/guide_start')"> {{ $t('guide.pre') }}</el-button>
@@ -126,7 +126,7 @@ export default {
   mixins: [PageMixin],
   data() {
     return {
-      form: {
+      basicsform: {
         companyName: '',
         requestUrl: '',
         webLogo: [],
@@ -149,12 +149,12 @@ export default {
           { required: true, message: this.$t('guide.service_placeholder'), trigger: 'blur' },
         ],
         webLogo: [
-          {
-            type: 'array', validator: (rule, value, callback) => {
-              if (this.originalWebLogoURL === '') callback(new Error(this.$t('guide.alert_web_logo')))
-              else callback()
-            }, message: this.$t('guide.alert_web_logo'), trigger: 'blur'
-          },
+          // {
+          //   type: 'array', validator: (rule, value, callback) => {
+          //     if (this.originalWebLogoURL === '') callback(new Error(this.$t('guide.alert_web_logo')))
+          //     else callback()
+          //   }, message: this.$t('guide.alert_web_logo'), trigger: 'blur'
+          // },
         ],
         appLogo: [
           // {
@@ -196,7 +196,7 @@ export default {
         })
     },
     verify() {
-      if (!this.form.requestUrl || this.form.requestUrl === '') {
+      if (!this.basicsform.requestUrl || this.basicsform.requestUrl === '') {
         ElMessage.error({
           message: this.$t('guide.alert_empty_request_url')
         })
@@ -206,7 +206,7 @@ export default {
       axios({
         url: `/web/call.php?act=system_setting%2Fget_variables`,
         method: 'POST',
-        data: { server_address: this.form.requestUrl },
+        data: { server_address: this.basicsform.requestUrl },
       }).then(({ data }) => {
         if (data.code !== 0) {
           ElMessage.error({
@@ -229,7 +229,7 @@ export default {
       this.$nextTick(() => {
         const codeFigure = new AraleQRCode({
           "render": "svg",
-          "text": this.form.requestUrl,
+          "text": this.basicsform.requestUrl,
           "size": 200
         });
         const qrcodeContainer = document.querySelector('#qrcode')
@@ -242,11 +242,11 @@ export default {
     removeImage(type, file) {
       switch (type) {
         case 'web': {
-          this.$refs.webLogo.handleRemove(file)
+          this.$refs.guideWebLogo.handleRemove(file)
           this.originalWebLogoURL = ''
         } break;
         case 'app': {
-          this.$refs.appLogo.handleRemove(file)
+          this.$refs.guideAppLogo.handleRemove(file)
           this.originalAppLogoURL = ''
         } break;
       }
@@ -255,42 +255,33 @@ export default {
       this.$router.go(-1)
     },
     submit() {
-      console.log(this.form)
-      this.$refs.formRef.validate((valid) => {
+      console.log(this.basicsform)
+      this.$refs.guideFormRef.validate((valid) => {
         if (valid) {
           console.log('submit!')
           const requests = []
-          if (this.form.webLogo.length !== 0 && this.form.webLogo[0].raw) {
+          if (this.basicsform.webLogo && this.basicsform.webLogo[0] && this.basicsform.webLogo[0].raw) {
             const webLogoData = new FormData();
-            webLogoData.append('logo', this.form.webLogo[0].raw)
+            webLogoData.append('logo', this.basicsform.webLogo[0].raw)
             requests.push(
               Api.uploadWebLogo(webLogoData)
                 .then(res => {
+                  console.log('uploadWebLogo res',res);
                   if (res?.data?.code !== 0) throw new Error(this.$t('guide.alert_fail_upload_image'))
                 })
             )
           }
-          if (this.form.appLogo.length !== 0 && this.form.appLogo[0].raw) {
+          if (this.basicsform.appLogo && this.basicsform.appLogo[0] && this.basicsform.appLogo[0].raw) {
             const appLogoData = new FormData();
-            appLogoData.append('logo', this.form.appLogo[0].raw)
+            appLogoData.append('logo', this.basicsform.appLogo[0].raw)
             requests.push(
               Api.uploadAppLogo(appLogoData)
                 .then(res => {
+                  console.log('uploadAppLogo res',res);
                   if (res?.data?.code !== 0) throw new Error(this.$t('guide.alert_fail_upload_image'))
                 })
             )
           }
-          requests.push(Api.setVariables(
-            {
-              "init_status": 3,
-              "time_type": this.form.timeFormat,
-              "company_name": this.form.companyName,
-              "server_address": encodeURIComponent(this.form.requestUrl),
-              "theme_type": this.form.theme,
-              "logo_dir": this.form.webLogo.length > 0?this.originalWebLogoURL: '',
-              "app_logo_dir": this.form.appLogo.length > 0?this.originalAppLogoURL: '',
-            }
-          ))
           Promise.all(requests)
             .then((responses) => {
               console.log(responses)
@@ -335,7 +326,7 @@ export default {
       })
     },
     nextStep() {
-      this.$refs.formRef.validate((valid) => {
+      this.$refs.guideFormRef.validate((valid) => {
         if (valid) {
           if (this.urlStatus !== 'tested') {
             ElMessage.error({
@@ -344,14 +335,30 @@ export default {
             return
           }
 
+          // 其他数据修改
+          // 其他数据修改
+          const params = {
+            "init_status": 3,
+            "time_type": this.basicsform.timeFormat,
+            "company_name": this.basicsform.companyName,
+            "server_address": encodeURIComponent(this.basicsform.requestUrl),
+            "theme_type": this.basicsform.theme,
+          };
+          if (this.basicsform.webLogo && this.basicsform.webLogo[0] && this.basicsform.webLogo[0].row) {
+            delete params.logo_dir
+          } else {
+            console.log('submit this.form.webLogo not')
+            params['logo_dir'] = this.originalWebLogoURL
+          }
+          if (this.basicsform.appLogo && this.basicsform.appLogo[0] && this.basicsform.appLogo[0].row) {
+            delete params.app_logo_dir
+          } else {
+            console.log('submit this.form.appLogo not')
+            params['app_logo_dir'] = this.originalAppLogoURL
+          }
+          console.log('submit params',params)
           Api.setVariables(
-            {
-              "init_status": 1,
-              "time_type": this.form.timeFormat,
-              "company_name": this.form.companyName,
-              "server_address": this.form.requestUrl,
-              "theme_type": this.form.theme
-            }
+            params
           ).then(res => {
             console.log(res)
             if (res?.code == 0) {
@@ -378,53 +385,57 @@ export default {
       })
     }
   },
-  mounted() {
+  created() {
     Api.getVariables({
-      "logo_dir": 1,
-      "app_logo_dir": 1,
-      "time_type": 1,
-      "company_name": 1,
-      "server_address": 1,
-      "theme_type": 1
-    }).then(({ code, data, msg }) => {
-      if (code == 0) {
-        console.log(data)
-        this.form = {
-          companyName: data.company_name,
-          requestUrl: data.server_address,
-          webLogo: [],
-          appLogo: [],
-          timeFormat: data.time_type,
-          theme: data.theme_type,
-        }
-        this.originalWebLogoURL = data.logo_dir
-        this.originalAppLogoURL = data.app_logo_dir
-        if (data.logo_dir.length > 5) {
-          const logoObject = {
-            name: data.logo_dir.split('/').pop(),
-            url: this.onlineWebImage(data.logo_dir),
-            uid: Date.now(),
+        "logo_dir": 1,
+        "app_logo_dir": 1,
+        "time_type": 1,
+        "company_name": 1,
+        "server_address": 1,
+        "theme_type": 1,
+        "now_version": 1,
+      }).then(({ code, data, msg }) => {
+        if (code == 0) {
+          console.log(data)
+          this.basicsform = {
+            companyName: data.company_name,
+            requestUrl: data.server_address,
+            webLogo: [],
+            appLogo: [],
+            timeFormat: data.time_type,
+            theme: data.theme_type,
           }
-          this.form.webLogo.push(logoObject)
-        }
-        if (data.app_logo_dir.length > 5) {
-          const appObject = {
-            name: data.app_logo_dir.split('/').pop(),
-            url: this.onlineWebImage(data.app_logo_dir),
-            uid: Date.now(),
+          this.originalWebLogoURL = data.logo_dir
+          this.originalAppLogoURL = data.app_logo_dir
+
+          if (data.logo_dir.length > 5) {
+            const logoObject = {
+              name: data.logo_dir.split('/').pop(),
+              url: this.onlineWebImage(data.logo_dir),
+              uid: Date.now(),
+            }
+            this.basicsform.webLogo.push(logoObject)
+            console.log('logoObject-applogo',logoObject)
           }
-          this.form.appLogo.push(appObject)
+          if (data.app_logo_dir.length > 5) {
+            const appObject = {
+              name: data.app_logo_dir.split('/').pop(),
+              url: this.onlineWebImage(data.app_logo_dir),
+              uid: Date.now(),
+            }
+            this.basicsform.appLogo.push(appObject)
+            console.log('appObject-applogo',appObject)
+          }
+          this.nowVersion = data.now_version
+          console.log('weblogo-applogo',this.originalWebLogoURL, this.originalAppLogoURL)
+        } else {
+          ElMessage.error({
+            message: this.$t('guide.set_get_fail'),
+          })
         }
-        this.nowVersion = data.now_version
-        console.log(this.originalWebLogoURL, this.originalAppLogoURL)
-      } else {
-        ElMessage.error({
-          message: this.$t('guide.set_get_fail'),
-        })
-      }
-    }).catch(e => {
-      console.log(e)
-    })
+      }).catch(e => {
+        console.log(e)
+      })
   },
   unmounted() {
 

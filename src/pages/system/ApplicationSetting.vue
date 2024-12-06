@@ -18,10 +18,10 @@
                 <el-button type="primary" @click="pendingShowQRCode">{{ $t('guide.look_qrcode') }}</el-button>
               </div>
             </el-form-item>
-            <el-form-item :label="$t('guide.web_logo_label')" prop="webLogo" required>
+            <el-form-item :label="$t('guide.web_logo_label')" prop="webLogo">
               <div class="form-item-content">
                 <el-upload :class="{ hide: false }" v-model:file-list="form.webLogo" ref="webLogo" action="#"
-                  list-type="picture-card" :auto-upload="false" :limit="1" :max-size="1024" :accept="'image/*'">
+                  list-type="picture-card" :auto-upload="false" :limit="1" :accept="'image/*'">
                   <el-icon class="el-icon--upload">
                     <Plus />
                   </el-icon>
@@ -52,7 +52,7 @@
         <el-form-item :label="$t('guide.pad_logo_label')" prop="appLogo">
           <div class="form-item-content">
             <el-upload :class="{ hide: false }" v-model:file-list="form.appLogo" ref="appLogo" action="#"
-              list-type="picture-card" :auto-upload="false" :limit="1" :max-size="1024" :accept="'image/*'">
+              list-type="picture-card" :auto-upload="false" :limit="1" :accept="'image/*'">
               <el-icon class="el-icon--upload">
                 <Plus />
               </el-icon>
@@ -177,20 +177,20 @@ export default {
           { required: true, message: this.$t('guide.service_placeholder'), trigger: 'blur' },
         ],
         webLogo: [
-          {
-            type: 'array', validator: (rule, value, callback) => {
-              if (this.originalWebLogoURL === '' && value) callback(new Error(this.$t('guide.alert_web_logo')))
-              else callback()
-            }, message: this.$t('guide.alert_web_logo'), trigger: 'blur'
-          },
+          // {
+          //   type: 'array', validator: (rule, value, callback) => {
+          //     if (this.originalWebLogoURL === '') callback(new Error(this.$t('guide.alert_web_logo')))
+          //     else callback()
+          //   }, message: this.$t('guide.alert_web_logo'), trigger: 'blur'
+          // },
         ],
         appLogo: [
-          {
-            type: 'array', validator: (rule, value, callback) => {
-              if (this.originalAppLogoURL === '') callback(new Error(this.$t('guide.alert_pad_logo')))
-              else callback()
-            }, message: this.$t('guide.alert_pad_logo'), trigger: 'blur'
-          },
+          // {
+          //   type: 'array', validator: (rule, value, callback) => {
+          //     if (this.originalAppLogoURL === '') callback(new Error(this.$t('guide.alert_pad_logo')))
+          //     else callback()
+          //   }, message: this.$t('guide.alert_pad_logo'), trigger: 'blur'
+          // },
         ],
         timeFormat: [
           { required: true, message: this.$t('guide.form_time_format'), trigger: 'blur' },
@@ -243,6 +243,7 @@ export default {
               uid: Date.now(),
             }
             this.form.webLogo.push(logoObject)
+            console.log('logoObject-applogo',logoObject)
           }
           if (data.app_logo_dir.length > 5) {
             const appObject = {
@@ -251,9 +252,10 @@ export default {
               uid: Date.now(),
             }
             this.form.appLogo.push(appObject)
+            console.log('appObject-applogo',appObject)
           }
           this.nowVersion = data.now_version
-          console.log(this.originalWebLogoURL, this.originalAppLogoURL)
+          console.log('weblogo-applogo',this.originalWebLogoURL, this.originalAppLogoURL)
         } else {
           ElMessage.error({
             message: this.$t('guide.set_get_fail'),
@@ -359,7 +361,7 @@ export default {
         if (valid) {
           console.log('submit!')
           const requests = []
-          if (this.form.webLogo.length > 0 && this.form.webLogo[0].raw) {
+          if (this.form.webLogo && this.form.webLogo[0] && this.form.webLogo[0].raw) {
             const webLogoData = new FormData()
             webLogoData.append('logo', this.form.webLogo[0].raw)
             requests.push(
@@ -370,7 +372,7 @@ export default {
             )
           }
           // 平板端图片上传
-          if (this.form.appLogo.length > 0 && this.form.appLogo[0].raw) {
+          if (this.form.appLogo && this.form.appLogo[0] && this.form.appLogo[0].raw) {
             const appLogoData = new FormData()
             appLogoData.append('logo', this.form.appLogo[0].raw)
             requests.push(
@@ -381,16 +383,28 @@ export default {
             )
           }
           // 其他数据修改
+          const params = {
+            "init_status": 3,
+            "time_type": this.form.timeFormat,
+            "company_name": this.form.companyName,
+            "server_address": encodeURIComponent(this.form.requestUrl),
+            "theme_type": this.form.theme,
+          };
+          if (this.form.webLogo && this.form.webLogo[0] && this.form.webLogo[0].row) {
+            delete params.logo_dir
+          } else {
+            console.log('submit this.form.webLogo not')
+            params['logo_dir'] = this.originalWebLogoURL
+          }
+          if (this.form.appLogo && this.form.appLogo[0] && this.form.appLogo[0].row) {
+            delete params.app_logo_dir
+          } else {
+            console.log('submit this.form.appLogo not')
+            params['app_logo_dir'] = this.originalAppLogoURL
+          }
+          console.log('submit params',params)
           requests.push(Api.setVariables(
-            {
-              "init_status": 3,
-              "time_type": this.form.timeFormat,
-              "company_name": this.form.companyName,
-              "server_address": encodeURIComponent(this.form.requestUrl),
-              "theme_type": this.form.theme,
-              "logo_dir": this.form.webLogo.length > 0 ? this.originalWebLogoURL : '',
-              "app_logo_dir": this.form.appLogo.length > 0 ? this.originalAppLogoURL : '',
-            }
+            params
           ))
           Promise.all(requests)
             .then((responses) => {
@@ -398,9 +412,9 @@ export default {
               ElMessage.success({
                 message: this.$t('guide.set_success'),
               })
-              setTimeout(() => {
-                location.reload() // 刷新页面
-              }, 1000)
+              // setTimeout(() => {
+              //   location.reload() // 刷新页面
+              // }, 1000)
             })
             .catch((error) => {
               ElMessage.error({
