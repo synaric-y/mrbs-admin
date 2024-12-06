@@ -200,8 +200,18 @@ export default defineComponent({
       days: [],
       rooms: ["A", "B", "C", "D"],
       events: [],
-      timeSlots: [],
-      localTimeSlots: [],
+      timeSlots: [
+        "08:00AM", "ㆍ",
+        "09:00AM", "ㆍ", "10:00AM", "ㆍ", "11:00AM", "ㆍ", "12:00PM", "ㆍ",
+        "01:00PM", "ㆍ", "02:00PM", "ㆍ", "03:00PM", "ㆍ", "04:00PM", "ㆍ",
+        "05:00PM", "ㆍ", "06:00PM", "ㆍ", "07:00PM", "ㆍ", "08:00PM", "ㆍ", "09:00PM"
+      ],
+      localTimeSlots: [
+        "08:00AM", "08:30AM",
+        "09:00AM", "09:30AM", "10:00AM", "10:30AM", "11:00AM", "11:30AM", "12:00PM", "12:30PM",
+        "01:00PM", "01:30PM", "02:00PM", "02:30PM", "03:00PM", "03:30PM", "04:00PM", "04:30PM",
+        "05:00PM", "05:30PM", "06:00PM", "06:30PM", "07:00PM", "07:30PM", "08:00PM", "08:30PM", "09:00PM"
+      ],
       dialogMeetForm: false,
       dialogCycleMeetForm: false,
       form_mode: 0,
