@@ -307,10 +307,10 @@ export default {
       })
     },
     toPath(path) {
-      // if (path === '/guide_start' && this.init_status != 0) {
-      //   this.switchTab('../single_meet')
-      //   return
-      // }
+      if (path === '/guide_start' && this.init_status != 0) {
+        this.switchTab('../single_meet')
+        return
+      }
       this.switchTab(path)
     },
     toLogout() {
