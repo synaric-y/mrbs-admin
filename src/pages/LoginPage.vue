@@ -81,10 +81,10 @@ export default {
         "init_status": 1,
         "use_wxwork": 1,
       }).then(({ code, data, msg }) => {
-        if (Number(data['init_status']) == 0) {
-          this.switchTab('../guide_start')
+        if (!data || data['init_status'] == null || Number(data['init_status']) === 0) {
+          this.switchTab('../guide_start');
         } else {
-          this.switchTab('../single_meet')
+          this.switchTab('../single_meet');
         }
       })
     },

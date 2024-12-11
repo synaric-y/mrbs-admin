@@ -8,5 +8,6 @@
 // export const HOST = "https://meeting-manage-test.businessconnectchina.com:12443"
 // export const HOST = "http://localhost:81"
 // 正式环境
-export const HOST = "http://172.16.89.91"
+// export const HOST = "http://172.16.89.91"
+export const HOST = "https://meeting-manage-dev.businessconnectchina.com:11443"
 
